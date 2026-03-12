@@ -1,0 +1,20 @@
+import { ChartContainer } from '@/features/supply-xray/ui/ChartContainer'
+import { TICKER_NAME_MAP } from '@/shared/constants/tickers'
+
+export default async function ChartPage({ params }: { params: Promise<{ ticker: string }> }) {
+  const { ticker } = await params
+  return (
+    <main className="max-w-6xl mx-auto px-4 py-6">
+      <div className="mb-5">
+        <h1 className="text-xl font-bold text-white">
+          수급 X-Ray
+          <span className="ml-2 text-sm text-blue-400 font-normal">외인 · 기관 · 개인 순매수 분석</span>
+        </h1>
+        <p className="text-xs text-gray-500 mt-1">
+          마우스를 차트 위로 이동하면 해당 날짜의 수급이 실시간으로 표시됩니다.
+        </p>
+      </div>
+      <ChartContainer ticker={ticker} companyName={TICKER_NAME_MAP[ticker] || ticker} />
+    </main>
+  )
+}
