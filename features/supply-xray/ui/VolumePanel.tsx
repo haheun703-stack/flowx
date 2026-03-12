@@ -40,16 +40,23 @@ export function VolumePanel({ data }: { data: CandleData[] }) {
     const maMap = new Map(volMA.map(d => [d.time, d.value]))
 
     const volSeries = chart.addSeries(HistogramSeries, { base: 0 })
-    volSeries.setData(data.map(d => {
+    volSeries.setData(data.map((d, i) => {
       const avg = maMap.get(d.time) ?? 0
       const isExplosion = avg > 0 && d.volume >= avg * 2
-      const isAbove = d.volume >= avg
-      return {
-        time: d.time,
-        value: d.volume,
-        // 거래량 폭발: 흰색, 평균 이상: 회색 밝게, 이하: 회색 어둡게
-        color: isExplosion ? '#ffffff60' : isAbove ? '#4b556380' : '#1f293780',
+      // 상승/하락 판단: 전일 종가 대비
+      const prevClose = i > 0 ? data[i - 1].close : d.open
+      const isUp = d.close >= prevClose
+
+      let color: string
+      if (isExplosion) {
+        color = isUp ? 'rgba(255,59,92,1)' : 'rgba(14,165,233,1)'
+      } else if (isUp) {
+        color = 'rgba(255,59,92,0.35)'
+      } else {
+        color = 'rgba(14,165,233,0.35)'
       }
+
+      return { time: d.time, value: d.volume, color }
     }))
 
     // 거래량 20일 이동평균선
@@ -76,7 +83,7 @@ export function VolumePanel({ data }: { data: CandleData[] }) {
   return (
     <div>
       <div className="text-xs text-amber-400/70 px-3 pt-2 pb-1 bg-[#0f1117]">
-        거래량 <span className="text-gray-600 ml-1">흰색 = 평균 2배 이상 폭발</span>
+        거래량 <span className="text-[#ff3b5c] ml-1">빨강=상승</span> <span className="text-[#0ea5e9]">파랑=하락</span> <span className="text-gray-500 ml-1">찐한색 = 평균 2배 이상 폭발</span>
       </div>
       <div ref={containerRef} className="bg-[#0f1117]" />
     </div>

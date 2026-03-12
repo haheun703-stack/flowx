@@ -92,8 +92,8 @@ async function fetchKISIndex(
     const d = json?.output
 
     return {
-      price:         Number(d?.bstp_nmix_prpr ?? 0),  // 지수 현재가
-      changePercent: Number(d?.bstp_nmix_ctrt ?? 0),  // 등락률
+      price:         Number(d?.bstp_nmix_prpr ?? 0),      // 지수 현재가
+      changePercent: Number(d?.bstp_nmix_prdy_ctrt ?? 0), // 전일 대비 등락률
     }
   } catch {
     return { price: 0, changePercent: 0 }

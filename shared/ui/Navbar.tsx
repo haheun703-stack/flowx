@@ -15,6 +15,12 @@ export function Navbar() {
           <span className="text-xs text-blue-400 border border-blue-400/30 bg-blue-400/10 px-2 py-0.5 rounded-full">
             BETA
           </span>
+          <Link href="/dashboard" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-2">
+            대시보드
+          </Link>
+          <Link href="/market" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-2">
+            시장
+          </Link>
         </div>
         <TickerSearch />
       </nav>
