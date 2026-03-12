@@ -69,10 +69,13 @@ export function StockSearchModal({ open, onClose }: Props) {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
+      if (e.key === 'Enter' && filtered.length > 0) {
+        handleSelect(filtered[0].code)
+      }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [open, onClose])
+  }, [open, onClose, filtered])
 
   const handleSelect = (code: string) => {
     router.push(`/chart/${code}`)
