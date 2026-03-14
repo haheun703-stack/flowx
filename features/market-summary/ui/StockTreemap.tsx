@@ -165,7 +165,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           }
 
           // 각 줄에 맞는 폰트 크기 계산
-          const lineHeight = lines.length > 0 ? Math.min(h * 0.55 / lines.length, 22) : 0
+          const lineHeight = lines.length > 0 ? Math.min(h * 0.45 / lines.length, 17) : 0
           const totalTextH = lineHeight * lines.length
           const startY = leaf.y0 + (h - totalTextH) / 2 + lineHeight * 0.75
 
