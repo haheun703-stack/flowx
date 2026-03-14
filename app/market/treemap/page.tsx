@@ -7,7 +7,7 @@ export default function TreemapPage() {
   const { data: sectors, isLoading } = useTreemap()
 
   return (
-    <div className="flex flex-col h-[calc(100vh/1.25-88px)] overflow-hidden" style={{ background: '#131722' }}>
+    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)]" style={{ background: '#131722' }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]"
         style={{ fontFamily: 'var(--font-jetbrains), monospace' }}>
@@ -22,7 +22,7 @@ export default function TreemapPage() {
       </div>
 
       {/* 트리맵 */}
-      <div className="flex-1 p-3 overflow-hidden">
+      <div className="flex-1 p-3">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-[#334155] text-sm" style={{ fontFamily: 'var(--font-jetbrains), monospace' }}>
