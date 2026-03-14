@@ -12,13 +12,13 @@ export default function TreemapPage() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]"
         style={{ fontFamily: 'var(--font-jetbrains), monospace' }}>
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-[#00ff88]" />
-          <span className="text-sm font-black tracking-widest uppercase text-[#e2e8f0]">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#00ff88]" />
+          <span className="text-base font-black tracking-widest uppercase text-white">
             시가총액 트리맵
           </span>
-          <span className="text-xs text-[#334155]">KOSPI · KOSDAQ 상위 50종목</span>
+          <span className="text-sm font-bold text-[#64748b]">KOSPI · KOSDAQ 상위 50종목</span>
         </div>
-        <span className="text-xs text-[#334155]">박스 크기 = 시총 비중 · 색상 = 등락률</span>
+        <span className="text-sm font-bold text-[#64748b]">박스 크기 = 시총 비중 · 색상 = 등락률</span>
       </div>
 
       {/* 트리맵 */}
