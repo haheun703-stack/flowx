@@ -16,9 +16,9 @@ export default function TreemapPage() {
           <span className="text-base font-black tracking-widest uppercase text-white">
             시가총액 트리맵
           </span>
-          <span className="text-sm font-bold text-[#64748b]">KOSPI · KOSDAQ 상위 50종목</span>
+          <span className="text-sm font-black text-[#94a3b8]">KOSPI · KOSDAQ 상위 50종목</span>
         </div>
-        <span className="text-sm font-bold text-[#64748b]">박스 크기 = 시총 비중 · 색상 = 등락률</span>
+        <span className="text-sm font-black text-[#94a3b8]">박스 크기 = 시총 비중 · 색상 = 등락률</span>
       </div>
 
       {/* 트리맵 */}
