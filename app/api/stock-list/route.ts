@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import fs from 'fs/promises'
+import { existsSync } from 'fs'
 import path from 'path'
 
 interface StockRow {
@@ -11,7 +12,16 @@ interface StockRow {
 // 서버 메모리 캐시 (24시간)
 let cache: { data: StockRow[]; cachedAt: number } | null = null
 const CACHE_TTL = 1000 * 60 * 60 * 24
-const DATA_ROOT = path.resolve(process.cwd(), '..', '_SPECS', 'data')
+
+function resolveDataRoot(): string {
+  const devRoot = path.resolve(process.cwd(), '..', '_SPECS', 'data')
+  if (existsSync(devRoot)) return devRoot
+  const prodRoot = path.join(process.cwd(), 'public', 'data')
+  if (existsSync(prodRoot)) return prodRoot
+  return devRoot
+}
+
+const DATA_ROOT = resolveDataRoot()
 
 async function loadStocks(): Promise<StockRow[]> {
   // 1) all_tickers.csv에서 market 매핑 테이블 만들기
