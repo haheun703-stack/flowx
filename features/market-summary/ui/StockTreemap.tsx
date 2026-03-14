@@ -147,7 +147,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               // 3줄: 종목명 + ticker + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
-                { text: d.ticker, fill: '#64748b', bold: false },
+                { text: d.ticker, fill: '#cbd5e1', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             } else if (h > 32 && w > 40) {
