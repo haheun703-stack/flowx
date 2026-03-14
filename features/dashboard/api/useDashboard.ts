@@ -294,6 +294,7 @@ export interface IntradayData {
   changePercent: number
   marketOpen: boolean
   mode: string
+  lastDate?: string
 }
 
 export function useDashboardIntraday() {

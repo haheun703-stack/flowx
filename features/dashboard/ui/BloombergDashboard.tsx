@@ -30,6 +30,7 @@ export function BloombergDashboard() {
           changePercent={intraday?.changePercent ?? 0}
           marketOpen={intraday?.marketOpen ?? false}
           mode={(intraday?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
+          lastDate={intraday?.lastDate}
         />
 
         {/* 메인 그리드 */}

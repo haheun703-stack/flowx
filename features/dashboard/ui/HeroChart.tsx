@@ -14,9 +14,10 @@ interface HeroChartProps {
   changePercent: number
   marketOpen?: boolean
   mode?: 'intraday' | 'daily' | 'empty'
+  lastDate?: string
 }
 
-export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty' }: HeroChartProps) {
+export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate }: HeroChartProps) {
   const chartRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -120,7 +121,9 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
             <span className="text-xs font-mono" style={{ color: '#f59e0b' }}>CLOSED</span>
           </>
         )}
-        <span className="text-sm font-mono font-bold ml-2" style={{ color: '#94a3b8' }}>09:00 — 15:30 KST</span>
+        <span className="text-sm font-mono font-bold ml-2" style={{ color: '#94a3b8' }}>
+          {mode === 'daily' && lastDate ? `${lastDate} 종가 기준` : '09:00 — 15:30 KST'}
+        </span>
       </div>
 
       {/* 데이터 없을 때 */}
