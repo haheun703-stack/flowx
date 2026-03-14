@@ -3,11 +3,11 @@
 import { useDashboardEtf } from '../api/useDashboard'
 
 const GRADE_COLOR: Record<string, string> = {
-  '적극매수': 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
-  '매수': 'text-[#00ff88] bg-[#00ff88]/10 border-[#00ff88]/30',
+  '적극매수': 'text-[#00ff88] bg-[#00ff88]/10 border-[#00ff88]/30',
+  '매수': 'text-[#00cc6a] bg-[#00cc6a]/10 border-[#00cc6a]/30',
   '관망': 'text-[#f59e0b] bg-[#f59e0b]/10 border-[#f59e0b]/30',
-  '매도': 'text-[#0ea5e9] bg-[#0ea5e9]/10 border-[#0ea5e9]/30',
-  '적극매도': 'text-[#6366f1] bg-[#6366f1]/10 border-[#6366f1]/30',
+  '매도': 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
+  '적극매도': 'text-[#cc2f4a] bg-[#cc2f4a]/10 border-[#cc2f4a]/30',
 }
 
 const COLS = '1fr 72px 64px 56px 56px 56px'

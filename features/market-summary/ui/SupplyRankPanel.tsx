@@ -55,7 +55,10 @@ export function SupplyRankPanel({ stocks, type }: {
               {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
             </div>
             <div className="text-right text-sm font-black tabular-nums" style={{ color }}>
-              +{(type === '외인' ? s.foreignNet : s.instNet).toLocaleString()}억
+              {(() => {
+                const val = type === '외인' ? s.foreignNet : s.instNet
+                return `${val >= 0 ? '+' : ''}${val.toLocaleString()}억`
+              })()}
             </div>
           </Link>
         ))

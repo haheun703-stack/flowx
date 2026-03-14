@@ -12,7 +12,7 @@ export function Footer() {
           <Link href="/chart/005930" className="hover:text-white transition-colors">차트</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">플랜</Link>
         </div>
-        <div className="text-xs text-gray-700 font-mono">
+        <div className="text-xs text-gray-500 font-mono">
           © 2026 FLOWX. 투자 참고용 정보이며 매매 권유가 아닙니다.
         </div>
       </div>
