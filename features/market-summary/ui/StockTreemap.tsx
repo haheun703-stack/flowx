@@ -122,7 +122,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
             key={sec.name}
             x={sec.x0 + 4}
             y={sec.y0 + 13}
-            className="fill-[#0a0f18] font-black"
+            className="fill-white font-black"
             style={{ fontSize: 12, fontFamily: FONT }}
           >
             {sec.name}
