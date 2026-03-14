@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useId, useState } from 'react'
 import { hierarchy, treemap, treemapSquarify, HierarchyRectangularNode } from 'd3-hierarchy'
 import { TreemapSector } from '../model/useTreemap'
 
 const WIDTH = 1200
 const HEIGHT = 700
+const FONT = 'var(--font-jetbrains), monospace'
 
 function getChangeColor(pct: number): string {
   if (pct >= 3) return 'rgba(255,59,92,0.55)'
@@ -25,6 +26,23 @@ function getTextColor(pct: number): string {
   return '#64748b'
 }
 
+/** 박스 크기에 맞는 폰트 크기 계산 (너비/높이 모두 고려) */
+function fitFontSize(text: string, boxW: number, boxH: number, maxSize: number): number {
+  // 글자 하나당 약 0.6em 너비 (monospace 기준)
+  const charW = text.length * 0.6
+  const byWidth = (boxW * 0.85) / charW
+  const byHeight = boxH * 0.28
+  return Math.min(byWidth, byHeight, maxSize)
+}
+
+/** 박스 너비에 맞게 텍스트 자르기 */
+function truncate(text: string, boxW: number, fontSize: number): string {
+  const maxChars = Math.floor((boxW * 0.85) / (fontSize * 0.6))
+  if (text.length <= maxChars) return text
+  if (maxChars <= 2) return text.slice(0, 1)
+  return text.slice(0, maxChars - 1) + '..'
+}
+
 interface LeafNode {
   ticker: string
   name: string
@@ -37,6 +55,7 @@ interface LeafNode {
 type RectNode = HierarchyRectangularNode<any>
 
 export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
+  const clipId = useId()
   const [tooltip, setTooltip] = useState<{ x: number; y: number; stock: LeafNode } | null>(null)
 
   const { leaves, sectorLabels } = useMemo(() => {
@@ -71,7 +90,6 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
       x1: leaf.x1,
       y1: leaf.y1,
       data: leaf.data._data as LeafNode,
-      parent: leaf.parent?.data?.name ?? '',
     }))
 
     const sectorLabels = (rectRoot.children ?? []).map((node: RectNode) => ({
@@ -106,20 +124,52 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
             x={sec.x0 + 4}
             y={sec.y0 + 13}
             className="fill-[#94a3b8] font-bold"
-            style={{ fontSize: 11, fontFamily: 'var(--font-jetbrains), monospace' }}
+            style={{ fontSize: 11, fontFamily: FONT }}
           >
             {sec.name}
           </text>
         ))}
 
         {/* 종목 박스 */}
-        {leaves.map(leaf => {
+        {leaves.map((leaf, i) => {
           const w = leaf.x1 - leaf.x0
           const h = leaf.y1 - leaf.y0
           const d = leaf.data
-          const showName = w > 50 && h > 24
-          const showTicker = w > 70 && h > 38
-          const showPercent = w > 40 && h > 20
+          const cid = `${clipId}-${i}`
+
+          // 박스가 너무 작으면 텍스트 없이 색상만
+          const tooSmall = w < 28 || h < 16
+
+          // 몇 줄 표시할지 결정
+          const pctText = `${d.changePercent >= 0 ? '+' : ''}${d.changePercent.toFixed(2)}%`
+          let lines: { text: string; fill: string; bold: boolean }[] = []
+
+          if (!tooSmall) {
+            if (h > 48 && w > 55) {
+              // 3줄: 종목명 + ticker + 등락률
+              lines = [
+                { text: d.name, fill: '#e2e8f0', bold: true },
+                { text: d.ticker, fill: '#64748b', bold: false },
+                { text: pctText, fill: getTextColor(d.changePercent), bold: true },
+              ]
+            } else if (h > 32 && w > 40) {
+              // 2줄: 종목명 + 등락률
+              lines = [
+                { text: d.name, fill: '#e2e8f0', bold: true },
+                { text: pctText, fill: getTextColor(d.changePercent), bold: true },
+              ]
+            } else {
+              // 1줄: 등락률만
+              lines = [
+                { text: pctText, fill: getTextColor(d.changePercent), bold: true },
+              ]
+            }
+          }
+
+          // 각 줄에 맞는 폰트 크기 계산
+          const lineHeight = lines.length > 0 ? Math.min(h * 0.8 / lines.length, 20) : 0
+          const totalTextH = lineHeight * lines.length
+          const startY = leaf.y0 + (h - totalTextH) / 2 + lineHeight * 0.7
 
           return (
             <g
@@ -136,6 +186,14 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               onMouseLeave={() => setTooltip(null)}
               className="cursor-pointer"
             >
+              {/* 클리핑 영역 */}
+              <defs>
+                <clipPath id={cid}>
+                  <rect x={leaf.x0} y={leaf.y0} width={w} height={h} />
+                </clipPath>
+              </defs>
+
+              {/* 배경 박스 */}
               <rect
                 x={leaf.x0}
                 y={leaf.y0}
@@ -147,46 +205,31 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
                 rx={2}
                 className="transition-opacity hover:opacity-80"
               />
-              {showName && (
-                <text
-                  x={leaf.x0 + w / 2}
-                  y={leaf.y0 + (showTicker ? h / 2 - 6 : h / 2 + 1)}
-                  textAnchor="middle"
-                  className="fill-[#e2e8f0] font-bold"
-                  style={{
-                    fontSize: w > 100 ? 12 : 10,
-                    fontFamily: 'var(--font-jetbrains), monospace',
-                  }}
-                >
-                  {d.name.length > 8 && w < 90 ? d.name.slice(0, 6) + '..' : d.name}
-                </text>
-              )}
-              {showTicker && (
-                <text
-                  x={leaf.x0 + w / 2}
-                  y={leaf.y0 + h / 2 + 8}
-                  textAnchor="middle"
-                  className="fill-[#64748b]"
-                  style={{ fontSize: 9, fontFamily: 'var(--font-jetbrains), monospace' }}
-                >
-                  {d.ticker}
-                </text>
-              )}
-              {showPercent && (
-                <text
-                  x={leaf.x0 + w / 2}
-                  y={leaf.y0 + h / 2 + (showTicker ? 20 : showName ? 14 : 4)}
-                  textAnchor="middle"
-                  fill={getTextColor(d.changePercent)}
-                  style={{
-                    fontSize: w > 80 ? 12 : 10,
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-jetbrains), monospace',
-                  }}
-                >
-                  {d.changePercent >= 0 ? '+' : ''}{d.changePercent.toFixed(2)}%
-                </text>
-              )}
+
+              {/* 텍스트 (클리핑으로 넘침 방지) */}
+              <g clipPath={`url(#${cid})`}>
+                {lines.map((line, li) => {
+                  const fs = fitFontSize(line.text, w, lineHeight, 14)
+                  if (fs < 6) return null
+                  const displayText = truncate(line.text, w, fs)
+                  return (
+                    <text
+                      key={li}
+                      x={leaf.x0 + w / 2}
+                      y={startY + li * lineHeight}
+                      textAnchor="middle"
+                      fill={line.fill}
+                      style={{
+                        fontSize: fs,
+                        fontWeight: line.bold ? 700 : 400,
+                        fontFamily: FONT,
+                      }}
+                    >
+                      {displayText}
+                    </text>
+                  )
+                })}
+              </g>
             </g>
           )
         })}
@@ -208,7 +251,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               x={Math.min(tooltip.x + 18, WIDTH - 172)}
               y={Math.min(tooltip.y - 32, HEIGHT - 52)}
               className="fill-white font-bold"
-              style={{ fontSize: 12, fontFamily: 'var(--font-jetbrains), monospace' }}
+              style={{ fontSize: 12, fontFamily: FONT }}
             >
               {tooltip.stock.name} ({tooltip.stock.ticker})
             </text>
@@ -216,7 +259,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               x={Math.min(tooltip.x + 18, WIDTH - 172)}
               y={Math.min(tooltip.y - 16, HEIGHT - 36)}
               className="fill-[#94a3b8]"
-              style={{ fontSize: 10, fontFamily: 'var(--font-jetbrains), monospace' }}
+              style={{ fontSize: 10, fontFamily: FONT }}
             >
               섹터: {tooltip.stock.sector}
             </text>
@@ -224,7 +267,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               x={Math.min(tooltip.x + 18, WIDTH - 172)}
               y={Math.min(tooltip.y, HEIGHT - 20)}
               fill={getTextColor(tooltip.stock.changePercent)}
-              style={{ fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-jetbrains), monospace' }}
+              style={{ fontSize: 11, fontWeight: 700, fontFamily: FONT }}
             >
               {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
               {' · '}시총 {(tooltip.stock.marketCap / 10000).toFixed(1)}조원
