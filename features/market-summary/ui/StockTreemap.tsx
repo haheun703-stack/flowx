@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useId, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { hierarchy, treemap, treemapSquarify, HierarchyRectangularNode } from 'd3-hierarchy'
 import { TreemapSector } from '../model/useTreemap'
 
@@ -55,7 +55,6 @@ interface LeafNode {
 type RectNode = HierarchyRectangularNode<any>
 
 export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
-  const clipId = useId()
   const [tooltip, setTooltip] = useState<{ cx: number; top: number; stock: LeafNode } | null>(null)
 
   const { leaves, sectorLabels } = useMemo(() => {
@@ -135,7 +134,6 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           const w = leaf.x1 - leaf.x0
           const h = leaf.y1 - leaf.y0
           const d = leaf.data
-          const cid = `${clipId}-${i}`
 
           // 박스가 너무 작으면 텍스트 없이 색상만
           const tooSmall = w < 28 || h < 16
@@ -181,13 +179,6 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               onMouseLeave={() => setTooltip(null)}
               className="cursor-pointer"
             >
-              {/* 클리핑 영역 */}
-              <defs>
-                <clipPath id={cid}>
-                  <rect x={leaf.x0} y={leaf.y0} width={w} height={h} />
-                </clipPath>
-              </defs>
-
               {/* 배경 박스 */}
               <rect
                 x={leaf.x0}
@@ -201,8 +192,8 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
                 className="transition-opacity hover:opacity-80"
               />
 
-              {/* 텍스트 (클리핑으로 넘침 방지) */}
-              <g clipPath={`url(#${cid})`}>
+              {/* 텍스트 */}
+              <g>
                 {lines.map((line, li) => {
                   const fs = fitFontSize(line.text, w, lineHeight, 14)
                   if (fs < 6) return null
