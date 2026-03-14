@@ -56,7 +56,7 @@ type RectNode = HierarchyRectangularNode<any>
 
 export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
   const clipId = useId()
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; stock: LeafNode } | null>(null)
+  const [tooltip, setTooltip] = useState<{ cx: number; top: number; stock: LeafNode } | null>(null)
 
   const { leaves, sectorLabels } = useMemo(() => {
     if (!sectors.length) return { leaves: [], sectorLabels: [] }
@@ -167,21 +167,16 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           }
 
           // 각 줄에 맞는 폰트 크기 계산
-          const lineHeight = lines.length > 0 ? Math.min(h * 0.8 / lines.length, 20) : 0
+          const lineHeight = lines.length > 0 ? Math.min(h * 0.8 / lines.length, 32) : 0
           const totalTextH = lineHeight * lines.length
           const startY = leaf.y0 + (h - totalTextH) / 2 + lineHeight * 0.7
 
           return (
             <g
               key={d.ticker}
-              onMouseEnter={e => {
-                const svg = e.currentTarget.ownerSVGElement
-                if (!svg) return
-                const pt = svg.createSVGPoint()
-                pt.x = e.clientX
-                pt.y = e.clientY
-                const svgPt = pt.matrixTransform(svg.getScreenCTM()?.inverse())
-                setTooltip({ x: svgPt.x, y: svgPt.y, stock: d })
+              onMouseEnter={() => {
+                // 박스 중앙 x, 박스 상단 y 기준으로 툴팁 위치 고정
+                setTooltip({ cx: leaf.x0 + w / 2, top: leaf.y0, stock: d })
               }}
               onMouseLeave={() => setTooltip(null)}
               className="cursor-pointer"
@@ -234,46 +229,58 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           )
         })}
 
-        {/* 툴팁 */}
-        {tooltip && (
-          <g>
-            <rect
-              x={Math.min(tooltip.x + 10, WIDTH - 180)}
-              y={Math.min(tooltip.y - 50, HEIGHT - 70)}
-              width={170}
-              height={62}
-              rx={6}
-              fill="#1a2535"
-              stroke="#334155"
-              strokeWidth={1}
-            />
-            <text
-              x={Math.min(tooltip.x + 18, WIDTH - 172)}
-              y={Math.min(tooltip.y - 32, HEIGHT - 52)}
-              className="fill-white font-bold"
-              style={{ fontSize: 12, fontFamily: FONT }}
-            >
-              {tooltip.stock.name} ({tooltip.stock.ticker})
-            </text>
-            <text
-              x={Math.min(tooltip.x + 18, WIDTH - 172)}
-              y={Math.min(tooltip.y - 16, HEIGHT - 36)}
-              className="fill-[#94a3b8]"
-              style={{ fontSize: 10, fontFamily: FONT }}
-            >
-              섹터: {tooltip.stock.sector}
-            </text>
-            <text
-              x={Math.min(tooltip.x + 18, WIDTH - 172)}
-              y={Math.min(tooltip.y, HEIGHT - 20)}
-              fill={getTextColor(tooltip.stock.changePercent)}
-              style={{ fontSize: 11, fontWeight: 700, fontFamily: FONT }}
-            >
-              {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
-              {' · '}시총 {(tooltip.stock.marketCap / 10000).toFixed(1)}조원
-            </text>
-          </g>
-        )}
+        {/* 툴팁 — 박스 바로 위에 중앙 정렬 */}
+        {tooltip && (() => {
+          const TW = 180
+          const TH = 62
+          const GAP = 6
+          // 박스 중앙 기준 좌우 클램프
+          let tx = tooltip.cx - TW / 2
+          if (tx < 4) tx = 4
+          if (tx + TW > WIDTH - 4) tx = WIDTH - 4 - TW
+          // 박스 상단 위로 배치, 위에 공간 없으면 아래로
+          let ty = tooltip.top - TH - GAP
+          if (ty < 4) ty = tooltip.top + GAP
+          return (
+            <g>
+              <rect
+                x={tx}
+                y={ty}
+                width={TW}
+                height={TH}
+                rx={6}
+                fill="#1a2535"
+                stroke="#334155"
+                strokeWidth={1}
+              />
+              <text
+                x={tx + 10}
+                y={ty + 18}
+                className="fill-white font-bold"
+                style={{ fontSize: 12, fontFamily: FONT }}
+              >
+                {tooltip.stock.name} ({tooltip.stock.ticker})
+              </text>
+              <text
+                x={tx + 10}
+                y={ty + 34}
+                className="fill-[#94a3b8]"
+                style={{ fontSize: 10, fontFamily: FONT }}
+              >
+                섹터: {tooltip.stock.sector}
+              </text>
+              <text
+                x={tx + 10}
+                y={ty + 50}
+                fill={getTextColor(tooltip.stock.changePercent)}
+                style={{ fontSize: 11, fontWeight: 700, fontFamily: FONT }}
+              >
+                {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
+                {' · '}시총 {(tooltip.stock.marketCap / 10000).toFixed(1)}조원
+              </text>
+            </g>
+          )
+        })()}
       </svg>
     </div>
   )
