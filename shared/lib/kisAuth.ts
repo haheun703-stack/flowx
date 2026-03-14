@@ -9,6 +9,13 @@ interface TokenCache {
 let tokenCache: TokenCache | null = null
 
 export async function getKISToken(): Promise<string> {
+  // 주말엔 API 호출 차단 (비용 절감)
+  const kst = new Date(Date.now() + 9 * 60 * 60 * 1000)
+  const day = kst.getUTCDay()
+  if (day === 0 || day === 6) {
+    throw new Error('KIS API 주말 비활성')
+  }
+
   const now = Date.now()
 
   // 캐시된 토큰이 유효하면 재사용 (만료 1분 전 갱신)
