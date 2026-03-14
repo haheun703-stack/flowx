@@ -21,6 +21,9 @@ export function Navbar() {
           <Link href="/market" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2">
             시장
           </Link>
+          <Link href="/market/treemap" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2">
+            트리맵
+          </Link>
         </div>
         <div className="hidden sm:block">
           <TickerSearch />
