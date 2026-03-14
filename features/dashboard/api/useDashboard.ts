@@ -304,3 +304,13 @@ export function useDashboardIntraday() {
     refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
   })
 }
+
+// --- KOSPI Daily (마감 기준 30일 종가 차트) ---
+export function useDashboardDaily() {
+  return useQuery<IntradayData>({
+    queryKey: ['kospi-daily'],
+    queryFn: () => axios.get('/api/market/daily').then(r => r.data),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 30,
+  })
+}

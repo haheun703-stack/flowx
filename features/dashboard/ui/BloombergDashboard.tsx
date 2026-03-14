@@ -10,10 +10,10 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
-import { useDashboardIntraday } from '../api/useDashboard'
+import { useDashboardDaily } from '../api/useDashboard'
 
 export function BloombergDashboard() {
-  const { data: intraday } = useDashboardIntraday()
+  const { data: intraday } = useDashboardDaily()
 
   return (
     <div className="flex flex-col h-[calc(100vh/1.25-88px)]" style={{ background: '#131722' }}>
