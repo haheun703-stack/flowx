@@ -11,17 +11,16 @@ export function CTASection() {
               지금 시작하세요
             </div>
             <h2 className="text-4xl font-bold mb-4 font-display">
-              스마트머니를<br />따라갈 준비됐나요?
+              외국인이 사는 종목<br />먼저 확인하세요
             </h2>
             <p className="text-gray-400 text-sm mb-8 font-mono leading-relaxed">
-              신용카드 없이 무료로 시작.<br />
-              PRO는 첫 달 무료 체험 제공.
+              가입 없이 바로 시작. 베타 기간 전체 무료.
             </p>
             <Link
-              href="/chart/005930"
+              href="/dashboard"
               className="inline-block px-10 py-4 bg-[#00ff88] text-black font-bold rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider"
             >
-              무료로 시작하기 →
+              대시보드 바로가기 →
             </Link>
           </div>
         </div>

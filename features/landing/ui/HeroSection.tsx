@@ -19,9 +19,9 @@ function useCountUp(target: number, duration = 2000) {
 }
 
 export function HeroSection() {
-  const supplyCount   = useCountUp(2543)
-  const signalCount   = useCountUp(847)
-  const accuracyCount = useCountUp(73)
+  const stockCount    = useCountUp(2100)
+  const panelCount    = useCountUp(8)
+  const indexCount    = useCountUp(6)
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24">
@@ -48,51 +48,51 @@ export function HeroSection() {
       <div className="relative flex items-center gap-2 mb-8 px-4 py-2 border border-[#00ff88]/30 rounded-full bg-[#00ff88]/5">
         <span className="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse" />
         <span className="text-xs text-[#00ff88] font-mono tracking-widest uppercase">
-          FLOWX — 수급 플로우를 읽다
+          BETA — 무료 공개 중
         </span>
       </div>
 
       {/* 메인 헤드라인 */}
       <h1 className="relative text-center max-w-4xl mb-6 font-display">
         <span className="block text-5xl md:text-7xl text-white leading-tight">
-          스마트머니가
+          한국 주식
         </span>
         <span className="block text-5xl md:text-7xl leading-tight text-[#00ff88]">
-          움직이는 순간을
+          수급의 모든 것을
         </span>
         <span className="block text-5xl md:text-7xl text-white leading-tight">
-          포착한다
+          한 화면에
         </span>
       </h1>
 
       {/* 서브 카피 */}
       <p className="relative text-center text-gray-400 text-lg max-w-2xl mb-12 leading-relaxed font-mono">
-        외국인·기관 수급 X-Ray · Why Now Engine · 포물선 탐지<br />
-        트레이딩뷰에 없는 한국 전용 신호 분석 시스템
+        외국인·기관 수급 X-Ray &middot; AI 종목추천 &middot; 세력 포착<br />
+        Bloomberg 터미널 스타일 실시간 대시보드
       </p>
 
       {/* CTA 버튼 */}
       <div className="relative flex flex-col sm:flex-row gap-4 mb-20">
         <Link
-          href="/chart/005930"
+          href="/dashboard"
           className="px-8 py-4 bg-[#00ff88] text-black font-bold text-sm rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider"
         >
-          무료로 시작하기 →
+          대시보드 바로가기 →
         </Link>
         <Link
-          href="/pricing"
+          href="/market"
           className="px-8 py-4 border border-gray-700 text-gray-300 text-sm rounded-xl hover:border-gray-500 hover:text-white transition-all font-mono tracking-wider"
         >
-          플랜 보기
+          시장 현황 보기
         </Link>
       </div>
 
       {/* 실시간 통계 */}
       <div className="relative grid grid-cols-3 gap-8 md:gap-16">
         {[
-          { value: supplyCount.toLocaleString(), label: '분석 종목', unit: '개' },
-          { value: signalCount.toLocaleString(), label: '오늘 신호 발생', unit: '건' },
-          { value: accuracyCount,                label: 'Why Now 정확도', unit: '%' },
+          { value: stockCount.toLocaleString(), label: 'KOSPI·KOSDAQ 종목', unit: '+' },
+          { value: panelCount,                  label: '실시간 분석 패널', unit: '개' },
+          { value: indexCount,                  label: '글로벌 지수 추적', unit: '개' },
         ].map((stat, i) => (
           <div key={i} className="text-center">
             <div className="text-3xl md:text-4xl font-bold font-mono text-white">
