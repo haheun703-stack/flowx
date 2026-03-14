@@ -16,7 +16,7 @@ export function BloombergDashboard() {
   const { data: intraday } = useDashboardIntraday()
 
   return (
-    <div className="flex flex-col h-[calc(100vh-88px)]" style={{ background: '#131722' }}>
+    <div className="flex flex-col h-[calc(100vh/1.15-88px)]" style={{ background: '#131722' }}>
       {/* 상단 상태바 */}
       <StatusBar />
 
