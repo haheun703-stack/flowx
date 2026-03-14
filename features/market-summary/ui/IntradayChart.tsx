@@ -18,21 +18,21 @@ export function IntradayChart({ data, currentPrice, changePercent }: Props) {
 
     const chart = createChart(chartRef.current, {
       layout: {
-        background: { color: '#131722' },
-        textColor: '#787b86',
+        background: { color: '#0a0f18' },
+        textColor: '#64748b',
         fontFamily: 'var(--font-jetbrains), monospace',
       },
       grid: {
-        vertLines: { color: '#1e2538' },
-        horzLines: { color: '#1e2538' },
+        vertLines: { color: '#1a2535' },
+        horzLines: { color: '#1a2535' },
       },
       crosshair: {
-        vertLine: { color: '#2a2e39', labelBackgroundColor: '#1c2030' },
-        horzLine: { color: '#2a2e39', labelBackgroundColor: '#1c2030' },
+        vertLine: { color: '#253548', labelBackgroundColor: '#0a0f18' },
+        horzLine: { color: '#253548', labelBackgroundColor: '#0a0f18' },
       },
-      rightPriceScale: { borderColor: '#2a2e39' },
+      rightPriceScale: { borderColor: '#1a2535' },
       timeScale: {
-        borderColor: '#2a2e39',
+        borderColor: '#1a2535',
         timeVisible: true,
         secondsVisible: false,
       },
@@ -41,7 +41,7 @@ export function IntradayChart({ data, currentPrice, changePercent }: Props) {
     })
 
     const isPositive = changePercent >= 0
-    const lineColor = isPositive ? '#26a69a' : '#ef5350'
+    const lineColor = isPositive ? '#00ff88' : '#ff3b5c'
 
     const series = chart.addSeries(LineSeries, {
       color: lineColor,
@@ -72,18 +72,17 @@ export function IntradayChart({ data, currentPrice, changePercent }: Props) {
   }, [data, changePercent])
 
   return (
-    <div className="flex flex-col" style={{ background: '#131722' }}>
+    <div className="flex flex-col bg-[#0a0f18]">
       {/* 헤더 */}
-      <div className="px-5 py-4 border-b" style={{ borderColor: '#2a2e39' }}>
+      <div className="px-5 py-4 border-b border-[#1a2535]" style={{ fontFamily: 'var(--font-terminal)' }}>
         <div className="flex items-baseline gap-3">
-          <span className="text-xs" style={{ fontFamily: 'var(--font-terminal)', color: '#787b86' }}>KOSPI</span>
-          <span className="text-3xl font-bold" style={{ fontFamily: 'var(--font-terminal)', color: '#d1d4dc' }}>
+          <span className="text-xs font-bold tracking-widest text-[#64748b]">KOSPI</span>
+          <span className="text-4xl font-bold text-[#e2e8f0]">
             {currentPrice ? currentPrice.toLocaleString() : '—'}
           </span>
           {currentPrice > 0 && (
-            <span className="text-lg font-bold" style={{
-              fontFamily: 'var(--font-terminal)',
-              color: changePercent >= 0 ? '#26a69a' : '#ef5350',
+            <span className="text-xl font-bold" style={{
+              color: changePercent >= 0 ? '#00ff88' : '#ff3b5c',
             }}>
               {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
             </span>
@@ -96,7 +95,8 @@ export function IntradayChart({ data, currentPrice, changePercent }: Props) {
 
       {/* 차트 없을 때 */}
       {data.length === 0 && (
-        <div className="flex items-center justify-center h-[280px] text-sm" style={{ color: '#434651' }}>
+        <div className="flex items-center justify-center h-[280px] text-sm text-[#64748b]"
+          style={{ fontFamily: 'var(--font-terminal)' }}>
           장 시작 전 — 인트라데이 데이터 대기 중
         </div>
       )}

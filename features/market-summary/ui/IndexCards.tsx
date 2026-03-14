@@ -5,11 +5,11 @@ import { IndexCard } from '../types'
 export function IndexCards({ indices }: { indices: IndexCard[] }) {
   if (!indices.length) {
     return (
-      <div className="grid grid-cols-3 gap-px border-b" style={{ borderColor: '#2a2e39' }}>
+      <div className="grid grid-cols-3 gap-px border-b border-[#1a2535]">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="px-4 py-3 animate-pulse" style={{ background: '#1c2030' }}>
-            <div className="h-3 bg-[#2a2e39] rounded w-16 mb-2" />
-            <div className="h-4 bg-[#2a2e39] rounded w-24" />
+          <div key={i} className="px-5 py-4 animate-pulse bg-[#0a0f18]">
+            <div className="h-3 bg-[#1a2535] rounded w-16 mb-3" />
+            <div className="h-5 bg-[#1a2535] rounded w-24" />
           </div>
         ))}
       </div>
@@ -17,24 +17,26 @@ export function IndexCards({ indices }: { indices: IndexCard[] }) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-px border-b" style={{ borderColor: '#2a2e39' }}>
+    <div className="grid grid-cols-3 gap-px border-b border-[#1a2535]">
       {indices.map((idx, i) => (
         <div
           key={i}
-          className="px-4 py-3 border-r last:border-r-0 transition-colors cursor-pointer hover:brightness-110"
-          style={{ borderColor: '#2a2e39', background: '#1c2030', fontFamily: 'var(--font-terminal)' }}
+          className="px-5 py-4 border-r border-[#1a2535] last:border-r-0 transition-colors cursor-pointer hover:bg-[#0d1420]"
+          style={{ background: '#0a0f18', fontFamily: 'var(--font-terminal)' }}
         >
-          <div className="text-xs mb-1" style={{ color: '#434651' }}>
+          <div className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: '#64748b' }}>
             {idx.name}
           </div>
-          <div className="text-sm font-bold" style={{ color: '#d1d4dc' }}>
-            {idx.price.toLocaleString()}
-            <span className="text-xs ml-1 font-normal" style={{ color: '#434651' }}>
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold" style={{ color: '#e2e8f0' }}>
+              {idx.price.toLocaleString()}
+            </span>
+            <span className="text-xs" style={{ color: '#334155' }}>
               {idx.currency}
             </span>
           </div>
-          <div className="text-sm font-bold" style={{
-            color: idx.changePercent >= 0 ? '#26a69a' : '#ef5350',
+          <div className="text-sm font-bold mt-1" style={{
+            color: idx.changePercent >= 0 ? '#00ff88' : '#ff3b5c',
           }}>
             {idx.changePercent >= 0 ? '+' : ''}{idx.changePercent.toFixed(2)}%
           </div>

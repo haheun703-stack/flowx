@@ -12,31 +12,24 @@ export function WatchlistPanel({ items }: { items: WatchItem[] }) {
   )
 
   return (
-    <div className="flex flex-col w-72 shrink-0 border-l h-full"
-      style={{ background: '#131722', borderColor: '#2a2e39' }}>
+    <div className="flex flex-col w-72 shrink-0 border-l border-[#1a2535] h-full bg-[#0a0f18]"
+      style={{ fontFamily: 'var(--font-terminal)' }}>
 
-      {/* 헤더 */}
-      <div className="flex items-center justify-between px-4 py-3 border-b"
-        style={{ borderColor: '#2a2e39' }}>
-        <span className="text-sm font-semibold" style={{ color: '#d1d4dc' }}>
+      {/* 터미널 스타일 헤더 */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]">
+        <span className="text-sm font-black tracking-widest uppercase text-[#e2e8f0]">
           관심 종목
         </span>
-        <div className="flex gap-2 text-xs" style={{ fontFamily: 'var(--font-terminal)', color: '#434651' }}>
-          <span>{items.length}종목</span>
-        </div>
+        <span className="text-xs font-bold text-[#64748b]">{items.length}종목</span>
       </div>
 
       {/* 검색 */}
-      <div className="px-3 py-2 border-b" style={{ borderColor: '#2a2e39' }}>
+      <div className="px-4 py-2.5 border-b border-[#1a2535]">
         <input
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          placeholder="종목명 검색..."
-          className="w-full bg-transparent text-sm outline-none"
-          style={{
-            color: '#d1d4dc',
-            fontFamily: 'var(--font-terminal)',
-          }}
+          placeholder="종목명 검색 ..."
+          className="w-full bg-transparent text-sm outline-none text-[#e2e8f0] placeholder-[#334155]"
         />
       </div>
 
@@ -46,24 +39,22 @@ export function WatchlistPanel({ items }: { items: WatchItem[] }) {
           <Link
             key={item.code}
             href={`/chart/${item.code}`}
-            className="flex items-center justify-between px-4 py-3 border-b transition-colors hover:brightness-110"
-            style={{ borderColor: '#1e2538' }}
+            className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]/50 transition-colors hover:bg-[#0d1420]"
           >
             <div>
-              <div className="text-sm font-medium" style={{ color: '#d1d4dc' }}>
+              <div className="text-sm font-bold text-[#e2e8f0]">
                 {item.name}
               </div>
-              <div className="text-xs" style={{ fontFamily: 'var(--font-terminal)', color: '#434651' }}>
+              <div className="text-xs text-[#334155]">
                 {item.code}
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm tabular-nums" style={{ fontFamily: 'var(--font-terminal)', color: '#d1d4dc' }}>
+              <div className="text-sm font-bold tabular-nums text-[#e2e8f0]">
                 {item.price.toLocaleString()}
               </div>
               <div className="text-xs font-bold tabular-nums" style={{
-                fontFamily: 'var(--font-terminal)',
-                color: item.changePercent >= 0 ? '#26a69a' : '#ef5350',
+                color: item.changePercent >= 0 ? '#00ff88' : '#ff3b5c',
               }}>
                 {item.changePercent >= 0 ? '+' : ''}{item.changePercent.toFixed(2)}%
               </div>
