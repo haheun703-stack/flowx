@@ -31,7 +31,7 @@ function fitFontSize(text: string, boxW: number, boxH: number, maxSize: number):
   // 글자 하나당 약 0.6em 너비 (monospace 기준)
   const charW = text.length * 0.6
   const byWidth = (boxW * 0.85) / charW
-  const byHeight = boxH * 0.28
+  const byHeight = boxH * 0.65
   return Math.min(byWidth, byHeight, maxSize)
 }
 
