@@ -136,7 +136,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           const d = leaf.data
 
           // 박스가 너무 작으면 텍스트 없이 색상만
-          const tooSmall = w < 28 || h < 16
+          const tooSmall = w < 20 || h < 12
 
           // 몇 줄 표시할지 결정
           const pctText = `${d.changePercent >= 0 ? '+' : ''}${d.changePercent.toFixed(2)}%`
@@ -150,16 +150,16 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
                 { text: d.ticker, fill: '#cbd5e1', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
-            } else if (h > 32 && w > 40) {
-              // 2줄: 종목명 + 등락률
+            } else if (h > 28 && w > 35) {
+              // 2줄: 종목명(잘림) + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             } else {
-              // 1줄: 등락률만
+              // 1줄: 종목명만 (작은 박스에도 이름 표시)
               lines = [
-                { text: pctText, fill: getTextColor(d.changePercent), bold: true },
+                { text: d.name, fill: '#e2e8f0', bold: true },
               ]
             }
           }
@@ -196,7 +196,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               <g>
                 {lines.map((line, li) => {
                   const fs = fitFontSize(line.text, w, lineHeight, 14)
-                  if (fs < 6) return null
+                  if (fs < 4) return null
                   const displayText = truncate(line.text, w, fs)
                   return (
                     <text
