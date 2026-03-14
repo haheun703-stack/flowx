@@ -315,3 +315,69 @@ export function useDashboardDaily() {
     refetchInterval: 1000 * 60 * 30,
   })
 }
+
+// ============================================
+// Supabase-backed APIs (Phase A)
+// ============================================
+
+// --- 모닝 브리핑 (Supabase: market_briefing) ---
+export interface BriefingData {
+  date: string
+  direction: string
+  market_phase: string
+  kospi_close: number
+  us_summary: string
+  kr_summary: string
+  news_picks: { code: string; name: string; reason: string }[]
+}
+
+export function useBriefing() {
+  return useQuery<BriefingData>({
+    queryKey: ['briefing'],
+    queryFn: () => axios.get('/api/briefing').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- 섹터 히트맵 (Supabase: sector_heatmap) ---
+export interface HeatmapItem {
+  date: string
+  sector: string
+  score: number
+  change_pct: number
+  volume_change: number
+  top_stocks: string[]
+}
+
+export function useHeatmap() {
+  return useQuery<HeatmapItem[]>({
+    queryKey: ['heatmap'],
+    queryFn: () => axios.get('/api/heatmap').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- AI 추천 무료 (Claude + Web Search) ---
+export interface AiRecommendPick {
+  name: string
+  code: string
+  reason: string
+  sentiment: 'positive' | 'neutral' | 'negative'
+}
+
+export interface AiRecommendData {
+  date: string
+  market_summary: string
+  picks: AiRecommendPick[]
+}
+
+export function useAiRecommend() {
+  return useQuery<AiRecommendData>({
+    queryKey: ['ai-recommend'],
+    queryFn: () => axios.get('/api/ai-recommend').then(r => r.data),
+    staleTime: 1000 * 60 * 60, // 1시간 캐시
+    refetchInterval: 1000 * 60 * 60,
+  })
+}
