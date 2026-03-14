@@ -136,30 +136,32 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           const d = leaf.data
 
           // 박스가 너무 작으면 텍스트 없이 색상만
-          const tooSmall = w < 20 || h < 12
+          const tooSmall = w < 28 || h < 16
 
-          // 몇 줄 표시할지 결정
+          // 몇 줄 표시할지 결정 (세로로 긴 박스도 고려: w와 h 중 큰 쪽 기준)
           const pctText = `${d.changePercent >= 0 ? '+' : ''}${d.changePercent.toFixed(2)}%`
           let lines: { text: string; fill: string; bold: boolean }[] = []
 
           if (!tooSmall) {
-            if (h > 48 && w > 55) {
+            const dim = Math.max(w, h) // 세로 박스면 h가 크므로 h 기준
+            const narrow = Math.min(w, h)
+            if (dim > 48 && narrow > 30) {
               // 3줄: 종목명 + ticker + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
                 { text: d.ticker, fill: '#cbd5e1', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
-            } else if (h > 28 && w > 35) {
-              // 2줄: 종목명(잘림) + 등락률
+            } else if (dim > 32 && narrow > 20) {
+              // 2줄: 종목명 + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             } else {
-              // 1줄: 종목명만 (작은 박스에도 이름 표시)
+              // 1줄: 등락률만
               lines = [
-                { text: d.name, fill: '#e2e8f0', bold: true },
+                { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             }
           }
@@ -196,7 +198,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
               <g>
                 {lines.map((line, li) => {
                   const fs = fitFontSize(line.text, w, lineHeight, 14)
-                  if (fs < 4) return null
+                  if (fs < 6) return null
                   const displayText = truncate(line.text, w, fs)
                   return (
                     <text
