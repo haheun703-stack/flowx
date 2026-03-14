@@ -5,7 +5,7 @@ import { hierarchy, treemap, treemapSquarify, HierarchyRectangularNode } from 'd
 import { TreemapSector } from '../model/useTreemap'
 
 const WIDTH = 1200
-const HEIGHT = 650
+const HEIGHT = 900
 const FONT = 'var(--font-jetbrains), monospace'
 
 function getChangeColor(pct: number): string {
