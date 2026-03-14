@@ -1,3 +1,7 @@
+'use client'
+
+import { useId } from 'react'
+
 interface Props {
   variant?: 'small' | 'default' | 'large'
   showTagline?: boolean
@@ -51,6 +55,10 @@ export function FlowxLogo({
 }
 
 function FlowxIconInline({ size }: { size: number }) {
+  const id = useId()
+  const rgId = `rg-${id}`
+  const lgId = `lg-${id}`
+
   return (
     <svg
       width={size}
@@ -60,11 +68,11 @@ function FlowxIconInline({ size }: { size: number }) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+        <radialGradient id={rgId} cx="50%" cy="50%" r="50%">
           <stop offset="0%"   stopColor="#00ff88" stopOpacity="0.12"/>
           <stop offset="100%" stopColor="#00ff88" stopOpacity="0"/>
         </radialGradient>
-        <filter id="lg" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id={lgId} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="2" result="blur"/>
           <feMerge>
             <feMergeNode in="blur"/>
@@ -72,13 +80,13 @@ function FlowxIconInline({ size }: { size: number }) {
           </feMerge>
         </filter>
       </defs>
-      <circle cx="24" cy="24" r="22" fill="url(#rg)"/>
+      <circle cx="24" cy="24" r="22" fill={`url(#${rgId})`}/>
       <circle cx="24" cy="24" r="21" stroke="#00ff88" strokeWidth="0.6" opacity="0.25"/>
       <circle cx="24" cy="24" r="14" stroke="#00ff88" strokeWidth="0.6" opacity="0.18"/>
       <circle cx="24" cy="24" r="7"  stroke="#00ff88" strokeWidth="0.6" opacity="0.12"/>
       <line x1="24" y1="3"  x2="24" y2="45" stroke="#00ff88" strokeWidth="0.5" opacity="0.2"/>
       <line x1="3"  y1="24" x2="45" y2="24" stroke="#00ff88" strokeWidth="0.5" opacity="0.2"/>
-      <g filter="url(#lg)">
+      <g filter={`url(#${lgId})`}>
         <line x1="11" y1="11" x2="37" y2="37" stroke="#00ff88" strokeWidth="3" strokeLinecap="round"/>
         <line x1="37" y1="11" x2="11" y2="37" stroke="#00ff88" strokeWidth="3" strokeLinecap="round"/>
         <circle cx="24" cy="24" r="2.5" fill="#00ff88"/>

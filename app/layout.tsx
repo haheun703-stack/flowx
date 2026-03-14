@@ -41,11 +41,13 @@ export const metadata: Metadata = {
     siteName: 'FLOWX',
     locale: 'ko_KR',
     type: 'website',
+    images: [{ url: '/logo.svg', width: 512, height: 512, alt: 'FLOWX 로고' }],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'FLOWX — 한국 주식 수급 레이더',
     description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요.',
+    images: ['/logo.svg'],
   },
   robots: {
     index: true,

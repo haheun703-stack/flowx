@@ -27,12 +27,12 @@ export function FeatureSection() {
   ]
 
   return (
-    <section className="px-6 py-24 max-w-6xl mx-auto">
-      <div className="text-center mb-16">
+    <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-6xl mx-auto">
+      <div className="text-center mb-10 sm:mb-16">
         <div className="text-xs text-[#00ff88] font-mono tracking-widest uppercase mb-4">
           핵심 기능
         </div>
-        <h2 className="text-4xl font-bold font-display">
+        <h2 className="text-2xl sm:text-4xl font-bold font-display">
           트레이딩뷰가 못 하는 것
         </h2>
       </div>

@@ -1,5 +1,15 @@
+import type { Metadata } from 'next'
 import { ChartContainer } from '@/features/supply-xray/ui/ChartContainer'
 import { TICKER_NAME_MAP } from '@/shared/constants/tickers'
+
+export async function generateMetadata({ params }: { params: Promise<{ ticker: string }> }): Promise<Metadata> {
+  const { ticker } = await params
+  const name = TICKER_NAME_MAP[ticker] || ticker
+  return {
+    title: `${name}(${ticker}) 수급 X-Ray — FLOWX`,
+    description: `${name} 외국인·기관·개인 순매수 분석. 스마트머니 추적 차트.`,
+  }
+}
 
 export default async function ChartPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params

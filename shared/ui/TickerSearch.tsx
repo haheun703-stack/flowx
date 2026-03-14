@@ -11,6 +11,7 @@ export function TickerSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
+        aria-label="종목 검색 열기"
         className="flex items-center bg-[#0d1420] border border-[#1a2535] rounded-lg px-3 py-1.5 gap-2 w-64 hover:border-[#253548] hover:bg-[#131722] transition-colors"
       >
         <Search size={14} className="text-white" />

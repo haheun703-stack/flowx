@@ -17,20 +17,34 @@ export function SupplyOverlay({ data }: { data: SupplyData[] }) {
 
   useEffect(() => {
     if (!foreignRef.current || !data.length) return
-    const chart = createChart(foreignRef.current, makeChartOptions(170))
+    const container = foreignRef.current
+    const chart = createChart(container, makeChartOptions(170))
     const s = chart.addSeries(HistogramSeries, { base: 0 })
     s.setData(data.map(d => ({ time: d.date, value: d.foreign, color: d.foreign >= 0 ? '#ef444460' : '#3b82f660' })))
     chart.timeScale().fitContent()
-    return () => chart.remove()
+
+    const ro = new ResizeObserver(() => {
+      chart.applyOptions({ width: container.clientWidth })
+    })
+    ro.observe(container)
+
+    return () => { ro.disconnect(); chart.remove() }
   }, [data])
 
   useEffect(() => {
     if (!institutionRef.current || !data.length) return
-    const chart = createChart(institutionRef.current, makeChartOptions(170))
+    const container = institutionRef.current
+    const chart = createChart(container, makeChartOptions(170))
     const s = chart.addSeries(HistogramSeries, { base: 0 })
     s.setData(data.map(d => ({ time: d.date, value: d.institution, color: d.institution >= 0 ? '#22c55e60' : '#f9731660' })))
     chart.timeScale().fitContent()
-    return () => chart.remove()
+
+    const ro = new ResizeObserver(() => {
+      chart.applyOptions({ width: container.clientWidth })
+    })
+    ro.observe(container)
+
+    return () => { ro.disconnect(); chart.remove() }
   }, [data])
 
   return (

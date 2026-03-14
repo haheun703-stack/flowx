@@ -1,10 +1,13 @@
 import { Navbar } from '@/shared/ui/Navbar'
+import { MobileGate } from '@/shared/ui/MobileGate'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ zoom: 1.25, background: '#131722', minHeight: '100vh' }}>
-      <Navbar />
-      {children}
-    </div>
+    <MobileGate>
+      <div style={{ zoom: 1.25, background: '#131722', minHeight: '100vh' }}>
+        <Navbar />
+        {children}
+      </div>
+    </MobileGate>
   )
 }

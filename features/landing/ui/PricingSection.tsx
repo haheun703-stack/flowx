@@ -50,12 +50,12 @@ const PLANS = [
 
 export function PricingSection() {
   return (
-    <section className="px-6 py-24 max-w-5xl mx-auto" id="pricing">
-      <div className="text-center mb-16">
+    <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-5xl mx-auto" id="pricing">
+      <div className="text-center mb-10 sm:mb-16">
         <div className="text-xs text-[#00ff88] font-mono tracking-widest uppercase mb-4">
           플랜 & 가격
         </div>
-        <h2 className="text-4xl font-bold mb-4 font-display">
+        <h2 className="text-2xl sm:text-4xl font-bold mb-4 font-display">
           베타 기간 전체 무료
         </h2>
         <p className="text-gray-500 text-sm font-mono">
