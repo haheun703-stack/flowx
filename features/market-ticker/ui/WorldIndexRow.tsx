@@ -21,6 +21,9 @@ const CATEGORY_SYMBOLS: Record<string, string> = {
   bond: '📊', vix: '⚡',
 }
 
+// 미국 3대 지수 고정 표시
+const US_FIXED = new Set(['SPX', 'IXIC', 'DJI'])
+
 function IndexChip({ index }: { index: WorldIndex }) {
   const isPositive = index.changePercent >= 0
   const color = isPositive ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'
@@ -36,16 +39,16 @@ function IndexChip({ index }: { index: WorldIndex }) {
     : new Intl.NumberFormat('ko-KR', { maximumFractionDigits: index.currency === 'JPY' ? 0 : 2 }).format(index.price)
 
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1.5 border-r border-gray-800/40 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default shrink-0">
+    <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-800/40 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default shrink-0">
       {/* 아이콘: 국기 또는 카테고리 심볼 */}
       {flagCode ? (
         <img src={`https://flagcdn.com/w20/${flagCode}.png`} alt={flagCode.toUpperCase()} width={16} height={11} className="inline-block opacity-70" />
       ) : catSymbol ? (
-        <span className="text-[10px]">{catSymbol}</span>
+        <span className="text-xs">{catSymbol}</span>
       ) : null}
-      <span className="text-gray-400 text-[11px] font-medium">{index.name}</span>
-      <span className="text-white text-[11px] font-mono font-bold">{fmtPrice}</span>
-      <span className={`text-[11px] font-mono font-bold ${color}`}>
+      <span className="text-gray-400 text-xs font-medium">{index.name}</span>
+      <span className="text-white text-xs font-mono font-bold">{fmtPrice}</span>
+      <span className={`text-xs font-mono font-bold ${color}`}>
         {sign}{index.changePercent.toFixed(2)}%
       </span>
     </div>
@@ -55,9 +58,9 @@ function IndexChip({ index }: { index: WorldIndex }) {
 function CategorySeparator({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-1 px-2 shrink-0">
-      <div className="w-px h-4 bg-gray-600/40" />
-      <span className="text-[9px] text-gray-500/70 font-bold uppercase tracking-widest">{label}</span>
-      <div className="w-px h-4 bg-gray-600/40" />
+      <div className="w-px h-5 bg-gray-600/40" />
+      <span className="text-[10px] text-gray-500/70 font-bold uppercase tracking-widest">{label}</span>
+      <div className="w-px h-5 bg-gray-600/40" />
     </div>
   )
 }
@@ -65,10 +68,14 @@ function CategorySeparator({ label }: { label: string }) {
 export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   if (!indices.length) return null
 
-  // 카테고리별 구분선 삽입
+  // 미국 3대 지수 고정 vs 나머지 스크롤
+  const fixedIndices = indices.filter(idx => US_FIXED.has(idx.symbol))
+  const scrollIndices = indices.filter(idx => !US_FIXED.has(idx.symbol))
+
+  // 스크롤용: 카테고리별 구분선 삽입
   const chips: { type: 'chip' | 'sep'; index?: WorldIndex; label?: string; key: string }[] = []
   let lastCategory = ''
-  for (const idx of indices) {
+  for (const idx of scrollIndices) {
     if (idx.category !== lastCategory) {
       if (lastCategory !== '') {
         chips.push({ type: 'sep', label: CATEGORY_LABELS[idx.category] ?? idx.category, key: `sep-${idx.category}` })
@@ -81,12 +88,20 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   return (
     <div className="flex items-center border-b border-gray-800/60 bg-[#080b10]">
       {/* 고정 라벨 */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 border-r border-gray-700/60 shrink-0">
-        <svg className="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span className="text-[10px] text-gray-300 font-bold uppercase tracking-wider">GLOBAL</span>
+      <div className="flex items-center gap-1.5 px-3 py-2 border-r border-gray-700/60 shrink-0">
+        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">GLOBAL</span>
       </div>
 
-      {/* 마퀴 스크롤 영역 */}
+      {/* 미국 3대 지수 고정 */}
+      <div className="flex border-r border-gray-700/60 shrink-0">
+        {fixedIndices.map(idx => <IndexChip key={idx.symbol} index={idx} />)}
+      </div>
+
+      {/* 구분선 */}
+      <div className="w-px h-6 bg-gray-700/40 shrink-0" />
+
+      {/* 나머지 마퀴 스크롤 영역 */}
       <div className="flex overflow-hidden relative flex-1 group">
         <div className="flex animate-ticker-global group-hover:[animation-play-state:paused]">
           {/* 2배 복제 → 끊김 없는 무한 루프 */}
