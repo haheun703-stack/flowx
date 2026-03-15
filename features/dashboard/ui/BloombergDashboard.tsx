@@ -59,7 +59,7 @@ export function BloombergDashboard() {
 
         {/* ── 하단 확장 패널 ── */}
         <div className="border-t border-[#1a2535]">
-          {/* 외국인 자금 흐름 + ETF 시그널 */}
+          {/* 외국인 자본 흐름 + ETF 시그널 */}
           <div className="flex h-[360px] border-b border-[#1a2535]">
             <div className="flex-1 overflow-hidden border-r border-[#1a2535]">
               <ChinaMoneyPanel />

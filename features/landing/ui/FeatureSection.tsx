@@ -12,7 +12,7 @@ export function FeatureSection() {
       icon: '🖥️',
       title: 'Bloomberg 대시보드',
       subtitle: '8개 패널 실시간 터미널',
-      desc: 'AI 종목추천, 세력 포착, 섹터 모멘텀, 외국인 자금 흐름, ETF 시그널, 스나이퍼 워치까지. 프로 트레이더 환경을 무료로.',
+      desc: 'AI 종목추천, 세력 포착, 섹터 모멘텀, 외국인 자본 흐름, ETF 시그널, 스나이퍼 워치까지. 프로 트레이더 환경을 무료로.',
       tag: 'LIVE',
       tagColor: 'text-[#00ff88] border-[#00ff88]/40',
     },

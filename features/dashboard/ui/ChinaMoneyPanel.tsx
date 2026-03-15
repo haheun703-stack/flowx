@@ -22,7 +22,7 @@ export function ChinaMoneyPanel() {
       {/* 헤더 */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2535]">
         <div className="flex items-center gap-2">
-          <span className="text-[#e2e8f0] text-sm font-black tracking-widest uppercase">외국인 자금 흐름</span>
+          <span className="text-[#e2e8f0] text-sm font-black tracking-widest uppercase">외국인 자본 흐름</span>
           {data?.summary && (
             <span className="text-sm text-[#64748b] font-bold">
               SURGE {data.summary.SURGE ?? 0} · INFLOW {data.summary.INFLOW ?? 0}
