@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
+import { readFileSync } from 'fs'
+import path from 'path'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
+const CACHE_FILE = path.resolve(process.cwd(), '.cache', 'market-snapshot.json')
+
 export async function GET() {
+  // 1. Supabase에서 읽기 시도
   try {
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
@@ -12,12 +17,16 @@ export async function GET() {
       .eq('id', 'latest')
       .single()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (!error && data) {
+      return NextResponse.json(data)
     }
+  } catch { /* Supabase 실패 시 파일 fallback */ }
 
-    return NextResponse.json(data)
+  // 2. 파일 캐시 fallback
+  try {
+    const raw = readFileSync(CACHE_FILE, 'utf-8')
+    return NextResponse.json(JSON.parse(raw))
   } catch {
-    return NextResponse.json({ error: 'Failed to fetch snapshot' }, { status: 500 })
+    return NextResponse.json({ error: 'No snapshot available' }, { status: 404 })
   }
 }

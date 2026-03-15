@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { writeFileSync, mkdirSync } from 'fs'
+import path from 'path'
 import { getKISToken } from '@/shared/lib/kisAuth'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import {
@@ -10,6 +12,16 @@ import {
 } from '@/features/market-ticker/api/fetchKoreanTickers'
 
 export const dynamic = 'force-dynamic'
+
+const CACHE_DIR = path.resolve(process.cwd(), '.cache')
+const CACHE_FILE = path.join(CACHE_DIR, 'market-snapshot.json')
+
+function saveToFile(snapshot: Record<string, unknown>) {
+  try {
+    mkdirSync(CACHE_DIR, { recursive: true })
+    writeFileSync(CACHE_FILE, JSON.stringify(snapshot), 'utf-8')
+  } catch { /* ignore */ }
+}
 
 export async function GET(req: Request) {
   // 인증: Vercel Cron 또는 외부 cron 서비스
@@ -43,9 +55,7 @@ export async function GET(req: Request) {
       fetchSectorPrices(token),
     ])
 
-    // 3. Supabase에 upsert
-    const supabase = getSupabaseAdmin()
-    const { error } = await supabase.from('market_snapshots').upsert({
+    const snapshot = {
       id: 'latest',
       kospi_price: kospi.price,
       kospi_change: kospi.changePercent,
@@ -55,21 +65,31 @@ export async function GET(req: Request) {
       foreign_inst: foreignInst,
       sectors,
       updated_at: new Date().toISOString(),
-    })
-
-    if (error) {
-      console.error('market_snapshots upsert error:', error)
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 })
     }
+
+    // 3. 파일 캐시 저장 (항상)
+    saveToFile(snapshot)
+
+    // 4. Supabase에 upsert (테이블 존재 시)
+    let supabaseOk = false
+    try {
+      const supabase = getSupabaseAdmin()
+      const { error } = await supabase.from('market_snapshots').upsert(snapshot)
+      if (!error) supabaseOk = true
+      else console.warn('Supabase upsert skipped:', error.message)
+    } catch { /* Supabase 테이블 미생성 시 무시 */ }
 
     return NextResponse.json({
       ok: true,
-      updated_at: new Date().toISOString(),
+      supabase: supabaseOk,
+      updated_at: snapshot.updated_at,
       kospi: kospi.price,
       kosdaq: kosdaq.price,
       stocks_count: stocks.length,
-      foreign_net: foreignInst.foreign_net,
+      stocks: stocks.map(s => `${s.name} ${s.price.toLocaleString()} (${s.changePercent >= 0 ? '+' : ''}${s.changePercent}%)`),
+      foreign_inst: foreignInst,
       sectors_count: sectors.length,
+      sectors: sectors.slice(0, 5),
     })
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error'
