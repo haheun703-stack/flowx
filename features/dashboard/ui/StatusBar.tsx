@@ -39,7 +39,7 @@ export function StatusBar() {
   }[stance] ?? 'text-[#64748b]'
 
   return (
-    <div className="flex items-center gap-0 border-b border-[#2a2a3a] bg-[#0a0f18] text-sm h-11"
+    <div className="flex items-center gap-0 border-b border-[#2a2a3a] bg-[#0a0f18] text-sm h-11 leading-none"
       style={{ fontFamily: 'var(--font-terminal)' }}>
       {/* 장세 레짐 */}
       <div className={`flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a] ${regimeColor}`}>
