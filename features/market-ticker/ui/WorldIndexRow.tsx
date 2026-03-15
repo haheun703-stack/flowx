@@ -1,28 +1,63 @@
 import { WorldIndex } from '../types'
 
-const SYMBOL_FLAG: Record<string, string> = {
-  SPX: 'us', IXIC: 'us', DJI: 'us',
-  N225: 'jp', HSI: 'hk', GDAXI: 'de',
+// 국기 매핑
+const FLAG_ICONS: Record<string, string> = {
+  us: 'us', jp: 'jp', hk: 'hk', de: 'de', cn: 'cn', gb: 'gb', kr: 'kr', eu: 'eu',
+}
+
+// 카테고리 라벨
+const CATEGORY_LABELS: Record<string, string> = {
+  index: '지수',
+  commodity: '원자재',
+  forex: '환율',
+  crypto: '크립토',
+  bond: '채권',
+}
+
+// 카테고리별 아이콘 심볼
+const CATEGORY_SYMBOLS: Record<string, string> = {
+  oil: '🛢', gold: '🥇', silver: '🥈', copper: '🔶',
+  btc: '₿', eth: 'Ξ', xrp: '✕',
+  bond: '📊', vix: '⚡',
 }
 
 function IndexChip({ index }: { index: WorldIndex }) {
   const isPositive = index.changePercent >= 0
-  const color = isPositive ? 'text-red-400' : 'text-blue-400'
+  const color = isPositive ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'
   const sign = isPositive ? '+' : ''
-  const flagCode = SYMBOL_FLAG[index.symbol]
+  const flagCode = FLAG_ICONS[index.icon ?? '']
+  const catSymbol = CATEGORY_SYMBOLS[index.icon ?? '']
 
-  const fmtPrice = new Intl.NumberFormat('ko-KR', {
-    maximumFractionDigits: index.currency === 'JPY' ? 0 : 2,
-  }).format(index.price)
+  // 가격 포맷: 암호화폐/지수는 소수점 줄임, 환율은 소수점 유지
+  const fmtPrice = index.category === 'forex' || index.category === 'bond'
+    ? index.price.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : index.category === 'crypto'
+    ? index.price.toLocaleString('ko-KR', { maximumFractionDigits: index.price >= 100 ? 0 : 2 })
+    : new Intl.NumberFormat('ko-KR', { maximumFractionDigits: index.currency === 'JPY' ? 0 : 2 }).format(index.price)
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-r border-gray-800/60 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default">
-      {flagCode && <img src={`https://flagcdn.com/w20/${flagCode}.png`} alt={flagCode.toUpperCase()} width={20} height={14} className="inline-block" />}
-      <span className="text-gray-400 text-xs font-medium">{index.name}</span>
-      <span className="text-white text-xs font-mono">{fmtPrice}</span>
-      <span className={`text-xs font-mono font-medium ${color}`}>
+    <div className="flex items-center gap-1.5 px-3 py-1.5 border-r border-gray-800/40 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default shrink-0">
+      {/* 아이콘: 국기 또는 카테고리 심볼 */}
+      {flagCode ? (
+        <img src={`https://flagcdn.com/w20/${flagCode}.png`} alt={flagCode.toUpperCase()} width={16} height={11} className="inline-block opacity-70" />
+      ) : catSymbol ? (
+        <span className="text-[10px]">{catSymbol}</span>
+      ) : null}
+      <span className="text-gray-400 text-[11px] font-medium">{index.name}</span>
+      <span className="text-white text-[11px] font-mono font-bold">{fmtPrice}</span>
+      <span className={`text-[11px] font-mono font-bold ${color}`}>
         {sign}{index.changePercent.toFixed(2)}%
       </span>
+    </div>
+  )
+}
+
+function CategorySeparator({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-1 px-2 shrink-0">
+      <div className="w-px h-4 bg-gray-600/40" />
+      <span className="text-[9px] text-gray-500/70 font-bold uppercase tracking-widest">{label}</span>
+      <div className="w-px h-4 bg-gray-600/40" />
     </div>
   )
 }
@@ -30,18 +65,37 @@ function IndexChip({ index }: { index: WorldIndex }) {
 export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   if (!indices.length) return null
 
+  // 카테고리별 구분선 삽입
+  const chips: { type: 'chip' | 'sep'; index?: WorldIndex; label?: string; key: string }[] = []
+  let lastCategory = ''
+  for (const idx of indices) {
+    if (idx.category !== lastCategory) {
+      if (lastCategory !== '') {
+        chips.push({ type: 'sep', label: CATEGORY_LABELS[idx.category] ?? idx.category, key: `sep-${idx.category}` })
+      }
+      lastCategory = idx.category
+    }
+    chips.push({ type: 'chip', index: idx, key: idx.symbol })
+  }
+
   return (
-    <div className="flex items-center border-b border-gray-800/60 bg-[#080b10] overflow-x-auto scrollbar-none">
+    <div className="flex items-center border-b border-gray-800/60 bg-[#080b10]">
       {/* 고정 라벨 */}
-      <div className="flex items-center gap-1.5 px-3 py-2 border-r border-gray-700/60 shrink-0">
-        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">글로벌</span>
+      <div className="flex items-center gap-1.5 px-3 py-1.5 border-r border-gray-700/60 shrink-0">
+        <svg className="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span className="text-[10px] text-gray-300 font-bold uppercase tracking-wider">GLOBAL</span>
       </div>
-      {/* 지수 목록 */}
-      <div className="flex overflow-x-auto scrollbar-none">
-        {indices.map(index => (
-          <IndexChip key={index.symbol} index={index} />
-        ))}
+
+      {/* 마퀴 스크롤 영역 */}
+      <div className="flex overflow-hidden relative flex-1 group">
+        <div className="flex animate-ticker-global group-hover:[animation-play-state:paused]">
+          {/* 2배 복제 → 끊김 없는 무한 루프 */}
+          {[...chips, ...chips].map((chip, i) => (
+            chip.type === 'sep'
+              ? <CategorySeparator key={`${chip.key}-${i}`} label={chip.label!} />
+              : <IndexChip key={`${chip.key}-${i}`} index={chip.index!} />
+          ))}
+        </div>
       </div>
     </div>
   )

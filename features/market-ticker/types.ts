@@ -5,6 +5,8 @@ export interface WorldIndex {
   change: number      // 절대값
   changePercent: number
   currency: string    // "USD"
+  category: 'index' | 'commodity' | 'forex' | 'crypto' | 'bond'
+  icon?: string       // 국기코드 또는 카테고리 아이콘
 }
 
 export interface KoreanTicker {
