@@ -263,9 +263,9 @@ export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
   const stockTickers: KoreanTicker[] = KOREAN_STOCKS.map((s, i) => ({
     code: s.code,
     name: s.name,
-    price: stocks[i].price || FALLBACK_PRICES[s.code]?.price || 0,
-    change: stocks[i].change,
-    changePercent: stocks[i].changePercent || FALLBACK_PRICES[s.code]?.changePercent || 0,
+    price: stocks[i]?.price || FALLBACK_PRICES[s.code]?.price || 0,
+    change: stocks[i]?.change ?? 0,
+    changePercent: stocks[i]?.changePercent || FALLBACK_PRICES[s.code]?.changePercent || 0,
   }))
 
   return [...indices, ...stockTickers]

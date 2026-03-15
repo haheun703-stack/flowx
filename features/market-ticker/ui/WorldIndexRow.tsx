@@ -77,8 +77,9 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   let lastCategory = ''
   for (const idx of scrollIndices) {
     if (idx.category !== lastCategory) {
+      const label = CATEGORY_LABELS[idx.category] ?? idx.category
       if (lastCategory !== '') {
-        chips.push({ type: 'sep', label: CATEGORY_LABELS[idx.category] ?? idx.category, key: `sep-${idx.category}` })
+        chips.push({ type: 'sep', label, key: `sep-${idx.category}` })
       }
       lastCategory = idx.category
     }
