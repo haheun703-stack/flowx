@@ -14,8 +14,10 @@ const GRADE_COLOR: Record<string, string> = {
 const SIGNAL_COLOR: Record<string, string> = {
   SURGE: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
   INFLOW: 'text-[#00ff88] bg-[#00ff88]/10 border-[#00ff88]/30',
+  OUTFLOW: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
   SECTOR_FOCUS: 'text-[#0ea5e9] bg-[#0ea5e9]/10 border-[#0ea5e9]/30',
   WATCH: 'text-[#f59e0b] bg-[#f59e0b]/10 border-[#f59e0b]/30',
+  NEUTRAL: 'text-[#64748b] bg-[#64748b]/10 border-[#64748b]/30',
   NORMAL: 'text-[#64748b] bg-[#64748b]/10 border-[#64748b]/30',
 }
 
@@ -78,18 +80,18 @@ function EtfSignalSection() {
                 {item.grade}
               </span>
             </div>
-            <span className="text-right text-[#e2e8f0] font-bold">{item.score.toFixed(0)}</span>
-            <span className={`text-right font-bold ${item.ret_1 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-              {item.ret_1 >= 0 ? '+' : ''}{item.ret_1.toFixed(1)}%
+            <span className="text-right text-[#e2e8f0] font-bold">{(item.score ?? 0).toFixed(0)}</span>
+            <span className={`text-right font-bold ${(item.ret_1 ?? 0) >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+              {(item.ret_1 ?? 0) >= 0 ? '+' : ''}{(item.ret_1 ?? 0).toFixed(1)}%
             </span>
-            <span className={`text-right font-bold ${item.ret_5 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-              {item.ret_5 >= 0 ? '+' : ''}{item.ret_5.toFixed(1)}%
+            <span className={`text-right font-bold ${(item.ret_5 ?? 0) >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+              {(item.ret_5 ?? 0) >= 0 ? '+' : ''}{(item.ret_5 ?? 0).toFixed(1)}%
             </span>
             <span className={`text-right font-bold ${
-              item.rsi >= 70 ? 'text-[#ff3b5c]' :
-              item.rsi <= 30 ? 'text-[#0ea5e9]' : 'text-[#64748b]'
+              (item.rsi ?? 0) >= 70 ? 'text-[#ff3b5c]' :
+              (item.rsi ?? 0) <= 30 ? 'text-[#0ea5e9]' : 'text-[#64748b]'
             }`}>
-              {item.rsi.toFixed(0)}
+              {(item.rsi ?? 0).toFixed(0)}
             </span>
             <span className="text-right text-[#f59e0b] font-bold">#{item.sector_rotation_rank}</span>
           </div>
@@ -132,14 +134,14 @@ function SectorRotationSection() {
             <span className={`text-right font-bold tabular-nums ${
               s.score >= 70 ? 'text-[#ff3b5c]' : s.score >= 50 ? 'text-[#f59e0b]' : 'text-[#0ea5e9]'
             }`}>{s.score}</span>
-            <span className={`text-right font-bold tabular-nums ${s.change_5d >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-              {s.change_5d >= 0 ? '+' : ''}{s.change_5d.toFixed(1)}%
+            <span className={`text-right font-bold tabular-nums ${(s.change_5d ?? 0) >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+              {(s.change_5d ?? 0) >= 0 ? '+' : ''}{(s.change_5d ?? 0).toFixed(1)}%
             </span>
-            <span className={`text-right tabular-nums ${s.change_20d >= 0 ? 'text-[#ff3b5c]/80' : 'text-[#0ea5e9]/80'}`}>
-              {s.change_20d >= 0 ? '+' : ''}{s.change_20d.toFixed(1)}%
+            <span className={`text-right tabular-nums ${(s.change_20d ?? 0) >= 0 ? 'text-[#ff3b5c]/80' : 'text-[#0ea5e9]/80'}`}>
+              {(s.change_20d ?? 0) >= 0 ? '+' : ''}{(s.change_20d ?? 0).toFixed(1)}%
             </span>
             <span className="text-right tabular-nums text-[#64748b]">
-              {s.change_60d >= 0 ? '+' : ''}{s.change_60d.toFixed(1)}%
+              {(s.change_60d ?? 0) >= 0 ? '+' : ''}{(s.change_60d ?? 0).toFixed(1)}%
             </span>
             <span className={`text-right tabular-nums ${
               s.rsi >= 70 ? 'text-[#ff3b5c]' : s.rsi <= 30 ? 'text-[#00ff88]' : 'text-[#64748b]'
@@ -164,7 +166,7 @@ function SectorRotationSection() {
 // ═══════════════════════════════════════
 function ChinaFlowSection() {
   const { data, isLoading } = useChinaFlow()
-  const items = data?.filter(s => s.signal !== 'NORMAL') ?? []
+  const items = data?.filter(s => s.signal !== 'NORMAL' && s.signal !== 'NEUTRAL') ?? []
   const COLS = '1fr 72px 56px 56px 56px 56px'
 
   return (
@@ -194,11 +196,11 @@ function ChinaFlowSection() {
               </span>
             </div>
             <span className="text-right text-[#e2e8f0] font-bold">{item.score}</span>
-            <span className={`text-right font-bold ${item.foreign_zscore >= 1.5 ? 'text-[#00ff88]' : 'text-[#64748b]'}`}>
-              {item.foreign_zscore.toFixed(1)}
+            <span className={`text-right font-bold ${(item.foreign_zscore ?? 0) >= 1.5 ? 'text-[#00ff88]' : 'text-[#64748b]'}`}>
+              {(item.foreign_zscore ?? 0).toFixed(1)}
             </span>
-            <span className={`text-right font-bold ${item.pct_change_5d >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-              {item.pct_change_5d >= 0 ? '+' : ''}{item.pct_change_5d.toFixed(1)}%
+            <span className={`text-right font-bold ${(item.pct_change_5d ?? 0) >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+              {(item.pct_change_5d ?? 0) >= 0 ? '+' : ''}{(item.pct_change_5d ?? 0).toFixed(1)}%
             </span>
             <span className="text-right text-[#f59e0b] font-bold">{item.consecutive_days}일</span>
           </div>
@@ -270,8 +272,8 @@ function PaperTradeSection() {
             </span>
             <span className="text-right text-[#e2e8f0] tabular-nums">{t.entry_price?.toLocaleString()}</span>
             <span className="text-right text-[#e2e8f0] tabular-nums">{t.exit_price?.toLocaleString()}</span>
-            <span className={`text-right font-bold tabular-nums ${t.pnl_pct >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-              {t.pnl_pct >= 0 ? '+' : ''}{t.pnl_pct.toFixed(1)}%
+            <span className={`text-right font-bold tabular-nums ${(t.pnl_pct ?? 0) >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+              {(t.pnl_pct ?? 0) >= 0 ? '+' : ''}{(t.pnl_pct ?? 0).toFixed(1)}%
             </span>
           </div>
         ))}

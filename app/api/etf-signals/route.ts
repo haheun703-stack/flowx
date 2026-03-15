@@ -23,7 +23,27 @@ export async function GET() {
       .order('sector_rotation_rank', { ascending: true })
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json(data)
+
+    const SIGNAL_KR: Record<string, string> = {
+      STRONG_BUY: '적극매수', BUY: '매수', HOLD: '관망', SELL: '매도', STRONG_SELL: '적극매도',
+    }
+
+    const mapped = (data ?? []).map((row: Record<string, unknown>) => ({
+      date: row.date,
+      sector: row.name,
+      etf_code: row.code,
+      etf_name: row.name,
+      close: 0,
+      ret_1: (row.change_1d as number) ?? 0,
+      ret_5: (row.change_5d as number) ?? 0,
+      ret_20: 0,
+      rsi: (row.rsi as number) ?? 0,
+      score: (row.score as number) ?? 0,
+      grade: SIGNAL_KR[row.signal as string] ?? '관망',
+      sector_rotation_rank: (row.sector_rotation_rank as number) ?? 0,
+      reasons: [],
+    }))
+    return NextResponse.json(mapped)
   } catch {
     return NextResponse.json([])
   }
