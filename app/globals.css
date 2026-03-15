@@ -10,9 +10,9 @@
   animation: ticker 40s linear infinite;
 }
 
-/* 글로벌 티커: 22개 항목 → 느린 속도 (60초) */
+/* 글로벌 티커: 22개 항목 마퀴 (40초 1회전) */
 @utility animate-ticker-global {
-  animation: ticker 60s linear infinite;
+  animation: ticker 40s linear infinite;
 }
 
 /* 스크롤바 숨기기 */
