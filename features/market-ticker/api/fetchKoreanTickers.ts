@@ -1,5 +1,6 @@
 import { KoreanTicker } from '../types'
 import { getKISToken } from '@/shared/lib/kisAuth'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const KOREAN_STOCKS = [
   { code: '005930', name: '삼성전자' },
@@ -234,13 +235,51 @@ const FALLBACK_PRICES: Record<string, { price: number; changePercent: number }> 
   '032830': { price: 63200, changePercent: -0.31 },  // 삼성생명
 }
 
+// Supabase market_snapshots에서 최신 종가 조회 (cron이 저장한 데이터)
+async function buildSupabaseFallback(): Promise<KoreanTicker[] | null> {
+  try {
+    const supabase = getSupabaseAdmin()
+    const { data, error } = await supabase
+      .from('market_snapshots')
+      .select('kospi_price, kospi_change, kosdaq_price, kosdaq_change, stocks')
+      .eq('id', 'latest')
+      .single()
+
+    if (error || !data || !data.stocks?.length) return null
+
+    const indices: KoreanTicker[] = [
+      { code: '0001', name: 'KOSPI',  price: data.kospi_price,  change: 0, changePercent: data.kospi_change,  isIndex: true },
+      { code: '1001', name: 'KOSDAQ', price: data.kosdaq_price, change: 0, changePercent: data.kosdaq_change, isIndex: true },
+    ]
+
+    // Supabase stocks를 code 기반 맵으로 변환
+    type StockSnap = { code: string; price: number; change: number; changePercent: number }
+    const stockMap = new Map<string, StockSnap>(data.stocks.map((s: StockSnap) => [s.code, s]))
+
+    const stockTickers: KoreanTicker[] = KOREAN_STOCKS.map(s => {
+      const snap = stockMap.get(s.code)
+      return {
+        code: s.code,
+        name: s.name,
+        price: snap?.price || FALLBACK_PRICES[s.code]?.price || 0,
+        change: snap?.change ?? 0,
+        changePercent: snap?.changePercent || FALLBACK_PRICES[s.code]?.changePercent || 0,
+      }
+    })
+
+    return [...indices, ...stockTickers]
+  } catch {
+    return null
+  }
+}
+
 export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
   let token: string
   try {
     token = await getKISToken()
   } catch {
-    // 토큰 발급 실패 → 폴백 사용
-    return buildFallbackTickers()
+    // 토큰 발급 실패 → Supabase → 하드코딩 순서로 폴백
+    return (await buildSupabaseFallback()) ?? buildFallbackTickers()
   }
 
   // 모든 요청 병렬 처리
@@ -250,9 +289,9 @@ export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
     ...KOREAN_STOCKS.map(s => fetchKISPrice(s.code, token)),
   ])
 
-  // API가 0을 반환하면 폴백 사용
+  // API가 0을 반환하면 Supabase → 하드코딩 순서로 폴백
   if (kospi.price === 0 && kosdaq.price === 0) {
-    return buildFallbackTickers()
+    return (await buildSupabaseFallback()) ?? buildFallbackTickers()
   }
 
   const indices: KoreanTicker[] = [
