@@ -499,3 +499,37 @@ export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
+
+// --- 시장 스냅샷 (KIS API cron → Supabase/캐시) ---
+export interface MarketSnapshotStock {
+  code: string
+  name: string
+  price: number
+  change: number
+  changePercent: number
+  volume: number
+}
+
+export interface MarketSnapshot {
+  kospi_price: number
+  kospi_change: number
+  kosdaq_price: number
+  kosdaq_change: number
+  stocks: MarketSnapshotStock[]
+  foreign_inst: {
+    foreign_net: number
+    inst_net: number
+    individual_net: number
+  }
+  sectors: { name: string; changePercent: number }[]
+  updated_at: string
+}
+
+export function useMarketSnapshot() {
+  return useQuery<MarketSnapshot>({
+    queryKey: ['market-snapshot'],
+    queryFn: () => axios.get('/api/market/snapshot').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}

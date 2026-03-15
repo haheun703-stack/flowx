@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useDashboardMarket } from '../api/useDashboard'
+import { useDashboardMarket, useMarketSnapshot } from '../api/useDashboard'
 
 function useRealtimeClock() {
   const [now, setNow] = useState('')
@@ -20,6 +20,7 @@ function useRealtimeClock() {
 
 export function StatusBar() {
   const { data } = useDashboardMarket()
+  const { data: snap } = useMarketSnapshot()
   const clock = useRealtimeClock()
 
   const regime = data?.kospi_regime ?? 'NEUTRAL'
@@ -51,6 +52,28 @@ export function StatusBar() {
         <span className="font-bold">{stance}</span>
       </div>
 
+      {/* KOSPI 지수 */}
+      {snap && snap.kospi_price > 0 && (
+        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[#2a2a3a]">
+          <span className="text-[#64748b]">KOSPI</span>
+          <span className="text-[#e2e8f0] font-bold tabular-nums">{snap.kospi_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className={`font-bold tabular-nums ${snap.kospi_change >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+            {snap.kospi_change >= 0 ? '+' : ''}{snap.kospi_change.toFixed(2)}%
+          </span>
+        </div>
+      )}
+
+      {/* KOSDAQ 지수 */}
+      {snap && snap.kosdaq_price > 0 && (
+        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[#2a2a3a]">
+          <span className="text-[#64748b]">KOSDAQ</span>
+          <span className="text-[#e2e8f0] font-bold tabular-nums">{snap.kosdaq_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className={`font-bold tabular-nums ${snap.kosdaq_change >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+            {snap.kosdaq_change >= 0 ? '+' : ''}{snap.kosdaq_change.toFixed(2)}%
+          </span>
+        </div>
+      )}
+
       {/* 매수 슬롯 */}
       <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
         <span className="text-[#64748b]">슬롯</span>
@@ -68,11 +91,17 @@ export function StatusBar() {
         }`}>{data?.us_grade ?? '—'}</span>
       </div>
 
-      {/* 릴레이 */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
-        <span className="text-[#64748b]">릴레이</span>
-        <span className="text-[#0ea5e9] font-bold">{data?.relay_fired ?? 0}/{data?.relay_signals ?? 0}</span>
-      </div>
+      {/* 외국인/기관 */}
+      {snap && (snap.foreign_inst.foreign_net !== 0 || snap.foreign_inst.inst_net !== 0) && (
+        <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
+          <span className={`font-bold ${snap.foreign_inst.foreign_net >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+            외{snap.foreign_inst.foreign_net >= 0 ? '▲' : '▼'}
+          </span>
+          <span className={`font-bold ${snap.foreign_inst.inst_net >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+            기{snap.foreign_inst.inst_net >= 0 ? '▲' : '▼'}
+          </span>
+        </div>
+      )}
 
       <div className="flex-1" />
 
