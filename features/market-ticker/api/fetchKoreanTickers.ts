@@ -14,6 +14,14 @@ export const KOREAN_STOCKS = [
   { code: '035720', name: '카카오' },
   { code: '003670', name: 'POSCO홀딩스' },
   { code: '105560', name: 'KB금융' },
+  { code: '055550', name: '신한지주' },
+  { code: '005490', name: 'POSCO' },
+  { code: '012330', name: '현대모비스' },
+  { code: '028260', name: '삼성물산' },
+  { code: '066570', name: 'LG전자' },
+  { code: '034730', name: 'SK' },
+  { code: '003550', name: 'LG' },
+  { code: '032830', name: '삼성생명' },
 ]
 
 // 장 중 여부 판단 (KST 기준 09:00 ~ 15:30)
@@ -202,8 +210,8 @@ export async function fetchSectorPrices(
 
 // 최근 종가 폴백 (주말/API 장애 시 사용)
 const FALLBACK_PRICES: Record<string, { price: number; changePercent: number }> = {
-  '0001': { price: 2580, changePercent: -0.42 },   // KOSPI
-  '1001': { price: 730, changePercent: 0.31 },      // KOSDAQ
+  '0001': { price: 2580, changePercent: -0.42 },    // KOSPI
+  '1001': { price: 730, changePercent: 0.31 },       // KOSDAQ
   '005930': { price: 57800, changePercent: -1.20 },  // 삼성전자
   '000660': { price: 192000, changePercent: -2.30 }, // SK하이닉스
   '005380': { price: 215000, changePercent: 0.47 },  // 현대차
@@ -216,6 +224,14 @@ const FALLBACK_PRICES: Record<string, { price: number; changePercent: number }> 
   '035720': { price: 42500, changePercent: -1.62 },  // 카카오
   '003670': { price: 268000, changePercent: -0.37 }, // POSCO홀딩스
   '105560': { price: 82300, changePercent: 0.24 },   // KB금융
+  '055550': { price: 51200, changePercent: 0.59 },   // 신한지주
+  '005490': { price: 312000, changePercent: -0.96 }, // POSCO
+  '012330': { price: 218000, changePercent: 0.23 },  // 현대모비스
+  '028260': { price: 125000, changePercent: -0.40 }, // 삼성물산
+  '066570': { price: 95800, changePercent: 1.05 },   // LG전자
+  '034730': { price: 158000, changePercent: -0.63 }, // SK
+  '003550': { price: 78500, changePercent: 0.13 },   // LG
+  '032830': { price: 63200, changePercent: -0.31 },  // 삼성생명
 }
 
 export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
