@@ -345,8 +345,12 @@ export interface HeatmapItem {
   date: string
   sector: string
   score: number
-  change_pct: number
-  volume_change: number
+  change_5d: number
+  change_20d: number
+  change_60d: number
+  rsi: number
+  foreign_flow: number
+  inst_flow: number
   top_stocks: string[]
 }
 
@@ -472,13 +476,19 @@ export function usePaperTrades() {
 // --- 단기 시그널 (Supabase: short_signals) ---
 export interface ShortSignalItem {
   date: string
-  ticker: string
+  code: string
   name: string
-  signal_type: string
   grade: string
   total_score: number
+  signal_type: string
   volume_ratio: number
-  reasons: string[]
+  entry_price: number
+  stop_loss: number
+  target_price: number
+  holding_days: number
+  momentum_regime: string
+  inst_support: boolean
+  foreign_detail: Record<string, number>
 }
 
 export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {

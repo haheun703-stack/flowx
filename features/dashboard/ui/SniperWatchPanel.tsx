@@ -1,24 +1,23 @@
 'use client'
 
-import { useDashboardSniper } from '../api/useDashboard'
+import { useShortSignals } from '../api/useDashboard'
 
 const GRADE_COLOR: Record<string, string> = {
-  S: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
+  AA: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
   A: 'text-[#00ff88] bg-[#00ff88]/10 border-[#00ff88]/30',
   B: 'text-[#f59e0b] bg-[#f59e0b]/10 border-[#f59e0b]/30',
 }
 
-const VERDICT_COLOR: Record<string, string> = {
-  BUY: 'text-[#ff3b5c]',
+const SIGNAL_COLOR: Record<string, string> = {
+  FORCE_BUY: 'text-[#ff3b5c]',
+  BUY: 'text-[#00ff88]',
   WATCH: 'text-[#f59e0b]',
-  WAIT: 'text-[#64748b]',
-  SELL: 'text-[#0ea5e9]',
 }
 
-const COLS = '1fr 40px 80px 56px 56px 64px'
+const COLS = '1fr 40px 72px 72px 56px 64px'
 
 export function SniperWatchPanel() {
-  const { data, isLoading } = useDashboardSniper()
+  const { data, isLoading } = useShortSignals('watch')
 
   const items = data?.slice(0, 15) ?? []
 
@@ -28,9 +27,9 @@ export function SniperWatchPanel() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2535]">
         <div className="flex items-center gap-2">
           <span className="text-[#e2e8f0] text-sm font-black tracking-widest uppercase">스나이퍼 워치</span>
-          <span className="text-sm text-[#64748b] font-bold">밸류트랩 감시</span>
+          <span className="text-sm text-[#64748b] font-bold">매수 시그널</span>
         </div>
-        <span className="text-sm text-[#64748b] font-bold">{items[0]?.scan_date ?? ''}</span>
+        <span className="text-sm text-[#64748b] font-bold">{items[0]?.date ?? ''}</span>
       </div>
 
       {/* 컬럼 헤더 */}
@@ -38,9 +37,9 @@ export function SniperWatchPanel() {
         style={{ gridTemplateColumns: COLS }}>
         <span className="text-left">종목</span>
         <span className="text-center">등급</span>
-        <span className="text-left">섹터</span>
-        <span className="text-right">현재가</span>
-        <span className="text-right">RSI</span>
+        <span className="text-right">진입가</span>
+        <span className="text-right">목표가</span>
+        <span className="text-right">점수</span>
         <span className="text-center">판정</span>
       </div>
 
@@ -58,25 +57,28 @@ export function SniperWatchPanel() {
               style={{ gridTemplateColumns: COLS }}>
               <div className="truncate">
                 <span className="text-[#e2e8f0] text-sm font-bold">{item.name}</span>
+                <span className="text-[#334155] ml-1 text-[10px]">{item.code}</span>
               </div>
               <div className="text-center">
                 <span className={`text-[9px] px-1.5 py-0.5 rounded-sm border font-bold ${GRADE_COLOR[item.grade] ?? 'text-[#64748b]'}`}>
                   {item.grade}
                 </span>
               </div>
-              <span className="text-[#64748b] truncate">{item.sector}</span>
-              <span className="text-right text-[#e2e8f0] font-bold">
-                {item.analysis.price.toLocaleString()}
+              <span className="text-right text-[#e2e8f0] font-bold tabular-nums">
+                {item.entry_price?.toLocaleString()}
               </span>
-              <span className={`text-right font-bold ${
-                item.analysis.rsi >= 70 ? 'text-[#ff3b5c]' :
-                item.analysis.rsi <= 30 ? 'text-[#0ea5e9]' : 'text-[#64748b]'
+              <span className="text-right text-[#00ff88] font-bold tabular-nums">
+                {item.target_price?.toLocaleString()}
+              </span>
+              <span className={`text-right font-bold tabular-nums ${
+                item.total_score >= 80 ? 'text-[#00ff88]' :
+                item.total_score >= 60 ? 'text-[#f59e0b]' : 'text-[#64748b]'
               }`}>
-                {item.analysis.rsi.toFixed(0)}
+                {item.total_score}
               </span>
               <div className="text-center">
-                <span className={`font-bold ${VERDICT_COLOR[item.analysis.verdict] ?? 'text-[#64748b]'}`}>
-                  {item.analysis.verdict}
+                <span className={`font-bold ${SIGNAL_COLOR[item.signal_type] ?? 'text-[#64748b]'}`}>
+                  {item.signal_type}
                 </span>
               </div>
             </div>
