@@ -19,26 +19,28 @@ export function SidePanel() {
       style={{ fontFamily: 'var(--font-terminal)' }}>
 
       {/* 헤더 */}
-      <div className="px-4 py-3 border-b border-[#1a2535] flex items-center justify-between">
-        <span className="text-[#e2e8f0] text-xl font-black uppercase">장세판단</span>
-        <span className="text-[#64748b] font-bold">기준 {data?.generated_at ?? ''}</span>
+      <div className="px-3 py-2 border-b border-[#1a2535]">
+        <div className="flex items-center justify-between">
+          <span className="text-[#e2e8f0] text-sm font-black uppercase">장세판단</span>
+          <span className="text-[10px] text-[#334155]">{data?.generated_at ?? ''}</span>
+        </div>
       </div>
 
-      {/* 메인 레짐 */}
-      <div className="px-4 py-6 border-b border-[#1a2535] text-center">
+      {/* 메인 레짐 — 중앙 크게 */}
+      <div className="px-3 py-4 border-b border-[#1a2535] text-center">
         {isLoading ? (
           <div className="h-10 bg-[#1a2535] animate-pulse rounded-sm mx-auto w-20" />
         ) : (
           <>
-            <div className={`text-3xl font-black tracking-widest mb-1 ${regimeColor}`}>
+            <div className={`text-4xl font-black mb-0.5 ${regimeColor}`}>
               {data?.market_stance ?? '—'}
             </div>
-            <div className="text-[#334155] text-[10px] tracking-widest">{regime}</div>
+            <div className="text-[#334155] text-[10px] tracking-widest font-bold">{regime}</div>
           </>
         )}
       </div>
 
-      {/* 시장별 상태 */}
+      {/* 시장별 상태 — 컴팩트 */}
       <div className="border-b border-[#1a2535]">
         {[
           { label: 'KOSPI', value: regime },
@@ -46,9 +48,9 @@ export function SidePanel() {
           { label: '매수', value: `${data?.buys ?? 0}건` },
           { label: '매도', value: `${data?.sells ?? 0}건` },
         ].map(row => (
-          <div key={row.label} className="flex items-center justify-between px-4 py-2.5 border-b border-[#1a2535]/50 hover:bg-[#0d1420]">
-            <span className="text-[#e2e8f0] text-sm font-bold">{row.label}</span>
-            <span className={`text-sm font-black ${
+          <div key={row.label} className="flex items-center justify-between px-3 py-1.5 border-b border-[#1a2535]/30 last:border-b-0">
+            <span className="text-[#64748b] text-xs">{row.label}</span>
+            <span className={`text-xs font-black ${
               row.value === 'BULL' || row.value === 'BULLISH' ? 'text-[#00ff88]' :
               row.value === 'BEAR' || row.value === 'BEARISH' ? 'text-[#ff3b5c]' :
               row.value === 'CAUTION' || row.value === 'NEUTRAL' ? 'text-[#f59e0b]' :
@@ -58,34 +60,36 @@ export function SidePanel() {
         ))}
       </div>
 
-      {/* 매수 슬롯 시각화 */}
-      <div className="px-4 py-4 border-b border-[#1a2535]">
-        <div className="text-[#e2e8f0] text-sm font-bold tracking-widest mb-2">매수 슬롯</div>
-        <div className="flex gap-1.5">
+      {/* 매수 슬롯 */}
+      <div className="px-3 py-2.5 border-b border-[#1a2535]">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[#64748b] text-xs">매수 슬롯</span>
+          <span className="text-[#e2e8f0] text-xs font-bold">{slots}/5</span>
+        </div>
+        <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className={`flex-1 h-5 rounded-sm border ${
+            <div key={i} className={`flex-1 h-3 rounded-sm border ${
               i < slots
                 ? 'bg-[#00ff88]/50 border-[#00ff88]/70'
                 : 'bg-transparent border-[#1a2535]'
             }`} />
           ))}
         </div>
-        <div className="text-right mt-1 text-[#e2e8f0] text-sm font-bold">{slots} / 5</div>
       </div>
 
       {/* 릴레이 */}
-      <div className="px-4 py-4 border-b border-[#1a2535]">
-        <div className="text-[#e2e8f0] text-sm font-bold tracking-widest mb-2">릴레이</div>
-        <div className="text-[#0ea5e9] font-black text-base">
+      <div className="px-3 py-2.5 border-b border-[#1a2535] flex items-center justify-between">
+        <span className="text-[#64748b] text-xs">릴레이</span>
+        <span className="text-[#0ea5e9] font-black text-sm">
           {data?.relay_fired ?? 0} / {data?.relay_signals ?? 0}
-        </div>
+        </span>
       </div>
 
       <div className="flex-1" />
 
       {/* 하단 버전 */}
-      <div className="px-4 py-3 border-t border-[#1a2535]">
-        <div className="text-[#1a2535] text-[10px] tracking-widest">FLOWX TERMINAL v1</div>
+      <div className="px-3 py-2 border-t border-[#1a2535]">
+        <div className="text-[#1a2535] text-[9px] tracking-widest">FLOWX TERMINAL v1</div>
       </div>
     </div>
   )
