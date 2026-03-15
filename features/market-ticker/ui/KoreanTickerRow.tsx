@@ -37,7 +37,7 @@ export function KoreanTickerRow({ tickers, isMarketOpen }: { tickers: KoreanTick
   const stocks  = tickers.filter(t => !t.isIndex)
 
   return (
-    <div className="flex items-center h-11 border-b border-gray-800/60 bg-[#080b10]">
+    <div className="flex items-center h-11 border-b border-gray-800/60 bg-[#080b10] leading-none">
       {/* 고정 라벨 */}
       <div className="flex items-center gap-1.5 px-4 h-full border-r border-gray-700/60 shrink-0">
         <img src="https://flagcdn.com/w20/kr.png" alt="KR" width={20} height={14} className="inline-block" />
