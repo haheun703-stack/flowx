@@ -24,6 +24,14 @@ export function Navbar() {
           <Link href="/market/treemap" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2">
             트리맵
           </Link>
+          <Link href="/quant" className="text-xs text-gray-400 hover:text-[#f59e0b] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            퀀트시스템
+            <span className="text-[8px] px-1 py-px rounded border border-[#f59e0b]/40 text-[#f59e0b] font-bold leading-tight">PRO</span>
+          </Link>
+          <Link href="/swing" className="text-xs text-gray-400 hover:text-[#a855f7] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            스윙시스템
+            <span className="text-[8px] px-1 py-px rounded border border-[#a855f7]/40 text-[#a855f7] font-bold leading-tight">QUANT</span>
+          </Link>
         </div>
         <div className="hidden sm:block">
           <TickerSearch />
