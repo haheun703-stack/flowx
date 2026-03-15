@@ -30,7 +30,7 @@ export function Navbar() {
           </Link>
           <Link href="/swing" className="text-xs text-gray-400 hover:text-[#a855f7] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
             스윙시스템
-            <span className="text-[8px] px-1 py-px rounded border border-[#a855f7]/40 text-[#a855f7] font-bold leading-tight">QUANT</span>
+            <span className="text-[8px] px-1 py-px rounded border border-[#a855f7]/40 text-[#a855f7] font-bold leading-tight">VIP</span>
           </Link>
         </div>
         <div className="hidden sm:block">

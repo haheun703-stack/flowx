@@ -286,7 +286,7 @@ export function SwingView() {
       <div className="border-b border-[#1a2535] px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-black text-[#e2e8f0] tracking-widest uppercase">스윙시스템</h1>
-          <span className="text-[10px] px-2 py-0.5 rounded-sm border border-[#a855f7]/40 text-[#a855f7] font-bold">QUANT</span>
+          <span className="text-[10px] px-2 py-0.5 rounded-sm border border-[#a855f7]/40 text-[#a855f7] font-bold">VIP</span>
         </div>
         <span className="text-sm text-[#64748b] font-bold">₩50,000/월</span>
       </div>

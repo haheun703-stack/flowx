@@ -7,13 +7,15 @@ const PLANS = [
     price: 0,
     desc: '지금 바로 사용 가능',
     color: 'border-[#00ff88]/50',
+    accent: '#00ff88',
     btnColor: 'bg-[#00ff88] text-black font-bold hover:bg-[#00ff88]/90',
     badge: '현재 무료',
+    cta: '대시보드 시작하기',
+    href: '/dashboard',
     features: [
       '수급 X-Ray 차트',
-      'Bloomberg 대시보드 전체',
-      'AI 종목 추천 Top 5',
-      '세력 포착 + 섹터 모멘텀',
+      'Bloomberg 대시보드 기본',
+      'AI 종목 추천 (Claude + Perplexity)',
       'KOSPI 30일 종가 차트',
       '글로벌 지수 6개 실시간',
     ],
@@ -21,36 +23,59 @@ const PLANS = [
   {
     name: 'SIGNAL',
     price: 9900,
-    desc: '고급 분석 도구',
-    color: 'border-blue-500/50',
+    desc: '정보봇 데이터',
+    color: 'border-[#0ea5e9]/50',
+    accent: '#0ea5e9',
     btnColor: 'border border-gray-700 text-gray-400 cursor-default',
+    cta: '준비 중',
     features: [
       'FREE 전체 포함',
-      '실시간 수급 알림',
-      '포물선 탐지 알람',
+      '모닝 브리핑 (미국+한국 종합)',
+      '섹터 히트맵 상세',
+      '시장 판정 (사계절/방향)',
       '텔레그램 브리핑',
       'DART 공시 알람',
     ],
   },
   {
     name: 'PRO',
-    price: 29000,
-    desc: '전문 트레이더용',
-    color: 'border-purple-500/50',
+    price: 25000,
+    desc: '퀀트봇 데이터',
+    color: 'border-[#f59e0b]/50',
+    accent: '#f59e0b',
     btnColor: 'border border-gray-700 text-gray-400 cursor-default',
+    cta: '준비 중',
     features: [
       'SIGNAL 전체 포함',
-      '섹터 릴레이 레이더',
-      '노코드 전략 빌더',
+      'ETF 시그널 + 섹터 로테이션',
+      '그룹순환 매매 (현대차/삼성)',
+      '외국인 자금 흐름',
+      '페이퍼 트레이딩 수익률 공개',
       '백테스트 엔진',
-      'API 데이터 제공',
+    ],
+  },
+  {
+    name: 'VIP',
+    price: 50000,
+    desc: '단타봇 데이터',
+    color: 'border-[#a855f7]/50',
+    accent: '#a855f7',
+    btnColor: 'border border-gray-700 text-gray-400 cursor-default',
+    cta: '준비 중',
+    features: [
+      'PRO 전체 포함',
+      '국가별 외인 수급 상세',
+      '세력 포착 + 스나이퍼 워치',
+      '3~5일 단기 매매 시그널',
+      '진입가/손절가/목표가 제시',
+      '실시간 텔레그램 알림',
     ],
   },
 ]
 
 export function PricingSection() {
   return (
-    <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-5xl mx-auto" id="pricing">
+    <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-6xl mx-auto" id="pricing">
       <div className="text-center mb-10 sm:mb-16">
         <div className="text-xs text-[#00ff88] font-mono tracking-widest uppercase mb-4">
           플랜 & 가격
@@ -63,23 +88,24 @@ export function PricingSection() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
         {PLANS.map((plan, i) => (
           <div
             key={i}
             className={`relative p-6 rounded-2xl border bg-gray-900/30 flex flex-col ${plan.color} ${
-              plan.name === 'FREE' ? 'scale-105 shadow-2xl shadow-[#00ff88]/10' : ''
+              plan.name === 'FREE' ? 'shadow-2xl shadow-[#00ff88]/10' : ''
             }`}
           >
             {plan.badge && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="text-xs px-3 py-1 rounded-full font-bold font-mono bg-[#00ff88] text-black">
+                <span className="text-xs px-3 py-1 rounded-full font-bold font-mono text-black"
+                  style={{ backgroundColor: plan.accent }}>
                   {plan.badge}
                 </span>
               </div>
             )}
 
-            <div className="font-mono text-xs tracking-widest text-gray-500 mb-1">
+            <div className="font-mono text-xs tracking-widest mb-1" style={{ color: plan.accent }}>
               {plan.name}
             </div>
             <div className="text-2xl font-bold text-white mb-1">
@@ -91,22 +117,22 @@ export function PricingSection() {
             <ul className="space-y-2 flex-1 mb-6">
               {plan.features.map((f, j) => (
                 <li key={j} className="flex items-start gap-2 text-sm text-gray-300">
-                  <span className="text-[#00ff88] mt-0.5 shrink-0">✓</span>
+                  <span className="mt-0.5 shrink-0" style={{ color: plan.accent }}>✓</span>
                   {f}
                 </li>
               ))}
             </ul>
 
-            {plan.price === 0 ? (
+            {plan.href ? (
               <Link
-                href="/dashboard"
+                href={plan.href}
                 className={`w-full text-center py-3 rounded-xl text-sm transition-all font-mono ${plan.btnColor}`}
               >
-                대시보드 시작하기
+                {plan.cta}
               </Link>
             ) : (
               <div className={`w-full text-center py-3 rounded-xl text-sm font-mono ${plan.btnColor}`}>
-                준비 중
+                {plan.cta}
               </div>
             )}
           </div>
