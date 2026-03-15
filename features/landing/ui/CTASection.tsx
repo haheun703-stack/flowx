@@ -7,7 +7,7 @@ export function CTASection() {
         <div className="relative">
           <div className="absolute inset-0 bg-[#00ff88] opacity-5 blur-[80px] rounded-full" />
           <div className="relative border border-[#00ff88]/20 rounded-3xl p-8 sm:p-12 bg-gray-900/30">
-            <div className="text-xs text-[#00ff88] font-mono tracking-widest uppercase mb-4">
+            <div className="text-xl sm:text-2xl text-[#00ff88] font-mono tracking-widest uppercase mb-4">
               지금 시작하세요
             </div>
             <h2 className="text-2xl sm:text-4xl font-bold mb-4 font-display">

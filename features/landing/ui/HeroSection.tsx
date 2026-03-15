@@ -55,10 +55,10 @@ export function HeroSection() {
       {/* 메인 헤드라인 */}
       <h1 className="relative text-center max-w-4xl mb-6 font-display">
         <span className="block text-3xl sm:text-5xl md:text-7xl text-white leading-tight">
-          한국 주식
+          한국주식 실시간의
         </span>
         <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[#00ff88]">
-          수급의 모든 것을
+          모든것을
         </span>
         <span className="block text-3xl sm:text-5xl md:text-7xl text-white leading-tight">
           한 화면에
@@ -75,13 +75,13 @@ export function HeroSection() {
       <div className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-20 w-full sm:w-auto px-4 sm:px-0">
         <Link
           href="/dashboard"
-          className="px-8 py-4 bg-[#00ff88] text-black font-bold text-sm rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
+          className="px-12 py-6 bg-[#00ff88] text-black font-bold text-xl rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
         >
           대시보드 바로가기 →
         </Link>
         <Link
           href="/market"
-          className="px-8 py-4 border border-gray-700 text-gray-300 text-sm rounded-xl hover:border-gray-500 hover:text-white transition-all font-mono tracking-wider text-center"
+          className="px-12 py-6 border border-gray-700 text-gray-300 text-xl rounded-xl hover:border-gray-500 hover:text-white transition-all font-mono tracking-wider text-center"
         >
           시장 현황 보기
         </Link>
