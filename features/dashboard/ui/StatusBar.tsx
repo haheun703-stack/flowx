@@ -38,28 +38,28 @@ export function StatusBar() {
   }[stance] ?? 'text-[#64748b]'
 
   return (
-    <div className="flex items-center gap-0 border-b border-[#1a2535] bg-[#0a0f18] text-xs h-9"
+    <div className="flex items-center gap-0 border-b border-[#2a2a3a] bg-[#0a0f18] text-xs h-9"
       style={{ fontFamily: 'var(--font-terminal)' }}>
       {/* 장세 레짐 */}
-      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#1a2535] ${regimeColor}`}>
+      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a] ${regimeColor}`}>
         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
         <span className="font-bold tracking-widest">{regime}</span>
       </div>
 
       {/* 장세 판단 */}
-      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#1a2535] ${stanceColor}`}>
+      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a] ${stanceColor}`}>
         <span className="font-bold">{stance}</span>
       </div>
 
       {/* 매수 슬롯 */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#1a2535]">
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
         <span className="text-[#64748b]">슬롯</span>
         <span className="text-[#00ff88] font-bold">{data?.kospi_slots ?? 0}</span>
         <span className="text-[#334155]">/ 5</span>
       </div>
 
       {/* US */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#1a2535]">
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
         <span className="text-[#64748b]">US</span>
         <span className={`font-bold ${
           data?.us_grade === 'BULLISH' ? 'text-[#00ff88]' :
@@ -69,7 +69,7 @@ export function StatusBar() {
       </div>
 
       {/* 릴레이 */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#1a2535]">
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
         <span className="text-[#64748b]">릴레이</span>
         <span className="text-[#0ea5e9] font-bold">{data?.relay_fired ?? 0}/{data?.relay_signals ?? 0}</span>
       </div>
@@ -82,7 +82,7 @@ export function StatusBar() {
       </div>
 
       {/* LIVE 인디케이터 */}
-      <div className="flex items-center gap-1.5 px-4 h-full border-l border-[#1a2535]">
+      <div className="flex items-center gap-1.5 px-4 h-full border-l border-[#2a2a3a]">
         <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-ping opacity-75" />
         <span className="text-[#00ff88] text-[10px] tracking-widest font-bold">LIVE</span>
       </div>

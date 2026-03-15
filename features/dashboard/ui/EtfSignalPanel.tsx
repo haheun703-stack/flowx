@@ -10,69 +10,60 @@ const GRADE_COLOR: Record<string, string> = {
   '적극매도': 'text-[#cc2f4a] bg-[#cc2f4a]/10 border-[#cc2f4a]/30',
 }
 
-const COLS = '1fr 72px 64px 56px 56px 56px'
+const COLS = '1fr 60px 48px 48px 48px 40px'
 
 export function EtfSignalPanel() {
   const { data, isLoading } = useDashboardEtf()
-
   const items = data?.etfs?.slice(0, 15) ?? []
 
   return (
     <div className="flex flex-col h-full text-xs" style={{ fontFamily: 'var(--font-terminal)' }}>
-      {/* 헤더 */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2535]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-2">
-          <span className="text-[#e2e8f0] text-sm font-black tracking-widest uppercase">ETF 시그널</span>
-          <span className="text-sm text-[#64748b] font-bold">{data?.etf_count ?? 0}종목</span>
+          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">ETF 시그널</span>
+          <span className="text-[11px] text-[#8a8a8a] font-bold">{data?.etf_count ?? 0}종목</span>
         </div>
-        <span className="text-sm text-[#64748b] font-bold">{data?.updated_at ?? ''}</span>
+        <span className="text-[11px] text-[#8a8a8a] font-bold">{data?.updated_at ?? ''}</span>
       </div>
-
-      {/* 컬럼 헤더 */}
-      <div className="grid gap-2 px-3 py-1.5 border-b border-[#1a2535]/50 text-xs text-[#64748b] font-bold"
+      <div className="grid px-2 py-1 border-b border-[#2a2a3a] text-[11px] text-[#8a8a8a] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>
-        <span className="text-left">ETF</span>
+        <span>ETF</span>
         <span className="text-center">시그널</span>
         <span className="text-right">점수</span>
         <span className="text-right">1일%</span>
         <span className="text-right">5일%</span>
         <span className="text-right">RSI</span>
       </div>
-
-      {/* 데이터 */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-8 mx-3 my-1 bg-[#1a2535] animate-pulse rounded-sm" />
+            <div key={i} className="h-[32px] mx-2 my-px bg-[#1a2535] animate-pulse rounded-sm" />
           ))
         ) : items.length === 0 ? (
           <div className="flex items-center justify-center h-full text-[#334155]">데이터 없음</div>
         ) : (
-          items.map(item => (
-            <div key={item.etf_code} className="grid gap-2 px-3 py-1.5 border-b border-[#1a2535]/30 hover:bg-[#0d1420] items-center"
+          items.map((item, i) => (
+            <div key={item.etf_code} className={`grid px-2 py-1 border-b border-[#2a2a3a]/30 hover:bg-[#0d1420] items-center ${i % 2 === 1 ? 'bg-[#0d1117]' : ''}`}
               style={{ gridTemplateColumns: COLS }}>
               <div className="truncate">
-                <span className="text-[#e2e8f0] text-sm font-bold">{item.sector}</span>
-                <span className="text-[#334155] ml-1 text-[10px]">{item.etf_name}</span>
+                <span className="text-[13px] text-[#e2e8f0] font-medium">{item.sector}</span>
+                <span className="text-[10px] text-[#555] ml-1">{item.etf_name}</span>
               </div>
               <div className="text-center">
-                <span className={`text-[9px] px-1.5 py-0.5 rounded-sm border font-bold ${GRADE_COLOR[item.grade] ?? 'text-[#64748b]'}`}>
+                <span className={`text-[10px] px-1 py-0.5 rounded-sm border font-bold ${GRADE_COLOR[item.grade] ?? 'text-[#64748b]'}`}>
                   {item.grade}
                 </span>
               </div>
-              <span className="text-right text-[#e2e8f0] font-bold">{item.score.toFixed(0)}</span>
-              <span className={`text-right font-bold ${item.ret_1 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-                {item.ret_1 >= 0 ? '+' : ''}{item.ret_1.toFixed(1)}%
+              <span className="text-right text-[13px] text-[#e2e8f0] font-bold tabular-nums">{item.score.toFixed(0)}</span>
+              <span className={`text-right text-[13px] font-bold tabular-nums ${item.ret_1 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+                {item.ret_1 >= 0 ? '+' : ''}{item.ret_1.toFixed(1)}
               </span>
-              <span className={`text-right font-bold ${item.ret_5 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
-                {item.ret_5 >= 0 ? '+' : ''}{item.ret_5.toFixed(1)}%
+              <span className={`text-right text-[13px] font-bold tabular-nums ${item.ret_5 >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+                {item.ret_5 >= 0 ? '+' : ''}{item.ret_5.toFixed(1)}
               </span>
-              <span className={`text-right font-bold ${
-                item.rsi >= 70 ? 'text-[#ff3b5c]' :
-                item.rsi <= 30 ? 'text-[#0ea5e9]' : 'text-[#64748b]'
-              }`}>
-                {item.rsi.toFixed(0)}
-              </span>
+              <span className={`text-right text-[13px] tabular-nums ${
+                item.rsi >= 70 ? 'text-[#ff3b5c]' : item.rsi <= 30 ? 'text-[#0ea5e9]' : 'text-[#64748b]'
+              }`}>{item.rsi.toFixed(0)}</span>
             </div>
           ))
         )}
