@@ -1,0 +1,31 @@
+import { getSupabaseAdmin } from '@/lib/supabase'
+import { NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
+export async function GET() {
+  try {
+    const supabase = getSupabaseAdmin()
+
+    const { data, error } = await supabase
+      .from('paper_trades')
+      .select('*')
+      .order('trade_date', { ascending: false })
+      .limit(50)
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    const latest = data?.[0]
+    return NextResponse.json({
+      trades: data,
+      cumulative: {
+        pf: latest?.cumulative_pf ?? 0,
+        mdd: latest?.cumulative_mdd ?? 0,
+        win_rate: latest?.win_rate ?? 0,
+        total_trades: data?.length ?? 0,
+      },
+    })
+  } catch {
+    return NextResponse.json({ trades: [], cumulative: { pf: 0, mdd: 0, win_rate: 0, total_trades: 0 } })
+  }
+}

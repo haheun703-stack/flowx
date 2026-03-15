@@ -381,3 +381,111 @@ export function useAiRecommend() {
     refetchInterval: 1000 * 60 * 60,
   })
 }
+
+// ============================================
+// Supabase-backed APIs (Phase B)
+// ============================================
+
+// --- ETF 시그널 (Supabase: etf_signals) ---
+export interface EtfSignalItem {
+  date: string
+  sector: string
+  etf_code: string
+  etf_name: string
+  close: number
+  ret_1: number
+  ret_5: number
+  ret_20: number
+  rsi: number
+  score: number
+  grade: string
+  sector_rotation_rank: number
+  reasons: string[]
+}
+
+export function useEtfSignals() {
+  return useQuery<EtfSignalItem[]>({
+    queryKey: ['etf-signals'],
+    queryFn: () => axios.get('/api/etf-signals').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- 중국자금 흐름 (Supabase: china_flow) ---
+export interface ChinaFlowItem {
+  date: string
+  ticker: string
+  name: string
+  signal: string
+  score: number
+  reasons: string[]
+  foreign_net_5d: number
+  foreign_zscore: number
+  ewy_decouple: boolean
+  consecutive_days: number
+  pct_change_5d: number
+}
+
+export function useChinaFlow() {
+  return useQuery<ChinaFlowItem[]>({
+    queryKey: ['china-flow'],
+    queryFn: () => axios.get('/api/china-flow').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- 페이퍼 트레이딩 수익률 (Supabase: paper_trades) ---
+export interface PaperTrade {
+  trade_date: string
+  ticker: string
+  name: string
+  side: string
+  entry_price: number
+  exit_price: number
+  pnl_pct: number
+  cumulative_pf: number
+  cumulative_mdd: number
+  win_rate: number
+}
+
+export interface PaperTradesData {
+  trades: PaperTrade[]
+  cumulative: {
+    pf: number
+    mdd: number
+    win_rate: number
+    total_trades: number
+  }
+}
+
+export function usePaperTrades() {
+  return useQuery<PaperTradesData>({
+    queryKey: ['paper-trades'],
+    queryFn: () => axios.get('/api/paper-trades').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- 단기 시그널 (Supabase: short_signals) ---
+export interface ShortSignalItem {
+  date: string
+  ticker: string
+  name: string
+  signal_type: string
+  grade: string
+  total_score: number
+  volume_ratio: number
+  reasons: string[]
+}
+
+export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
+  return useQuery<ShortSignalItem[]>({
+    queryKey: ['short-signals', type],
+    queryFn: () => axios.get(`/api/short-signals?type=${type}`).then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
