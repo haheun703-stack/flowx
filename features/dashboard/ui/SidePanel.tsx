@@ -20,7 +20,7 @@ export function SidePanel() {
 
       {/* 헤더 */}
       <div className="px-4 py-3 border-b border-[#1a2535] flex items-center justify-between">
-        <span className="text-[#e2e8f0] text-xl font-black tracking-widest uppercase">장세 판단</span>
+        <span className="text-[#e2e8f0] text-xl font-black uppercase">장세판단</span>
         <span className="text-[#64748b] font-bold">기준 {data?.generated_at ?? ''}</span>
       </div>
 

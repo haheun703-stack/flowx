@@ -42,12 +42,12 @@ export function HeroSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#00ff88] opacity-[0.03] blur-[100px] pointer-events-none" />
 
       {/* 대형 로고 */}
-      <FlowxLogo variant="large" showTagline={true} className="relative mb-12" />
+      <FlowxLogo variant="hero" showTagline={true} className="relative mb-12" />
 
       {/* 배지 */}
-      <div className="relative flex items-center gap-2 mb-8 px-4 py-2 border border-[#00ff88]/30 rounded-full bg-[#00ff88]/5">
-        <span className="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse" />
-        <span className="text-xs text-[#00ff88] font-mono tracking-widest uppercase">
+      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[#00ff88]/30 rounded-full bg-[#00ff88]/5">
+        <span className="w-4 h-4 rounded-full bg-[#00ff88] animate-pulse" />
+        <span className="text-2xl sm:text-3xl text-[#00ff88] font-mono tracking-widest uppercase">
           BETA — 무료 공개 중
         </span>
       </div>

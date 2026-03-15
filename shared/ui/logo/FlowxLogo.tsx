@@ -3,7 +3,7 @@
 import { useId } from 'react'
 
 interface Props {
-  variant?: 'small' | 'default' | 'large'
+  variant?: 'small' | 'default' | 'large' | 'hero'
   showTagline?: boolean
   className?: string
 }
@@ -12,6 +12,7 @@ const SIZES = {
   small:   { icon: 32,  fontSize: 18, tagSize: 7,  gap: 8  },
   default: { icon: 40,  fontSize: 24, tagSize: 8,  gap: 10 },
   large:   { icon: 56,  fontSize: 32, tagSize: 10, gap: 14 },
+  hero:    { icon: 160, fontSize: 96, tagSize: 28, gap: 28 },
 }
 
 export function FlowxLogo({
