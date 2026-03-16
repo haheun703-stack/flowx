@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { isMarketOpen } from '@/features/market-ticker/api/fetchKoreanTickers'
+import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 export interface TreemapStock {
   ticker: string

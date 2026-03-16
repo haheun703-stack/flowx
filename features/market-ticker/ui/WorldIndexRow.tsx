@@ -104,7 +104,7 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
 
       {/* 나머지 마퀴 스크롤 영역 */}
       <div className="flex overflow-hidden relative flex-1 group">
-        <div className="flex animate-ticker-global group-hover:[animation-play-state:paused]">
+        <div className="flex animate-ticker group-hover:[animation-play-state:paused]">
           {/* 2배 복제 → 끊김 없는 무한 루프 */}
           {[...chips, ...chips].map((chip, i) => (
             chip.type === 'sep'

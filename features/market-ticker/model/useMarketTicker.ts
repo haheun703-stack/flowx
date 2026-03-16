@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { WorldIndex, KoreanTicker } from '../types'
-import { isMarketOpen } from '../api/fetchKoreanTickers'
+import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 export function useMarketTicker() {
   // 장 중이면 5분, 장 외면 10분 갱신

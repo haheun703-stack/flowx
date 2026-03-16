@@ -3,7 +3,8 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { IntradayPoint, IndexCard, SectorData, SupplyStock, WatchItem } from '../types'
-import { isMarketOpen } from '@/features/market-ticker/api/fetchKoreanTickers'
+import { KoreanTicker, WorldIndex } from '@/features/market-ticker/types'
+import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 export function useMarketSummary() {
   const marketOpen = isMarketOpen()
@@ -24,12 +25,12 @@ export function useMarketSummary() {
         axios.get('/api/korean-tickers').then(r => r.data),
         axios.get('/api/world-indices').then(r => r.data),
       ])
-      const kospi = kr.find((t: any) => t.code === '0001')
-      const kosdaq = kr.find((t: any) => t.code === '1001')
+      const kospi = kr.find((t: KoreanTicker) => t.code === '0001')
+      const kosdaq = kr.find((t: KoreanTicker) => t.code === '1001')
       return [
         { name: 'KOSPI', code: '0001', price: kospi?.price ?? 0, change: 0, changePercent: kospi?.changePercent ?? 0, currency: 'KRW' },
         { name: 'KOSDAQ', code: '1001', price: kosdaq?.price ?? 0, change: 0, changePercent: kosdaq?.changePercent ?? 0, currency: 'KRW' },
-        ...world.slice(0, 4).map((w: any) => ({
+        ...world.slice(0, 4).map((w: WorldIndex) => ({
           name: w.name, code: w.symbol, price: w.price, change: w.change, changePercent: w.changePercent, currency: w.currency,
         })),
       ] as IndexCard[]
@@ -58,8 +59,8 @@ export function useMarketSummary() {
     queryFn: async () => {
       const kr = await axios.get('/api/korean-tickers').then(r => r.data)
       return kr
-        .filter((t: any) => !t.isIndex)
-        .map((t: any) => ({
+        .filter((t: KoreanTicker) => !t.isIndex)
+        .map((t: KoreanTicker) => ({
           code: t.code, name: t.name, price: t.price, changePercent: t.changePercent,
         }))
     },

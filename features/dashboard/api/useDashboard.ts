@@ -2,11 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { isMarketOpen } from '@/features/market-ticker/api/fetchKoreanTickers'
-
-function useRefetchInterval(fastMs: number, slowMs: number) {
-  return isMarketOpen() ? fastMs : slowMs
-}
+import { useRefetchInterval } from '@/shared/lib/marketUtils'
 
 // --- Tomorrow Picks ---
 export interface PickItem {

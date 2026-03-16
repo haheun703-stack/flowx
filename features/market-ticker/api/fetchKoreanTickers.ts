@@ -1,7 +1,6 @@
 import { KoreanTicker } from '../types'
 import { getKISToken } from '@/shared/lib/kisAuth'
 import { getSupabaseAdmin } from '@/lib/supabase'
-
 export const KOREAN_STOCKS = [
   { code: '005930', name: '삼성전자' },
   { code: '000660', name: 'SK하이닉스' },
@@ -25,20 +24,6 @@ export const KOREAN_STOCKS = [
   { code: '032830', name: '삼성생명' },
 ]
 
-// 장 중 여부 판단 (KST 기준 09:00 ~ 15:30)
-export function isMarketOpen(): boolean {
-  const now = new Date()
-  // UTC → KST (+9시간)
-  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000)
-  const hours = kst.getUTCHours()
-  const minutes = kst.getUTCMinutes()
-  const day = kst.getUTCDay() // 0=일, 6=토
-
-  if (day === 0 || day === 6) return false // 주말 제외
-
-  const timeInMin = hours * 60 + minutes
-  return timeInMin >= 9 * 60 && timeInMin <= 15 * 60 + 30
-}
 
 // 한투 API — 주식 현재가 조회
 export async function fetchKISPrice(

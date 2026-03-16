@@ -2,21 +2,11 @@ import { NextResponse } from 'next/server'
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import path from 'path'
 import { fetchIntradayKOSPI } from '@/features/market-summary/api/fetchIntradayIndex'
+import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 const CACHE_DIR = path.resolve(process.cwd(), '.cache')
 const CACHE_FILE = path.join(CACHE_DIR, 'intraday-kospi.json')
 const DATA_ROOT = path.resolve(process.cwd(), '..', '_SPECS', 'data')
-
-// --- helpers ---
-
-function isMarketOpen(): boolean {
-  const now = new Date()
-  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000)
-  const day = kst.getUTCDay()
-  if (day === 0 || day === 6) return false
-  const hhmm = kst.getUTCHours() * 100 + kst.getUTCMinutes()
-  return hhmm >= 850 && hhmm <= 1540
-}
 
 function saveCache(raw: { time: string; value: number }[]) {
   try {
