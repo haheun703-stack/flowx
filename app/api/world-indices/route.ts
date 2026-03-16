@@ -4,7 +4,8 @@ import { fetchWorldIndices } from '@/features/market-ticker/api/fetchWorldIndice
 export async function GET() {
   try {
     return NextResponse.json(await fetchWorldIndices())
-  } catch {
+  } catch (e) {
+    console.error('world-indices error:', e)
     return NextResponse.json([], { status: 500 })
   }
 }

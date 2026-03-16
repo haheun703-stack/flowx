@@ -52,7 +52,8 @@ export async function GET() {
     const parsed = JSON.parse(clean)
 
     return NextResponse.json(parsed)
-  } catch {
+  } catch (e) {
+    console.error('ai-recommend error:', e)
     return NextResponse.json({
       date: new Date().toISOString().split('T')[0],
       market_summary: '데이터 로딩 중...',

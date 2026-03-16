@@ -38,7 +38,8 @@ export async function GET() {
       pct_change_5d: (row.change_5d_pct as number) ?? 0,
     }))
     return NextResponse.json(mapped)
-  } catch {
+  } catch (e) {
+    console.error('china-flow error:', e)
     return NextResponse.json([])
   }
 }

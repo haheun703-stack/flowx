@@ -5,7 +5,8 @@ export async function GET(req: NextRequest) {
   const ticker = req.nextUrl.searchParams.get('ticker') || '005930'
   try {
     return NextResponse.json(await fetchOHLCV(ticker))
-  } catch {
+  } catch (e) {
+    console.error('ohlcv error:', e)
     return NextResponse.json({ error: 'fetch failed' }, { status: 500 })
   }
 }

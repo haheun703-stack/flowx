@@ -10,7 +10,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data, {
       headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60' },
     })
-  } catch {
+  } catch (e) {
+    console.error('supply error:', e)
     return NextResponse.json({ error: 'fetch failed' }, { status: 500 })
   }
 }

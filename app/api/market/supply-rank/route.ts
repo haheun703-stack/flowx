@@ -44,7 +44,8 @@ export async function GET() {
       }))
 
     return NextResponse.json({ foreign, inst })
-  } catch {
+  } catch (e) {
+    console.error('market/supply-rank error:', e)
     return NextResponse.json({ foreign: [], inst: [] }, { status: 500 })
   }
 }

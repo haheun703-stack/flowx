@@ -44,7 +44,8 @@ export async function GET() {
       reasons: [],
     }))
     return NextResponse.json(mapped)
-  } catch {
+  } catch (e) {
+    console.error('etf-signals error:', e)
     return NextResponse.json([])
   }
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { fetchDailyKOSPI } from '@/features/market-summary/api/fetchDailyKOSPI'
 
+export const revalidate = 300
+
 export async function GET() {
   try {
     const daily = await fetchDailyKOSPI(30)
@@ -29,7 +31,8 @@ export async function GET() {
       mode: 'daily',
       lastDate,
     })
-  } catch {
+  } catch (e) {
+    console.error('market/daily error:', e)
     return NextResponse.json(
       { points: [], currentPrice: 0, change: 0, changePercent: 0, marketOpen: false, mode: 'daily', lastDate: '' },
       { status: 500 },

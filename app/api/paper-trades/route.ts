@@ -25,7 +25,8 @@ export async function GET() {
         total_trades: data?.length ?? 0,
       },
     })
-  } catch {
+  } catch (e) {
+    console.error('paper-trades error:', e)
     return NextResponse.json({ trades: [], cumulative: { pf: 0, mdd: 0, win_rate: 0, total_trades: 0 } })
   }
 }
