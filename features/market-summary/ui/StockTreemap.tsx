@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { hierarchy, treemap, treemapSquarify, HierarchyRectangularNode } from 'd3-hierarchy'
 import { TreemapSector } from '../model/useTreemap'
 
+export type SizeBy = 'marketCap' | 'tradingValue' | 'changeAbs'
+
 const WIDTH = 1200
 const HEIGHT = 900
 const FONT = 'var(--font-jetbrains), monospace'
@@ -26,9 +28,8 @@ function getTextColor(pct: number): string {
   return '#64748b'
 }
 
-/** 박스 크기에 맞는 폰트 크기 계산 (너비/높이 모두 고려) */
+/** 박스 크기에 맞는 폰트 크기 계산 */
 function fitFontSize(text: string, boxW: number, boxH: number, maxSize: number): number {
-  // 글자 하나당 약 0.6em 너비 (monospace 기준)
   const charW = text.length * 0.6
   const byWidth = (boxW * 0.85) / charW
   const byHeight = boxH * 0.65
@@ -43,18 +44,34 @@ function truncate(text: string, boxW: number, fontSize: number): string {
   return text.slice(0, maxChars - 1) + '..'
 }
 
-interface LeafNode {
+export interface LeafNode {
   ticker: string
   name: string
   sector: string
   marketCap: number
   changePercent: number
+  tradingValue: number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RectNode = HierarchyRectangularNode<any>
 
-export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
+function getSizeValue(stock: LeafNode, sizeBy: SizeBy): number {
+  switch (sizeBy) {
+    case 'marketCap': return stock.marketCap
+    case 'tradingValue': return stock.tradingValue || 1
+    case 'changeAbs': return Math.abs(stock.changePercent) * 100 + 1 // 0% 방지
+  }
+}
+
+interface StockTreemapProps {
+  sectors: TreemapSector[]
+  sizeBy?: SizeBy
+  selectedTicker?: string | null
+  onStockClick?: (stock: LeafNode) => void
+}
+
+export function StockTreemap({ sectors, sizeBy = 'marketCap', selectedTicker, onStockClick }: StockTreemapProps) {
   const [tooltip, setTooltip] = useState<{ cx: number; top: number; stock: LeafNode } | null>(null)
 
   const { leaves, sectorLabels } = useMemo(() => {
@@ -66,7 +83,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
         name: sec.name,
         children: sec.stocks.map(s => ({
           name: s.name,
-          value: s.marketCap,
+          value: getSizeValue({ ...s, sector: sec.name } as LeafNode, sizeBy),
           _data: { ...s, sector: sec.name } as LeafNode,
         })),
       })),
@@ -99,7 +116,7 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
     }))
 
     return { leaves, sectorLabels }
-  }, [sectors])
+  }, [sectors, sizeBy])
 
   if (!sectors.length) {
     return (
@@ -130,43 +147,38 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
         ))}
 
         {/* 종목 박스 */}
-        {leaves.map((leaf, i) => {
+        {leaves.map((leaf) => {
           const w = leaf.x1 - leaf.x0
           const h = leaf.y1 - leaf.y0
           const d = leaf.data
+          const isSelected = selectedTicker === d.ticker
 
-          // 박스가 너무 작으면 텍스트 없이 색상만
           const tooSmall = w < 28 || h < 16
 
-          // 몇 줄 표시할지 결정 (세로로 긴 박스도 고려: w와 h 중 큰 쪽 기준)
           const pctText = `${d.changePercent >= 0 ? '+' : ''}${d.changePercent.toFixed(2)}%`
           let lines: { text: string; fill: string; bold: boolean }[] = []
 
           if (!tooSmall) {
-            const dim = Math.max(w, h) // 세로 박스면 h가 크므로 h 기준
+            const dim = Math.max(w, h)
             const narrow = Math.min(w, h)
             if (dim > 48 && narrow > 30) {
-              // 3줄: 종목명 + ticker + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
                 { text: d.ticker, fill: '#cbd5e1', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             } else if (dim > 32 && narrow > 20) {
-              // 2줄: 종목명 + 등락률
               lines = [
                 { text: d.name, fill: '#e2e8f0', bold: true },
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             } else {
-              // 1줄: 등락률만
               lines = [
                 { text: pctText, fill: getTextColor(d.changePercent), bold: true },
               ]
             }
           }
 
-          // 각 줄에 맞는 폰트 크기 계산
           const lineHeight = lines.length > 0 ? Math.min(h * 0.45 / lines.length, 17) : 0
           const totalTextH = lineHeight * lines.length
           const startY = leaf.y0 + (h - totalTextH) / 2 + lineHeight * 0.75
@@ -175,26 +187,24 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
             <g
               key={d.ticker}
               onMouseEnter={() => {
-                // 박스 중앙 x, 박스 상단 y 기준으로 툴팁 위치 고정
                 setTooltip({ cx: leaf.x0 + w / 2, top: leaf.y0, stock: d })
               }}
               onMouseLeave={() => setTooltip(null)}
+              onClick={() => onStockClick?.(d)}
               className="cursor-pointer"
             >
-              {/* 배경 박스 */}
               <rect
                 x={leaf.x0}
                 y={leaf.y0}
                 width={w}
                 height={h}
                 fill={getChangeColor(d.changePercent)}
-                stroke="#0a0f18"
-                strokeWidth={1}
+                stroke={isSelected ? '#fbbf24' : '#0a0f18'}
+                strokeWidth={isSelected ? 2 : 1}
                 rx={2}
                 className="transition-opacity hover:opacity-80"
               />
 
-              {/* 텍스트 */}
               <g>
                 {lines.map((line, li) => {
                   const fs = fitFontSize(line.text, w, lineHeight, 14)
@@ -222,18 +232,21 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
           )
         })}
 
-        {/* 툴팁 — 박스 바로 위에 중앙 정렬 */}
+        {/* 툴팁 */}
         {tooltip && (() => {
-          const TW = 180
-          const TH = 62
+          const TW = 200
+          const TH = 72
           const GAP = 6
-          // 박스 중앙 기준 좌우 클램프
           let tx = tooltip.cx - TW / 2
           if (tx < 4) tx = 4
           if (tx + TW > WIDTH - 4) tx = WIDTH - 4 - TW
-          // 박스 상단 위로 배치, 위에 공간 없으면 아래로
           let ty = tooltip.top - TH - GAP
           if (ty < 4) ty = tooltip.top + GAP
+
+          const tvText = tooltip.stock.tradingValue >= 10000
+            ? `${(tooltip.stock.tradingValue / 10000).toFixed(1)}조`
+            : `${Math.round(tooltip.stock.tradingValue)}억`
+
           return (
             <g>
               <rect
@@ -269,7 +282,15 @@ export function StockTreemap({ sectors }: { sectors: TreemapSector[] }) {
                 style={{ fontSize: 11, fontWeight: 700, fontFamily: FONT }}
               >
                 {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
-                {' · '}시총 {(tooltip.stock.marketCap / 10000).toFixed(1)}조원
+                {' · '}시총 {(tooltip.stock.marketCap / 10000).toFixed(1)}조
+              </text>
+              <text
+                x={tx + 10}
+                y={ty + 64}
+                className="fill-[#64748b]"
+                style={{ fontSize: 10, fontFamily: FONT }}
+              >
+                거래대금 {tvText}
               </text>
             </g>
           )

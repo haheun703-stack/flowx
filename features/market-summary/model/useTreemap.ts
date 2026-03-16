@@ -9,6 +9,7 @@ export interface TreemapStock {
   name: string
   marketCap: number
   changePercent: number
+  tradingValue: number
 }
 
 export interface TreemapSector {

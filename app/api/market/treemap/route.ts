@@ -14,6 +14,7 @@ interface NaverStock {
   closePrice: string
   fluctuationsRatio: string
   marketValue: string
+  accumulatedTradingValue: string
 }
 
 interface TreemapStock {
@@ -21,6 +22,7 @@ interface TreemapStock {
   name: string
   marketCap: number
   changePercent: number
+  tradingValue: number
 }
 
 interface TreemapSector {
@@ -70,6 +72,7 @@ export async function GET() {
         name: info.name,
         marketCap: parseNumber(item.marketValue), // 억원 단위
         changePercent: parseNumber(item.fluctuationsRatio),
+        tradingValue: parseNumber(item.accumulatedTradingValue), // 백만원 단위
       }
 
       if (stock.marketCap <= 0) continue
