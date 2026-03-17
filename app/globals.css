@@ -48,7 +48,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-mono), 'Arial', sans-serif;
   --font-mono: var(--font-jetbrains), 'Fira Code', monospace;
-  --font-display: var(--font-display);
+  --font-display: 'Georgia', serif;
 }
 
 /* DM Serif Display 헤드라인 폰트 */

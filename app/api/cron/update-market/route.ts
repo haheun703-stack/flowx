@@ -13,14 +13,14 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const CACHE_DIR = path.resolve(process.cwd(), '.cache')
+const CACHE_DIR = '/tmp/.cache'
 const CACHE_FILE = path.join(CACHE_DIR, 'market-snapshot.json')
 
 function saveToFile(snapshot: Record<string, unknown>) {
   try {
     mkdirSync(CACHE_DIR, { recursive: true })
     writeFileSync(CACHE_FILE, JSON.stringify(snapshot), 'utf-8')
-  } catch { /* ignore */ }
+  } catch { /* Vercel serverless에서 /tmp 외 쓰기 불가 시 무시 */ }
 }
 
 export async function GET(req: Request) {
@@ -48,6 +48,12 @@ export async function GET(req: Request) {
       changePercent: stockResults[i].changePercent,
       volume: stockResults[i].volume,
     }))
+
+    // 1-1. 전체 가격이 0이면 API 장애 — 기존 데이터 보호
+    const validStocks = stocks.filter(s => s.price > 0)
+    if (validStocks.length === 0 && kospi.price === 0) {
+      return NextResponse.json({ ok: false, error: 'All prices returned 0, skipping save to protect existing data' }, { status: 502 })
+    }
 
     // 2. 투자자 매매동향 + 업종 등락률 병렬 조회
     const [foreignInst, sectors] = await Promise.all([

@@ -65,7 +65,7 @@ const BASE_PRICES: Record<string, number> = {
 function simulatePrice(symbol: string): { price: number; change: number; changePercent: number } {
   const base = BASE_PRICES[symbol] ?? 100
   const seed = symbol.charCodeAt(0) + symbol.charCodeAt(symbol.length - 1) + new Date().getDate()
-  const noise = (Math.sin(seed * 127.1) * 43758.5453) % 1
+  const noise = (((Math.sin(seed * 127.1) * 43758.5453) % 1) + 1) % 1
   const pct = (noise - 0.5) * 3
   const chg = base * pct / 100
   return {
@@ -170,28 +170,40 @@ async function fetchForex(): Promise<WorldIndex[]> {
 
 // ── 암호화폐: Binance 24hr ticker ──
 async function fetchCrypto(): Promise<WorldIndex[]> {
-  const symbols = CRYPTO_META.map(m => `"${m.binance}"`).join(',')
-  const res = await fetch(
-    `https://api.binance.com/api/v3/ticker/24hr?symbols=[${symbols}]`,
-    { next: { revalidate: 120 } }
-  )
-  const data: { symbol: string; lastPrice: string; priceChange: string; priceChangePercent: string }[] = await res.json()
+  try {
+    const symbols = CRYPTO_META.map(m => `"${m.binance}"`).join(',')
+    const res = await fetch(
+      `https://api.binance.com/api/v3/ticker/24hr?symbols=[${symbols}]`,
+      { next: { revalidate: 120 } }
+    )
+    if (!res.ok) throw new Error(`Binance HTTP ${res.status}`)
+    const data = await res.json()
+    if (!Array.isArray(data)) throw new Error('Binance response not array')
 
-  return CRYPTO_META.map(meta => {
-    const ticker = data?.find(t => t.symbol === meta.binance)
-    if (ticker) {
-      const price = parseFloat(ticker.lastPrice)
-      const change = parseFloat(ticker.priceChange)
-      const changePercent = parseFloat(ticker.priceChangePercent)
-      return {
-        symbol: meta.symbol, name: meta.name, currency: meta.currency,
-        price, change: Math.round(change * 100) / 100, changePercent: Math.round(changePercent * 100) / 100,
-        category: 'crypto' as const, icon: meta.icon,
+    return CRYPTO_META.map(meta => {
+      const ticker = data.find((t: { symbol: string }) => t.symbol === meta.binance)
+      if (ticker) {
+        const price = parseFloat(ticker.lastPrice)
+        const change = parseFloat(ticker.priceChange)
+        const changePercent = parseFloat(ticker.priceChangePercent)
+        if (!isNaN(price) && price > 0) {
+          return {
+            symbol: meta.symbol, name: meta.name, currency: meta.currency,
+            price, change: isNaN(change) ? 0 : Math.round(change * 100) / 100,
+            changePercent: isNaN(changePercent) ? 0 : Math.round(changePercent * 100) / 100,
+            category: 'crypto' as const, icon: meta.icon,
+          }
+        }
       }
-    }
-    const sim = simulatePrice(meta.symbol)
-    return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'crypto' as const, icon: meta.icon }
-  })
+      const sim = simulatePrice(meta.symbol)
+      return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'crypto' as const, icon: meta.icon }
+    })
+  } catch {
+    return CRYPTO_META.map(meta => {
+      const sim = simulatePrice(meta.symbol)
+      return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'crypto' as const, icon: meta.icon }
+    })
+  }
 }
 
 // ── 채권: Yahoo Finance ──

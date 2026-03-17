@@ -42,6 +42,7 @@ export async function fetchKISPrice(
           'tr_id': 'FHKST01010100', // 주식 현재가 TR
         },
         next: { revalidate: 0 },
+        signal: AbortSignal.timeout(8000),
       }
     )
 
@@ -78,6 +79,7 @@ export async function fetchKISIndex(
           'tr_id': 'FHPUP02100000', // 지수 현재가 TR
         },
         next: { revalidate: 0 },
+        signal: AbortSignal.timeout(8000),
       }
     )
 
@@ -111,6 +113,7 @@ export async function fetchInvestorTrend(
           'tr_id': 'FHPTJ04400000', // 투자자별 매매동향
         },
         next: { revalidate: 0 },
+        signal: AbortSignal.timeout(8000),
       }
     )
 
@@ -174,6 +177,7 @@ export async function fetchSectorPrices(
                 'tr_id': 'FHPUP02100000',
               },
               next: { revalidate: 0 },
+              signal: AbortSignal.timeout(8000),
             }
           )
           if (!res.ok) return { name: s.name, changePercent: 0 }

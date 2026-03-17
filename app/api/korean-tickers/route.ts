@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server'
 import { readFileSync } from 'fs'
-import path from 'path'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { KOREAN_STOCKS } from '@/features/market-ticker/api/fetchKoreanTickers'
 import { KoreanTicker } from '@/features/market-ticker/types'
 
 export const revalidate = 300 // 5분 캐시
 
-const CACHE_FILE = path.resolve(process.cwd(), '.cache', 'market-snapshot.json')
+const CACHE_FILE = '/tmp/.cache/market-snapshot.json'
 
 /** cron이 저장한 Supabase/파일캐시에서 읽기 (KIS API 직접 호출 안 함) */
 export async function GET() {
@@ -95,9 +94,9 @@ function buildHardcodedFallback(): KoreanTicker[] {
     ...KOREAN_STOCKS.map(s => ({
       code: s.code,
       name: s.name,
-      price: FALLBACK[s.code]?.price || 0,
+      price: FALLBACK[s.code]?.price ?? 0,
       change: 0,
-      changePercent: FALLBACK[s.code]?.changePercent || 0,
+      changePercent: FALLBACK[s.code]?.changePercent ?? 0,
     })),
   ]
 }
