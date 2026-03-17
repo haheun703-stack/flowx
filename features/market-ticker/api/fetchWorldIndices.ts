@@ -41,9 +41,9 @@ const FOREX_META = [
 
 // ── 4. 암호화폐 메타 ──
 const CRYPTO_META = [
-  { symbol: 'BTC', name: '비트코인',  currency: 'USD', geckoId: 'bitcoin',  icon: 'btc' },
-  { symbol: 'ETH', name: '이더리움',  currency: 'USD', geckoId: 'ethereum', icon: 'eth' },
-  { symbol: 'XRP', name: '리플',      currency: 'USD', geckoId: 'ripple',   icon: 'xrp' },
+  { symbol: 'BTC', name: '비트코인',  currency: 'USD', binance: 'BTCUSDT',  icon: 'btc' },
+  { symbol: 'ETH', name: '이더리움',  currency: 'USD', binance: 'ETHUSDT',  icon: 'eth' },
+  { symbol: 'XRP', name: '리플',      currency: 'USD', binance: 'XRPUSDT',  icon: 'xrp' },
 ]
 
 // ── 5. 채권 메타 ──
@@ -168,23 +168,24 @@ async function fetchForex(): Promise<WorldIndex[]> {
   })
 }
 
-// ── 암호화폐: CoinGecko ──
+// ── 암호화폐: Binance 24hr ticker ──
 async function fetchCrypto(): Promise<WorldIndex[]> {
-  const ids = CRYPTO_META.map(m => m.geckoId).join(',')
+  const symbols = CRYPTO_META.map(m => `"${m.binance}"`).join(',')
   const res = await fetch(
-    `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`,
+    `https://api.binance.com/api/v3/ticker/24hr?symbols=[${symbols}]`,
     { next: { revalidate: 120 } }
   )
-  const data = await res.json()
+  const data: { symbol: string; lastPrice: string; priceChange: string; priceChangePercent: string }[] = await res.json()
 
   return CRYPTO_META.map(meta => {
-    const coin = data?.[meta.geckoId]
-    if (coin?.usd) {
-      const price = coin.usd
-      const pct = coin.usd_24h_change ?? 0
+    const ticker = data?.find(t => t.symbol === meta.binance)
+    if (ticker) {
+      const price = parseFloat(ticker.lastPrice)
+      const change = parseFloat(ticker.priceChange)
+      const changePercent = parseFloat(ticker.priceChangePercent)
       return {
         symbol: meta.symbol, name: meta.name, currency: meta.currency,
-        price, change: price * pct / 100, changePercent: Math.round(pct * 100) / 100,
+        price, change: Math.round(change * 100) / 100, changePercent: Math.round(changePercent * 100) / 100,
         category: 'crypto' as const, icon: meta.icon,
       }
     }
