@@ -2,24 +2,25 @@ import { WorldIndex } from '../types'
 
 /**
  * 글로벌 자산 데이터 (22개, 5개 카테고리)
- * 1) 지수 9개 — Naver Finance polling API
+ * 1) 지수 9개 — Yahoo Finance chart API (무료, User-Agent 필요)
  * 2) 원자재 4개 — Finnhub /quote
  * 3) 환율 4개 — Finnhub /forex/rates
  * 4) 암호화폐 3개 — CoinGecko simple API
- * 5) 채권 2개 — 시뮬레이션 폴백 (Finnhub 무료 미지원)
+ * 5) 채권 2개 — Yahoo Finance (US10Y, US2Y)
  * 각 소스 실패 시 시뮬레이션 폴백
  */
 
 // ── 1. 지수 메타 ──
 const INDICES_META = [
-  { symbol: 'SPX',   name: 'S&P 500',  currency: 'USD', cd: 'SPI@SPX',       icon: 'us' },
-  { symbol: 'IXIC',  name: '나스닥',   currency: 'USD', cd: 'NAS@IXIC',      icon: 'us' },
-  { symbol: 'DJI',   name: '다우',     currency: 'USD', cd: 'DJI@DJI',       icon: 'us' },
-  { symbol: 'N225',  name: '닛케이',   currency: 'JPY', cd: 'NI225@NI225',   icon: 'jp' },
-  { symbol: 'HSI',   name: '항셍',     currency: 'HKD', cd: 'HSI@HSI',       icon: 'hk' },
-  { symbol: 'GDAXI', name: 'DAX',      currency: 'EUR', cd: 'DAX@DAX',       icon: 'de' },
-  { symbol: 'SSEC',  name: '상해종합', currency: 'CNY', cd: 'SHS@SSEC',      icon: 'cn' },
-  { symbol: 'FTSE',  name: 'FTSE 100', currency: 'GBP', cd: 'STX@FTSE',     icon: 'gb' },
+  { symbol: 'SPX',   name: 'S&P 500',  currency: 'USD', yahoo: '%5EGSPC',     icon: 'us' },
+  { symbol: 'IXIC',  name: '나스닥',   currency: 'USD', yahoo: '%5EIXIC',     icon: 'us' },
+  { symbol: 'DJI',   name: '다우',     currency: 'USD', yahoo: '%5EDJI',      icon: 'us' },
+  { symbol: 'N225',  name: '닛케이',   currency: 'JPY', yahoo: '%5EN225',     icon: 'jp' },
+  { symbol: 'HSI',   name: '항셍',     currency: 'HKD', yahoo: '%5EHSI',      icon: 'hk' },
+  { symbol: 'GDAXI', name: 'DAX',      currency: 'EUR', yahoo: '%5EGDAXI',    icon: 'de' },
+  { symbol: 'SSEC',  name: '상해종합', currency: 'CNY', yahoo: '000001.SS',   icon: 'cn' },
+  { symbol: 'FTSE',  name: 'FTSE 100', currency: 'GBP', yahoo: '%5EFTSE',     icon: 'gb' },
+  { symbol: 'VIX',   name: 'VIX',      currency: 'USD', yahoo: '%5EVIX',      icon: 'vix' },
 ]
 
 // ── 2. 원자재 메타 ──
@@ -47,18 +48,18 @@ const CRYPTO_META = [
 
 // ── 5. 채권 메타 ──
 const BOND_META = [
-  { symbol: 'US10Y', name: 'US 10Y', currency: 'USD', icon: 'bond' },
-  { symbol: 'US2Y',  name: 'US 2Y',  currency: 'USD', icon: 'bond' },
+  { symbol: 'US10Y', name: 'US 10Y', currency: 'USD', yahoo: '%5ETNX', icon: 'bond' },
+  { symbol: 'US2Y',  name: 'US 2Y',  currency: 'USD', yahoo: '%5ETWO', icon: 'bond' },
 ]
 
-// ── 기준가 (폴백용) ──
+// ── 기준가 (폴백용, 2026-03-14 기준) ──
 const BASE_PRICES: Record<string, number> = {
-  SPX: 5670, IXIC: 17800, DJI: 42200, N225: 37500, HSI: 23100,
-  GDAXI: 22800, SSEC: 3250, FTSE: 8400, VIX: 18,
-  WTI: 72, GOLD: 2650, SILVER: 31, COPPER: 4.2,
-  USDKRW: 1380, DXY: 104.5, USDJPY: 149, EURUSD: 1.08,
-  BTC: 97000, ETH: 3400, XRP: 2.3,
-  US10Y: 4.35, US2Y: 4.65,
+  SPX: 6700, IXIC: 22374, DJI: 46946, N225: 54034, HSI: 26066,
+  GDAXI: 23564, SSEC: 4085, FTSE: 10317, VIX: 23.5,
+  WTI: 67, GOLD: 2990, SILVER: 33.7, COPPER: 4.9,
+  USDKRW: 1450, DXY: 103.5, USDJPY: 148.6, EURUSD: 1.088,
+  BTC: 84000, ETH: 1900, XRP: 2.3,
+  US10Y: 4.31, US2Y: 3.99,
 }
 
 function simulatePrice(symbol: string): { price: number; change: number; changePercent: number } {
@@ -74,39 +75,38 @@ function simulatePrice(symbol: string): { price: number; change: number; changeP
   }
 }
 
-// ── 지수: Naver Finance ──
-async function fetchIndicesFromNaver(): Promise<WorldIndex[]> {
-  const symbols = INDICES_META.map(i => i.cd).join(',')
-  const url = `https://polling.finance.naver.com/api/realtime?query=SERVICE_WORLD_INDEX:${symbols}`
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0' },
-    next: { revalidate: 120 },
-  })
-  const json = await res.json()
-  const datas = json?.result?.areas?.[0]?.datas ?? []
-
-  const results: WorldIndex[] = []
-  for (const meta of INDICES_META) {
-    const d = datas.find((x: any) => x.cd === meta.cd)
-    if (d) {
-      results.push({
-        symbol: meta.symbol, name: meta.name, currency: meta.currency,
-        price: (d.nv ?? 0) / 100,
-        change: (d.cv ?? 0) / 100,
-        changePercent: d.cr ?? 0,
-        category: 'index', icon: meta.icon,
+// ── 지수: Yahoo Finance chart API ──
+async function fetchIndicesFromYahoo(): Promise<WorldIndex[]> {
+  const results = await Promise.allSettled(
+    INDICES_META.map(async (meta) => {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${meta.yahoo}?interval=1d&range=1d`
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        next: { revalidate: 120 },
       })
-    } else {
-      const sim = simulatePrice(meta.symbol)
-      results.push({ symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'index', icon: meta.icon })
-    }
-  }
+      const json = await res.json()
+      const m = json?.chart?.result?.[0]?.meta
+      if (!m?.regularMarketPrice) throw new Error('no data')
 
-  // VIX — Naver 미지원, 항상 시뮬레이션
-  const vixSim = simulatePrice('VIX')
-  results.push({ symbol: 'VIX', name: 'VIX', currency: 'USD', ...vixSim, category: 'index', icon: 'vix' })
+      const price = m.regularMarketPrice
+      const prevClose = m.chartPreviousClose ?? price
+      const change = Math.round((price - prevClose) * 100) / 100
+      const changePercent = prevClose > 0 ? Math.round(((price - prevClose) / prevClose) * 10000) / 100 : 0
 
-  return results
+      return {
+        symbol: meta.symbol, name: meta.name, currency: meta.currency,
+        price, change, changePercent,
+        category: 'index' as const, icon: meta.icon,
+      }
+    })
+  )
+
+  return results.map((r, i) => {
+    if (r.status === 'fulfilled') return r.value
+    const meta = INDICES_META[i]
+    const sim = simulatePrice(meta.symbol)
+    return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'index' as const, icon: meta.icon }
+  })
 }
 
 // ── 원자재: Finnhub /quote ──
@@ -193,9 +193,35 @@ async function fetchCrypto(): Promise<WorldIndex[]> {
   })
 }
 
-// ── 채권: 시뮬레이션 (Finnhub 무료 미지원) ──
-function fetchBonds(): WorldIndex[] {
-  return BOND_META.map(meta => {
+// ── 채권: Yahoo Finance ──
+async function fetchBonds(): Promise<WorldIndex[]> {
+  const results = await Promise.allSettled(
+    BOND_META.map(async (meta) => {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${meta.yahoo}?interval=1d&range=1d`
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        next: { revalidate: 120 },
+      })
+      const json = await res.json()
+      const m = json?.chart?.result?.[0]?.meta
+      if (!m?.regularMarketPrice) throw new Error('no data')
+
+      const price = m.regularMarketPrice
+      const prevClose = m.chartPreviousClose ?? price
+      const change = Math.round((price - prevClose) * 100) / 100
+      const changePercent = prevClose > 0 ? Math.round(((price - prevClose) / prevClose) * 10000) / 100 : 0
+
+      return {
+        symbol: meta.symbol, name: meta.name, currency: meta.currency,
+        price, change, changePercent,
+        category: 'bond' as const, icon: meta.icon,
+      }
+    })
+  )
+
+  return results.map((r, i) => {
+    if (r.status === 'fulfilled') return r.value
+    const meta = BOND_META[i]
     const sim = simulatePrice(meta.symbol)
     return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'bond' as const, icon: meta.icon }
   })
@@ -203,11 +229,12 @@ function fetchBonds(): WorldIndex[] {
 
 // ── 메인 export ──
 export async function fetchWorldIndices(): Promise<WorldIndex[]> {
-  const [indices, commodities, forex, crypto] = await Promise.allSettled([
-    fetchIndicesFromNaver(),
+  const [indices, commodities, forex, crypto, bonds] = await Promise.allSettled([
+    fetchIndicesFromYahoo(),
     fetchCommodities(),
     fetchForex(),
     fetchCrypto(),
+    fetchBonds(),
   ])
 
   const resolve = <T>(r: PromiseSettledResult<T[]>, fallback: () => T[]): T[] =>
@@ -217,7 +244,7 @@ export async function fetchWorldIndices(): Promise<WorldIndex[]> {
     ...resolve(indices, () => INDICES_META.map(m => {
       const sim = simulatePrice(m.symbol)
       return { symbol: m.symbol, name: m.name, currency: m.currency, ...sim, category: 'index' as const, icon: m.icon }
-    }).concat([{ symbol: 'VIX', name: 'VIX', currency: 'USD', ...simulatePrice('VIX'), category: 'index' as const, icon: 'vix' }])),
+    })),
     ...resolve(commodities, () => COMMODITY_META.map(m => {
       const sim = simulatePrice(m.symbol)
       return { symbol: m.symbol, name: m.name, currency: m.currency, ...sim, category: 'commodity' as const, icon: m.icon }
@@ -230,6 +257,9 @@ export async function fetchWorldIndices(): Promise<WorldIndex[]> {
       const sim = simulatePrice(m.symbol)
       return { symbol: m.symbol, name: m.name, currency: m.currency, ...sim, category: 'crypto' as const, icon: m.icon }
     })),
-    ...fetchBonds(),
+    ...resolve(bonds, () => BOND_META.map(m => {
+      const sim = simulatePrice(m.symbol)
+      return { symbol: m.symbol, name: m.name, currency: m.currency, ...sim, category: 'bond' as const, icon: m.icon }
+    })),
   ]
 }
