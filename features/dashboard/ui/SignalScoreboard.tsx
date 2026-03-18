@@ -7,7 +7,7 @@ import { useScoreboard, type ScoreboardPeriod } from '../api/useDashboard'
 const PERIOD_LABELS: Record<ScoreboardPeriod, string> = { '30D': '30일', '60D': '60일', '90D': '90일', 'ALL': '전체' }
 
 // TODO: Toss Payments 연동 후 실제 유저 tier로 교체
-const IS_FREE = true
+const IS_FREE = false
 
 export function SignalScoreboard() {
   const [botType, setBotType] = useState<'QUANT' | 'DAYTRADING'>('QUANT')
