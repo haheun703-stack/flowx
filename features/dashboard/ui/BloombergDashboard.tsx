@@ -1,5 +1,6 @@
 'use client'
 
+import { SignalScoreboard } from './SignalScoreboard'
 import { StatusBar } from './StatusBar'
 import { SidePanel } from './SidePanel'
 import { AIRecommendPanel } from './AIRecommendPanel'
@@ -22,6 +23,9 @@ export function BloombergDashboard() {
 
       {/* 스크롤 가능 영역 */}
       <div className="flex-1 overflow-y-auto">
+        {/* 시그널 성적표 배너 */}
+        <SignalScoreboard />
+
         {/* KOSPI 히어로 차트 — 풀 width */}
         <HeroChart
           data={intraday?.points ?? []}

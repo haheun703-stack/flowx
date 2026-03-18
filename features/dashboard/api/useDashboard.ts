@@ -496,6 +496,85 @@ export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
   })
 }
 
+// ============================================
+// Phase C: 시그널 성적표 + 모닝 브리핑 (Supabase)
+// ============================================
+
+// --- 시그널 성적표 (Supabase: scoreboard) ---
+export interface ScoreboardData {
+  bot_type: string
+  period: number
+  win_rate: number
+  avg_return: number
+  total_signals: number
+  win_count: number
+  loss_count: number
+  best_return: number
+  worst_return: number
+  open_positions: number
+  recent_closed: { ticker_name: string; return_pct: number; close_date: string; signal_type: string }[]
+  updated_at: string | null
+}
+
+export function useScoreboard(botType: 'QUANT' | 'DAYTRADING' = 'QUANT', period: 30 | 60 | 90 = 30) {
+  return useQuery<ScoreboardData>({
+    queryKey: ['scoreboard', botType, period],
+    queryFn: () => axios.get(`/api/scoreboard?bot_type=${botType}&period=${period}`).then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+// --- 시그널 목록 (Supabase: signals) ---
+export interface SignalItem {
+  id: string
+  bot_type: string
+  ticker: string
+  ticker_name: string
+  signal_type: string
+  grade: string
+  score: number
+  entry_price: number
+  target_price: number
+  current_price: number
+  return_pct: number
+  status: string
+  signal_date: string
+  close_date: string | null
+}
+
+export function useSignals(botType?: string, status?: string) {
+  const params = new URLSearchParams()
+  if (botType) params.set('bot_type', botType)
+  if (status) params.set('status', status)
+  return useQuery<{ signals: SignalItem[]; count: number }>({
+    queryKey: ['signals', botType, status],
+    queryFn: () => axios.get(`/api/signals?${params}`).then(r => r.data),
+    staleTime: 1000 * 60,
+    refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
+  })
+}
+
+// --- 모닝 브리핑 Phase C (Supabase: morning_briefings) ---
+export interface MorningBriefingData {
+  date: string
+  market_status: string
+  us_summary: string
+  kr_summary: string
+  news_picks: { ticker: string; title: string }[]
+  sector_focus: string[]
+  kospi_close: number
+}
+
+export function useMorningBriefing() {
+  return useQuery<MorningBriefingData>({
+    queryKey: ['morning-briefing'],
+    queryFn: () => axios.get('/api/morning-briefing').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
 // --- 시장 스냅샷 (KIS API cron → Supabase/캐시) ---
 export interface MarketSnapshotStock {
   code: string
