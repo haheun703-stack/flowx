@@ -24,6 +24,10 @@ export function Navbar() {
           <Link href="/market/treemap" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2">
             트리맵
           </Link>
+          <Link href="/intelligence" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            인텔리전스
+            <span className="text-[8px] px-1 py-px rounded border border-[#00ff88]/40 text-[#00ff88] font-bold leading-tight">SIGNAL</span>
+          </Link>
           <Link href="/quant" className="text-xs text-gray-400 hover:text-[#f59e0b] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
             퀀트시스템
             <span className="text-[8px] px-1 py-px rounded border border-[#f59e0b]/40 text-[#f59e0b] font-bold leading-tight">PRO</span>
