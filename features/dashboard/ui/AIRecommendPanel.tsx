@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useShortSignals } from '../api/useDashboard'
+import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const GRADE_COLOR: Record<string, string> = {
   'AA': 'text-[#00ff88] border-[#00ff88]/30 bg-[#00ff88]/5',
@@ -21,15 +22,21 @@ const COLS = '64px 1fr 64px 56px 44px 36px'
 export function AIRecommendPanel() {
   const { data, isLoading } = useShortSignals('all')
   const stocks = data?.slice(0, 12) ?? []
+  const dateStr = stocks[0]?.date ?? ''
+  const rel = dateStr ? getRelativeDate(dateStr) : null
+  const isStale = rel ? rel.daysAgo >= 7 : false
 
   return (
-    <div className="flex flex-col h-full bg-[#0a0f18]" style={{ fontFamily: 'var(--font-terminal)' }}>
+    <div className={`flex flex-col h-full bg-[#0a0f18] ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse" />
           <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">AI 추천</span>
         </div>
-        <span className="text-[11px] text-[#8a8a8a] font-bold">{stocks[0]?.date ?? ''}</span>
+        <div className="flex items-center gap-2">
+          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
+          <span className="text-[11px] text-[#8a8a8a] font-bold">{dateStr}</span>
+        </div>
       </div>
       <div className="grid px-2 py-1 border-b border-[#2a2a3a] text-[11px] text-[#8a8a8a] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>

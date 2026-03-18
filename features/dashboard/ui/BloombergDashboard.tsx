@@ -1,6 +1,7 @@
 'use client'
 
 import { SignalScoreboard } from './SignalScoreboard'
+import { RecentClosedSignals } from './RecentClosedSignals'
 import { StatusBar } from './StatusBar'
 import { SidePanel } from './SidePanel'
 import { AIRecommendPanel } from './AIRecommendPanel'
@@ -11,7 +12,11 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
+import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 import { useDashboardDaily } from '../api/useDashboard'
+
+// TODO: Toss Payments 연동 후 실제 유저 tier로 교체
+const USER_TIER = 'FREE' as const
 
 export function BloombergDashboard() {
   const { data: intraday } = useDashboardDaily()
@@ -25,6 +30,9 @@ export function BloombergDashboard() {
       <div className="flex-1 overflow-y-auto">
         {/* 시그널 성적표 배너 */}
         <SignalScoreboard />
+
+        {/* 최근 청산 시그널 (가로 스크롤) */}
+        <RecentClosedSignals />
 
         {/* KOSPI 히어로 차트 — 풀 width */}
         <HeroChart
@@ -50,7 +58,9 @@ export function BloombergDashboard() {
                 <AIRecommendPanel />
               </div>
               <div className="flex-1 overflow-hidden">
-                <SmartMoneyPanel />
+                <PaywallBlur requiredTier="PRO" userTier={USER_TIER}>
+                  <SmartMoneyPanel />
+                </PaywallBlur>
               </div>
             </div>
 
@@ -76,7 +86,9 @@ export function BloombergDashboard() {
           {/* 스나이퍼 워치 + 모닝 브리핑 */}
           <div className="flex h-[360px]">
             <div className="flex-1 overflow-hidden border-r border-[#2a2a3a]">
-              <SniperWatchPanel />
+              <PaywallBlur requiredTier="PRO" userTier={USER_TIER}>
+                <SniperWatchPanel />
+              </PaywallBlur>
             </div>
             <div className="flex-1 overflow-hidden">
               <MorningNewsPanel />

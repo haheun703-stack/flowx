@@ -1,6 +1,7 @@
 'use client'
 
 import { useDashboardChinaMoney } from '../api/useDashboard'
+import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const SIGNAL_COLOR: Record<string, string> = {
   SURGE: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
@@ -15,9 +16,12 @@ const COLS = '1fr 60px 44px 48px 48px'
 export function ChinaMoneyPanel() {
   const { data, isLoading } = useDashboardChinaMoney()
   const items = data?.signals?.filter(s => s.signal !== 'NORMAL').slice(0, 15) ?? []
+  const dateStr = data?.date ?? ''
+  const rel = dateStr ? getRelativeDate(dateStr) : null
+  const isStale = rel ? rel.daysAgo >= 7 : false
 
   return (
-    <div className="flex flex-col h-full text-xs" style={{ fontFamily: 'var(--font-terminal)' }}>
+    <div className={`flex flex-col h-full text-xs ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">외국인 자본 흐름</span>
@@ -27,7 +31,10 @@ export function ChinaMoneyPanel() {
             </span>
           )}
         </div>
-        <span className="text-[11px] text-[#8a8a8a] font-bold">{data?.date ?? ''}</span>
+        <div className="flex items-center gap-2">
+          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
+          <span className="text-[11px] text-[#8a8a8a] font-bold">{dateStr}</span>
+        </div>
       </div>
       <div className="grid px-2 py-1 border-b border-[#2a2a3a] text-[11px] text-[#8a8a8a] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>

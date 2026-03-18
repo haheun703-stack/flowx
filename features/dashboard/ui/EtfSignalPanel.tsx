@@ -1,6 +1,7 @@
 'use client'
 
 import { useDashboardEtf } from '../api/useDashboard'
+import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const GRADE_COLOR: Record<string, string> = {
   '적극매수': 'text-[#00ff88] bg-[#00ff88]/10 border-[#00ff88]/30',
@@ -15,15 +16,21 @@ const COLS = '1fr 60px 48px 48px 48px 40px'
 export function EtfSignalPanel() {
   const { data, isLoading } = useDashboardEtf()
   const items = data?.etfs?.slice(0, 15) ?? []
+  const dateStr = data?.updated_at ?? ''
+  const rel = dateStr ? getRelativeDate(dateStr) : null
+  const isStale = rel ? rel.daysAgo >= 7 : false
 
   return (
-    <div className="flex flex-col h-full text-xs" style={{ fontFamily: 'var(--font-terminal)' }}>
+    <div className={`flex flex-col h-full text-xs ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">ETF 시그널</span>
           <span className="text-[11px] text-[#8a8a8a] font-bold">{data?.etf_count ?? 0}종목</span>
         </div>
-        <span className="text-[11px] text-[#8a8a8a] font-bold">{data?.updated_at ?? ''}</span>
+        <div className="flex items-center gap-2">
+          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
+          <span className="text-[11px] text-[#8a8a8a] font-bold">{dateStr}</span>
+        </div>
       </div>
       <div className="grid px-2 py-1 border-b border-[#2a2a3a] text-[11px] text-[#8a8a8a] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>

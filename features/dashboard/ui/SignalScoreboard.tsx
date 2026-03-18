@@ -1,9 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useScoreboard, type ScoreboardPeriod } from '../api/useDashboard'
 
 const PERIOD_LABELS: Record<ScoreboardPeriod, string> = { '30D': '30일', '60D': '60일', '90D': '90일', 'ALL': '전체' }
+
+// TODO: Toss Payments 연동 후 실제 유저 tier로 교체
+const IS_FREE = true
 
 export function SignalScoreboard() {
   const [botType, setBotType] = useState<'QUANT' | 'DAYTRADING'>('QUANT')
@@ -62,7 +66,7 @@ export function SignalScoreboard() {
           </div>
         ) : (
           <div className="flex gap-4">
-            {/* 적중률 */}
+            {/* 적중률 — FREE에도 노출 */}
             <div className="flex-1 bg-[#0a0f18] rounded-md p-3 border border-[#1a2535]">
               <div className="text-[10px] text-[#64748b] font-bold mb-1">적중률</div>
               <div className={`text-2xl font-bold tabular-nums ${winRate >= 60 ? 'text-[#00ff88]' : winRate >= 40 ? 'text-[#f59e0b]' : 'text-[#ff3b5c]'}`}>
@@ -70,46 +74,77 @@ export function SignalScoreboard() {
               </div>
             </div>
 
-            {/* 평균 수익률 */}
-            <div className="flex-1 bg-[#0a0f18] rounded-md p-3 border border-[#1a2535]">
-              <div className="text-[10px] text-[#64748b] font-bold mb-1">평균 수익률</div>
-              <div className={`text-2xl font-bold tabular-nums ${isPositive ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
-                {isPositive ? '+' : ''}{avgReturn.toFixed(1)}%
-              </div>
-            </div>
-
-            {/* 시그널 통계 */}
-            <div className="flex-1 bg-[#0a0f18] rounded-md p-3 border border-[#1a2535]">
-              <div className="text-[10px] text-[#64748b] font-bold mb-1">시그널</div>
-              <div className="text-lg font-bold text-[#e2e8f0] tabular-nums">
-                {data?.total_signals ?? 0}건
-              </div>
-              <div className="text-[10px] text-[#64748b]">
-                성공 <span className="text-[#00ff88]">{data?.win_count ?? 0}</span> / 실패 <span className="text-[#ff3b5c]">{data?.loss_count ?? 0}</span>
-              </div>
-            </div>
-
-            {/* 최근 청산 */}
-            <div className="flex-[1.5] bg-[#0a0f18] rounded-md p-3 border border-[#1a2535]">
-              <div className="text-[10px] text-[#64748b] font-bold mb-1">최근 청산</div>
-              {data?.recent_closed && data.recent_closed.length > 0 ? (
-                <div className="space-y-0.5">
-                  {data.recent_closed.slice(0, 3).map((s, i) => (
-                    <div key={i} className="flex items-center justify-between text-[11px]">
-                      <span className="text-[#cbd5e1]">{s.ticker_name}</span>
-                      <span className={`font-bold tabular-nums ${s.return_pct >= 0 ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
-                        {s.return_pct >= 0 ? '+' : ''}{s.return_pct}%
-                      </span>
-                    </div>
-                  ))}
+            {/* 평균 수익률 — FREE: 블러 */}
+            <div className="flex-1 relative">
+              <div className={`bg-[#0a0f18] rounded-md p-3 border border-[#1a2535] ${IS_FREE ? 'select-none' : ''}`}
+                style={IS_FREE ? { filter: 'blur(6px)' } : undefined}>
+                <div className="text-[10px] text-[#64748b] font-bold mb-1">평균 수익률</div>
+                <div className={`text-2xl font-bold tabular-nums ${isPositive ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
+                  {isPositive ? '+' : ''}{avgReturn.toFixed(1)}%
                 </div>
-              ) : (
-                <div className="text-[11px] text-[#334155]">아직 청산 데이터 없음</div>
+              </div>
+              {IS_FREE && <ScoreboardLock />}
+            </div>
+
+            {/* 시그널 통계 — FREE: 블러 */}
+            <div className="flex-1 relative">
+              <div className={`bg-[#0a0f18] rounded-md p-3 border border-[#1a2535] ${IS_FREE ? 'select-none' : ''}`}
+                style={IS_FREE ? { filter: 'blur(6px)' } : undefined}>
+                <div className="text-[10px] text-[#64748b] font-bold mb-1">시그널</div>
+                <div className="text-lg font-bold text-[#e2e8f0] tabular-nums">
+                  {data?.total_signals ?? 0}건
+                </div>
+                <div className="text-[10px] text-[#64748b]">
+                  성공 <span className="text-[#00ff88]">{data?.win_count ?? 0}</span> / 실패 <span className="text-[#ff3b5c]">{data?.loss_count ?? 0}</span>
+                </div>
+              </div>
+              {IS_FREE && <ScoreboardLock />}
+            </div>
+
+            {/* 최근 청산 — FREE: 블러 + CTA */}
+            <div className="flex-[1.5] relative">
+              <div className={`bg-[#0a0f18] rounded-md p-3 border border-[#1a2535] ${IS_FREE ? 'select-none' : ''}`}
+                style={IS_FREE ? { filter: 'blur(6px)' } : undefined}>
+                <div className="text-[10px] text-[#64748b] font-bold mb-1">최근 청산</div>
+                {data?.recent_closed && data.recent_closed.length > 0 ? (
+                  <div className="space-y-0.5">
+                    {data.recent_closed.slice(0, 3).map((s, i) => (
+                      <div key={i} className="flex items-center justify-between text-[11px]">
+                        <span className="text-[#cbd5e1]">{s.ticker_name}</span>
+                        <span className={`font-bold tabular-nums ${s.return_pct >= 0 ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
+                          {s.return_pct >= 0 ? '+' : ''}{s.return_pct}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-[#334155]">아직 청산 데이터 없음</div>
+                )}
+              </div>
+              {IS_FREE && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Link href="/pricing"
+                    className="px-3 py-1.5 text-[11px] font-bold rounded bg-[#00ff88]/10 border border-[#00ff88]/40 text-[#00ff88] hover:bg-[#00ff88]/20 transition-colors">
+                    SIGNAL로 전체 보기
+                  </Link>
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+/** 블러된 카드 위에 표시되는 작은 자물쇠 */
+function ScoreboardLock() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="opacity-40">
+        <rect x="5" y="11" width="14" height="10" rx="2" stroke="#00ff88" strokeWidth="1.5" />
+        <path d="M8 11V7a4 4 0 018 0v4" stroke="#00ff88" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
     </div>
   )
 }

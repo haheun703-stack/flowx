@@ -1,6 +1,7 @@
 'use client'
 
 import { useShortSignals } from '../api/useDashboard'
+import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const GRADE_COLOR: Record<string, string> = {
   AA: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
@@ -25,15 +26,21 @@ const COLS = '1fr 36px 64px 64px 40px 52px'
 export function SniperWatchPanel() {
   const { data, isLoading } = useShortSignals('watch')
   const items = data?.slice(0, 15) ?? []
+  const dateStr = items[0]?.date ?? ''
+  const rel = dateStr ? getRelativeDate(dateStr) : null
+  const isStale = rel ? rel.daysAgo >= 7 : false
 
   return (
-    <div className="flex flex-col h-full text-xs" style={{ fontFamily: 'var(--font-terminal)' }}>
+    <div className={`flex flex-col h-full text-xs ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">스나이퍼 워치</span>
           <span className="text-[11px] text-[#8a8a8a] font-bold">매수 시그널</span>
         </div>
-        <span className="text-[11px] text-[#8a8a8a] font-bold">{items[0]?.date ?? ''}</span>
+        <div className="flex items-center gap-2">
+          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
+          <span className="text-[11px] text-[#8a8a8a] font-bold">{dateStr}</span>
+        </div>
       </div>
       <div className="grid px-2 py-1 border-b border-[#2a2a3a] text-[11px] text-[#8a8a8a] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>

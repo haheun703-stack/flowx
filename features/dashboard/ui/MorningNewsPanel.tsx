@@ -1,6 +1,7 @@
 'use client'
 
 import { useBriefing } from '../api/useDashboard'
+import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const DIR_COLOR: Record<string, string> = {
   BULL: 'text-[#ff3b5c] bg-[#ff3b5c]/10 border-[#ff3b5c]/30',
@@ -9,21 +10,10 @@ const DIR_COLOR: Record<string, string> = {
   CAUTION: 'text-[#f97316] bg-[#f97316]/10 border-[#f97316]/30',
 }
 
-/** 상대 시간 표시: '오늘', '어제', 'N일 전' */
-function relativeDate(dateStr: string): { label: string; daysAgo: number } {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const target = new Date(dateStr + 'T00:00:00')
-  const diff = Math.floor((today.getTime() - target.getTime()) / (1000 * 60 * 60 * 24))
-  if (diff <= 0) return { label: '오늘', daysAgo: 0 }
-  if (diff === 1) return { label: '어제', daysAgo: 1 }
-  return { label: `${diff}일 전`, daysAgo: diff }
-}
-
 export function MorningNewsPanel() {
   const { data, isLoading } = useBriefing()
 
-  const rel = data ? relativeDate(data.date) : null
+  const rel = data ? getRelativeDate(data.date) : null
   const isStale = rel ? rel.daysAgo >= 7 : false
 
   return (
