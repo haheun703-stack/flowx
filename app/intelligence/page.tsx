@@ -4,9 +4,6 @@ import { HotIssuesPanel } from '@/features/intelligence/ui/HotIssuesPanel'
 import { DisclosuresPanel } from '@/features/intelligence/ui/DisclosuresPanel'
 import { SupplyDemandPanel } from '@/features/intelligence/ui/SupplyDemandPanel'
 import { ScenarioAnalysisPanel } from '@/features/intelligence/ui/ScenarioAnalysisPanel'
-import { PaywallBlur } from '@/shared/ui/PaywallBlur'
-
-const USER_TIER = 'FREE' as const // TODO: Toss Payments 연동 후 실제 티어
 
 export default function IntelligencePage() {
   return (
@@ -38,14 +35,10 @@ export default function IntelligencePage() {
         {/* ROW 2: DART/EDGAR 공시 (2열) — SIGNAL ONLY */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg overflow-hidden min-h-[320px]">
-            <PaywallBlur requiredTier="SIGNAL" userTier={USER_TIER}>
               <DisclosuresPanel source="DART" title="DART 공시" accentColor="#00ff88" />
-            </PaywallBlur>
           </div>
           <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg overflow-hidden min-h-[320px]">
-            <PaywallBlur requiredTier="SIGNAL" userTier={USER_TIER}>
               <DisclosuresPanel source="EDGAR" title="EDGAR 공시" accentColor="#a855f7" />
-            </PaywallBlur>
           </div>
         </div>
 
@@ -55,9 +48,7 @@ export default function IntelligencePage() {
             <SupplyDemandPanel />
           </div>
           <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg overflow-hidden min-h-[400px]">
-            <PaywallBlur requiredTier="SIGNAL" userTier={USER_TIER}>
               <ScenarioAnalysisPanel />
-            </PaywallBlur>
           </div>
         </div>
       </div>
