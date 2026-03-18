@@ -503,20 +503,26 @@ export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
 // --- 시그널 성적표 (Supabase: scoreboard) ---
 export interface ScoreboardData {
   bot_type: string
-  period: number
+  period: string            // '30D' | '60D' | '90D' | 'ALL'
   win_rate: number
   avg_return: number
+  avg_win_pct: number
+  avg_lose_pct: number
   total_signals: number
   win_count: number
   loss_count: number
   best_return: number
   worst_return: number
+  best_signal: { ticker: string; name: string; return_pct: number } | null
+  worst_signal: { ticker: string; name: string; return_pct: number } | null
   open_positions: number
   recent_closed: { ticker_name: string; return_pct: number; close_date: string; signal_type: string }[]
   updated_at: string | null
 }
 
-export function useScoreboard(botType: 'QUANT' | 'DAYTRADING' = 'QUANT', period: 30 | 60 | 90 = 30) {
+export type ScoreboardPeriod = '30D' | '60D' | '90D' | 'ALL'
+
+export function useScoreboard(botType: 'QUANT' | 'DAYTRADING' = 'QUANT', period: ScoreboardPeriod = '30D') {
   return useQuery<ScoreboardData>({
     queryKey: ['scoreboard', botType, period],
     queryFn: () => axios.get(`/api/scoreboard?bot_type=${botType}&period=${period}`).then(r => r.data),
@@ -534,13 +540,18 @@ export interface SignalItem {
   signal_type: string
   grade: string
   score: number
+  multiplier: number
   entry_price: number
   target_price: number
+  stop_price: number
   current_price: number
   return_pct: number
+  max_return_pct: number
   status: string
+  memo: string | null
   signal_date: string
   close_date: string | null
+  close_reason: string | null
 }
 
 export function useSignals(botType?: string, status?: string) {
@@ -561,6 +572,7 @@ export interface MorningBriefingData {
   market_status: string
   us_summary: string
   kr_summary: string
+  full_report: string | null   // PAID 전용
   news_picks: { ticker: string; title: string }[]
   sector_focus: string[]
   kospi_close: number

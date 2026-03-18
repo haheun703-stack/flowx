@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useScoreboard } from '../api/useDashboard'
+import { useScoreboard, type ScoreboardPeriod } from '../api/useDashboard'
 
-const PERIOD_LABELS: Record<number, string> = { 30: '30일', 60: '60일', 90: '90일' }
+const PERIOD_LABELS: Record<ScoreboardPeriod, string> = { '30D': '30일', '60D': '60일', '90D': '90일', 'ALL': '전체' }
 
 export function SignalScoreboard() {
   const [botType, setBotType] = useState<'QUANT' | 'DAYTRADING'>('QUANT')
-  const [period, setPeriod] = useState<30 | 60 | 90>(30)
+  const [period, setPeriod] = useState<ScoreboardPeriod>('30D')
   const { data, isLoading } = useScoreboard(botType, period)
 
   const winRate = data?.win_rate ?? 0
@@ -38,7 +38,7 @@ export function SignalScoreboard() {
             </div>
           </div>
           <div className="flex gap-1">
-            {([30, 60, 90] as const).map(p => (
+            {(['30D', '60D', '90D', 'ALL'] as const).map(p => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}

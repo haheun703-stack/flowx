@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     let query = supabase
       .from('signals')
-      .select('*')
+      .select('id, bot_type, ticker, ticker_name, signal_type, grade, score, multiplier, entry_price, target_price, stop_price, current_price, return_pct, max_return_pct, status, memo, signal_date, close_date, close_reason')
       .order('signal_date', { ascending: false })
       .limit(limit)
 
