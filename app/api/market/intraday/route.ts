@@ -91,14 +91,16 @@ export async function GET() {
   const marketOpen = isMarketOpen()
 
   try {
-    // 1) 장중: KIS API 실시간 분봉
-    const raw = await fetchIntradayKOSPI()
-    if (raw.length > 0) {
-      saveCache(raw)
-      return NextResponse.json(buildIntradayResponse(raw, marketOpen))
+    // 1) 장중일 때만 KIS API 호출 — 장 마감 시간엔 캐시/폴백 사용
+    if (marketOpen) {
+      const raw = await fetchIntradayKOSPI()
+      if (raw.length > 0) {
+        saveCache(raw)
+        return NextResponse.json(buildIntradayResponse(raw, marketOpen))
+      }
     }
 
-    // 2) 장 마감: 오늘 캐시된 인트라데이 데이터
+    // 2) 장 마감 or API 빈 응답: 오늘 캐시된 인트라데이 데이터
     const cached = loadCache()
     if (cached) {
       return NextResponse.json(buildIntradayResponse(cached, marketOpen))
