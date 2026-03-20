@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 import { KOREAN_STOCKS } from '@/features/market-ticker/api/fetchKoreanTickers'
 import { KoreanTicker } from '@/features/market-ticker/types'
 
-export const revalidate = 300 // 5분 캐시
+export const dynamic = 'force-dynamic'
 
 const CACHE_FILE = '/tmp/.cache/market-snapshot.json'
 
