@@ -3,10 +3,18 @@
 import { useIntelligenceSupplyDemand } from '../api/useIntelligence'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
-function FlowBar({ label, value, streak, color }: { label: string; value: number; streak: number; color: string }) {
+/** 큰 숫자를 한국식 단위로 포맷 (억/만) */
+function formatKrNumber(v: number): string {
+  const abs = Math.abs(v)
+  const sign = v >= 0 ? '+' : '-'
+  if (abs >= 1_0000_0000) return `${sign}${(abs / 1_0000_0000).toFixed(1)}조`
+  if (abs >= 1_0000) return `${sign}${Math.round(abs / 1_0000).toLocaleString()}억`
+  return `${sign}${abs.toLocaleString()}`
+}
+
+function FlowBar({ label, value, maxBar, streak, color }: { label: string; value: number; maxBar: number; streak: number; color: string }) {
   const absVal = Math.abs(value)
-  const maxBar = 5000 // 5000억 기준 100%
-  const pct = Math.min((absVal / maxBar) * 100, 100)
+  const pct = maxBar > 0 ? Math.min((absVal / maxBar) * 100, 100) : 0
   const isPositive = value >= 0
 
   return (
@@ -22,9 +30,9 @@ function FlowBar({ label, value, streak, color }: { label: string; value: number
           }}
         />
       </div>
-      <span className={`text-[13px] font-bold tabular-nums w-16 text-right ${isPositive ? `text-[${color}]` : 'text-[#64748b]'}`}
+      <span className="text-[13px] font-bold tabular-nums w-20 text-right"
         style={{ color: isPositive ? color : '#64748b' }}>
-        {isPositive ? '+' : ''}{value.toLocaleString()}
+        {formatKrNumber(value)}
       </span>
       {streak !== 0 && (
         <span className={`text-[10px] font-bold w-8 text-right ${streak > 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
@@ -62,9 +70,21 @@ export function SupplyDemandPanel() {
           <div className="flex items-center justify-center h-full text-[#334155]">데이터 없음</div>
         ) : (
           <>
-            <FlowBar label="외국인" value={data.foreign_net} streak={data.foreign_streak} color="#ff3b5c" />
-            <FlowBar label="기관" value={data.inst_net} streak={data.inst_streak} color="#0ea5e9" />
-            <FlowBar label="개인" value={data.individual_net} streak={0} color="#f59e0b" />
+            {(() => {
+              const dynamicMax = Math.max(
+                Math.abs(data.foreign_net),
+                Math.abs(data.inst_net),
+                Math.abs(data.individual_net),
+                1
+              )
+              return (
+                <>
+                  <FlowBar label="외국인" value={data.foreign_net} maxBar={dynamicMax} streak={data.foreign_streak} color="#ff3b5c" />
+                  <FlowBar label="기관" value={data.inst_net} maxBar={dynamicMax} streak={data.inst_streak} color="#0ea5e9" />
+                  <FlowBar label="개인" value={data.individual_net} maxBar={dynamicMax} streak={0} color="#f59e0b" />
+                </>
+              )
+            })()}
 
             {data.summary && (
               <div className="mt-3 p-2 bg-[#0d1420] rounded border border-[#2a2a3a]">
