@@ -17,8 +17,8 @@ export async function GET(req: Request) {
       .select('*')
       .order('rank', { ascending: true })
 
-    // 봇이 scope 대신 category 컬럼을 사용할 수 있음
-    if (scope) query = query.or(`scope.eq.${scope},category.eq.${scope}`)
+    // 봇이 scope 대신 category 컬럼 사용
+    if (scope) query = query.eq('category', scope)
 
     if (dateStr) {
       query = query.eq('date', dateStr)
