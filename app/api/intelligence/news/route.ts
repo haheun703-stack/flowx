@@ -38,10 +38,26 @@ export async function GET(req: Request) {
     // 날짜별 그루핑
     const latestDate = data?.[0]?.date ?? null
 
+    // 봇 컬럼명 → 프론트엔드 타입 매핑
+    const items = (data ?? []).map((row: Record<string, unknown>) => ({
+      id: row.id,
+      date: row.date,
+      scope: row.scope ?? row.category ?? 'GLOBAL',
+      rank: row.rank,
+      title: row.title,
+      impact: row.impact ?? row.impact_level ?? 'MEDIUM',
+      impact_score: row.impact_score ?? 3,
+      kr_impact: row.kr_impact ?? row.summary ?? null,
+      related_tickers: row.related_tickers ?? [],
+      sectors: row.sectors ?? row.impact_sectors ?? [],
+      source: row.source ?? null,
+      published_at: row.published_at ?? null,
+    }))
+
     return NextResponse.json({
       date: latestDate,
-      items: data ?? [],
-      count: data?.length ?? 0,
+      items,
+      count: items.length,
     })
   } catch {
     return NextResponse.json({ error: 'Intelligence news unavailable' }, { status: 503 })
