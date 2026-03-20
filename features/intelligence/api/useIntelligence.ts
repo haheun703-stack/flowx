@@ -34,18 +34,34 @@ export interface DisclosureItem {
   original_url: string | null
 }
 
+export interface ScenarioOption {
+  name: string
+  probability: number
+  kospi_impact: string
+  description: string
+  affected_sectors: string[]
+  action: string
+  timeline: string
+  stock_impacts: { name: string; ticker: string; direction: string; sector?: string; note?: string }[]
+  tier: 'FREE' | 'SIGNAL' | 'VIP'
+}
+
 export interface ScenarioItem {
   id: string
   date: string
-  title: string
-  trigger_event: string
-  chain_steps: string[]
-  beneficiary_sectors: string[]
-  watch_tickers: { code: string; name: string }[]
-  confidence: number
-  time_frame: 'SHORT' | 'MID' | 'LONG'
-  reasoning: string | null
-  status: 'ACTIVE' | 'EXPIRED' | 'HIT' | 'MISS'
+  session: 'AM' | 'PM'
+  question: string
+  topic_type: string
+  scenarios: ScenarioOption[]
+  regime: string | null
+  geo_risk_score: number
+  active_chains: number
+  hit_rate_30d: number
+  hit_total_30d: number
+  actual_outcome: string | null
+  hit: boolean | null
+  outcome_tagged: boolean
+  tier: 'FREE' | 'SIGNAL' | 'VIP'
   created_at: string
   updated_at: string
 }
@@ -89,10 +105,11 @@ export function useIntelligenceDisclosures(source?: 'DART' | 'EDGAR') {
   })
 }
 
-export function useIntelligenceScenarios(status: string = 'ACTIVE') {
-  return useQuery<{ items: ScenarioItem[]; count: number }>({
-    queryKey: ['intelligence-scenarios', status],
-    queryFn: () => axios.get(`/api/intelligence/scenarios?status=${status}`).then(r => r.data),
+export function useIntelligenceScenarios(session?: 'AM' | 'PM') {
+  const params = session ? `?session=${session}` : ''
+  return useQuery<{ items: ScenarioItem[]; count: number; hit_summary?: { hit_rate_pct: number; total_tagged: number } }>({
+    queryKey: ['intelligence-scenarios', session],
+    queryFn: () => axios.get(`/api/intelligence/scenarios${params}`).then(r => r.data),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
