@@ -8,7 +8,7 @@ export default async function SectorPage({
   const { key } = await params
 
   return (
-    <div className="bg-[#131722] rounded-lg border border-[#2a2a3a] overflow-hidden mx-4 mt-4 mb-8" style={{ minHeight: '80vh' }}>
+    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden mx-4 mt-4 mb-8" style={{ minHeight: '80vh' }}>
       <SectorMapView initialSector={key} userTier="free" />
     </div>
   )

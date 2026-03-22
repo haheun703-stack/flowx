@@ -7,6 +7,7 @@ export interface StockNode {
   sector_key: string
   sector_name: string
   tier: number
+  sub_category?: string
   stock_name: string
   ticker: string
   market: string
@@ -15,6 +16,7 @@ export interface StockNode {
   volume_ratio: number
   foreign_net: number
   institution_net: number
+  theme_tags?: string[]
   updated_at: string
 }
 

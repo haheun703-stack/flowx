@@ -5,7 +5,7 @@ import { TIER_COLORS } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
-const CANVAS_HEIGHT = 750
+const CANVAS_HEIGHT = 850
 
 // ── 연결 라벨 한국어 쉬운 말 ──
 const RELATION_KO: Record<string, string> = {
@@ -68,6 +68,7 @@ interface NetNode {
   connections: number
   change_pct: number
   foreign_net: number
+  themeTags?: string[]
 }
 
 interface NetEdge {
@@ -89,41 +90,39 @@ function buildGraph(
     connectionCount[link.to_stock] = (connectionCount[link.to_stock] || 0) + 1
   }
 
-  // ── 티어별 고정 y + xStart/xGap 레이아웃 (겹침 방지) ──
-  const tierLayout: Record<number, { y: number; xStart: number; xGap: number }> = {
-    5: { y: 80, xStart: 100, xGap: 120 },
-    4: { y: 220, xStart: 60, xGap: 100 },
-    3: { y: 380, xStart: 150, xGap: 110 },
-    2: { y: 520, xStart: 200, xGap: 130 },
-    1: { y: 660, xStart: 80, xGap: 100 },
-  }
-
+  // ── 동적 레이아웃: 종목 수에 따라 xGap 자동 조절 ──
+  const tierYs = [80, 220, 380, 540, 700]
   const nodes: NetNode[] = []
 
   for (const tier of [5, 4, 3, 2, 1]) {
     const stocks = tiers[tier] ?? []
     if (stocks.length === 0) continue
-    const layout = tierLayout[tier]
+    const y = tierYs[5 - tier]
+    const margin = 60
+    const available = width - margin * 2
+    const xGap = Math.max(50, Math.min(120, available / Math.max(stocks.length, 1)))
+    const totalWidth = (stocks.length - 1) * xGap
+    const xStart = Math.max(margin, (width - totalWidth) / 2)
 
     stocks.forEach((stock, i) => {
       const conns = connectionCount[stock.stock_name] || 0
-      const radius = Math.max(25, conns * 4 + 14)
+      const radius = Math.max(20, Math.min(35, conns * 3 + 12))
 
-      const x = layout.xStart + i * layout.xGap
-      // 약간의 y 오프셋으로 자연스럽게
-      const yOffset = (i % 3 - 1) * 15
-      const y = layout.y + yOffset
+      const x = xStart + i * xGap
+      const yOffset = (i % 3 - 1) * 12
+      const yPos = y + yOffset
 
       nodes.push({
         name: stock.stock_name,
         ticker: stock.ticker,
         tier,
-        x: Math.min(Math.max(x, 50), width - 50),
-        y: Math.min(Math.max(y, 50), height - 50),
+        x: Math.min(Math.max(x, 30), width - 30),
+        y: Math.min(Math.max(yPos, 30), height - 30),
         radius,
         connections: conns,
         change_pct: stock.change_pct,
         foreign_net: stock.foreign_net,
+        themeTags: stock.theme_tags,
       })
     })
   }
@@ -141,9 +140,13 @@ function buildGraph(
 export function SectorNetwork({
   tiers,
   links,
+  stocks,
+  activeTheme,
 }: {
   tiers: Record<number, StockNode[]>
   links: SupplyLink[]
+  stocks?: StockNode[]
+  activeTheme?: string | null
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -154,6 +157,21 @@ export function SectorNetwork({
   const dragRef = useRef<{ node: NetNode; offsetX: number; offsetY: number } | null>(null)
   const needsDrawRef = useRef(true)
   const animRef = useRef<number>(0)
+  const themeMatchRef = useRef<Set<string>>(new Set())
+  const hasThemeRef = useRef(false)
+
+  // Update theme refs when activeTheme changes
+  useEffect(() => {
+    const set = new Set<string>()
+    if (activeTheme && stocks) {
+      for (const s of stocks) {
+        if (s.theme_tags?.includes(activeTheme)) set.add(s.stock_name)
+      }
+    }
+    themeMatchRef.current = set
+    hasThemeRef.current = !!activeTheme && set.size > 0
+    needsDrawRef.current = true
+  }, [activeTheme, stocks])
   const [tooltip, setTooltip] = useState<{
     x: number
     y: number
@@ -186,6 +204,8 @@ export function SectorNetwork({
     const activeNode = hovered || selected
     const nodeMap = new Map<string, NetNode>()
     for (const n of nodes) nodeMap.set(n.name, n)
+    const themeSet = themeMatchRef.current
+    const hasTheme = hasThemeRef.current
 
     // Find active connections
     const activeConnected = new Set<string>()
@@ -207,6 +227,7 @@ export function SectorNetwork({
 
       const isHL = activeNode && (e.from === activeNode || e.to === activeNode)
       const isDim = activeNode && !isHL
+      const isThemeDim = hasTheme && !activeNode && (!themeSet.has(e.from) || !themeSet.has(e.to))
 
       ctx.beginPath()
       const midX = (from.x + to.x) / 2
@@ -218,10 +239,10 @@ export function SectorNetwork({
         ctx.strokeStyle = '#A78BFA'
         ctx.lineWidth = 2.5
         ctx.globalAlpha = 0.9
-      } else if (isDim) {
+      } else if (isDim || isThemeDim) {
         ctx.strokeStyle = '#4B5563'
         ctx.lineWidth = 0.5
-        ctx.globalAlpha = 0.15
+        ctx.globalAlpha = 0.1
       } else {
         ctx.strokeStyle = '#4B5563'
         ctx.lineWidth = 0.8
@@ -238,9 +259,9 @@ export function SectorNetwork({
       const isSel = node.name === selected
       const isConn = activeConnected.has(node.name)
       const isDim = activeNode && !isHov && !isSel && !isConn
+      const isThemeDim = hasTheme && !activeNode && !themeSet.has(node.name)
 
-      // dim: 0.35 (안 보이지 않게)
-      ctx.globalAlpha = isDim ? 0.35 : 1
+      ctx.globalAlpha = isDim ? 0.35 : isThemeDim ? 0.1 : 1
 
       // Circle
       const drawRadius = (isHov || isSel) ? node.radius + 3 : node.radius

@@ -5,17 +5,28 @@ import { TIER_COLORS, TIER_LABELS, CONNECTION_COLOR } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
+/* ── Sub-category display order ── */
+const SUB_ORDER: Record<string, number> = {
+  ETF: 0, '글로벌대형': 1, '글로벌서플라이어': 2, '지주사': 3, IDM: 4,
+  '팹리스': 5, '파운드리': 6,
+  '전공정장비': 7, '후공정장비': 8, OSAT: 9,
+  '기판PCB': 10, '전력반도체': 11,
+  '전공정소재': 12, '검사테스트': 13, '클린룸설비': 14,
+}
+
 /* ── Stock Card ── */
 const StockCard = memo(function StockCard({
   stock,
   isHighlighted,
   isDimmed,
+  isThemeDimmed,
   badge,
   onClick,
 }: {
   stock: StockNode
   isHighlighted: boolean
   isDimmed: boolean
+  isThemeDimmed: boolean
   badge?: string
   onClick: () => void
 }) {
@@ -34,7 +45,7 @@ const StockCard = memo(function StockCard({
         borderRadius: 8,
         backgroundColor: colors.bg,
         border: `1.5px solid ${isHighlighted ? CONNECTION_COLOR : colors.border}`,
-        opacity: isDimmed ? 0.12 : 1,
+        opacity: isDimmed ? 0.12 : isThemeDimmed ? 0.15 : 1,
         transform: isHighlighted ? 'translateY(-2px)' : undefined,
         boxShadow: isHighlighted ? `0 4px 12px ${CONNECTION_COLOR}40` : undefined,
       }}
@@ -67,13 +78,68 @@ const StockCard = memo(function StockCard({
   )
 })
 
-/* ── Tier Lane ── */
+/* ── Sub-category Group within a Tier ── */
+function SubCategoryGroup({
+  subCategory,
+  stocks,
+  selectedStock,
+  connectedStocks,
+  badges,
+  themeMatchSet,
+  hasThemeFilter,
+  onStockClick,
+}: {
+  subCategory: string
+  stocks: StockNode[]
+  selectedStock: string | null
+  connectedStocks: Set<string>
+  badges: Record<string, string>
+  themeMatchSet: Set<string>
+  hasThemeFilter: boolean
+  onStockClick: (name: string) => void
+}) {
+  const hasSelection = !!selectedStock
+
+  return (
+    <div className="mb-1">
+      <div className="px-2 py-1" style={{ fontSize: 11, color: '#666', fontWeight: 600 }}>
+        {subCategory} ({stocks.length})
+      </div>
+      <div className="flex flex-wrap gap-2 px-1">
+        {stocks.map((stock) => {
+          const name = stock.stock_name
+          const isSelected = selectedStock === name
+          const isConnected = connectedStocks.has(name)
+          const isDimmed = hasSelection && !isSelected && !isConnected
+          const isHighlighted = isSelected || isConnected
+          const isThemeDimmed = hasThemeFilter && !themeMatchSet.has(name) && !hasSelection
+
+          return (
+            <StockCard
+              key={stock.id || stock.ticker}
+              stock={stock}
+              isHighlighted={isHighlighted}
+              isDimmed={isDimmed}
+              isThemeDimmed={isThemeDimmed}
+              badge={badges[name]}
+              onClick={() => onStockClick(name)}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/* ── Tier Lane (with sub-category grouping) ── */
 function TierLane({
   tier,
   stocks,
   selectedStock,
   connectedStocks,
   badges,
+  themeMatchSet,
+  hasThemeFilter,
   onStockClick,
 }: {
   tier: number
@@ -81,11 +147,27 @@ function TierLane({
   selectedStock: string | null
   connectedStocks: Set<string>
   badges: Record<string, string>
+  themeMatchSet: Set<string>
+  hasThemeFilter: boolean
   onStockClick: (name: string) => void
 }) {
   const colors = TIER_COLORS[tier] ?? TIER_COLORS[1]
   const labels = TIER_LABELS[tier] ?? { label: `T${tier}`, sub: '' }
-  const hasSelection = !!selectedStock
+
+  // Group by sub_category
+  const subGroups = new Map<string, StockNode[]>()
+  for (const stock of stocks) {
+    const sub = stock.sub_category || '기타'
+    if (!subGroups.has(sub)) subGroups.set(sub, [])
+    subGroups.get(sub)!.push(stock)
+  }
+
+  // Sort sub-categories
+  const sortedSubs = [...subGroups.entries()].sort(
+    (a, b) => (SUB_ORDER[a[0]] ?? 99) - (SUB_ORDER[b[0]] ?? 99)
+  )
+
+  const hasMultipleSubs = sortedSubs.length > 1
 
   return (
     <div
@@ -112,25 +194,45 @@ function TierLane({
       </div>
 
       {/* Lane Body */}
-      <div className="flex-1 flex flex-wrap gap-2 p-3 items-start">
-        {stocks.map((stock) => {
-          const name = stock.stock_name
-          const isSelected = selectedStock === name
-          const isConnected = connectedStocks.has(name)
-          const isDimmed = hasSelection && !isSelected && !isConnected
-          const isHighlighted = isSelected || isConnected
-
-          return (
-            <StockCard
-              key={stock.id || stock.ticker}
-              stock={stock}
-              isHighlighted={isHighlighted}
-              isDimmed={isDimmed}
-              badge={badges[name]}
-              onClick={() => onStockClick(name)}
+      <div className="flex-1 p-3">
+        {hasMultipleSubs ? (
+          sortedSubs.map(([sub, subStocks]) => (
+            <SubCategoryGroup
+              key={sub}
+              subCategory={sub}
+              stocks={subStocks}
+              selectedStock={selectedStock}
+              connectedStocks={connectedStocks}
+              badges={badges}
+              themeMatchSet={themeMatchSet}
+              hasThemeFilter={hasThemeFilter}
+              onStockClick={onStockClick}
             />
-          )
-        })}
+          ))
+        ) : (
+          <div className="flex flex-wrap gap-2 items-start">
+            {stocks.map((stock) => {
+              const name = stock.stock_name
+              const isSelected = selectedStock === name
+              const isConnected = connectedStocks.has(name)
+              const isDimmed = !!selectedStock && !isSelected && !isConnected
+              const isHighlighted = isSelected || isConnected
+              const isThemeDimmed = hasThemeFilter && !themeMatchSet.has(name) && !selectedStock
+
+              return (
+                <StockCard
+                  key={stock.id || stock.ticker}
+                  stock={stock}
+                  isHighlighted={isHighlighted}
+                  isDimmed={isDimmed}
+                  isThemeDimmed={isThemeDimmed}
+                  badge={badges[name]}
+                  onClick={() => onStockClick(name)}
+                />
+              )
+            })}
+          </div>
+        )}
       </div>
     </div>
   )
@@ -152,10 +254,12 @@ export function SectorSwimlane({
   stocks,
   links,
   tiers,
+  activeTheme,
 }: {
   stocks: StockNode[]
   links: SupplyLink[]
   tiers: Record<number, StockNode[]>
+  activeTheme?: string | null
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -173,13 +277,23 @@ export function SectorSwimlane({
     2: '소부장',
   }
 
+  // Build theme match set
+  const hasThemeFilter = !!activeTheme
+  const themeMatchSet = new Set<string>()
+  if (hasThemeFilter) {
+    for (const stock of stocks) {
+      if (stock.theme_tags?.includes(activeTheme!)) {
+        themeMatchSet.add(stock.stock_name)
+      }
+    }
+  }
+
   // Draw SVG connection bezier curves (zoom-safe)
   const drawConnections = useCallback(
     (stockName: string, connected: Set<string>) => {
       if (!containerRef.current) return
       const container = containerRef.current
       const rect = container.getBoundingClientRect()
-      // Detect CSS zoom by comparing rendered vs CSS size
       const zoom = rect.width / container.offsetWidth || 1
       const newPaths: { d: string; key: string }[] = []
 
@@ -196,7 +310,6 @@ export function SectorSwimlane({
 
         const fromR = fromEl.getBoundingClientRect()
         const toR = toEl.getBoundingClientRect()
-        // Convert viewport pixels → CSS pixels (undo zoom)
         const sx = (fromR.left - rect.left + fromR.width / 2) / zoom
         const sy = (fromR.top - rect.top + fromR.height / 2) / zoom
         const ex = (toR.left - rect.left + toR.width / 2) / zoom
@@ -259,7 +372,7 @@ export function SectorSwimlane({
     [],
   )
 
-  // Track container size for SVG overlay (use offsetWidth for zoom-safe CSS pixels)
+  // Track container size for SVG overlay
   useEffect(() => {
     if (!containerRef.current) return
     const obs = new ResizeObserver(() => {
@@ -287,7 +400,7 @@ export function SectorSwimlane({
       className="relative"
       onClick={handleContainerClick}
     >
-      {/* Connection hint — 상단 */}
+      {/* Connection hint */}
       {!selectedStock && links.length > 0 && (
         <div className="text-center py-2 mb-1" style={{ fontSize: 13, color: '#aaa' }}>
           종목 클릭 → 공급망 연결 확인
@@ -313,7 +426,7 @@ export function SectorSwimlane({
             opacity={0.8}
           />
         ))}
-        {/* Source dot (zoom-safe) */}
+        {/* Source dot */}
         {selectedStock && (() => {
           if (!containerRef.current) return null
           const el = containerRef.current.querySelector(
@@ -332,7 +445,7 @@ export function SectorSwimlane({
             />
           )
         })()}
-        {/* Target dots (zoom-safe) */}
+        {/* Target dots */}
         {connectedStocks.size > 0 && (() => {
           if (!containerRef.current) return null
           const rect = containerRef.current.getBoundingClientRect()
@@ -369,6 +482,8 @@ export function SectorSwimlane({
                 selectedStock={selectedStock}
                 connectedStocks={connectedStocks}
                 badges={badges}
+                themeMatchSet={themeMatchSet}
+                hasThemeFilter={hasThemeFilter}
                 onStockClick={handleStockClick}
               />
               {i < tierOrder.length - 1 && flowLabels[tier] && (
