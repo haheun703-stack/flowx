@@ -25,7 +25,9 @@ export interface CostFloorItem {
   name_ko: string
   unit: string | null
   floor_price: number
+  floor_name: string | null
   ceiling_price: number
+  ceiling_name: string | null
   current_price: number | null
   position_pct: number | null
   note: string | null

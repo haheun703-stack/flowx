@@ -40,17 +40,17 @@ function MacroItemRow({ item }: { item: MacroItem }) {
   const changeColor = isUp ? '#ff3b5c' : '#0ea5e9'
 
   return (
-    <div className={`flex items-center justify-between py-1.5 px-2 rounded transition-colors ${
+    <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
       isAlert ? 'bg-red-500/10 border border-red-500/30' :
       isHighlight ? 'bg-[#1a2535]' : 'hover:bg-[#0d1420]/30'
     }`}>
       <div className="flex items-center gap-2 min-w-0">
         <span className="text-sm text-[#e2e8f0] font-medium truncate">{item.name_ko}</span>
-        {isAlert && <span className="text-[10px] text-red-400 font-bold animate-pulse">!</span>}
+        {isAlert && <span className="text-xs text-red-400 font-bold animate-pulse">!</span>}
       </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <span className="text-sm text-[#e2e8f0] font-bold tabular-nums">{fmtValue(item)}</span>
-        <span className={`text-xs font-bold tabular-nums w-14 text-right ${
+      <div className="flex items-center gap-2.5 shrink-0">
+        <span className="text-base text-[#e2e8f0] font-bold tabular-nums">{fmtValue(item)}</span>
+        <span className={`text-sm font-bold tabular-nums w-16 text-right ${
           isHighlight ? 'animate-pulse' : ''
         }`} style={{ color: changeColor }}>
           {isUp ? '+' : ''}{item.change_pct.toFixed(2)}%
@@ -65,12 +65,12 @@ function CategoryCard({ category, items }: { category: string; items: MacroItem[
 
   return (
     <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg overflow-hidden">
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-[#2a2a3a]">
-        <span className="text-base">{meta.icon}</span>
-        <span className="text-sm font-bold" style={{ color: meta.accentColor }}>{meta.title}</span>
-        <span className="text-[10px] text-[#555]">{items.length}개</span>
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-[#2a2a3a]">
+        <span className="text-lg">{meta.icon}</span>
+        <span className="text-lg font-bold" style={{ color: meta.accentColor }}>{meta.title}</span>
+        <span className="text-xs text-[#555]">{items.length}개</span>
       </div>
-      <div className="p-1.5 space-y-0.5">
+      <div className="p-3 space-y-0.5">
         {items.map(item => <MacroItemRow key={item.symbol} item={item} />)}
       </div>
     </div>
@@ -110,10 +110,10 @@ export function MacroRadarPanel() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-base">📡</span>
-        <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">매크로 레이더</span>
-        <span className="text-[10px] text-[#8a8a8a]">{data?.date}</span>
-        <span className="text-[10px] text-[#555] ml-auto">3% 이상 변동은 하이라이트</span>
+        <span className="text-lg">📡</span>
+        <span className="text-base font-bold text-[#e2e8f0] tracking-wider">매크로 레이더</span>
+        <span className="text-xs text-[#8a8a8a]">{data?.date}</span>
+        <span className="text-xs text-[#555] ml-auto">3% 이상 변동은 하이라이트</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {quadrants.map((cats, qi) => (
