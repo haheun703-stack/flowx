@@ -3,80 +3,88 @@
 import { useState } from 'react'
 import { useIntelligenceScenarios, type ScenarioItem, type ScenarioOption } from '../api/useIntelligence'
 
-/** 시나리오 이름 → 쉬운 한국어 매핑 (DB에서 한국어/영어 둘 다 올 수 있음) */
-const SCENARIO_LABEL_KO: Record<string, string> = {
-  // 영어 키
-  'Soft Landing': '연착륙',
-  'Hard Landing': '경착륙',
-  'Stagflation': '스태그플레이션',
-  'Reflation': '리플레이션',
-  'Goldilocks': '골디락스',
-  'Rate Cut Rally': '금리 인하 랠리',
-  'Rate Hike Shock': '금리 인상 충격',
-  'Trade War': '무역전쟁',
-  'Recession': '경기침체',
-  'Recovery': '경기회복',
-  'Credit Crunch': '신용경색',
-  'Tech Bubble': '기술주 거품',
-  'Oil Shock': '유가 충격',
-  'USD Surge': '달러 강세',
-  'USD Weakness': '달러 약세',
+/**
+ * 시나리오 이름 → 쉬운 한국어 + 부제 매핑
+ * DB에서 한국어/영어 둘 다 올 수 있음
+ * 키 매칭: trim + 부분 포함(includes) 폴백
+ */
+const LABEL_ENTRIES: [string, string][] = [
+  // 영어
+  ['Soft Landing', '연착륙'],
+  ['Hard Landing', '경착륙'],
+  ['Stagflation', '스태그플레이션'],
+  ['Reflation', '리플레이션'],
+  ['Goldilocks', '골디락스'],
+  ['Rate Cut Rally', '금리 인하 랠리'],
+  ['Rate Hike Shock', '금리 인상 충격'],
+  ['Trade War', '무역전쟁'],
+  ['Recession', '경기침체'],
+  ['Recovery', '경기회복'],
+  ['Credit Crunch', '신용경색'],
+  ['Tech Bubble', '기술주 거품'],
+  ['Oil Shock', '유가 충격'],
+  ['USD Surge', '달러 강세'],
+  ['USD Weakness', '달러 약세'],
   // 한국어 전문용어 → 쉬운 말
-  '비둘기파 서프라이즈': '예상 밖 금리 인하',
-  '매파 서프라이즈': '예상 밖 금리 인상',
-  '비둘기파 기조': '금리 인하 기조',
-  '매파 기조': '금리 인상 기조',
-  '디스인플레이션': '물가 상승 둔화',
-  '디플레이션': '물가 하락',
-  '스태그플레이션': '물가↑ 성장↓ 동시',
-  '리세션': '경기침체',
-  '테이퍼링': '유동성 축소',
-  '양적완화': '유동성 공급 확대',
-  '양적긴축': '유동성 회수',
-  '피벗': '금리 방향 전환',
-  '블랙스완': '예측 불가 대형 악재',
-  '데드캣바운스': '일시 반등 후 재하락',
-  '베어마켓 랠리': '하락장 속 반등',
-  '숏스퀴즈': '공매도 청산 급등',
-  '캐피튤레이션': '투매(패닉 매도)',
-  '리밸런싱': '포트폴리오 재조정',
-}
+  ['비둘기파 서프라이즈', '예상 밖 금리 인하'],
+  ['매파 서프라이즈', '예상 밖 금리 인상'],
+  ['예상대로', '시장 예상 부합'],
+  ['컨센서스', '시장 예상 부합'],
+  ['비둘기파 기조', '금리 인하 기조'],
+  ['매파 기조', '금리 인상 기조'],
+  ['한국 직접 타격', '한국 직접 타격'],
+  ['디스인플레이션', '물가 상승 둔화'],
+  ['디플레이션', '물가 하락'],
+  ['스태그플레이션', '물가↑ 성장↓ 동시'],
+  ['리세션', '경기침체'],
+  ['테이퍼링', '유동성 축소'],
+  ['양적완화', '유동성 공급 확대'],
+  ['양적긴축', '유동성 회수'],
+  ['피벗', '금리 방향 전환'],
+  ['블랙스완', '예측 불가 대형 악재'],
+  ['데드캣바운스', '일시 반등 후 재하락'],
+  ['베어마켓 랠리', '하락장 속 반등'],
+  ['숏스퀴즈', '공매도 청산 급등'],
+  ['캐피튤레이션', '투매(패닉 매도)'],
+  ['리밸런싱', '포트폴리오 재조정'],
+]
 
-const SCENARIO_SUBTITLES: Record<string, string> = {
-  // 영어 키
-  'Soft Landing': '경기 과열 없이 안정적 둔화',
-  'Hard Landing': '급격한 경기 위축, 실업 증가',
-  'Stagflation': '물가 상승 + 경기 침체 동시 발생',
-  'Reflation': '경기 부양으로 인한 물가 재상승',
-  'Goldilocks': '과열도 침체도 아닌 적정 성장',
-  'Rate Cut Rally': '금리 인하 기대감으로 주가 상승',
-  'Rate Hike Shock': '예상 밖 금리 인상으로 시장 급락',
-  'Trade War': '관세 보복으로 글로벌 교역 위축',
-  'Recession': '2분기 연속 마이너스 성장',
-  'Recovery': '경기 저점 통과 후 반등 국면',
-  'Credit Crunch': '금융기관 대출 축소로 유동성 경색',
-  'Tech Bubble': '기술주 과대평가 후 급격한 조정',
-  'Oil Shock': '원유 가격 급등으로 인플레이션 압력',
-  'USD Surge': '달러 강세로 수출기업 타격',
-  'USD Weakness': '달러 약세로 원자재·신흥국 수혜',
-  // 한국어 전문용어
-  '비둘기파 서프라이즈': '연준이 시장 예상보다 금리를 낮춰 주식·채권 급등',
-  '매파 서프라이즈': '연준이 시장 예상보다 금리를 올려 주식 급락',
-  '비둘기파 기조': '앞으로 금리를 낮출 가능성이 높은 상황',
-  '매파 기조': '앞으로 금리를 올릴 가능성이 높은 상황',
-  '디스인플레이션': '물가가 여전히 오르지만 상승 속도가 느려짐',
-  '디플레이션': '물가가 지속적으로 하락, 경기 위축 신호',
-  '테이퍼링': '중앙은행이 채권 매입 규모를 서서히 줄임',
-  '양적완화': '중앙은행이 돈을 풀어 경기 부양',
-  '양적긴축': '중앙은행이 보유 채권을 줄여 돈을 회수',
-  '피벗': '금리 인상→인하 또는 인하→인상으로 방향 전환',
-  '블랙스완': '아무도 예상 못한 대형 충격 (전쟁, 팬데믹 등)',
-  '데드캣바운스': '급락 후 기술적 반등, 추세 전환 아님',
-  '베어마켓 랠리': '하락장에서 일시적 반등, 추가 하락 가능',
-  '숏스퀴즈': '공매도 세력이 손절하며 주가 급등',
-  '캐피튤레이션': '공포에 질린 투자자들이 한꺼번에 매도',
-  '리밸런싱': '자산 배분 비율을 원래대로 되돌리는 매매',
-}
+const SUBTITLE_ENTRIES: [string, string][] = [
+  ['Soft Landing', '경기 과열 없이 안정적 둔화'],
+  ['Hard Landing', '급격한 경기 위축, 실업 증가'],
+  ['Stagflation', '물가 상승 + 경기 침체 동시 발생'],
+  ['Reflation', '경기 부양으로 인한 물가 재상승'],
+  ['Goldilocks', '과열도 침체도 아닌 적정 성장'],
+  ['Rate Cut Rally', '금리 인하 기대감으로 주가 상승'],
+  ['Rate Hike Shock', '예상 밖 금리 인상으로 시장 급락'],
+  ['Trade War', '관세 보복으로 글로벌 교역 위축'],
+  ['Recession', '2분기 연속 마이너스 성장'],
+  ['Recovery', '경기 저점 통과 후 반등 국면'],
+  ['Credit Crunch', '금융기관 대출 축소로 유동성 경색'],
+  ['Tech Bubble', '기술주 과대평가 후 급격한 조정'],
+  ['Oil Shock', '원유 가격 급등으로 인플레이션 압력'],
+  ['USD Surge', '달러 강세로 수출기업 타격'],
+  ['USD Weakness', '달러 약세로 원자재·신흥국 수혜'],
+  ['비둘기파 서프라이즈', '연준이 예상보다 금리를 낮춰 주식·채권 급등'],
+  ['매파 서프라이즈', '연준이 예상보다 금리를 올려 주식 급락'],
+  ['예상대로', '시장이 예상한 대로 결정, 큰 변동 없음'],
+  ['컨센서스', '시장이 예상한 대로 결정, 큰 변동 없음'],
+  ['비둘기파 기조', '앞으로 금리를 낮출 가능성이 높은 상황'],
+  ['매파 기조', '앞으로 금리를 올릴 가능성이 높은 상황'],
+  ['한국 직접 타격', '한국 경제에 직접적 충격이 오는 시나리오'],
+  ['디스인플레이션', '물가가 여전히 오르지만 상승 속도가 느려짐'],
+  ['디플레이션', '물가가 지속적으로 하락, 경기 위축 신호'],
+  ['테이퍼링', '중앙은행이 채권 매입 규모를 서서히 줄임'],
+  ['양적완화', '중앙은행이 돈을 풀어 경기 부양'],
+  ['양적긴축', '중앙은행이 보유 채권을 줄여 돈을 회수'],
+  ['피벗', '금리 인상→인하 또는 인하→인상으로 방향 전환'],
+  ['블랙스완', '아무도 예상 못한 대형 충격 (전쟁, 팬데믹 등)'],
+  ['데드캣바운스', '급락 후 기술적 반등, 추세 전환 아님'],
+  ['베어마켓 랠리', '하락장에서 일시적 반등, 추가 하락 가능'],
+  ['숏스퀴즈', '공매도 세력이 손절하며 주가 급등'],
+  ['캐피튤레이션', '공포에 질린 투자자들이 한꺼번에 매도'],
+  ['리밸런싱', '자산 배분 비율을 원래대로 되돌리는 매매'],
+]
 
 /** 시나리오 방향 이모지 + 쉬운 말 */
 function getDirectionInfo(impact: string): { emoji: string; color: string; label: string } {
@@ -85,13 +93,25 @@ function getDirectionInfo(impact: string): { emoji: string; color: string; label
   return { emoji: '🟡', color: '#f59e0b', label: '보합' }
 }
 
-/** 시나리오 이름 한글화 */
+/** 시나리오 이름 한글화 — 정확 매칭 → 부분 매칭(includes) 폴백 */
 function getScenarioLabel(name: string): string {
-  return SCENARIO_LABEL_KO[name] ?? name
+  const n = name.trim()
+  // 1. 정확 매칭
+  const exact = LABEL_ENTRIES.find(([k]) => k === n)
+  if (exact) return exact[1]
+  // 2. 부분 매칭 (DB에서 "예상대로 (컨센서스)" 같이 올 수 있음)
+  const partial = LABEL_ENTRIES.find(([k]) => n.includes(k) || k.includes(n))
+  if (partial) return partial[1]
+  return name
 }
 
 function getScenarioSubtitle(name: string): string | null {
-  return SCENARIO_SUBTITLES[name] ?? null
+  const n = name.trim()
+  const exact = SUBTITLE_ENTRIES.find(([k]) => k === n)
+  if (exact) return exact[1]
+  const partial = SUBTITLE_ENTRIES.find(([k]) => n.includes(k) || k.includes(n))
+  if (partial) return partial[1]
+  return null
 }
 
 /** 확률 바 (가로 채우기) */
