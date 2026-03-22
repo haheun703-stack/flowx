@@ -38,3 +38,15 @@ CREATE TABLE IF NOT EXISTS sector_links (
 CREATE INDEX IF NOT EXISTS idx_links_sector ON sector_links(sector_key);
 CREATE INDEX IF NOT EXISTS idx_links_from ON sector_links(from_stock);
 CREATE INDEX IF NOT EXISTS idx_links_to ON sector_links(to_stock);
+
+-- 3) RLS — 읽기는 모두 허용, 쓰기는 service role만
+ALTER TABLE sector_universe ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sector_links ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "sector_universe_read" ON sector_universe FOR SELECT USING (true);
+CREATE POLICY "sector_links_read" ON sector_links FOR SELECT USING (true);
+
+CREATE POLICY "sector_universe_write" ON sector_universe
+  FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "sector_links_write" ON sector_links
+  FOR ALL USING (auth.role() = 'service_role');
