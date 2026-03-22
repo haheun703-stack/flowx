@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { SECTOR_LIST, TIER_COLORS } from '@/lib/chart-tokens'
+import { getDisplayName } from '@/lib/stock-name-ko'
+
+const FONT = 'var(--font-jetbrains), monospace'
 
 interface SectorSummary {
   key: string
@@ -34,15 +37,15 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
   return (
     <Link
       href={`/sectors/${sector.key}`}
-      className="group block bg-[#131722] border border-[#2a2a3a] rounded-lg p-4 hover:border-[#534AB7] transition-all hover:bg-[#131722]/80"
+      className="group block bg-[#0a0f18] border border-[#1a2535] rounded-lg p-5 hover:border-[#534AB7] transition-all hover:bg-[#0e1420]"
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-[#e2e8f0] group-hover:text-white">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-black text-[#e2e8f0] group-hover:text-white">
           {meta?.name ?? sector.name}
         </h3>
         <span
-          className="text-sm font-mono font-bold"
+          className="text-lg font-mono font-black"
           style={{ color: changeColor }}
         >
           {changeSign}{sector.avgChange}%
@@ -50,7 +53,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
       </div>
 
       {/* Tier distribution bar */}
-      <div className="flex gap-px h-2 rounded overflow-hidden mb-3">
+      <div className="flex gap-px h-2.5 rounded overflow-hidden mb-4">
         {[5, 4, 3, 2, 1].map((tier) => {
           const count = sector.tierCounts[tier] || 0
           if (count === 0) return null
@@ -68,13 +71,13 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
       </div>
 
       {/* Top movers */}
-      <div className="space-y-1 mb-3">
+      <div className="space-y-1.5 mb-4">
         {sector.topMovers.map((m) => {
           const c = m.change > 0 ? '#ff3b5c' : m.change < 0 ? '#0ea5e9' : '#888'
           return (
-            <div key={m.name} className="flex items-center justify-between text-[11px]">
-              <span className="text-[#8a8a8a] truncate mr-2">{m.name}</span>
-              <span className="font-mono shrink-0" style={{ color: c }}>
+            <div key={m.name} className="flex items-center justify-between" style={{ fontSize: 13 }}>
+              <span className="text-[#94a3b8] truncate mr-3">{getDisplayName(m.name)}</span>
+              <span className="font-mono font-bold shrink-0" style={{ color: c }}>
                 {m.change > 0 ? '+' : ''}{m.change}%
               </span>
             </div>
@@ -83,7 +86,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
       </div>
 
       {/* Footer stats */}
-      <div className="flex items-center gap-3 text-[10px] text-[#555]">
+      <div className="flex items-center gap-4 text-xs text-[#64748b]">
         <span>{sector.stockCount}종목</span>
         <span>{sector.linkCount}연결</span>
       </div>
@@ -93,18 +96,18 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
 
 function SectorCardSkeleton() {
   return (
-    <div className="bg-[#131722] border border-[#2a2a3a] rounded-lg p-4 animate-pulse">
-      <div className="flex justify-between mb-3">
-        <div className="h-4 w-16 bg-[#1a2535] rounded" />
-        <div className="h-4 w-12 bg-[#1a2535] rounded" />
+    <div className="bg-[#0a0f18] border border-[#1a2535] rounded-lg p-5 animate-pulse">
+      <div className="flex justify-between mb-4">
+        <div className="h-5 w-20 bg-[#1a2535] rounded" />
+        <div className="h-5 w-14 bg-[#1a2535] rounded" />
       </div>
-      <div className="h-2 bg-[#1a2535] rounded mb-3" />
-      <div className="space-y-1 mb-3">
+      <div className="h-2.5 bg-[#1a2535] rounded mb-4" />
+      <div className="space-y-1.5 mb-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-3 bg-[#1a2535] rounded" />
+          <div key={i} className="h-4 bg-[#1a2535] rounded" />
         ))}
       </div>
-      <div className="h-3 w-24 bg-[#1a2535] rounded" />
+      <div className="h-3 w-28 bg-[#1a2535] rounded" />
     </div>
   )
 }
@@ -112,7 +115,6 @@ function SectorCardSkeleton() {
 export function SectorGrid() {
   const { data, isLoading } = useSectorOverview()
 
-  // Merge API data with SECTOR_LIST order
   const ordered = SECTOR_LIST.map((s) => {
     const found = data?.sectors.find((d) => d.key === s.key)
     return found ?? {
@@ -127,24 +129,31 @@ export function SectorGrid() {
   })
 
   return (
-    <div className="flex flex-col" style={{ fontFamily: 'var(--font-terminal)' }}>
-      {/* Header */}
-      <div className="flex items-center gap-2 px-1 mb-4">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#534AB7]" />
-        <span className="text-sm font-bold text-[#e2e8f0] tracking-wider uppercase">
-          섹터맵
-        </span>
-        <span className="text-[11px] text-[#8a8a8a]">
-          13개 섹터 · 공급망 분석
-        </span>
+    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)]" style={{ background: '#131722', fontFamily: FONT }}>
+      {/* Header — 트리맵과 동일 스타일 */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]">
+        <div className="flex items-center gap-3">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#534AB7]" />
+          <span className="text-base font-black tracking-widest uppercase text-white">
+            섹터맵
+          </span>
+          <span className="text-sm font-black text-[#94a3b8]">13개 섹터 · 공급망 분석</span>
+        </div>
+      </div>
+
+      {/* 설명 */}
+      <div className="px-4 py-1.5 text-xs text-[#64748b] border-b border-[#1a2535]/50">
+        섹터 클릭 → 5티어 플로우차트 + 공급망 연결 확인 · 색상 = 티어 분포
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {isLoading
-          ? Array.from({ length: 13 }).map((_, i) => <SectorCardSkeleton key={i} />)
-          : ordered.map((s) => <SectorCard key={s.key} sector={s} />)
-        }
+      <div className="flex-1 p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {isLoading
+            ? Array.from({ length: 13 }).map((_, i) => <SectorCardSkeleton key={i} />)
+            : ordered.map((s) => <SectorCard key={s.key} sector={s} />)
+          }
+        </div>
       </div>
     </div>
   )
