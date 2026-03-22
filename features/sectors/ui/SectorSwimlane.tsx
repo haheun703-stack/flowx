@@ -95,16 +95,16 @@ function TierLane({
         className="shrink-0 flex flex-col items-center justify-center py-3"
         style={{ width: 100, borderRight: `1px solid ${colors.border}40` }}
       >
-        <div className="text-sm font-bold" style={{ color: colors.badge }}>
+        <div className="text-sm font-bold" style={{ color: colors.light }}>
           {'★'.repeat(tier)}
         </div>
-        <div className="text-sm font-bold" style={{ color: colors.text }}>
+        <div className="text-sm font-bold" style={{ color: colors.light }}>
           {labels.label}
         </div>
-        <div className="text-[10px]" style={{ color: colors.text, opacity: 0.6 }}>
+        <div className="text-[10px]" style={{ color: colors.light, opacity: 0.7 }}>
           {labels.sub}
         </div>
-        <div className="text-[10px] mt-1" style={{ color: colors.text, opacity: 0.4 }}>
+        <div className="text-[10px] mt-1" style={{ color: colors.light, opacity: 0.5 }}>
           {stocks.length}종목
         </div>
       </div>
