@@ -31,7 +31,7 @@ const StockCard = memo(function StockCard({
   onClick: () => void
 }) {
   const colors = TIER_COLORS[stock.tier] ?? TIER_COLORS[1]
-  const isUp = stock.change_pct >= 0
+  const isUp = (stock.change_pct ?? 0) >= 0
   const displayName = getDisplayName(stock.stock_name)
 
   return (
@@ -57,7 +57,7 @@ const StockCard = memo(function StockCard({
         {stock.ticker}
       </div>
       <div style={{ fontSize: 13, fontWeight: 700, color: isUp ? '#E24B4A' : '#378ADD', marginTop: 3 }}>
-        {isUp ? '+' : ''}{stock.change_pct.toFixed(1)}%
+        {isUp ? '+' : ''}{(stock.change_pct ?? 0).toFixed(1)}%
       </div>
       {badge && (
         <div
@@ -157,7 +157,7 @@ function TierLane({
   // Group by sub_category
   const subGroups = new Map<string, StockNode[]>()
   for (const stock of stocks) {
-    const sub = stock.sub_category || '기타'
+    const sub = stock.sub_category ?? '기타'
     if (!subGroups.has(sub)) subGroups.set(sub, [])
     subGroups.get(sub)!.push(stock)
   }

@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
+import { SECTOR_LIST } from '@/lib/chart-tokens'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,6 +9,11 @@ export async function GET(
   { params }: { params: Promise<{ key: string }> }
 ) {
   const { key } = await params
+
+  // Validate sector key
+  if (!SECTOR_LIST.some((s) => s.key === key)) {
+    return NextResponse.json({ error: `Invalid sector: ${key}` }, { status: 404 })
+  }
 
   try {
     const supabase = getSupabaseAdmin()
@@ -27,20 +33,19 @@ export async function GET(
     if (stocksRes.error) return NextResponse.json({ error: stocksRes.error.message }, { status: 500 })
     if (linksRes.error) return NextResponse.json({ error: linksRes.error.message }, { status: 500 })
 
-    // Group stocks by tier
-    const tiers: Record<number, typeof stocksRes.data> = {}
-    for (const stock of stocksRes.data ?? []) {
+    const stocks = stocksRes.data ?? []
+    const links = linksRes.data ?? []
+
+    // Group stocks by tier (safe typing)
+    const tiers: Record<number, typeof stocks> = {}
+    for (const stock of stocks) {
       const t = stock.tier as number
+      if (t < 1 || t > 5) continue // skip invalid tiers
       if (!tiers[t]) tiers[t] = []
       tiers[t].push(stock)
     }
 
-    return NextResponse.json({
-      key,
-      stocks: stocksRes.data,
-      tiers,
-      links: linksRes.data,
-    })
+    return NextResponse.json({ key, stocks, tiers, links })
   } catch {
     return NextResponse.json({ error: 'Sector data unavailable' }, { status: 503 })
   }

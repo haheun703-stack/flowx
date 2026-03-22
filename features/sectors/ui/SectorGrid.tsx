@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { SECTOR_LIST, TIER_COLORS } from '@/lib/chart-tokens'
@@ -115,7 +116,7 @@ function SectorCardSkeleton() {
 export function SectorGrid() {
   const { data, isLoading } = useSectorOverview()
 
-  const ordered = SECTOR_LIST.map((s) => {
+  const ordered = useMemo(() => SECTOR_LIST.map((s) => {
     const found = data?.sectors.find((d) => d.key === s.key)
     return found ?? {
       key: s.key,
@@ -126,7 +127,7 @@ export function SectorGrid() {
       tierCounts: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
       topMovers: [],
     }
-  })
+  }), [data?.sectors])
 
   return (
     <div className="flex flex-col min-h-[calc(100vh/1.25-88px)] bg-[#080b10]" style={{ fontFamily: FONT }}>
