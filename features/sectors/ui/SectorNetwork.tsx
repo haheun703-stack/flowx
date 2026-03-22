@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useCallback, useState } from 'react'
 import { TIER_COLORS, CONNECTION_COLOR } from '@/lib/chart-tokens'
+import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 interface NetNode {
@@ -191,9 +192,10 @@ export function SectorNetwork({
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
-      // Truncate long names
-      const maxLen = node.radius < 12 ? 4 : 8
-      const label = node.name.length > maxLen ? node.name.slice(0, maxLen) + '..' : node.name
+      // Korean display name, truncated
+      const displayName = getDisplayName(node.name)
+      const maxLen = node.radius < 12 ? 4 : 6
+      const label = displayName.length > maxLen ? displayName.slice(0, maxLen) + '..' : displayName
       ctx.fillText(label, node.x, node.y)
 
       ctx.globalAlpha = 1
@@ -268,7 +270,7 @@ export function SectorNetwork({
           setTooltip({
             x: pos.x,
             y: pos.y - 20,
-            text: `${node.name} (${node.connections} connections)`,
+            text: `${getDisplayName(node.name)} (${node.connections}개 연결)`,
           })
         } else {
           setTooltip(null)

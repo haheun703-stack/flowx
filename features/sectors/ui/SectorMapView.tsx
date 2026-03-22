@@ -16,7 +16,9 @@ export function SectorMapView({
   const [sectorKey, setSectorKey] = useState(initialSector)
   const [view, setView] = useState<'swimlane' | 'network'>('swimlane')
   const { data, isLoading } = useSectorData(sectorKey)
-  const canNetwork = userTier === 'pro' || userTier === 'vip'
+  // 베타 기간: Network 뷰 전체 공개 (정식 출시 후 false로 변경)
+  const BETA_MODE = true
+  const canNetwork = BETA_MODE || userTier === 'pro' || userTier === 'vip'
 
   const sectorName = SECTOR_LIST.find((s) => s.key === sectorKey)?.name ?? sectorKey
 
@@ -79,7 +81,7 @@ export function SectorMapView({
           }`}
           disabled={!canNetwork}
         >
-          Network {!canNetwork && '🔒 PRO'}
+          Network{' '}<span className="text-xs opacity-50">PRO</span>
         </button>
       </div>
 
