@@ -2,6 +2,10 @@
 
 import { useIntelligenceSupplyDemand } from '../api/useIntelligence'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
+  ReferenceLine, LabelList, ResponsiveContainer,
+} from 'recharts'
 
 function formatKrNumber(v: number): string {
   const abs = Math.abs(v)
@@ -11,103 +15,175 @@ function formatKrNumber(v: number): string {
   return `${sign}${abs.toLocaleString()}`
 }
 
-/** 인체 픽토그램 아이콘 (SVG) */
-function PersonIcon({ filled, color }: { filled: boolean; color: string }) {
-  return (
-    <svg width="20" height="28" viewBox="0 0 20 28" className="shrink-0">
-      {/* 머리 */}
-      <circle cx="10" cy="5" r="4" fill={filled ? color : '#1e293b'} stroke={filled ? color : '#334155'} strokeWidth="1" />
-      {/* 몸 */}
-      <path
-        d="M10 10 C4 10 2 14 2 18 L2 22 C2 23 3 24 4 24 L16 24 C17 24 18 23 18 22 L18 18 C18 14 16 10 10 10Z"
-        fill={filled ? color : '#1e293b'}
-        stroke={filled ? color : '#334155'}
-        strokeWidth="1"
-      />
-    </svg>
-  )
+// ── 억 단위 변환 (API가 원 단위일 때) ──
+function toEok(v: number): number {
+  if (Math.abs(v) >= 1_0000) return Math.round(v / 1_0000)
+  return v
 }
 
-/** 10명 픽토그램 행 */
-function PictogramRow({
-  label,
-  value,
-  total,
-  color,
-  streak,
+// ════════════════════════════════════════════════════════
+// 1. 그림 백분율 차트 (Pictorial Fraction Chart)
+//    큰 사람 1명, clipPath로 아래서부터 비율만큼 채움
+// ════════════════════════════════════════════════════════
+
+function SupplyPictogram({
+  label, amount, ratio, streak,
 }: {
-  label: string
-  value: number
-  total: number
-  color: string
-  streak: number
+  label: string; amount: number; ratio: number; streak: number
 }) {
-  const isBuying = value > 0
-  // 10명 중 몇 명을 채울지 (최소 1, 최대 10)
-  const filledCount = total > 0
-    ? Math.max(1, Math.min(10, Math.round((Math.abs(value) / total) * 10)))
-    : 0
+  const isSell = amount < 0
+  const fillColor = isSell ? '#378ADD' : '#E24B4A'  // 한국식: 매도=파랑, 매수=빨강
+  const fillPct = Math.min(Math.max(Math.abs(ratio), 5), 100)
+  const clipId = `fill-${label}`
+  // clipPath y: 전체 높이 140 중 아래서 비율만큼
+  const clipY = 140 - (fillPct / 100 * 120)
+  const clipH = fillPct / 100 * 120 + 20
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-[#e2e8f0]">{label}</span>
-          {streak !== 0 && (
-            <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
-              streak > 0 ? 'bg-[#ff3b5c]/10 text-[#ff3b5c]' : 'bg-[#0ea5e9]/10 text-[#0ea5e9]'
-            }`}>
-              {streak > 0 ? '매수' : '매도'} {Math.abs(streak)}일째
-            </span>
-          )}
-        </div>
-        <span className="text-base font-black tabular-nums" style={{ color: isBuying ? color : '#64748b' }}>
-          {formatKrNumber(value)}
-        </span>
-      </div>
-      {/* 10명 픽토그램 */}
-      <div className="flex items-end gap-0.5">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <PersonIcon key={i} filled={i < filledCount} color={isBuying ? color : '#475569'} />
-        ))}
-        <span className="text-xs text-[#64748b] ml-2 self-center">
-          {filledCount}/10
-        </span>
-      </div>
-    </div>
-  )
-}
+    <div className="flex flex-col items-center gap-1.5">
+      <span className="text-xs text-[#8a8a8a] font-bold">{label}</span>
 
-/** 폭포 차트 바 */
-function WaterfallBar({ label, value, maxAbs, color }: { label: string; value: number; maxAbs: number; color: string }) {
-  const pct = maxAbs > 0 ? (Math.abs(value) / maxAbs) * 100 : 0
-  const isBuying = value >= 0
+      {streak !== 0 && (
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+          streak > 0 ? 'bg-[#E24B4A]/10 text-[#E24B4A]' : 'bg-[#378ADD]/10 text-[#378ADD]'
+        }`}>
+          {streak > 0 ? '매수' : '매도'} {Math.abs(streak)}일째
+        </span>
+      )}
 
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-[#8a8a8a] font-bold w-16 shrink-0 truncate">{label}</span>
-      <div className="flex-1 flex items-center h-5 relative">
-        {/* 중앙선 */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[#334155]" />
-        {/* 바 */}
-        <div
-          className="h-full rounded-sm absolute transition-all"
-          style={{
-            width: `${pct / 2}%`,
-            backgroundColor: isBuying ? color : '#475569',
-            ...(isBuying
-              ? { left: '50%' }
-              : { right: '50%' }),
-          }}
+      <svg width="80" height="140" viewBox="0 0 80 140">
+        <defs>
+          <clipPath id={clipId}>
+            <rect x="0" y={clipY} width="80" height={clipH} />
+          </clipPath>
+        </defs>
+
+        {/* 회색 배경 사람 */}
+        <circle cx="40" cy="18" r="12" fill="#333" />
+        <path d="M20,38 L28,38 L28,80 L20,80 Z" fill="#333" />
+        <path d="M52,38 L60,38 L60,80 L52,80 Z" fill="#333" />
+        <path d="M28,34 L52,34 L52,90 L28,90 Z" fill="#333" />
+        <path d="M28,90 L38,90 L38,135 L28,135 Z" fill="#333" />
+        <path d="M42,90 L52,90 L52,135 L42,135 Z" fill="#333" />
+
+        {/* 색칠된 사람 (아래서부터 채움) */}
+        <g clipPath={`url(#${clipId})`}>
+          <circle cx="40" cy="18" r="12" fill={fillColor} />
+          <path d="M20,38 L28,38 L28,80 L20,80 Z" fill={fillColor} />
+          <path d="M52,38 L60,38 L60,80 L52,80 Z" fill={fillColor} />
+          <path d="M28,34 L52,34 L52,90 L28,90 Z" fill={fillColor} />
+          <path d="M28,90 L38,90 L38,135 L28,135 Z" fill={fillColor} />
+          <path d="M42,90 L52,90 L52,135 L42,135 Z" fill={fillColor} />
+        </g>
+
+        {/* 비율 경계선 (흰 점선) */}
+        <line
+          x1="10" y1={clipY} x2="70" y2={clipY}
+          stroke="#fff" strokeWidth="1" strokeDasharray="3 3" opacity="0.5"
         />
+      </svg>
+
+      {/* 금액 */}
+      <div className={`text-lg font-black tabular-nums ${isSell ? 'text-[#378ADD]' : 'text-[#E24B4A]'}`}>
+        {formatKrNumber(amount)}
       </div>
-      <span className="text-xs font-bold tabular-nums w-14 text-right"
-        style={{ color: isBuying ? color : '#64748b' }}>
-        {value >= 0 ? '+' : ''}{value}억
-      </span>
+      {/* 비율 */}
+      <div className="text-xs text-[#8a8a8a]">
+        {fillPct.toFixed(0)}% {isSell ? '매도' : '매수'}
+      </div>
     </div>
   )
 }
+
+// ════════════════════════════════════════════════════════
+// 2. 폭포 차트 (Waterfall Chart) — Recharts
+// ════════════════════════════════════════════════════════
+
+function SupplyWaterfall({
+  foreign, institution, individual,
+}: {
+  foreign: number; institution: number; individual: number
+}) {
+  const fEok = toEok(foreign)
+  const iEok = toEok(institution)
+  const pEok = toEok(individual)
+
+  const afterF = fEok
+  const afterI = afterF + iEok
+  const total = afterI + pEok
+
+  const data = [
+    {
+      name: '외국인', value: fEok,
+      invisible: Math.min(0, afterF),
+      visible: Math.abs(fEok),
+    },
+    {
+      name: '기관', value: iEok,
+      invisible: Math.min(afterF, afterI),
+      visible: Math.abs(iEok),
+    },
+    {
+      name: '개인', value: pEok,
+      invisible: Math.min(afterI, total),
+      visible: Math.abs(pEok),
+    },
+    {
+      name: '순합계', value: total,
+      invisible: Math.min(0, total),
+      visible: Math.abs(total),
+      isTotal: true,
+    },
+  ]
+
+  const colors = data.map(d =>
+    (d as { isTotal?: boolean }).isTotal ? '#666' : d.value >= 0 ? '#E24B4A' : '#378ADD'
+  )
+
+  return (
+    <div>
+      <div className="text-xs text-[#8a8a8a] font-bold mb-2">수급 누적 흐름 (억원)</div>
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} barCategoryGap="25%">
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+          <XAxis
+            dataKey="name"
+            tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
+            axisLine={{ stroke: '#334155' }}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fill: '#555', fontSize: 11 }}
+            tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}`}
+            axisLine={false}
+            tickLine={false}
+          />
+          <ReferenceLine y={0} stroke="#555" strokeWidth={1} />
+
+          {/* 투명 스택 (누적 시작점) */}
+          <Bar dataKey="invisible" stackId="stack" fill="transparent" />
+
+          {/* 실제 보이는 바 */}
+          <Bar dataKey="visible" stackId="stack" radius={[4, 4, 0, 0]}>
+            {data.map((_, i) => (
+              <Cell key={i} fill={colors[i]} />
+            ))}
+            <LabelList
+              dataKey="value"
+              position="top"
+              formatter={(v) => { const n = Number(v); return `${n >= 0 ? '+' : ''}${n.toLocaleString()}` }}
+              style={{ fill: '#fff', fontSize: 12, fontWeight: 700 }}
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════
+// 3. 메인 패널
+// ════════════════════════════════════════════════════════
 
 export function SupplyDemandPanel() {
   const { data, isLoading } = useIntelligenceSupplyDemand()
@@ -120,7 +196,7 @@ export function SupplyDemandPanel() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a3a]">
         <div className="flex items-center gap-2">
           <span className="text-base">🌡️</span>
-          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">수급 온도계</span>
+          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">수급 흐름</span>
         </div>
         <div className="flex items-center gap-2">
           {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
@@ -128,53 +204,46 @@ export function SupplyDemandPanel() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-5">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
         {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-[60px] bg-[#1a2535] animate-pulse rounded" />
-          ))
+          <div className="space-y-3">
+            <div className="h-[180px] bg-[#1a2535] animate-pulse rounded" />
+            <div className="h-[200px] bg-[#1a2535] animate-pulse rounded" />
+          </div>
         ) : !data ? (
           <div className="flex items-center justify-center h-full text-[#334155]">데이터 없음</div>
         ) : (
           <>
-            {/* 3대 수급 주체 픽토그램 */}
+            {/* 그림 백분율 차트: 3명 가로 배치 */}
             {(() => {
               const total = Math.abs(data.foreign_net) + Math.abs(data.inst_net) + Math.abs(data.individual_net)
+              const fRatio = total > 0 ? (Math.abs(data.foreign_net) / total) * 100 : 33
+              const iRatio = total > 0 ? (Math.abs(data.inst_net) / total) * 100 : 33
+              const pRatio = total > 0 ? (Math.abs(data.individual_net) / total) * 100 : 33
               return (
-                <div className="space-y-4">
-                  <PictogramRow label="외국인" value={data.foreign_net} total={total} color="#ff3b5c" streak={data.foreign_streak} />
-                  <PictogramRow label="기관" value={data.inst_net} total={total} color="#0ea5e9" streak={data.inst_streak} />
-                  <PictogramRow label="개인" value={data.individual_net} total={total} color="#f59e0b" streak={0} />
+                <div className="flex justify-center gap-8 sm:gap-14">
+                  <SupplyPictogram label="외국인" amount={data.foreign_net} ratio={fRatio} streak={data.foreign_streak} />
+                  <SupplyPictogram label="기관" amount={data.inst_net} ratio={iRatio} streak={data.inst_streak} />
+                  <SupplyPictogram label="개인" amount={data.individual_net} ratio={pRatio} streak={0} />
                 </div>
               )
             })()}
+
+            {/* 구분선 */}
+            <div className="border-t border-[#2a2a3a]" />
+
+            {/* 폭포 차트: 누적 흐름 */}
+            <SupplyWaterfall
+              foreign={data.foreign_net}
+              institution={data.inst_net}
+              individual={data.individual_net}
+            />
 
             {/* AI 요약 */}
             {data.summary && (
               <div className="p-3 bg-[#0d1420] rounded-lg border border-[#2a2a3a]">
                 <div className="text-xs text-[#8a8a8a] font-bold mb-1">AI 한 줄 요약</div>
                 <div className="text-sm text-[#e2e8f0] leading-relaxed">{data.summary}</div>
-              </div>
-            )}
-
-            {/* 업종별 폭포 차트 */}
-            {data.sector_flows && data.sector_flows.length > 0 && (
-              <div>
-                <div className="text-xs text-[#8a8a8a] font-bold mb-2">업종별 외국인 수급 (폭포 차트)</div>
-                <div className="space-y-1">
-                  {(() => {
-                    const maxAbs = Math.max(...data.sector_flows.map(s => Math.abs(s.foreign_net)), 1)
-                    return data.sector_flows.map((sf) => (
-                      <WaterfallBar
-                        key={sf.sector}
-                        label={sf.sector}
-                        value={sf.foreign_net}
-                        maxAbs={maxAbs}
-                        color="#ff3b5c"
-                      />
-                    ))
-                  })()}
-                </div>
               </div>
             )}
           </>
