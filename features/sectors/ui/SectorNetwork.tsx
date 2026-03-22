@@ -7,9 +7,10 @@ import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 /** Dynamic canvas height based on stock count */
 function getCanvasHeight(stockCount: number): number {
-  if (stockCount > 50) return 850
-  if (stockCount > 30) return 700
-  if (stockCount > 15) return 550
+  if (stockCount > 80) return 1000
+  if (stockCount > 50) return 900
+  if (stockCount > 30) return 750
+  if (stockCount > 15) return 600
   return 450
 }
 
@@ -99,27 +100,35 @@ function buildGraph(
     connectionCount[link.to_stock] = (connectionCount[link.to_stock] || 0) + 1
   }
 
-  // ── 동적 레이아웃: 종목 수에 따라 xGap 자동 조절 ──
+  // ── 동적 레이아웃: 종목 수에 따라 xGap 자동 조절 + 다행 분산 ──
   const tierYs = [80, 220, 380, 540, 700]
   const nodes: NetNode[] = []
+  const MIN_GAP = 75 // 노드 직경(최대 70px) + 여백
 
   for (const tier of [5, 4, 3, 2, 1]) {
     const stocks = tiers[tier] ?? []
     if (stocks.length === 0) continue
-    const y = tierYs[5 - tier]
-    const margin = 60
+    const baseY = tierYs[5 - tier]
+    const margin = 50
     const available = width - margin * 2
-    const xGap = Math.max(50, Math.min(120, available / Math.max(stocks.length, 1)))
-    const totalWidth = (stocks.length - 1) * xGap
-    const xStart = Math.max(margin, (width - totalWidth) / 2)
+
+    // 한 행에 들어갈 수 있는 최대 종목 수
+    const maxPerRow = Math.max(1, Math.floor(available / MIN_GAP))
+    const rows = Math.ceil(stocks.length / maxPerRow)
+    const perRow = Math.ceil(stocks.length / rows)
 
     stocks.forEach((stock, i) => {
       const conns = connectionCount[stock.stock_name] || 0
       const radius = Math.max(20, Math.min(35, conns * 3 + 12))
 
-      const x = xStart + i * xGap
-      const yOffset = (i % 3 - 1) * 12
-      const yPos = y + yOffset
+      const row = Math.floor(i / perRow)
+      const col = i % perRow
+      const rowCount = Math.min(perRow, stocks.length - row * perRow)
+      const xGap = Math.max(MIN_GAP, available / Math.max(rowCount, 1))
+      const totalW = (rowCount - 1) * xGap
+      const xStart = Math.max(margin, (width - totalW) / 2)
+      const x = xStart + col * xGap
+      const yPos = baseY + row * 55
 
       nodes.push({
         name: stock.stock_name,
