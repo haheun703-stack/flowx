@@ -51,6 +51,9 @@ const RELATION_KO: Record<string, string> = {
   '전장부품 기술': '전장부품 기술 제휴',
 }
 
+/** 시스템 폰트 스택 (한국어 최적화 — Canvas에서 확실히 렌더링) */
+const CANVAS_FONT = '-apple-system, "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif'
+
 function getRelationKo(rel: string): string {
   return RELATION_KO[rel] || rel
 }
@@ -301,7 +304,7 @@ export function SectorNetwork({
       // 원 안에 들어갈 최대 텍스트 너비 (반지름의 80%)
       const maxW = drawRadius * 1.6
       let fSize = drawRadius >= 35 ? 13 : drawRadius >= 28 ? 12 : 11
-      ctx.font = `800 ${fSize}px "Pretendard", -apple-system, sans-serif`
+      ctx.font = `bold ${fSize}px ${CANVAS_FONT}`
 
       // 줄바꿈 함수: 글자 단위로 잘라서 maxW에 맞게 분배
       const wrapLines = (text: string, mw: number): string[] => {
@@ -325,7 +328,7 @@ export function SectorNetwork({
       let lines = wrapLines(displayName, maxW)
       if (lines.length > 2 && fSize > 10) {
         fSize = 10
-        ctx.font = `800 ${fSize}px "Pretendard", -apple-system, sans-serif`
+        ctx.font = `bold ${fSize}px ${CANVAS_FONT}`
         lines = wrapLines(displayName, maxW)
       }
 
@@ -349,7 +352,7 @@ export function SectorNetwork({
 
     // ── 선택된 노드: 연결 라벨 (노란색 + 검정 배경 박스) ──
     if (selected) {
-      ctx.font = '700 12px "Pretendard", -apple-system, sans-serif'
+      ctx.font = `bold 12px ${CANVAS_FONT}`
       let labelIdx = 0
       for (const e of edges) {
         if (e.from !== selected && e.to !== selected) continue
