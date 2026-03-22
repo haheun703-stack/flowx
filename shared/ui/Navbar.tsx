@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { TickerSearch } from './TickerSearch'
 import { TickerBanner } from '@/features/market-ticker/ui/TickerBanner'
 import { FlowxLogo } from './logo'
+import { NavbarAuth } from './NavbarAuth'
 
 export function Navbar() {
   return (
@@ -41,8 +42,11 @@ export function Navbar() {
             <span className="text-[8px] px-1 py-px rounded border border-[#a855f7]/40 text-[#a855f7] font-bold leading-tight">VIP</span>
           </Link>
         </div>
-        <div className="hidden sm:block">
-          <TickerSearch />
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:block">
+            <TickerSearch />
+          </div>
+          <NavbarAuth />
         </div>
       </nav>
 
