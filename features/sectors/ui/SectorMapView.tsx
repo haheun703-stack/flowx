@@ -6,16 +6,15 @@ import { SectorNetwork } from './SectorNetwork'
 import { useSectorData } from '../api/useSectorData'
 import { SECTOR_LIST } from '@/lib/chart-tokens'
 
-/** Theme filter definitions (only shown for sectors that have theme_tags) */
-const THEME_FILTERS: { key: string | null; label: string; emoji?: string }[] = [
-  { key: null, label: '전체' },
-  { key: 'HBM', label: 'HBM', emoji: '🔥' },
-  { key: 'AI서버', label: 'AI서버' },
-  { key: 'EUV', label: 'EUV' },
-  { key: '전력반도체', label: '전력반도체' },
-  { key: 'SiC', label: 'SiC' },
-  { key: '파운드리', label: '파운드리' },
-]
+/** Hot themes get emoji badges */
+const THEME_EMOJI: Record<string, string> = {
+  HBM: '🔥', AI서버: '🤖', EUV: '🔬', NATO수출: '🌍', 폴란드: '🇵🇱',
+  'K2전차': '🎯', 'KF-21': '✈️', LNG: '⛽', 원전: '☢️', 비만: '💊',
+  CDMO: '🧬', 'K-POP': '🎵', 배당: '💰', EV: '⚡', 휴머노이드: '🤖',
+}
+
+/** Minimum count to show a theme pill */
+const MIN_THEME_COUNT = 3
 
 export function SectorMapView({
   initialSector = 'semiconductor',
@@ -33,23 +32,23 @@ export function SectorMapView({
 
   const sectorName = SECTOR_LIST.find((s) => s.key === sectorKey)?.name ?? sectorKey
 
-  // Check if current sector has theme_tags data
-  const hasThemeTags = useMemo(() => {
-    if (!data?.stocks) return false
-    return data.stocks.some((s) => s.theme_tags && s.theme_tags.length > 0)
-  }, [data?.stocks])
-
-  // Count matching stocks per theme
-  const themeCounts = useMemo(() => {
-    if (!data?.stocks) return {}
+  // Build dynamic theme list from actual data
+  const themeList = useMemo(() => {
+    if (!data?.stocks) return []
     const counts: Record<string, number> = {}
     for (const stock of data.stocks) {
       for (const tag of stock.theme_tags ?? []) {
         counts[tag] = (counts[tag] || 0) + 1
       }
     }
-    return counts
+    // Sort by count desc, filter out low-count themes
+    return Object.entries(counts)
+      .filter(([, count]) => count >= MIN_THEME_COUNT)
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag, count]) => ({ tag, count, emoji: THEME_EMOJI[tag] }))
   }, [data?.stocks])
+
+  const hasThemeTags = themeList.length > 0
 
   // Reset theme when switching sectors
   const handleSectorChange = (key: string) => {
@@ -93,17 +92,28 @@ export function SectorMapView({
         ))}
       </div>
 
-      {/* Theme filter pills (only for sectors with theme data) */}
+      {/* Dynamic theme filter pills */}
       {hasThemeTags && (
         <div className="flex overflow-x-auto gap-1.5 px-5 py-2.5 border-b border-gray-800/30 scrollbar-hide">
-          {THEME_FILTERS.map((t) => {
-            const count = t.key ? themeCounts[t.key] ?? 0 : data?.stocks?.length ?? 0
-            const isActive = activeTheme === t.key
-            if (t.key && count === 0) return null
+          {/* "전체" button */}
+          <button
+            onClick={() => setActiveTheme(null)}
+            className={`shrink-0 rounded-full transition-all text-xs font-bold ${
+              activeTheme === null
+                ? 'bg-[#534AB7] text-white shadow-lg shadow-[#534AB7]/30'
+                : 'bg-[#1a2535] text-gray-400 hover:text-white hover:bg-[#2a3545]'
+            }`}
+            style={{ padding: '6px 14px' }}
+          >
+            전체 <span className="opacity-60">{data?.stocks?.length ?? 0}</span>
+          </button>
+          {/* Dynamic theme pills */}
+          {themeList.map(({ tag, count, emoji }) => {
+            const isActive = activeTheme === tag
             return (
               <button
-                key={t.key ?? '__all'}
-                onClick={() => setActiveTheme(isActive ? null : t.key)}
+                key={tag}
+                onClick={() => setActiveTheme(isActive ? null : tag)}
                 className={`shrink-0 rounded-full transition-all text-xs font-bold ${
                   isActive
                     ? 'bg-[#534AB7] text-white shadow-lg shadow-[#534AB7]/30'
@@ -111,7 +121,7 @@ export function SectorMapView({
                 }`}
                 style={{ padding: '6px 14px' }}
               >
-                {t.label}{t.emoji ? t.emoji : ''}{' '}
+                {tag}{emoji ?? ''}{' '}
                 <span className="opacity-60">{count}</span>
               </button>
             )

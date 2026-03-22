@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect, memo } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react'
 import { TIER_COLORS, TIER_LABELS, CONNECTION_COLOR } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
@@ -266,7 +266,7 @@ export function SectorSwimlane({
   const [selectedStock, setSelectedStock] = useState<string | null>(null)
   const [connectedStocks, setConnectedStocks] = useState<Set<string>>(new Set())
   const [badges, setBadges] = useState<Record<string, string>>({})
-  const [paths, setPaths] = useState<{ d: string; key: string }[]>([])
+  const [paths, setPaths] = useState<{ d: string; key: string; isCross: boolean }[]>([])
   const [svgSize, setSvgSize] = useState({ w: 0, h: 0 })
 
   const tierOrder = [5, 4, 3, 2, 1]
@@ -288,6 +288,15 @@ export function SectorSwimlane({
     }
   }
 
+  // Build market lookup for cross-border detection
+  const marketMap = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const stock of stocks) {
+      map.set(stock.stock_name, stock.market)
+    }
+    return map
+  }, [stocks])
+
   // Draw SVG connection bezier curves (zoom-safe)
   const drawConnections = useCallback(
     (stockName: string, connected: Set<string>) => {
@@ -295,12 +304,14 @@ export function SectorSwimlane({
       const container = containerRef.current
       const rect = container.getBoundingClientRect()
       const zoom = rect.width / container.offsetWidth || 1
-      const newPaths: { d: string; key: string }[] = []
+      const newPaths: { d: string; key: string; isCross: boolean }[] = []
 
       const fromEl = container.querySelector(
         `[data-stock="${CSS.escape(stockName)}"]`
       ) as HTMLElement | null
       if (!fromEl) return
+
+      const fromMarket = marketMap.get(stockName) ?? ''
 
       connected.forEach((targetName) => {
         const toEl = container.querySelector(
@@ -316,15 +327,20 @@ export function SectorSwimlane({
         const ey = (toR.top - rect.top + toR.height / 2) / zoom
         const midY = (sy + ey) / 2
 
+        const toMarket = marketMap.get(targetName) ?? ''
+        const isCross = fromMarket !== toMarket && fromMarket !== '' && toMarket !== ''
+
         newPaths.push({
           d: `M${sx} ${sy} C${sx} ${midY} ${ex} ${midY} ${ex} ${ey}`,
           key: `${stockName}-${targetName}`,
+          isCross,
         })
       })
 
       setPaths(newPaths)
     },
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [marketMap],
   )
 
   const handleStockClick = useCallback(
@@ -420,9 +436,9 @@ export function SectorSwimlane({
             key={p.key}
             d={p.d}
             fill="none"
-            stroke={CONNECTION_COLOR}
-            strokeWidth={2}
-            strokeDasharray="6 4"
+            stroke={p.isCross ? '#60A5FA' : '#7F77DD'}
+            strokeWidth={p.isCross ? 2 : 2.5}
+            strokeDasharray={p.isCross ? '6 3' : undefined}
             opacity={0.8}
           />
         ))}

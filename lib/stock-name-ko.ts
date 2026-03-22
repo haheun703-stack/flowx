@@ -42,6 +42,15 @@ export const STOCK_NAME_KO: Record<string, string> = {
   // 건설
   'XHB': 'S&P 주택건설 ETF',
   'ITB': '미국 주택건설 ETF',
+  // 추가 ETF
+  'XAR': 'S&P 항공방산 ETF',
+  'IYJ': '미국 산업재 ETF',
+  'KRE': 'S&P 지역은행 ETF',
+  'LIT': '글로벌 리튬·배터리 ETF',
+  'XLC': '미디어·통신 ETF',
+  'XRT': 'S&P 소매유통 ETF',
+  'XLY': '미국 소비재 ETF',
+  'XLV': '대형 헬스케어 ETF',
 
   // ── 개별 종목 (4★~1★) ──
   // 반도체
@@ -164,6 +173,8 @@ export const STOCK_NAME_KO: Record<string, string> = {
   'Vulcan Materials': '벌컨머티리얼즈',
   'Martin Marietta': '마틴마리에타',
   'Holcim': '홀심',
+  // 추가 글로벌
+  'Coupang': '쿠팡',
 }
 
 export function getDisplayName(stockName: string): string {

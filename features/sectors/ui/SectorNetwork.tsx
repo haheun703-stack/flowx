@@ -5,7 +5,13 @@ import { TIER_COLORS } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
-const CANVAS_HEIGHT = 850
+/** Dynamic canvas height based on stock count */
+function getCanvasHeight(stockCount: number): number {
+  if (stockCount > 50) return 850
+  if (stockCount > 30) return 700
+  if (stockCount > 15) return 550
+  return 450
+}
 
 // ── 연결 라벨 한국어 쉬운 말 ──
 const RELATION_KO: Record<string, string> = {
@@ -148,6 +154,9 @@ export function SectorNetwork({
   stocks?: StockNode[]
   activeTheme?: string | null
 }) {
+  const totalStocks = stocks?.length ?? Object.values(tiers).flat().length
+  const canvasHeight = getCanvasHeight(totalStocks)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const nodesRef = useRef<NetNode[]>([])
@@ -379,12 +388,12 @@ export function SectorNetwork({
   useEffect(() => {
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
-    const { nodes, edges } = buildGraph(tiers, links, w, CANVAS_HEIGHT)
+    const { nodes, edges } = buildGraph(tiers, links, w, canvasHeight)
     nodesRef.current = nodes
     edgesRef.current = edges
     needsDrawRef.current = true
     draw()
-  }, [tiers, links, draw])
+  }, [tiers, links, draw, canvasHeight])
 
   // Animation loop
   useEffect(() => {
@@ -521,7 +530,7 @@ export function SectorNetwork({
   }
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: CANVAS_HEIGHT, minWidth: 800 }}>
+    <div ref={containerRef} className="relative" style={{ height: canvasHeight, minWidth: 800 }}>
       <div
         className="absolute top-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
         style={{ fontSize: 13, color: '#777' }}
