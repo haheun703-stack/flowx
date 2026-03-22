@@ -7,7 +7,7 @@ export async function GET() {
 
     // 최신 날짜의 데이터만
     const { data: latestDate } = await sb
-      .from('macro_daily')
+      .from('macro_dashboard')
       .select('date')
       .order('date', { ascending: false })
       .limit(1)
@@ -18,7 +18,7 @@ export async function GET() {
     }
 
     const { data: items, error } = await sb
-      .from('macro_daily')
+      .from('macro_dashboard')
       .select('*')
       .eq('date', latestDate.date)
       .order('category')
