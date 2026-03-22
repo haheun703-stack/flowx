@@ -5,9 +5,18 @@ import { TIER_COLORS } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
-const CANVAS_HEIGHT = 700
+const CANVAS_HEIGHT = 750
 
-// ── 문제 4: 연결 라벨 한국어 쉬운 말 ──
+// ── 노드 안 텍스트: 티어별 진한 색 (밝은 배경에 잘 보이게) ──
+const TIER_TEXT_COLORS: Record<number, string> = {
+  5: '#26215C', // 진한 보라
+  4: '#042C53', // 진한 파랑
+  3: '#04342C', // 진한 초록
+  2: '#412402', // 진한 갈색
+  1: '#4A1B0C', // 진한 코랄
+}
+
+// ── 연결 라벨 한국어 쉬운 말 ──
 const RELATION_KO: Record<string, string> = {
   'ETF 구성': 'ETF에 포함',
   'HBM/파운드리': 'HBM 메모리 납품',
@@ -89,45 +98,37 @@ function buildGraph(
     connectionCount[link.to_stock] = (connectionCount[link.to_stock] || 0) + 1
   }
 
-  // ── 문제 3: 티어별 y 좌표 더 넓게 분산 ──
-  const pad = 60
-  const zones: Record<number, { xMin: number; xMax: number; yMin: number; yMax: number }> = {
-    5: { xMin: pad, xMax: width * 0.25, yMin: pad, yMax: height * 0.15 },
-    4: { xMin: width * 0.1, xMax: width * 0.85, yMin: height * 0.18, yMax: height * 0.32 },
-    3: { xMin: width * 0.55, xMax: width - pad, yMin: height * 0.36, yMax: height * 0.52 },
-    2: { xMin: width * 0.15, xMax: width * 0.8, yMin: height * 0.56, yMax: height * 0.72 },
-    1: { xMin: pad, xMax: width - pad, yMin: height * 0.76, yMax: height - pad },
+  // ── 티어별 고정 y + xStart/xGap 레이아웃 (겹침 방지) ──
+  const tierLayout: Record<number, { y: number; xStart: number; xGap: number }> = {
+    5: { y: 80, xStart: 100, xGap: 120 },
+    4: { y: 220, xStart: 60, xGap: 100 },
+    3: { y: 380, xStart: 150, xGap: 110 },
+    2: { y: 520, xStart: 200, xGap: 130 },
+    1: { y: 660, xStart: 80, xGap: 100 },
   }
 
   const nodes: NetNode[] = []
 
   for (const tier of [5, 4, 3, 2, 1]) {
     const stocks = tiers[tier] ?? []
-    const zone = zones[tier]
-    const count = stocks.length
-    if (count === 0) continue
-
-    const xSpread = zone.xMax - zone.xMin
-    const ySpread = zone.yMax - zone.yMin
-    const cols = Math.max(1, Math.ceil(Math.sqrt(count * (xSpread / Math.max(ySpread, 1)))))
+    if (stocks.length === 0) continue
+    const layout = tierLayout[tier]
 
     stocks.forEach((stock, i) => {
       const conns = connectionCount[stock.stock_name] || 0
-      // ── 문제 1: 최소 radius 25px ──
       const radius = Math.max(25, conns * 4 + 14)
-      const row = Math.floor(i / cols)
-      const col = i % cols
-      const totalRows = Math.ceil(count / cols)
 
-      const x = zone.xMin + (col + 0.5) * (xSpread / cols)
-      const y = zone.yMin + (row + 0.5) * (ySpread / Math.max(totalRows, 1))
+      const x = layout.xStart + i * layout.xGap
+      // 약간의 y 오프셋으로 자연스럽게
+      const yOffset = (i % 3 - 1) * 15
+      const y = layout.y + yOffset
 
       nodes.push({
         name: stock.stock_name,
         ticker: stock.ticker,
         tier,
-        x: Math.min(Math.max(x, pad), width - pad),
-        y: Math.min(Math.max(y, pad), height - pad),
+        x: Math.min(Math.max(x, 50), width - 50),
+        y: Math.min(Math.max(y, 50), height - 50),
         radius,
         connections: conns,
         change_pct: stock.change_pct,
@@ -207,7 +208,7 @@ export function SectorNetwork({
       }
     }
 
-    // ── Draw edges (문제 5: 연결선 색상 더 밝게) ──
+    // ── Draw edges ──
     for (const e of edges) {
       const from = nodeMap.get(e.from)
       const to = nodeMap.get(e.to)
@@ -223,7 +224,7 @@ export function SectorNetwork({
       ctx.quadraticCurveTo(midX + cpOff * 0.15, (from.y + to.y) / 2 - cpOff * 0.2, to.x, to.y)
 
       if (isHL) {
-        ctx.strokeStyle = '#A78BFA' // 밝은 보라
+        ctx.strokeStyle = '#A78BFA'
         ctx.lineWidth = 2.5
         ctx.globalAlpha = 0.9
       } else if (isDim) {
@@ -239,7 +240,7 @@ export function SectorNetwork({
       ctx.globalAlpha = 1
     }
 
-    // ── Draw nodes (문제 1: 텍스트 시인성 개선) ──
+    // ── Draw nodes ──
     for (const node of nodes) {
       const colors = TIER_COLORS[node.tier] ?? TIER_COLORS[1]
       const isHov = node.name === hovered
@@ -247,8 +248,8 @@ export function SectorNetwork({
       const isConn = activeConnected.has(node.name)
       const isDim = activeNode && !isHov && !isSel && !isConn
 
-      // dim 상태에서도 opacity 0.4 이상 유지
-      ctx.globalAlpha = isDim ? 0.4 : 1
+      // dim: 0.35 (안 보이지 않게)
+      ctx.globalAlpha = isDim ? 0.35 : 1
 
       // Circle
       const drawRadius = (isHov || isSel) ? node.radius + 3 : node.radius
@@ -260,35 +261,41 @@ export function SectorNetwork({
       ctx.lineWidth = (isHov || isSel) ? 3 : node.connections >= 5 ? 2.5 : 1.5
       ctx.stroke()
 
-      // 선택된 노드에 glow 효과
+      // glow
       if (isSel) {
         ctx.beginPath()
         ctx.arc(node.x, node.y, drawRadius + 5, 0, Math.PI * 2)
         ctx.strokeStyle = '#A78BFA'
         ctx.lineWidth = 2
-        ctx.globalAlpha = isDim ? 0.3 : 0.5
+        ctx.globalAlpha = isDim ? 0.25 : 0.5
         ctx.stroke()
-        ctx.globalAlpha = isDim ? 0.4 : 1
+        ctx.globalAlpha = isDim ? 0.35 : 1
       }
 
-      // Label: 흰색 700 12px, 안 들어가면 아래에
+      // ── 노드 안 텍스트: 티어별 진한 색 ──
       const displayName = getDisplayName(node.name)
-      ctx.font = '700 12px "Pretendard", -apple-system, sans-serif'
-      ctx.fillStyle = '#FFFFFF'
+      const textColor = TIER_TEXT_COLORS[node.tier] || '#1a1a1a'
+      const fontSize = drawRadius >= 30 ? 13 : 12
+      ctx.font = `700 ${fontSize}px "Pretendard", -apple-system, sans-serif`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
       const textWidth = ctx.measureText(displayName).width
       if (textWidth < drawRadius * 1.8) {
+        // 노드 안에 표시 — 진한 색
+        ctx.fillStyle = textColor
         ctx.fillText(displayName, node.x, node.y)
       } else {
-        ctx.fillText(displayName, node.x, node.y + drawRadius + 14)
+        // 노드 아래에 표시 — 흰색, opacity 1.0, 600
+        ctx.fillStyle = '#FFFFFF'
+        ctx.font = '600 12px "Pretendard", -apple-system, sans-serif'
+        ctx.fillText(displayName, node.x, node.y + drawRadius + 16)
       }
 
       ctx.globalAlpha = 1
     }
 
-    // ── 선택된 노드: 연결 라벨 (문제 2: 배경 박스 + 노란색) ──
+    // ── 선택된 노드: 연결 라벨 (노란색 + 검정 배경 박스) ──
     if (selected) {
       ctx.font = '700 12px "Pretendard", -apple-system, sans-serif'
       let labelIdx = 0
@@ -300,17 +307,16 @@ export function SectorNetwork({
 
         const midX = (from.x + to.x) / 2
         const midY = (from.y + to.y) / 2
-        // 문제 3: 라벨 겹침 방지 — 짝수/홀수 오프셋
         const offset = (labelIdx % 2 === 0) ? -18 : 18
         const labelY = midY + offset
 
         const label = getRelationKo(e.relation)
-        const labelWidth = ctx.measureText(label).width + 14
+        const labelWidth = ctx.measureText(label).width + 16
 
         // 배경 박스
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)'
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)'
         ctx.beginPath()
-        ctx.roundRect(midX - labelWidth / 2, labelY - 11, labelWidth, 22, 4)
+        ctx.roundRect(midX - labelWidth / 2, labelY - 12, labelWidth, 24, 4)
         ctx.fill()
 
         // 텍스트
@@ -363,7 +369,6 @@ export function SectorNetwork({
     return null
   }, [])
 
-  // Zoom-safe mouse position
   const getPos = useCallback((e: React.MouseEvent) => {
     const canvas = canvasRef.current
     if (!canvas) return { x: 0, y: 0 }
@@ -466,7 +471,6 @@ export function SectorNetwork({
     needsDrawRef.current = true
   }, [])
 
-  // 외인 순매수 포맷
   const formatForeign = (v: number) => {
     if (Math.abs(v) >= 1e8) return `${v > 0 ? '+' : ''}${(v / 1e8).toFixed(0)}억`
     if (Math.abs(v) >= 1e4) return `${v > 0 ? '+' : ''}${(v / 1e4).toFixed(0)}만`
@@ -474,8 +478,7 @@ export function SectorNetwork({
   }
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: CANVAS_HEIGHT }}>
-      {/* 문제 4: 안내 텍스트 한국어 쉬운 말 */}
+    <div ref={containerRef} className="relative" style={{ height: CANVAS_HEIGHT, minWidth: 800 }}>
       <div
         className="absolute top-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
         style={{ fontSize: 13, color: '#777' }}
@@ -491,7 +494,6 @@ export function SectorNetwork({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       />
-      {/* 문제 6: 멀티라인 툴팁 */}
       {tooltip && (
         <div
           className="absolute pointer-events-none z-20 whitespace-nowrap"
