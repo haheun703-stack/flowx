@@ -1,46 +1,116 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
 import { FlowxLogo } from '@/shared/ui/logo'
 
+const INPUT_CLASS =
+  'w-full px-4 py-3 bg-[#0a0f18] border border-[#1a2535] rounded-lg text-white text-sm focus:outline-none focus:border-[#00ff88]/50 transition-colors'
+
+function formatPhone(value: string): string {
+  const nums = value.replace(/\D/g, '').slice(0, 11)
+  if (nums.length <= 3) return nums
+  if (nums.length <= 7) return `${nums.slice(0, 3)}-${nums.slice(3)}`
+  return `${nums.slice(0, 3)}-${nums.slice(3, 7)}-${nums.slice(7)}`
+}
+
+function ValidationIcon({ valid }: { valid: boolean | null }) {
+  if (valid === null) return null
+  return (
+    <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${valid ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
+      {valid ? '✓' : '✕'}
+    </span>
+  )
+}
+
 export default function SignupPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [agreeTerms, setAgreeTerms] = useState(false)
+  const [agreePrivacy, setAgreePrivacy] = useState(false)
+  const [agreeMarketing, setAgreeMarketing] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  // 유효성 검사
+  const nameValid = name.length >= 2 ? true : name.length > 0 ? false : null
+  const emailValid = email.includes('@') && email.includes('.') ? true : email.length > 0 ? false : null
+  const phoneValid = phone.replace(/\D/g, '').length >= 10 ? true : phone.length > 0 ? false : null
+  const passwordValid = password.length >= 8 ? true : password.length > 0 ? false : null
+  const confirmValid = confirmPassword.length > 0 ? (password === confirmPassword ? true : false) : null
+
+  const canSubmit =
+    nameValid === true &&
+    emailValid === true &&
+    passwordValid === true &&
+    confirmValid === true &&
+    agreeTerms &&
+    agreePrivacy &&
+    !loading
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (!canSubmit) return
+
+    if (password !== confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다')
+      return
+    }
+
     setLoading(true)
 
-    if (password.length < 6) {
-      setError('비밀번호는 6자 이상이어야 합니다')
+    try {
+      // 서버 API로 회원가입 (트리거 폴백 포함)
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          phone: phone.replace(/\D/g, '') || null,
+          marketingAgreed: agreeMarketing,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || '회원가입에 실패했습니다')
+        setLoading(false)
+        return
+      }
+
+      // 가입 성공 → 자동 로그인
+      const supabase = getSupabaseBrowser()
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (loginError) {
+        // 로그인 실패해도 가입은 성공
+        setSuccess(true)
+        setLoading(false)
+        return
+      }
+
+      // 자동 로그인 성공 → 대시보드로 이동
+      router.push('/dashboard')
+      router.refresh()
+    } catch {
+      setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
       setLoading(false)
-      return
     }
-
-    const supabase = getSupabaseBrowser()
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-      },
-    })
-
-    if (authError) {
-      setError(authError.message)
-      setLoading(false)
-      return
-    }
-
-    setSuccess(true)
-    setLoading(false)
   }
 
   if (success) {
@@ -50,14 +120,16 @@ export default function SignupPage() {
           <Link href="/">
             <FlowxLogo variant="small" />
           </Link>
-          <h1 className="text-xl font-bold text-white mt-6 mb-4">확인 이메일 전송 완료</h1>
+          <h1 className="text-xl font-bold text-white mt-6 mb-4">회원가입 완료!</h1>
           <p className="text-sm text-gray-400 mb-6">
-            <span className="text-[#00ff88] font-bold">{email}</span>
-            <br />으로 확인 이메일을 보냈습니다.
-            <br />이메일을 확인해주세요.
+            <span className="text-[#00ff88] font-bold">{name}</span>님, 환영합니다.
+            <br />로그인하여 서비스를 이용해주세요.
           </p>
-          <Link href="/auth/login" className="text-[#00ff88] text-sm hover:underline">
-            로그인으로 이동
+          <Link
+            href="/auth/login"
+            className="inline-block px-6 py-3 bg-[#00ff88] text-black font-bold text-sm rounded-lg hover:bg-[#00ff88]/90 transition-all font-mono"
+          >
+            로그인하기
           </Link>
         </div>
       </div>
@@ -65,7 +137,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080b10] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#080b10] flex items-center justify-center px-4 py-12">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
           <Link href="/">
@@ -76,42 +148,152 @@ export default function SignupPage() {
         </div>
 
         <form onSubmit={handleSignup} className="space-y-4">
+          {/* 이름 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">이름</label>
-            <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-[#0a0f18] border border-[#1a2535] rounded-lg text-white text-sm
-                         focus:outline-none focus:border-[#00ff88]/50 transition-colors"
-              placeholder="홍길동"
-            />
+            <label className="text-xs text-gray-400 block mb-1">이름 <span className="text-[#ff3b5c]">*</span></label>
+            <div className="relative">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={INPUT_CLASS}
+                placeholder="홍길동"
+              />
+              <ValidationIcon valid={nameValid} />
+            </div>
           </div>
+
+          {/* 이메일 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">이메일</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-[#0a0f18] border border-[#1a2535] rounded-lg text-white text-sm
-                         focus:outline-none focus:border-[#00ff88]/50 transition-colors"
-              placeholder="you@example.com"
-            />
+            <label className="text-xs text-gray-400 block mb-1">이메일 <span className="text-[#ff3b5c]">*</span></label>
+            <div className="relative">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={INPUT_CLASS}
+                placeholder="you@example.com"
+              />
+              <ValidationIcon valid={emailValid} />
+            </div>
           </div>
+
+          {/* 전화번호 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">비밀번호</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full px-4 py-3 bg-[#0a0f18] border border-[#1a2535] rounded-lg text-white text-sm
-                         focus:outline-none focus:border-[#00ff88]/50 transition-colors"
-              placeholder="6자 이상"
-            />
+            <label className="text-xs text-gray-400 block mb-1">전화번호</label>
+            <div className="relative">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(formatPhone(e.target.value))}
+                className={INPUT_CLASS}
+                placeholder="010-0000-0000"
+              />
+              <ValidationIcon valid={phoneValid} />
+            </div>
+          </div>
+
+          {/* 비밀번호 */}
+          <div>
+            <label className="text-xs text-gray-400 block mb-1">비밀번호 <span className="text-[#ff3b5c]">*</span></label>
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                className={INPUT_CLASS}
+                placeholder="8자 이상"
+              />
+              <ValidationIcon valid={passwordValid} />
+            </div>
+          </div>
+
+          {/* 비밀번호 확인 */}
+          <div>
+            <label className="text-xs text-gray-400 block mb-1">비밀번호 확인 <span className="text-[#ff3b5c]">*</span></label>
+            <div className="relative">
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className={INPUT_CLASS}
+                placeholder="비밀번호를 다시 입력하세요"
+              />
+              <ValidationIcon valid={confirmValid} />
+            </div>
+            {confirmValid === false && (
+              <p className="text-xs text-[#ff3b5c] mt-1">비밀번호가 일치하지 않습니다</p>
+            )}
+          </div>
+
+          {/* 약관 동의 */}
+          <div className="space-y-3 pt-2 border-t border-[#1a2535]">
+            {/* 전체 동의 */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreeTerms && agreePrivacy && agreeMarketing}
+                onChange={(e) => {
+                  const v = e.target.checked
+                  setAgreeTerms(v)
+                  setAgreePrivacy(v)
+                  setAgreeMarketing(v)
+                }}
+                className="w-4 h-4 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+              />
+              <span className="text-sm text-white font-bold">전체 동의</span>
+            </label>
+
+            <div className="ml-6 space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                />
+                <span className="text-xs text-gray-400">
+                  <span className="text-[#ff3b5c]">[필수]</span>{' '}
+                  <Link href="/terms" className="underline hover:text-white" target="_blank">
+                    이용약관
+                  </Link>
+                  에 동의합니다
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreePrivacy}
+                  onChange={(e) => setAgreePrivacy(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                />
+                <span className="text-xs text-gray-400">
+                  <span className="text-[#ff3b5c]">[필수]</span>{' '}
+                  <Link href="/privacy" className="underline hover:text-white" target="_blank">
+                    개인정보 처리방침
+                  </Link>
+                  에 동의합니다
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeMarketing}
+                  onChange={(e) => setAgreeMarketing(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                />
+                <span className="text-xs text-gray-400">
+                  [선택] 마케팅 수신에 동의합니다
+                </span>
+              </label>
+            </div>
           </div>
 
           {error && (
@@ -122,9 +304,9 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={!canSubmit}
             className="w-full py-3 bg-[#00ff88] text-black font-bold text-sm rounded-lg
-                       hover:bg-[#00ff88]/90 transition-all disabled:opacity-50 font-mono"
+                       hover:bg-[#00ff88]/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-mono"
           >
             {loading ? '가입 중...' : '무료로 시작하기'}
           </button>
