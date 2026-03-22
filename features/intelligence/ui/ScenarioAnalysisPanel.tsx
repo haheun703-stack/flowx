@@ -225,10 +225,10 @@ export function ScenarioAnalysisPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a3a]">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/50">
         <div className="flex items-center gap-2">
-          <span className="text-base">🎯</span>
-          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">시나리오 확률</span>
+          <span className="text-lg">🎯</span>
+          <span className="text-base font-bold text-white tracking-wider">시나리오 확률</span>
           {hitSummary && hitSummary.total_tagged > 0 && (
             <span className="text-[10px] px-1.5 py-0.5 rounded border border-[#10b981]/30 text-[#10b981] font-bold">
               적중률 {hitSummary.hit_rate_pct}%
@@ -249,7 +249,7 @@ export function ScenarioAnalysisPanel() {
           ))}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-3 space-y-5">
+      <div className="flex-1 overflow-y-auto p-5 space-y-5">
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="space-y-2">

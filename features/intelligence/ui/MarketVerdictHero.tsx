@@ -75,12 +75,12 @@ export function MarketVerdictHero() {
 
   return (
     <div
-      className="rounded-xl p-6 sm:p-8 lg:p-10 relative overflow-hidden"
+      className="rounded-2xl p-8 relative overflow-hidden min-h-[160px]"
       style={{ background: style.bg, border: style.border }}
     >
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-sm font-bold tracking-widest uppercase text-[#94a3b8]">오늘의 시장 판정</span>
+          <span className="text-sm font-bold tracking-widest uppercase text-gray-400">오늘의 시장 판정</span>
           <span className="text-xs px-2.5 py-1 rounded border font-bold"
             style={{ color: style.textColor, borderColor: style.textColor + '60' }}>
             {data.date}
@@ -91,7 +91,7 @@ export function MarketVerdictHero() {
             {label}
           </div>
         </div>
-        <div className="text-base sm:text-lg text-[#cbd5e1] mt-2 font-medium">
+        <div className="text-base sm:text-lg text-gray-300 mt-2 font-medium">
           {reason}
         </div>
       </div>

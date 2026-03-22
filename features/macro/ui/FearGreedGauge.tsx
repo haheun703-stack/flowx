@@ -95,12 +95,12 @@ export function FearGreedGauge() {
   const vixAlert = vixValue >= 25
 
   return (
-    <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg p-4">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-base">😱</span>
-        <span className="text-sm font-bold text-[#e2e8f0]">공포 & 탐욕 지수</span>
+    <div className="bg-gray-900 rounded-xl p-6 min-h-[200px]">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-lg">😱</span>
+        <span className="text-base font-bold text-white">공포 & 탐욕 지수</span>
         {fgItem && (
-          <span className="text-[10px] text-[#8a8a8a] ml-auto">{data?.date}</span>
+          <span className="text-xs text-gray-500 ml-auto">{data?.date}</span>
         )}
       </div>
 

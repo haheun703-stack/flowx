@@ -64,8 +64,8 @@ function CategoryCard({ category, items }: { category: string; items: MacroItem[
   const meta = CATEGORY_META[category] ?? { title: category, icon: '📦', accentColor: '#64748b' }
 
   return (
-    <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-[#2a2a3a]">
+    <div className="bg-gray-900 rounded-xl overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800/50">
         <span className="text-lg">{meta.icon}</span>
         <span className="text-lg font-bold" style={{ color: meta.accentColor }}>{meta.title}</span>
         <span className="text-xs text-[#555]">{items.length}개</span>
@@ -101,8 +101,8 @@ export function MacroRadarPanel() {
 
   if (Object.keys(categories).length === 0) {
     return (
-      <div className="bg-[#0a0f18] border border-[#2a2a3a] rounded-lg p-8 text-center text-[#334155]">
-        매크로 데이터 없음 — Supabase macro_daily 테이블에 데이터 업로드 필요
+      <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-600">
+        매크로 데이터 없음 — Supabase macro_dashboard 테이블에 데이터 업로드 필요
       </div>
     )
   }

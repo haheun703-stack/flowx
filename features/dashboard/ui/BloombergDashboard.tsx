@@ -49,8 +49,8 @@ export function BloombergDashboard() {
           {/* 우측 컨텐츠 */}
           <div className="flex-1 flex flex-col">
             {/* 중간: AI 추천 + 세력 포착 (반반) */}
-            <div className="flex h-[360px] border-b border-[#2a2a3a]">
-              <div className="flex-1 overflow-hidden border-r border-[#2a2a3a]">
+            <div className="flex h-[360px] border-b border-gray-800">
+              <div className="flex-1 overflow-hidden border-r border-gray-800">
                 <AIRecommendPanel />
               </div>
               <div className="flex-1 overflow-hidden">
@@ -66,10 +66,10 @@ export function BloombergDashboard() {
         </div>
 
         {/* ── 하단 확장 패널 ── */}
-        <div className="border-t border-[#2a2a3a]">
+        <div className="border-t border-gray-800">
           {/* 외국인 자본 흐름 + ETF 시그널 */}
-          <div className="flex h-[360px] border-b border-[#2a2a3a]">
-            <div className="flex-1 overflow-hidden border-r border-[#2a2a3a]">
+          <div className="flex h-[360px] border-b border-gray-800">
+            <div className="flex-1 overflow-hidden border-r border-gray-800">
               <ChinaMoneyPanel />
             </div>
             <div className="flex-1 overflow-hidden">
@@ -79,7 +79,7 @@ export function BloombergDashboard() {
 
           {/* 스나이퍼 워치 + 모닝 브리핑 */}
           <div className="flex h-[360px]">
-            <div className="flex-1 overflow-hidden border-r border-[#2a2a3a]">
+            <div className="flex-1 overflow-hidden border-r border-gray-800">
                 <SniperWatchPanel />
             </div>
             <div className="flex-1 overflow-hidden">

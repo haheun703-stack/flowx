@@ -50,11 +50,11 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
   const warn = pct >= 80 ? 'high' : pct <= 15 ? 'low' : null
 
   return (
-    <div className="bg-[#0d1420] border border-[#2a2a3a] rounded-lg p-3 flex flex-col items-center gap-1">
+    <div className="bg-gray-900 rounded-xl p-5 min-h-[200px] flex flex-col items-center gap-1">
       {/* Header */}
       <div className="flex items-center gap-1.5">
-        <span className="text-sm font-bold text-[#e2e8f0]">{name}</span>
-        {item.unit && <span className="text-[10px] text-[#555]">{item.unit}</span>}
+        <span className="text-sm font-bold text-white">{name}</span>
+        {item.unit && <span className="text-[10px] text-gray-500">{item.unit}</span>}
       </div>
 
       {/* SVG Gauge */}

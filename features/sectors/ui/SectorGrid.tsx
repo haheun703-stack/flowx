@@ -37,7 +37,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
   return (
     <Link
       href={`/sectors/${sector.key}`}
-      className="group block bg-[#0a0f18] border border-[#1a2535] rounded-lg p-5 hover:border-[#534AB7] transition-all hover:bg-[#0e1420]"
+      className="group block bg-gray-900 rounded-xl p-5 min-h-[200px] hover:border hover:border-[#534AB7] transition-all hover:bg-gray-800/30"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -96,7 +96,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
 
 function SectorCardSkeleton() {
   return (
-    <div className="bg-[#0a0f18] border border-[#1a2535] rounded-lg p-5 animate-pulse">
+    <div className="bg-gray-900 rounded-xl p-5 min-h-[200px] animate-pulse">
       <div className="flex justify-between mb-4">
         <div className="h-5 w-20 bg-[#1a2535] rounded" />
         <div className="h-5 w-14 bg-[#1a2535] rounded" />
@@ -129,25 +129,25 @@ export function SectorGrid() {
   })
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)]" style={{ background: '#131722', fontFamily: FONT }}>
-      {/* Header — 트리맵과 동일 스타일 */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]">
+    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)] bg-[#080b10]" style={{ fontFamily: FONT }}>
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
         <div className="flex items-center gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-[#534AB7]" />
-          <span className="text-base font-black tracking-widest uppercase text-white">
+          <span className="text-2xl font-black tracking-widest uppercase text-white">
             섹터맵
           </span>
-          <span className="text-sm font-black text-[#94a3b8]">13개 섹터 · 공급망 분석</span>
+          <span className="text-sm font-black text-gray-400">13개 섹터 · 공급망 분석</span>
         </div>
       </div>
 
       {/* 설명 */}
-      <div className="px-4 py-1.5 text-xs text-[#64748b] border-b border-[#1a2535]/50">
+      <div className="px-6 py-2 text-xs text-gray-500 border-b border-gray-800/50">
         섹터 클릭 → 5티어 플로우차트 + 공급망 연결 확인 · 색상 = 티어 분포
       </div>
 
       {/* Grid */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {isLoading
             ? Array.from({ length: 13 }).map((_, i) => <SectorCardSkeleton key={i} />)

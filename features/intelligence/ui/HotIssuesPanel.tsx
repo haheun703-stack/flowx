@@ -101,15 +101,15 @@ export function HotIssuesPanel({ scope, title, accentColor }: HotIssuesPanelProp
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a3a]">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/50">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor }} />
-          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">{title}</span>
-          <span className="text-xs text-[#8a8a8a] font-bold">{items.length}건</span>
+          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }} />
+          <span className="text-base font-bold text-white tracking-wider">{title}</span>
+          <span className="text-xs text-gray-500 font-bold">{items.length}건</span>
         </div>
         <div className="flex items-center gap-2">
-          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
-          <span className="text-[11px] text-[#8a8a8a]">{dateStr}</span>
+          {rel && <span className={`text-xs font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-gray-500'}`}>{rel.label}</span>}
+          <span className="text-xs text-gray-500">{dateStr}</span>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">

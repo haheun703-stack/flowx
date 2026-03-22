@@ -195,18 +195,18 @@ export function SupplyDemandPanel() {
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a2a3a]">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/50">
         <div className="flex items-center gap-2">
-          <span className="text-base">🌡️</span>
-          <span className="text-sm font-bold text-[#e2e8f0] tracking-wider">수급 흐름</span>
+          <span className="text-lg">🌡️</span>
+          <span className="text-base font-bold text-white tracking-wider">수급 흐름</span>
         </div>
         <div className="flex items-center gap-2">
-          {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-[#555]'}`}>{rel.label}</span>}
-          <span className="text-[11px] text-[#8a8a8a]">{dateStr}</span>
+          {rel && <span className={`text-xs font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-gray-500'}`}>{rel.label}</span>}
+          <span className="text-xs text-gray-500">{dateStr}</span>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
         {isLoading ? (
           <div className="space-y-3">
             <div className="h-[180px] bg-[#1a2535] animate-pulse rounded" />
