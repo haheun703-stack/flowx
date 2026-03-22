@@ -3,11 +3,57 @@
 import { useState } from 'react'
 import { useIntelligenceScenarios, type ScenarioItem, type ScenarioOption } from '../api/useIntelligence'
 
+/** 시나리오 이름 → 쉬운 한국어 + 부제 매핑 */
+const SCENARIO_LABEL_KO: Record<string, string> = {
+  'Soft Landing': '연착륙',
+  'Hard Landing': '경착륙',
+  'Stagflation': '스태그플레이션',
+  'Reflation': '리플레이션',
+  'Goldilocks': '골디락스',
+  'Rate Cut Rally': '금리 인하 랠리',
+  'Rate Hike Shock': '금리 인상 충격',
+  'Trade War': '무역전쟁',
+  'Recession': '경기침체',
+  'Recovery': '경기회복',
+  'Credit Crunch': '신용경색',
+  'Tech Bubble': '기술주 거품',
+  'Oil Shock': '유가 충격',
+  'USD Surge': '달러 강세',
+  'USD Weakness': '달러 약세',
+}
+
+const SCENARIO_SUBTITLES: Record<string, string> = {
+  'Soft Landing': '경기 과열 없이 안정적 둔화',
+  'Hard Landing': '급격한 경기 위축, 실업 증가',
+  'Stagflation': '물가 상승 + 경기 침체 동시 발생',
+  'Reflation': '경기 부양으로 인한 물가 재상승',
+  'Goldilocks': '과열도 침체도 아닌 적정 성장',
+  'Rate Cut Rally': '금리 인하 기대감으로 주가 상승',
+  'Rate Hike Shock': '예상 밖 금리 인상으로 시장 급락',
+  'Trade War': '관세 보복으로 글로벌 교역 위축',
+  'Recession': '2분기 연속 마이너스 성장',
+  'Recovery': '경기 저점 통과 후 반등 국면',
+  'Credit Crunch': '금융기관 대출 축소로 유동성 경색',
+  'Tech Bubble': '기술주 과대평가 후 급격한 조정',
+  'Oil Shock': '원유 가격 급등으로 인플레이션 압력',
+  'USD Surge': '달러 강세로 수출기업 타격',
+  'USD Weakness': '달러 약세로 원자재·신흥국 수혜',
+}
+
 /** 시나리오 방향 이모지 + 쉬운 말 */
 function getDirectionInfo(impact: string): { emoji: string; color: string; label: string } {
   if (impact.includes('+')) return { emoji: '🟢', color: '#10b981', label: '상승' }
   if (impact.includes('-')) return { emoji: '🔴', color: '#ef4444', label: '하락' }
   return { emoji: '🟡', color: '#f59e0b', label: '보합' }
+}
+
+/** 시나리오 이름 한글화 */
+function getScenarioLabel(name: string): string {
+  return SCENARIO_LABEL_KO[name] ?? name
+}
+
+function getScenarioSubtitle(name: string): string | null {
+  return SCENARIO_SUBTITLES[name] ?? null
 }
 
 /** 확률 바 (가로 채우기) */
@@ -38,12 +84,17 @@ function SimpleScenarioCard({ sc }: { sc: ScenarioOption }) {
       onClick={() => setExpanded(!expanded)}
       className="w-full text-left border border-[#2a2a3a] rounded-lg bg-[#0d1117] hover:border-[#3a3a4a] transition-colors"
     >
-      <div className="px-3 py-2.5">
+      <div className="px-3 py-3">
         {/* 이모지 + 이름 + 확률 */}
         <div className="flex items-center gap-2 mb-2">
           <span className="text-lg">{dir.emoji}</span>
-          <span className="text-sm text-[#e2e8f0] font-bold flex-1">{sc.name}</span>
-          <span className="text-lg font-black tabular-nums" style={{ color: dir.color }}>
+          <div className="flex-1 min-w-0">
+            <span className="text-sm text-[#e2e8f0] font-bold">{getScenarioLabel(sc.name)}</span>
+            {getScenarioSubtitle(sc.name) && (
+              <div className="text-[11px] text-[#64748b] mt-0.5">{getScenarioSubtitle(sc.name)}</div>
+            )}
+          </div>
+          <span className="text-2xl sm:text-3xl font-black tabular-nums shrink-0" style={{ color: dir.color }}>
             {sc.probability}%
           </span>
         </div>

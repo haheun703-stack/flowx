@@ -32,21 +32,21 @@ function deriveVerdict(
 
 const VERDICT_STYLE: Record<Verdict, { bg: string; border: string; textColor: string; icon: string }> = {
   BUY: {
-    bg: 'linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(6,78,59,0.15) 100%)',
-    border: '1px solid rgba(16,185,129,0.4)',
-    textColor: '#10b981',
+    bg: 'linear-gradient(135deg, rgba(16,185,129,0.45) 0%, rgba(6,78,59,0.30) 100%)',
+    border: '2px solid rgba(16,185,129,0.6)',
+    textColor: '#34d399',
     icon: '▲',
   },
   SELL: {
-    bg: 'linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(127,29,29,0.15) 100%)',
-    border: '1px solid rgba(239,68,68,0.4)',
-    textColor: '#ef4444',
+    bg: 'linear-gradient(135deg, rgba(239,68,68,0.45) 0%, rgba(127,29,29,0.30) 100%)',
+    border: '2px solid rgba(239,68,68,0.6)',
+    textColor: '#f87171',
     icon: '▼',
   },
   HOLD: {
-    bg: 'linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(120,53,15,0.15) 100%)',
-    border: '1px solid rgba(245,158,11,0.4)',
-    textColor: '#f59e0b',
+    bg: 'linear-gradient(135deg, rgba(245,158,11,0.40) 0%, rgba(120,53,15,0.25) 100%)',
+    border: '2px solid rgba(245,158,11,0.5)',
+    textColor: '#fbbf24',
     icon: '■',
   },
 }
@@ -75,34 +75,24 @@ export function MarketVerdictHero() {
 
   return (
     <div
-      className="rounded-lg px-6 py-5 relative overflow-hidden"
+      className="rounded-xl p-6 sm:p-8 lg:p-10 relative overflow-hidden"
       style={{ background: style.bg, border: style.border }}
     >
-      {/* 배경 아이콘 */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-bold select-none" style={{ color: style.textColor }}>
-        {style.icon}
-      </div>
-
       <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-xs font-bold tracking-widest uppercase text-[#8a8a8a]">오늘의 시장 판정</span>
-          <span className="text-[10px] px-2 py-0.5 rounded border font-bold"
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-sm font-bold tracking-widest uppercase text-[#94a3b8]">오늘의 시장 판정</span>
+          <span className="text-xs px-2.5 py-1 rounded border font-bold"
             style={{ color: style.textColor, borderColor: style.textColor + '60' }}>
             {data.date}
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-[32px] font-black leading-none" style={{ color: style.textColor }}>
-            {style.icon}
-          </span>
-          <div>
-            <div className="text-[28px] sm:text-[32px] font-black leading-tight tracking-tight" style={{ color: style.textColor }}>
-              {label}
-            </div>
-            <div className="text-[15px] text-[#cbd5e1] mt-0.5 font-medium">
-              {reason}
-            </div>
+        <div className="flex items-baseline gap-4">
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-black leading-none tracking-tight" style={{ color: style.textColor }}>
+            {label}
           </div>
+        </div>
+        <div className="text-base sm:text-lg text-[#cbd5e1] mt-2 font-medium">
+          {reason}
         </div>
       </div>
     </div>

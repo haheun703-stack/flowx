@@ -20,7 +20,7 @@ export default function IntelligencePage() {
         </div>
       </div>
 
-      <div className="px-3 sm:px-5 py-4 space-y-4 max-w-[1400px] mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-5 space-y-5 max-w-7xl mx-auto">
         {/* 1. 오늘의 한 줄 판정 (히어로) — 가장 크게, 가장 먼저 */}
         <MarketVerdictHero />
 
