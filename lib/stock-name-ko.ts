@@ -1,4 +1,49 @@
 export const STOCK_NAME_KO: Record<string, string> = {
+  // ── ETF (5★) ──
+  // 반도체
+  'SOXX': '필라델피아 반도체 지수',
+  'SMH': '반도체 대형주 ETF',
+  'XSD': 'S&P 반도체 ETF',
+  // 방산
+  'ITA': '미국 항공우주·방산 ETF',
+  'PPA': '인베스코 항공방산 ETF',
+  'DFEN': '방산 3배 레버리지',
+  // 조선
+  'BOAT': '글로벌 해운 ETF',
+  'BDRY': '벌크선 운임 ETF',
+  // 바이오
+  'XBI': 'S&P 바이오테크 ETF',
+  'IBB': '나스닥 바이오 ETF',
+  'ARKG': 'ARK 유전체혁명 ETF',
+  // 금융
+  'XLF': '미국 금융 섹터 ETF',
+  'KBE': 'S&P 은행 ETF',
+  // 자동차
+  'CARZ': '글로벌 미래차 ETF',
+  'DRIV': '자율주행·전기차 ETF',
+  // 로봇
+  'BOTZ': '글로벌 로보틱스·AI ETF',
+  'ROBO': '로보틱스·자동화 ETF',
+  // 에너지
+  'XLE': '미국 에너지 섹터 ETF',
+  'URA': '글로벌 우라늄 ETF',
+  'ICLN': '글로벌 클린에너지 ETF',
+  // 게임
+  'HERO': '글로벌 게임·e스포츠 ETF',
+  'ESPO': '비디오게임·e스포츠 ETF',
+  // 엔터
+  'PEJ': '인베스코 레저·엔터 ETF',
+  // 유통
+  'IYT': '미국 운송 평균 ETF',
+  'SEA': '글로벌 해상·항공 ETF',
+  // 식품
+  'XLP': '미국 필수소비재 ETF',
+  'PBJ': '인베스코 식품·음료 ETF',
+  // 건설
+  'XHB': 'S&P 주택건설 ETF',
+  'ITB': '미국 주택건설 ETF',
+
+  // ── 개별 종목 (4★~1★) ──
   // 반도체
   'NVIDIA': '엔비디아',
   'TSMC ADR': 'TSMC (대만반도체)',

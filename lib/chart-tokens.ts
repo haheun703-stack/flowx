@@ -28,7 +28,7 @@ export const TIER_COLORS: Record<number, { bg: string; border: string; text: str
 export const CONNECTION_COLOR = '#7F77DD'
 
 export const TIER_LABELS: Record<number, { label: string; sub: string }> = {
-  5: { label: 'ETF', sub: '글로벌 벤치마크' },
+  5: { label: '글로벌 ETF', sub: '섹터 벤치마크 지수' },
   4: { label: 'Global', sub: '글로벌 대장주' },
   3: { label: 'Suppliers', sub: '소부장/장비' },
   2: { label: 'KR 대형', sub: '한국 대형주' },
