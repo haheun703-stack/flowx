@@ -5,6 +5,8 @@ import { TIER_COLORS, CONNECTION_COLOR } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
+const CANVAS_HEIGHT = 700
+
 interface NetNode {
   name: string
   ticker: string
@@ -34,13 +36,14 @@ function buildGraph(
     connectionCount[link.to_stock] = (connectionCount[link.to_stock] || 0) + 1
   }
 
-  // Position zones per tier
+  // Position zones per tier — 여유 있게 배치
+  const pad = 60
   const zones: Record<number, { xMin: number; xMax: number; yMin: number; yMax: number }> = {
-    5: { xMin: 40, xMax: width * 0.2, yMin: 30, yMax: height * 0.25 },
-    4: { xMin: width * 0.15, xMax: width * 0.75, yMin: 30, yMax: height * 0.4 },
-    3: { xMin: width * 0.6, xMax: width - 40, yMin: 30, yMax: height * 0.45 },
-    2: { xMin: width * 0.2, xMax: width * 0.75, yMin: height * 0.5, yMax: height * 0.7 },
-    1: { xMin: 60, xMax: width - 60, yMin: height * 0.7, yMax: height - 30 },
+    5: { xMin: pad, xMax: width * 0.25, yMin: pad, yMax: height * 0.2 },
+    4: { xMin: width * 0.1, xMax: width * 0.85, yMin: height * 0.08, yMax: height * 0.32 },
+    3: { xMin: width * 0.55, xMax: width - pad, yMin: height * 0.15, yMax: height * 0.42 },
+    2: { xMin: width * 0.15, xMax: width * 0.8, yMin: height * 0.48, yMax: height * 0.68 },
+    1: { xMin: pad, xMax: width - pad, yMin: height * 0.72, yMax: height - pad },
   }
 
   const nodes: NetNode[] = []
@@ -56,7 +59,8 @@ function buildGraph(
 
     stocks.forEach((stock, i) => {
       const conns = connectionCount[stock.stock_name] || 0
-      const radius = Math.max(8, conns * 3 + 6)
+      // 더 큰 노드: 기본 14, 연결 많을수록 커짐
+      const radius = Math.max(14, conns * 4 + 10)
       const row = Math.floor(i / cols)
       const col = i % cols
       const totalRows = Math.ceil(count / cols)
@@ -68,8 +72,8 @@ function buildGraph(
         name: stock.stock_name,
         ticker: stock.ticker,
         tier,
-        x: Math.min(Math.max(x, 30), width - 30),
-        y: Math.min(Math.max(y, 20), height - 20),
+        x: Math.min(Math.max(x, pad), width - pad),
+        y: Math.min(Math.max(y, pad), height - pad),
         radius,
         connections: conns,
       })
@@ -98,10 +102,12 @@ export function SectorNetwork({
   const nodesRef = useRef<NetNode[]>([])
   const edgesRef = useRef<NetEdge[]>([])
   const hoveredRef = useRef<string | null>(null)
+  const selectedRef = useRef<string | null>(null)
   const dragRef = useRef<{ node: NetNode; offsetX: number; offsetY: number } | null>(null)
   const needsDrawRef = useRef(true)
   const animRef = useRef<number>(0)
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current
@@ -120,17 +126,19 @@ export function SectorNetwork({
     const nodes = nodesRef.current
     const edges = edgesRef.current
     const hovered = hoveredRef.current
+    const selected = selectedRef.current
+    const activeNode = hovered || selected
     const nodeMap = new Map<string, NetNode>()
     for (const n of nodes) nodeMap.set(n.name, n)
 
-    // Find hovered connections
-    const hovConnected = new Set<string>()
-    if (hovered) {
-      hovConnected.add(hovered)
+    // Find active connections
+    const activeConnected = new Set<string>()
+    if (activeNode) {
+      activeConnected.add(activeNode)
       for (const e of edges) {
-        if (e.from === hovered || e.to === hovered) {
-          hovConnected.add(e.from)
-          hovConnected.add(e.to)
+        if (e.from === activeNode || e.to === activeNode) {
+          activeConnected.add(e.from)
+          activeConnected.add(e.to)
         }
       }
     }
@@ -141,27 +149,27 @@ export function SectorNetwork({
       const to = nodeMap.get(e.to)
       if (!from || !to) continue
 
-      const isHL = hovered && (e.from === hovered || e.to === hovered)
-      const isDim = hovered && !isHL
+      const isHL = activeNode && (e.from === activeNode || e.to === activeNode)
+      const isDim = activeNode && !isHL
 
       ctx.beginPath()
       const midX = (from.x + to.x) / 2
-      const cpOff = Math.abs(from.y - to.y) * 0.3 + 15
+      const cpOff = Math.abs(from.y - to.y) * 0.3 + 20
       ctx.moveTo(from.x, from.y)
       ctx.quadraticCurveTo(midX + cpOff * 0.15, (from.y + to.y) / 2 - cpOff * 0.2, to.x, to.y)
 
       if (isHL) {
         ctx.strokeStyle = CONNECTION_COLOR
-        ctx.lineWidth = 1.8
-        ctx.globalAlpha = 0.8
+        ctx.lineWidth = 2.5
+        ctx.globalAlpha = 0.85
       } else if (isDim) {
         ctx.strokeStyle = '#444'
         ctx.lineWidth = 0.5
-        ctx.globalAlpha = 0.15
+        ctx.globalAlpha = 0.1
       } else {
-        ctx.strokeStyle = '#666'
-        ctx.lineWidth = 0.7
-        ctx.globalAlpha = 0.25
+        ctx.strokeStyle = '#555'
+        ctx.lineWidth = 0.8
+        ctx.globalAlpha = 0.3
       }
       ctx.stroke()
       ctx.globalAlpha = 1
@@ -171,34 +179,65 @@ export function SectorNetwork({
     for (const node of nodes) {
       const colors = TIER_COLORS[node.tier] ?? TIER_COLORS[1]
       const isHov = node.name === hovered
-      const isConn = hovConnected.has(node.name)
-      const isDim = hovered && !isHov && !isConn
+      const isSel = node.name === selected
+      const isConn = activeConnected.has(node.name)
+      const isDim = activeNode && !isHov && !isSel && !isConn
 
-      ctx.globalAlpha = isDim ? 0.12 : 1
+      ctx.globalAlpha = isDim ? 0.1 : 1
 
-      // Circle
+      // Circle — 선택 시 더 크게
+      const drawRadius = (isHov || isSel) ? node.radius + 3 : node.radius
       ctx.beginPath()
-      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2)
+      ctx.arc(node.x, node.y, drawRadius, 0, Math.PI * 2)
       ctx.fillStyle = colors.bg
       ctx.fill()
-      ctx.strokeStyle = isHov ? CONNECTION_COLOR : colors.badge
-      ctx.lineWidth = node.connections >= 5 ? 2.5 : 1.5
+      ctx.strokeStyle = (isHov || isSel) ? CONNECTION_COLOR : colors.badge
+      ctx.lineWidth = (isHov || isSel) ? 3 : node.connections >= 5 ? 2.5 : 1.5
       ctx.stroke()
 
-      // Label
-      const fontSize = node.radius < 16 ? 7 : 9
-      ctx.font = `${fontSize}px 'Pretendard', -apple-system, sans-serif`
-      ctx.fillStyle = colors.text
+      // 선택된 노드에 glow 효과
+      if (isSel) {
+        ctx.beginPath()
+        ctx.arc(node.x, node.y, drawRadius + 4, 0, Math.PI * 2)
+        ctx.strokeStyle = CONNECTION_COLOR
+        ctx.lineWidth = 1.5
+        ctx.globalAlpha = 0.4
+        ctx.stroke()
+        ctx.globalAlpha = isDim ? 0.1 : 1
+      }
+
+      // Label — 더 큰 폰트
+      const fontSize = node.radius < 18 ? 10 : node.radius < 25 ? 12 : 14
+      ctx.font = `bold ${fontSize}px 'Pretendard', -apple-system, sans-serif`
+      ctx.fillStyle = '#e2e8f0'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
-      // Korean display name, truncated
+      // Korean display name
       const displayName = getDisplayName(node.name)
-      const maxLen = node.radius < 12 ? 4 : 6
+      const maxLen = node.radius < 18 ? 4 : node.radius < 25 ? 6 : 8
       const label = displayName.length > maxLen ? displayName.slice(0, maxLen) + '..' : displayName
       ctx.fillText(label, node.x, node.y)
 
       ctx.globalAlpha = 1
+    }
+
+    // 선택된 노드가 있으면 연결 관계 라벨 표시
+    if (selected) {
+      for (const e of edges) {
+        if (e.from !== selected && e.to !== selected) continue
+        const from = nodeMap.get(e.from)
+        const to = nodeMap.get(e.to)
+        if (!from || !to) continue
+
+        const mx = (from.x + to.x) / 2
+        const my = (from.y + to.y) / 2 - 10
+        ctx.font = `bold 11px 'Pretendard', sans-serif`
+        ctx.fillStyle = CONNECTION_COLOR
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(e.relation, mx, my)
+      }
     }
 
     needsDrawRef.current = false
@@ -208,15 +247,14 @@ export function SectorNetwork({
   useEffect(() => {
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
-    const h = 480
-    const { nodes, edges } = buildGraph(tiers, links, w, h)
+    const { nodes, edges } = buildGraph(tiers, links, w, CANVAS_HEIGHT)
     nodesRef.current = nodes
     edgesRef.current = edges
     needsDrawRef.current = true
     draw()
   }, [tiers, links, draw])
 
-  // Animation loop (only when needed)
+  // Animation loop
   useEffect(() => {
     let active = true
     const loop = () => {
@@ -237,16 +275,22 @@ export function SectorNetwork({
       const n = nodes[i]
       const dx = x - n.x
       const dy = y - n.y
-      if (dx * dx + dy * dy <= (n.radius + 4) * (n.radius + 4)) return n
+      if (dx * dx + dy * dy <= (n.radius + 6) * (n.radius + 6)) return n
     }
     return null
   }, [])
 
+  // Zoom-safe mouse position
   const getPos = useCallback((e: React.MouseEvent) => {
     const canvas = canvasRef.current
     if (!canvas) return { x: 0, y: 0 }
     const rect = canvas.getBoundingClientRect()
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    // getBoundingClientRect includes CSS zoom, offsetWidth does not
+    const zoom = rect.width / canvas.offsetWidth || 1
+    return {
+      x: (e.clientX - rect.left) / zoom,
+      y: (e.clientY - rect.top) / zoom,
+    }
   }, [])
 
   const handleMouseMove = useCallback(
@@ -269,7 +313,7 @@ export function SectorNetwork({
         if (node) {
           setTooltip({
             x: pos.x,
-            y: pos.y - 20,
+            y: pos.y - node.radius - 12,
             text: `${getDisplayName(node.name)} (${node.connections}개 연결)`,
           })
         } else {
@@ -290,28 +334,67 @@ export function SectorNetwork({
           offsetX: pos.x - node.x,
           offsetY: pos.y - node.y,
         }
+        setIsDragging(true)
       }
     },
     [findNode, getPos],
   )
 
-  const handleMouseUp = useCallback(() => {
-    dragRef.current = null
-  }, [])
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      const wasDrag = dragRef.current
+      const pos = getPos(e)
+
+      // 드래그 없이 클릭 → 선택 토글
+      if (wasDrag) {
+        const movedDist = Math.abs(pos.x - (wasDrag.node.x + wasDrag.offsetX)) +
+                          Math.abs(pos.y - (wasDrag.node.y + wasDrag.offsetY))
+        if (movedDist < 5) {
+          // 클릭 (드래그 아님)
+          const node = wasDrag.node
+          if (selectedRef.current === node.name) {
+            selectedRef.current = null
+          } else {
+            selectedRef.current = node.name
+          }
+          needsDrawRef.current = true
+        }
+      } else {
+        // 빈 공간 클릭 → 선택 해제
+        const node = findNode(pos.x, pos.y)
+        if (!node) {
+          selectedRef.current = null
+          needsDrawRef.current = true
+        }
+      }
+
+      dragRef.current = null
+      setIsDragging(false)
+    },
+    [findNode, getPos],
+  )
 
   const handleMouseLeave = useCallback(() => {
     dragRef.current = null
     hoveredRef.current = null
     setTooltip(null)
+    setIsDragging(false)
     needsDrawRef.current = true
   }, [])
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: 480 }}>
+    <div ref={containerRef} className="relative" style={{ height: CANVAS_HEIGHT }}>
+      {/* 안내 텍스트 */}
+      <div
+        className="absolute top-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
+        style={{ fontSize: 13, color: '#777' }}
+      >
+        원 클릭 → 공급망 연결 확인 · 드래그로 이동
+      </div>
       <canvas
         ref={canvasRef}
         className="w-full h-full"
-        style={{ cursor: dragRef.current ? 'grabbing' : 'grab' }}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -319,13 +402,14 @@ export function SectorNetwork({
       />
       {tooltip && (
         <div
-          className="absolute pointer-events-none z-20 px-2 py-1 rounded text-[10px] font-bold whitespace-nowrap"
+          className="absolute pointer-events-none z-20 px-3 py-1.5 rounded font-bold whitespace-nowrap"
           style={{
             left: tooltip.x,
             top: tooltip.y,
             transform: 'translate(-50%, -100%)',
-            background: 'rgba(44, 44, 42, 0.95)',
+            background: 'rgba(20, 20, 30, 0.95)',
             color: '#e2e8f0',
+            fontSize: 13,
             border: `1px solid ${CONNECTION_COLOR}`,
           }}
         >

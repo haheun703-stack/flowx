@@ -167,18 +167,20 @@ export function SectorSwimlane({
 
   const tierOrder = [5, 4, 3, 2, 1]
   const flowLabels: Record<number, string> = {
-    5: 'benchmark',
-    4: 'supply chain',
+    5: '벤치마크',
+    4: '공급망',
     3: '한국시장',
     2: '소부장',
   }
 
-  // Draw SVG connection bezier curves
+  // Draw SVG connection bezier curves (zoom-safe)
   const drawConnections = useCallback(
     (stockName: string, connected: Set<string>) => {
       if (!containerRef.current) return
       const container = containerRef.current
       const rect = container.getBoundingClientRect()
+      // Detect CSS zoom by comparing rendered vs CSS size
+      const zoom = rect.width / container.offsetWidth || 1
       const newPaths: { d: string; key: string }[] = []
 
       const fromEl = container.querySelector(
@@ -194,10 +196,11 @@ export function SectorSwimlane({
 
         const fromR = fromEl.getBoundingClientRect()
         const toR = toEl.getBoundingClientRect()
-        const sx = fromR.left - rect.left + fromR.width / 2
-        const sy = fromR.top - rect.top + fromR.height / 2
-        const ex = toR.left - rect.left + toR.width / 2
-        const ey = toR.top - rect.top + toR.height / 2
+        // Convert viewport pixels → CSS pixels (undo zoom)
+        const sx = (fromR.left - rect.left + fromR.width / 2) / zoom
+        const sy = (fromR.top - rect.top + fromR.height / 2) / zoom
+        const ex = (toR.left - rect.left + toR.width / 2) / zoom
+        const ey = (toR.top - rect.top + toR.height / 2) / zoom
         const midY = (sy + ey) / 2
 
         newPaths.push({
@@ -256,15 +259,14 @@ export function SectorSwimlane({
     [],
   )
 
-  // Track container size for SVG overlay
+  // Track container size for SVG overlay (use offsetWidth for zoom-safe CSS pixels)
   useEffect(() => {
     if (!containerRef.current) return
-    const obs = new ResizeObserver((entries) => {
-      const entry = entries[0]
-      if (entry) {
+    const obs = new ResizeObserver(() => {
+      if (containerRef.current) {
         setSvgSize({
-          w: entry.contentRect.width,
-          h: entry.contentRect.height,
+          w: containerRef.current.offsetWidth,
+          h: containerRef.current.offsetHeight,
         })
       }
     })
@@ -311,7 +313,7 @@ export function SectorSwimlane({
             opacity={0.8}
           />
         ))}
-        {/* Source dot */}
+        {/* Source dot (zoom-safe) */}
         {selectedStock && (() => {
           if (!containerRef.current) return null
           const el = containerRef.current.querySelector(
@@ -319,20 +321,22 @@ export function SectorSwimlane({
           )
           if (!el) return null
           const rect = containerRef.current.getBoundingClientRect()
+          const zoom = rect.width / containerRef.current.offsetWidth || 1
           const r = el.getBoundingClientRect()
           return (
             <circle
-              cx={r.left - rect.left + r.width / 2}
-              cy={r.top - rect.top + r.height / 2}
+              cx={(r.left - rect.left + r.width / 2) / zoom}
+              cy={(r.top - rect.top + r.height / 2) / zoom}
               r={5}
               fill="#534AB7"
             />
           )
         })()}
-        {/* Target dots */}
+        {/* Target dots (zoom-safe) */}
         {connectedStocks.size > 0 && (() => {
           if (!containerRef.current) return null
           const rect = containerRef.current.getBoundingClientRect()
+          const zoom = rect.width / containerRef.current.offsetWidth || 1
           return Array.from(connectedStocks).map((name) => {
             const el = containerRef.current?.querySelector(
               `[data-stock="${CSS.escape(name)}"]`
@@ -342,8 +346,8 @@ export function SectorSwimlane({
             return (
               <circle
                 key={name}
-                cx={r.left - rect.left + r.width / 2}
-                cy={r.top - rect.top + r.height / 2}
+                cx={(r.left - rect.left + r.width / 2) / zoom}
+                cy={(r.top - rect.top + r.height / 2) / zoom}
                 r={4}
                 fill={CONNECTION_COLOR}
               />
