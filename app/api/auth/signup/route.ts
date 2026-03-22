@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
-import { createBrowserClient } from '@supabase/ssr'
 
 /**
  * POST /api/auth/signup
