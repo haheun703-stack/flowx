@@ -68,7 +68,7 @@ export function SectorMapView({
               : 'text-[#8a8a8a] border border-transparent hover:border-[#333]'
           }`}
         >
-          Flowchart
+          공급망 흐름도
         </button>
         <button
           onClick={() => canNetwork && setView('network')}
@@ -81,7 +81,7 @@ export function SectorMapView({
           }`}
           disabled={!canNetwork}
         >
-          Network{' '}<span className="text-xs opacity-50">PRO</span>
+          네트워크 뷰{' '}<span className="text-xs opacity-50">PRO</span>
         </button>
       </div>
 
