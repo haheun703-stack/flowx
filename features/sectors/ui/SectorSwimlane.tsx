@@ -25,36 +25,36 @@ const StockCard = memo(function StockCard({
     <div
       data-stock={stock.stock_name}
       onClick={onClick}
-      className="relative cursor-pointer transition-all duration-200 hover:-translate-y-px"
+      className="relative cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
       style={{
-        minWidth: 58,
-        padding: '4px 7px',
-        borderRadius: 6,
+        minWidth: 100,
+        padding: '8px 12px',
+        borderRadius: 8,
         backgroundColor: colors.bg,
-        border: `1px solid ${isHighlighted ? CONNECTION_COLOR : colors.border}`,
+        border: `1.5px solid ${isHighlighted ? CONNECTION_COLOR : colors.border}`,
         opacity: isDimmed ? 0.12 : 1,
-        transform: isHighlighted ? 'translateY(-1px)' : undefined,
-        boxShadow: isHighlighted ? `0 2px 8px ${CONNECTION_COLOR}40` : undefined,
+        transform: isHighlighted ? 'translateY(-2px)' : undefined,
+        boxShadow: isHighlighted ? `0 4px 12px ${CONNECTION_COLOR}40` : undefined,
       }}
     >
-      <div style={{ fontSize: 10, fontWeight: 500, color: colors.text, lineHeight: 1.2 }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: colors.text, lineHeight: 1.3 }}>
         {stock.stock_name}
       </div>
-      <div style={{ fontSize: 8, fontFamily: 'monospace', opacity: 0.55, color: colors.text }}>
+      <div style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.55, color: colors.text, marginTop: 1 }}>
         {stock.ticker}
       </div>
-      <div style={{ fontSize: 9, fontWeight: 700, color: isUp ? '#E24B4A' : '#378ADD' }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: isUp ? '#E24B4A' : '#378ADD', marginTop: 2 }}>
         {isUp ? '+' : ''}{stock.change_pct.toFixed(1)}%
       </div>
       {badge && (
         <div
-          className="absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap z-10"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap z-10"
           style={{
             background: CONNECTION_COLOR,
             color: 'white',
-            fontSize: 7,
-            padding: '1px 5px',
-            borderRadius: 6,
+            fontSize: 9,
+            padding: '2px 7px',
+            borderRadius: 8,
             fontWeight: 600,
           }}
         >
@@ -92,25 +92,25 @@ function TierLane({
     >
       {/* Lane Label */}
       <div
-        className="shrink-0 flex flex-col items-center justify-center py-2"
-        style={{ width: 80, borderRight: `1px solid ${colors.border}40` }}
+        className="shrink-0 flex flex-col items-center justify-center py-3"
+        style={{ width: 100, borderRight: `1px solid ${colors.border}40` }}
       >
-        <div className="text-xs font-bold" style={{ color: colors.badge }}>
+        <div className="text-sm font-bold" style={{ color: colors.badge }}>
           {'★'.repeat(tier)}
         </div>
-        <div className="text-[11px] font-bold" style={{ color: colors.text }}>
+        <div className="text-sm font-bold" style={{ color: colors.text }}>
           {labels.label}
         </div>
-        <div className="text-[8px]" style={{ color: colors.text, opacity: 0.6 }}>
+        <div className="text-[10px]" style={{ color: colors.text, opacity: 0.6 }}>
           {labels.sub}
         </div>
-        <div className="text-[8px] mt-0.5" style={{ color: colors.text, opacity: 0.4 }}>
+        <div className="text-[10px] mt-1" style={{ color: colors.text, opacity: 0.4 }}>
           {stocks.length}종목
         </div>
       </div>
 
       {/* Lane Body */}
-      <div className="flex-1 flex flex-wrap gap-1.5 p-2 items-start">
+      <div className="flex-1 flex flex-wrap gap-2.5 p-3 items-start">
         {stocks.map((stock) => {
           const name = stock.stock_name
           const isSelected = selectedStock === name
@@ -137,9 +137,9 @@ function TierLane({
 /* ── Flow Arrow ── */
 function FlowArrow({ label }: { label: string }) {
   return (
-    <div className="flex items-center justify-center py-0.5 gap-2">
+    <div className="flex items-center justify-center py-1.5 gap-3">
       <div className="flex-1 h-px bg-[#333]" />
-      <span className="text-[9px] text-[#666] whitespace-nowrap">▼ {label}</span>
+      <span className="text-xs text-[#666] whitespace-nowrap">▼ {label}</span>
       <div className="flex-1 h-px bg-[#333]" />
     </div>
   )
@@ -368,7 +368,7 @@ export function SectorSwimlane({
 
       {/* Connection hint */}
       {!selectedStock && links.length > 0 && (
-        <div className="text-center py-2 text-[10px] text-[#555]">
+        <div className="text-center py-3 text-xs text-[#555]">
           종목을 클릭하면 공급망 연결을 확인할 수 있습니다
         </div>
       )}
