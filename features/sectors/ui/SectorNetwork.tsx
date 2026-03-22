@@ -7,11 +7,11 @@ import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 /** Dynamic canvas height based on stock count */
 function getCanvasHeight(stockCount: number): number {
-  if (stockCount > 80) return 1000
-  if (stockCount > 50) return 900
-  if (stockCount > 30) return 750
-  if (stockCount > 15) return 600
-  return 450
+  if (stockCount > 80) return 1200
+  if (stockCount > 50) return 1050
+  if (stockCount > 30) return 900
+  if (stockCount > 15) return 700
+  return 500
 }
 
 // ── 연결 라벨 한국어 쉬운 말 ──
@@ -101,9 +101,9 @@ function buildGraph(
   }
 
   // ── 동적 레이아웃: 종목 수에 따라 xGap 자동 조절 + 다행 분산 ──
-  const tierYs = [80, 220, 380, 540, 700]
+  const tierYs = [80, 240, 420, 620, 820]
   const nodes: NetNode[] = []
-  const MIN_GAP = 75 // 노드 직경(최대 70px) + 여백
+  const MIN_GAP = 90 // 노드 직경(최대 70px) + 충분한 여백
 
   for (const tier of [5, 4, 3, 2, 1]) {
     const stocks = tiers[tier] ?? []
@@ -128,7 +128,7 @@ function buildGraph(
       const totalW = (rowCount - 1) * xGap
       const xStart = Math.max(margin, (width - totalW) / 2)
       const x = xStart + col * xGap
-      const yPos = baseY + row * 55
+      const yPos = baseY + row * 75
 
       nodes.push({
         name: stock.stock_name,
