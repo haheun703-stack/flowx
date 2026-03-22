@@ -1,0 +1,62 @@
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+
+// ─── Types ───
+
+export interface MacroItem {
+  id: string
+  date: string
+  category: 'commodity' | 'grain' | 'forex' | 'rate' | 'sentiment' | 'index' | 'crypto'
+  symbol: string
+  name_ko: string
+  value: number
+  change_pct: number
+  unit: string | null
+  alert_threshold: number | null
+  alert_direction: 'above' | 'below' | null
+  alert_active: boolean
+}
+
+export interface CostFloorItem {
+  id: string
+  symbol: string
+  name_ko: string
+  unit: string | null
+  floor_price: number
+  ceiling_price: number
+  current_price: number | null
+  position_pct: number | null
+  note: string | null
+  updated_at: string
+}
+
+interface MacroDailyResponse {
+  date: string | null
+  items: MacroItem[]
+  categories: Record<string, MacroItem[]>
+}
+
+interface CostFloorResponse {
+  items: CostFloorItem[]
+}
+
+// ─── Hooks ───
+
+export function useMacroDaily() {
+  return useQuery<MacroDailyResponse>({
+    queryKey: ['macro-daily'],
+    queryFn: () => axios.get('/api/macro/daily').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 10,
+  })
+}
+
+export function useCostFloor() {
+  return useQuery<CostFloorResponse>({
+    queryKey: ['macro-cost-floor'],
+    queryFn: () => axios.get('/api/macro/cost-floor').then(r => r.data),
+    staleTime: 1000 * 60 * 30,
+  })
+}

@@ -33,6 +33,10 @@ export function Navbar() {
             인텔리전스
             <span className="text-[8px] px-1 py-px rounded border border-[#00ff88]/40 text-[#00ff88] font-bold leading-tight">SIGNAL</span>
           </Link>
+          <Link href="/macro" className="text-xs text-gray-400 hover:text-[#f59e0b] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            매크로
+            <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
           <Link href="/quant" className="text-xs text-gray-400 hover:text-[#f59e0b] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
             퀀트시스템
             <span className="text-[8px] px-1 py-px rounded border border-[#f59e0b]/40 text-[#f59e0b] font-bold leading-tight">PRO</span>
