@@ -7,15 +7,6 @@ import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 const CANVAS_HEIGHT = 750
 
-// ── 노드 안 텍스트: 티어별 진한 색 (밝은 배경에 잘 보이게) ──
-const TIER_TEXT_COLORS: Record<number, string> = {
-  5: '#26215C', // 진한 보라
-  4: '#042C53', // 진한 파랑
-  3: '#04342C', // 진한 초록
-  2: '#412402', // 진한 갈색
-  1: '#4A1B0C', // 진한 코랄
-}
-
 // ── 연결 라벨 한국어 쉬운 말 ──
 const RELATION_KO: Record<string, string> = {
   'ETF 구성': 'ETF에 포함',
@@ -272,34 +263,28 @@ export function SectorNetwork({
         ctx.globalAlpha = isDim ? 0.35 : 1
       }
 
-      // ── 노드 안 텍스트: 여러 줄 줄바꿈 ──
+      // ── 노드 안 텍스트: 흰색 + 검정 외곽선 (어떤 배경에서도 선명) ──
       const displayName = getDisplayName(node.name)
-      const textColor = TIER_TEXT_COLORS[node.tier] || '#1a1a1a'
-      ctx.fillStyle = textColor
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
       // 원 안에 들어갈 최대 텍스트 너비 (반지름의 80%)
       const maxW = drawRadius * 1.6
-      // 폰트 크기: 원이 크면 13, 작으면 11
       let fSize = drawRadius >= 35 ? 13 : drawRadius >= 28 ? 12 : 11
-      ctx.font = `700 ${fSize}px "Pretendard", -apple-system, sans-serif`
+      ctx.font = `800 ${fSize}px "Pretendard", -apple-system, sans-serif`
 
       // 줄바꿈 함수: 글자 단위로 잘라서 maxW에 맞게 분배
       const wrapLines = (text: string, mw: number): string[] => {
         if (ctx.measureText(text).width <= mw) return [text]
-        // 공백이 있으면 공백 기준 분리 시도
         const spaceIdx = text.indexOf(' ')
         if (spaceIdx > 0) {
           const a = text.slice(0, spaceIdx)
           const b = text.slice(spaceIdx + 1)
           if (ctx.measureText(a).width <= mw && ctx.measureText(b).width <= mw) return [a, b]
         }
-        // 글자 단위로 2줄 분배 (가운데서 나눔)
         const mid = Math.ceil(text.length / 2)
         const line1 = text.slice(0, mid)
         const line2 = text.slice(mid)
-        // 2줄 각각이 maxW보다 넓으면 3줄로
         if (ctx.measureText(line1).width > mw || ctx.measureText(line2).width > mw) {
           const t = Math.ceil(text.length / 3)
           return [text.slice(0, t), text.slice(t, t * 2), text.slice(t * 2)]
@@ -308,16 +293,23 @@ export function SectorNetwork({
       }
 
       let lines = wrapLines(displayName, maxW)
-      // 3줄 넘으면 폰트 축소 후 재시도
       if (lines.length > 2 && fSize > 10) {
         fSize = 10
-        ctx.font = `700 ${fSize}px "Pretendard", -apple-system, sans-serif`
+        ctx.font = `800 ${fSize}px "Pretendard", -apple-system, sans-serif`
         lines = wrapLines(displayName, maxW)
       }
 
       const lineH = fSize + 3
       const totalH = lines.length * lineH
       const startY = node.y - totalH / 2 + lineH / 2
+      // 검정 외곽선 먼저 → 흰색 채우기 (어떤 배경에서도 선명)
+      ctx.strokeStyle = 'rgba(0,0,0,0.7)'
+      ctx.lineWidth = 3
+      ctx.lineJoin = 'round'
+      for (let li = 0; li < lines.length; li++) {
+        ctx.strokeText(lines[li], node.x, startY + li * lineH)
+      }
+      ctx.fillStyle = '#FFFFFF'
       for (let li = 0; li < lines.length; li++) {
         ctx.fillText(lines[li], node.x, startY + li * lineH)
       }
