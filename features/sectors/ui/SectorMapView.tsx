@@ -39,16 +39,17 @@ export function SectorMapView({
       </div>
 
       {/* Sector tabs */}
-      <div className="flex overflow-x-auto gap-1.5 px-5 py-3 border-b border-[#1a1a2a] scrollbar-hide">
+      <div className="flex overflow-x-auto gap-2 px-5 py-3 border-b border-[#1a1a2a] scrollbar-hide">
         {SECTOR_LIST.map((s) => (
           <button
             key={s.key}
             onClick={() => setSectorKey(s.key)}
-            className={`shrink-0 px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${
+            className={`shrink-0 rounded-md transition-colors ${
               sectorKey === s.key
-                ? 'bg-[#534AB7] text-white'
-                : 'bg-[#1a2535] text-[#8a8a8a] hover:text-[#e2e8f0]'
+                ? 'bg-[#534AB7] text-white font-semibold'
+                : 'bg-[#1a2535] text-[#8a8a8a] hover:text-[#e2e8f0] font-medium'
             }`}
+            style={{ fontSize: 13, padding: '8px 16px' }}
           >
             {s.name}
           </button>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, memo } from 'react'
 import { TIER_COLORS, TIER_LABELS, CONNECTION_COLOR } from '@/lib/chart-tokens'
+import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 /* ── Stock Card ── */
@@ -20,6 +21,7 @@ const StockCard = memo(function StockCard({
 }) {
   const colors = TIER_COLORS[stock.tier] ?? TIER_COLORS[1]
   const isUp = stock.change_pct >= 0
+  const displayName = getDisplayName(stock.stock_name)
 
   return (
     <div
@@ -27,8 +29,8 @@ const StockCard = memo(function StockCard({
       onClick={onClick}
       className="relative cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
       style={{
-        minWidth: 100,
-        padding: '8px 12px',
+        minWidth: 110,
+        padding: '10px 14px',
         borderRadius: 8,
         backgroundColor: colors.bg,
         border: `1.5px solid ${isHighlighted ? CONNECTION_COLOR : colors.border}`,
@@ -37,13 +39,13 @@ const StockCard = memo(function StockCard({
         boxShadow: isHighlighted ? `0 4px 12px ${CONNECTION_COLOR}40` : undefined,
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 600, color: colors.text, lineHeight: 1.3 }}>
-        {stock.stock_name}
+      <div style={{ fontSize: 14, fontWeight: 600, color: colors.text, lineHeight: 1.3 }}>
+        {displayName}
       </div>
-      <div style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.55, color: colors.text, marginTop: 1 }}>
+      <div style={{ fontSize: 11, fontFamily: 'monospace', opacity: 0.7, color: colors.text, marginTop: 2 }}>
         {stock.ticker}
       </div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: isUp ? '#E24B4A' : '#378ADD', marginTop: 2 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: isUp ? '#E24B4A' : '#378ADD', marginTop: 3 }}>
         {isUp ? '+' : ''}{stock.change_pct.toFixed(1)}%
       </div>
       {badge && (
@@ -52,8 +54,8 @@ const StockCard = memo(function StockCard({
           style={{
             background: CONNECTION_COLOR,
             color: 'white',
-            fontSize: 9,
-            padding: '2px 7px',
+            fontSize: 10,
+            padding: '2px 8px',
             borderRadius: 8,
             fontWeight: 600,
           }}
@@ -88,29 +90,29 @@ function TierLane({
   return (
     <div
       className="flex"
-      style={{ backgroundColor: `${colors.bg}30`, borderRadius: 6 }}
+      style={{ backgroundColor: `${colors.bg}30`, borderRadius: 8 }}
     >
       {/* Lane Label */}
       <div
-        className="shrink-0 flex flex-col items-center justify-center py-3"
-        style={{ width: 100, borderRight: `1px solid ${colors.border}40` }}
+        className="shrink-0 flex flex-col items-center justify-center py-4"
+        style={{ width: 130, borderRight: `1px solid ${colors.border}40` }}
       >
-        <div className="text-sm font-bold" style={{ color: colors.light }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: colors.light }}>
           {'★'.repeat(tier)}
         </div>
-        <div className="text-sm font-bold" style={{ color: colors.light }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: colors.light, marginTop: 2 }}>
           {labels.label}
         </div>
-        <div className="text-[10px]" style={{ color: colors.light, opacity: 0.7 }}>
+        <div style={{ fontSize: 11, color: colors.light, opacity: 0.8, marginTop: 2 }}>
           {labels.sub}
         </div>
-        <div className="text-[10px] mt-1" style={{ color: colors.light, opacity: 0.5 }}>
+        <div style={{ fontSize: 11, color: colors.light, opacity: 0.6, marginTop: 4 }}>
           {stocks.length}종목
         </div>
       </div>
 
       {/* Lane Body */}
-      <div className="flex-1 flex flex-wrap gap-2.5 p-3 items-start">
+      <div className="flex-1 flex flex-wrap gap-2 p-3 items-start">
         {stocks.map((stock) => {
           const name = stock.stock_name
           const isSelected = selectedStock === name
@@ -137,10 +139,10 @@ function TierLane({
 /* ── Flow Arrow ── */
 function FlowArrow({ label }: { label: string }) {
   return (
-    <div className="flex items-center justify-center py-1.5 gap-3">
-      <div className="flex-1 h-px bg-[#333]" />
-      <span className="text-xs text-[#666] whitespace-nowrap">▼ {label}</span>
-      <div className="flex-1 h-px bg-[#333]" />
+    <div className="flex items-center justify-center py-2 gap-3">
+      <div className="flex-1 h-px bg-[#444]" />
+      <span style={{ fontSize: 12, color: '#999' }} className="whitespace-nowrap">▼ {label}</span>
+      <div className="flex-1 h-px bg-[#444]" />
     </div>
   )
 }
@@ -283,6 +285,13 @@ export function SectorSwimlane({
       className="relative"
       onClick={handleContainerClick}
     >
+      {/* Connection hint — 상단 */}
+      {!selectedStock && links.length > 0 && (
+        <div className="text-center py-2 mb-1" style={{ fontSize: 13, color: '#aaa' }}>
+          종목 클릭 → 공급망 연결 확인
+        </div>
+      )}
+
       {/* SVG overlay for connection lines */}
       <svg
         ref={svgRef}
@@ -297,9 +306,9 @@ export function SectorSwimlane({
             d={p.d}
             fill="none"
             stroke={CONNECTION_COLOR}
-            strokeWidth={1.5}
-            strokeDasharray="4 3"
-            opacity={0.7}
+            strokeWidth={2}
+            strokeDasharray="6 4"
+            opacity={0.8}
           />
         ))}
         {/* Source dot */}
@@ -315,7 +324,7 @@ export function SectorSwimlane({
             <circle
               cx={r.left - rect.left + r.width / 2}
               cy={r.top - rect.top + r.height / 2}
-              r={4}
+              r={5}
               fill="#534AB7"
             />
           )
@@ -335,7 +344,7 @@ export function SectorSwimlane({
                 key={name}
                 cx={r.left - rect.left + r.width / 2}
                 cy={r.top - rect.top + r.height / 2}
-                r={3}
+                r={4}
                 fill={CONNECTION_COLOR}
               />
             )
@@ -365,13 +374,6 @@ export function SectorSwimlane({
           )
         })}
       </div>
-
-      {/* Connection hint */}
-      {!selectedStock && links.length > 0 && (
-        <div className="text-center py-3 text-xs text-[#555]">
-          종목을 클릭하면 공급망 연결을 확인할 수 있습니다
-        </div>
-      )}
     </div>
   )
 }
