@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const scope = searchParams.get('scope') // GLOBAL | DOMESTIC | null(전체)
   const dateStr = searchParams.get('date') // YYYY-MM-DD, default today
-  const tier = searchParams.get('tier') ?? 'FREE' // FREE | SIGNAL
+  const tier = searchParams.get('tier') ?? 'SIGNAL' // PaywallBlur 해제 상태, 복구 시 'FREE'로
 
   try {
     const supabase = getSupabaseAdmin()

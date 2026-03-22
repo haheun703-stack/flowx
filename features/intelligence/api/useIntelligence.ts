@@ -83,7 +83,8 @@ export interface SupplyDemandData {
 export function useIntelligenceNews(scope?: 'GLOBAL' | 'DOMESTIC') {
   const params = new URLSearchParams()
   if (scope) params.set('scope', scope)
-  params.set('tier', 'FREE') // TODO: 실제 유저 티어 연동
+  // PaywallBlur 해제 상태 — 전체 공개. 복구 시 tier=FREE로 변경
+  // params.set('tier', 'FREE')
 
   return useQuery<{ date: string | null; items: NewsItem[]; count: number }>({
     queryKey: ['intelligence-news', scope],
