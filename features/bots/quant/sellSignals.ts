@@ -20,8 +20,8 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
   const { data: holdings } = await supabase
     .from('short_signals')
-    .select('ticker, name, entry_price, stop_loss, target_price')
-    .eq('signal_type', 'QUANT_BUY')
+    .select('code, name, entry_price, stop_loss, target_price')
+    .eq('signal_type', 'BUY')
     .gte('date', thirtyDaysAgo)
 
   if (!holdings || holdings.length === 0) return []
@@ -30,17 +30,17 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
 
   const results = await Promise.allSettled(
     holdings.map(async (h) => {
-      const candles = await fetchOHLCV(h.ticker, 30)
+      const candles = await fetchOHLCV(h.code, 30)
       if (candles.length < 5) return null
 
       const last = candles.length - 1
       const currentPrice = candles[last].close
-      const name = h.name ?? h.ticker
+      const name = h.name ?? h.code
 
       // 1. 손절선 이탈
       if (h.stop_loss && currentPrice < h.stop_loss) {
         signals.push({
-          ticker: h.ticker, name,
+          ticker: h.code, name,
           reason: `손절선 이탈 (현재가 ${currentPrice.toLocaleString()} < 손절 ${h.stop_loss.toLocaleString()})`,
           urgency: 'HIGH', currentPrice,
         })
@@ -50,7 +50,7 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
       // 2. 목표가 도달
       if (h.target_price && currentPrice >= h.target_price) {
         signals.push({
-          ticker: h.ticker, name,
+          ticker: h.code, name,
           reason: `목표가 도달 (현재가 ${currentPrice.toLocaleString()} ≥ 목표 ${h.target_price.toLocaleString()})`,
           urgency: 'MEDIUM', currentPrice,
         })
@@ -64,7 +64,7 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
         const prev = last - 1
         if (!isNaN(sma5[prev]) && !isNaN(sma20[prev]) && sma5[prev] >= sma20[prev]) {
           signals.push({
-            ticker: h.ticker, name,
+            ticker: h.code, name,
             reason: 'SMA5/SMA20 데드크로스 발생',
             urgency: 'MEDIUM', currentPrice,
           })
@@ -77,7 +77,7 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
       const rsiVal = rsi[last]
       if (!isNaN(rsiVal) && rsiVal > 80) {
         signals.push({
-          ticker: h.ticker, name,
+          ticker: h.code, name,
           reason: `RSI 과매수 (${rsiVal.toFixed(0)})`,
           urgency: 'LOW', currentPrice,
         })

@@ -14,9 +14,9 @@ export async function GET() {
       .single()
 
     if (error) {
-      // morning_briefings 테이블 없으면 기존 market_briefing 폴백
+      // morning_briefings 없으면 intelligence_briefing 폴백
       const { data: fallback, error: fbErr } = await supabase
-        .from('market_briefing')
+        .from('intelligence_briefing')
         .select('*')
         .order('date', { ascending: false })
         .limit(1)
@@ -24,15 +24,15 @@ export async function GET() {
 
       if (fbErr) return NextResponse.json({ error: 'No briefing data' }, { status: 404 })
 
-      // 기존 스키마를 새 스키마로 매핑
+      const dirMap: Record<string, string> = { BULLISH: 'BULL', BEARISH: 'BEAR', NEUTRAL: 'NEUTRAL' }
       return NextResponse.json({
         date: fallback.date,
-        market_status: fallback.direction ?? 'NEUTRAL',
-        us_summary: fallback.us_summary,
-        kr_summary: fallback.kr_summary,
-        news_picks: fallback.news_picks ?? [],
+        market_status: dirMap[fallback.sentiment] ?? 'NEUTRAL',
+        us_summary: '',
+        kr_summary: fallback.verdict ?? '',
+        news_picks: [],
         sector_focus: [],
-        kospi_close: fallback.kospi_close,
+        kospi_close: 0,
       })
     }
 

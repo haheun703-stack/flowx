@@ -29,7 +29,7 @@ export async function preMarketScan(): Promise<{ candidates: SwingCandidate[]; r
     })
   )
 
-  const candidates: { ticker: string; name: string; score: number; conditions: string[]; volume: number }[] = []
+  const candidates: { ticker: string; name: string; score: number; conditions: string[]; volume: number; volRatio: number; lastPrice: number }[] = []
 
   for (const r of results) {
     if (r.status !== 'fulfilled') continue
@@ -94,6 +94,8 @@ export async function preMarketScan(): Promise<{ candidates: SwingCandidate[]; r
         score: Math.round(score * regime.multiplier),
         conditions,
         volume: candles[last].volume,
+        volRatio: Math.round(volRatio * 100) / 100,
+        lastPrice: candles[last].close,
       })
     }
   }
@@ -112,19 +114,28 @@ export async function preMarketScan(): Promise<{ candidates: SwingCandidate[]; r
 
   // Supabase 저장
   if (positioned.length > 0) {
-    const rows = positioned.map(c => ({
-      date,
-      signal_type: 'SWING_ENTRY',
-      ticker: c.ticker,
-      name: c.name,
-      score: c.score,
-      signals: c.conditions,
-      position_type: c.position,
-      holding_days: 0,
-      created_at: new Date().toISOString(),
-    }))
+    const candMap = new Map(candidates.map(c => [c.ticker, c]))
+    const rows = positioned.map(c => {
+      const raw = candMap.get(c.ticker)
+      const ep = raw?.lastPrice ?? 0
+      return {
+        date,
+        signal_type: 'FORCE_BUY',
+        code: c.ticker,
+        name: c.name,
+        total_score: c.score,
+        volume_ratio: raw?.volRatio ?? 0,
+        entry_price: ep,
+        target_price: ep > 0 ? Math.round(ep * 1.08) : null,
+        stop_loss: ep > 0 ? Math.round(ep * 0.97) : null,
+        signals: c.conditions,
+        position_type: c.position,
+        holding_days: 0,
+        created_at: new Date().toISOString(),
+      }
+    })
 
-    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'SWING_ENTRY')
+    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'FORCE_BUY')
     const { error } = await supabase.from('short_signals').insert(rows)
     if (error) console.error('swing entry insert:', error.message)
   }

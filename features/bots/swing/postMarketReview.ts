@@ -17,12 +17,12 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
   const supabase = getSupabaseAdmin()
   const date = todayKST()
 
-  // 최근 7일 이내 SWING_ENTRY 시그널 가져오기
+  // 최근 7일 이내 FORCE_BUY 시그널 가져오기
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
   const { data: entries } = await supabase
     .from('short_signals')
     .select('*')
-    .eq('signal_type', 'SWING_ENTRY')
+    .eq('signal_type', 'FORCE_BUY')
     .gte('date', sevenDaysAgo)
     .order('date', { ascending: false })
 
@@ -31,7 +31,7 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
   // 종목별 최신 시그널만 (중복 제거)
   const uniqueMap = new Map<string, typeof entries[0]>()
   for (const e of entries) {
-    if (!uniqueMap.has(e.ticker)) uniqueMap.set(e.ticker, e)
+    if (!uniqueMap.has(e.code)) uniqueMap.set(e.code, e)
   }
   const holdings = Array.from(uniqueMap.values())
 
@@ -39,7 +39,7 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
 
   const fetched = await Promise.allSettled(
     holdings.map(async (h) => {
-      const candles = await fetchOHLCV(h.ticker, 10)
+      const candles = await fetchOHLCV(h.code, 10)
       if (candles.length === 0) return null
 
       const currentPrice = candles[candles.length - 1].close
@@ -64,8 +64,8 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
       }
 
       results.push({
-        ticker: h.ticker,
-        name: h.name ?? h.ticker,
+        ticker: h.code,
+        name: h.name ?? h.code,
         pnl: Math.round(pnl * 100) / 100,
         holdingDays,
         alert,
@@ -88,16 +88,16 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
   if (alerts.length > 0) {
     const alertRows = alerts.map(a => ({
       date,
-      signal_type: 'SWING_ALERT',
-      ticker: a.ticker,
+      signal_type: 'WATCH',
+      code: a.ticker,
       name: a.name,
-      score: 0,
+      total_score: 0,
       signals: [a.alert!],
       holding_days: a.holdingDays,
       created_at: new Date().toISOString(),
     }))
 
-    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'SWING_ALERT')
+    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'WATCH')
     const { error } = await supabase.from('short_signals').insert(alertRows)
     if (error) console.error('swing alert insert:', error.message)
   }

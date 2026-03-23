@@ -11,6 +11,8 @@ export interface ScoredStock {
   name: string
   score: number
   rawScore: number
+  volumeRatio: number
+  lastPrice: number
   breakdown: {
     relay: number
     technical: number
@@ -92,7 +94,9 @@ export async function runScoringEngine(
 
     // 2-4. 거래량 20MA 돌파
     const volMA = calcVolumeSMA(candles, 20)
-    if (!isNaN(volMA[last]) && candles[last].volume > volMA[last] * 2) {
+    const volRatio = !isNaN(volMA[last]) && volMA[last] > 0
+      ? Math.round((candles[last].volume / volMA[last]) * 100) / 100 : 0
+    if (volRatio >= 2.0) {
       rawScore += 5; signals.push('거래량 급증(+5)')
     }
 
@@ -122,6 +126,8 @@ export async function runScoringEngine(
       name: stock.name,
       score: finalScore,
       rawScore,
+      volumeRatio: volRatio,
+      lastPrice: candles[last].close,
       breakdown: {
         relay: s5 > s20 && s20 > s60 ? 35 : s5 > s20 ? 25 : s5 > s60 ? 15 : 0,
         technical: rawScore - (s5 > s20 && s20 > s60 ? 35 : s5 > s20 ? 25 : s5 > s60 ? 15 : 0) - (foreign_net > 0 && inst_net > 0 ? 20 : foreign_net > 0 ? 15 : inst_net > 0 ? 10 : foreign_net < 0 && inst_net < 0 ? -15 : 0),

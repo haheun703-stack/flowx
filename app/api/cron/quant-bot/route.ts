@@ -39,16 +39,18 @@ export async function GET(req: Request) {
     const topStocks = stocks.filter(s => s.score >= 60).slice(0, 10)
     const buyRows = topStocks.map(s => {
       const grade = grades.find(g => g.ticker === s.ticker)
+      const ep = s.lastPrice
       return {
         date,
-        signal_type: 'QUANT_BUY',
-        ticker: s.ticker,
+        signal_type: 'BUY',
+        code: s.ticker,
         name: s.name,
-        score: s.score,
-        conviction_grade: grade?.grade ?? 'N/A',
-        entry_price: null, // 현재가는 별도 조회 필요
-        target_price: null,
-        stop_loss: null,
+        total_score: s.score,
+        grade: grade?.grade ?? 'N/A',
+        volume_ratio: s.volumeRatio,
+        entry_price: ep,
+        target_price: ep > 0 ? Math.round(ep * 1.1) : null,
+        stop_loss: ep > 0 ? Math.round(ep * 0.95) : null,
         signals: s.signals,
         breakdown: s.breakdown,
         created_at: new Date().toISOString(),
@@ -59,9 +61,9 @@ export async function GET(req: Request) {
     const sellRows = sellSignals.map(s => ({
       date,
       signal_type: 'QUANT_SELL',
-      ticker: s.ticker,
+      code: s.ticker,
       name: s.name,
-      score: 0,
+      total_score: 0,
       signals: [s.reason],
       urgency: s.urgency,
       current_price: s.currentPrice,
@@ -69,7 +71,7 @@ export async function GET(req: Request) {
     }))
 
     // 기존 오늘 QUANT 시그널 삭제 후 삽입
-    await supabase.from('short_signals').delete().eq('date', date).in('signal_type', ['QUANT_BUY', 'QUANT_SELL'])
+    await supabase.from('short_signals').delete().eq('date', date).in('signal_type', ['BUY', 'QUANT_SELL'])
 
     const allRows = [...buyRows, ...sellRows]
     if (allRows.length > 0) {
