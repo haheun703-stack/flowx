@@ -121,7 +121,7 @@ export async function preMarketScan(): Promise<{ candidates: SwingCandidate[]; r
       return {
         date,
         signal_type: 'FORCE_BUY',
-        code: c.ticker,
+        '\uCF54\uB4DC': c.ticker,
         name: c.name,
         total_score: c.score,
         volume_ratio: raw?.volRatio ?? 0,

@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     let query = supabase
       .from('short_signals')
-      .select('id, code, name, signal_type, grade, total_score, volume_ratio, entry_price, target_price, stop_loss, current_price, holding_days, date, signals')
+      .select('*')
       .order('date', { ascending: false })
       .limit(limit)
 
@@ -32,14 +32,15 @@ export async function GET(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // short_signals → signals 형식으로 매핑
-    const signals = (data ?? []).map(row => ({
+    // short_signals → signals 형식으로 매핑 (한글 컬럼: 코드, 등급)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const signals = (data ?? []).map((row: any) => ({
       id: row.id,
       bot_type: ['BUY', 'QUANT_SELL'].includes(row.signal_type) ? 'QUANT' : 'DAYTRADING',
-      ticker: row.code,
-      ticker_name: row.name,
+      ticker: row['\uCF54\uB4DC'] ?? '',
+      ticker_name: row.name ?? '',
       signal_type: row.signal_type,
-      grade: row.grade,
+      grade: row['\uB4F1\uAE09'] ?? 'N/A',
       score: row.total_score,
       multiplier: row.volume_ratio,
       entry_price: row.entry_price,

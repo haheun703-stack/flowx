@@ -38,7 +38,15 @@ export async function GET(request: Request) {
     const { data, error } = await query
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json(data)
+
+    // 한글 컬럼(코드, 등급) → 영문(code, grade)으로 매핑하여 프론트엔드 전달
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapped = (data ?? []).map((row: any) => ({
+      ...row,
+      code: row['\uCF54\uB4DC'] ?? '',
+      grade: row['\uB4F1\uAE09'] ?? 'N/A',
+    }))
+    return NextResponse.json(mapped)
   } catch (e) {
     console.error('short-signals error:', e)
     return NextResponse.json([])

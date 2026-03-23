@@ -19,14 +19,26 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
 
   // 최근 7일 이내 FORCE_BUY 시그널 가져오기
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
-  const { data: entries } = await supabase
+  const { data: rawEntries } = await supabase
     .from('short_signals')
     .select('*')
     .eq('signal_type', 'FORCE_BUY')
     .gte('date', sevenDaysAgo)
     .order('date', { ascending: false })
 
-  if (!entries || entries.length === 0) return { results: [] }
+  if (!rawEntries || rawEntries.length === 0) return { results: [] }
+
+  // 한글 컬럼 → 영문 별칭 매핑
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const entries = rawEntries.map((e: any) => ({
+    id: e.id as string,
+    code: (e['\uCF54\uB4DC'] ?? '') as string,
+    name: (e.name ?? '') as string,
+    date: e.date as string,
+    entry_price: e.entry_price as number | null,
+    stop_loss: e.stop_loss as number | null,
+    holding_days: (e.holding_days ?? 0) as number,
+  }))
 
   // 종목별 최신 시그널만 (중복 제거)
   const uniqueMap = new Map<string, typeof entries[0]>()
@@ -89,7 +101,7 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
     const alertRows = alerts.map(a => ({
       date,
       signal_type: 'WATCH',
-      code: a.ticker,
+      '\uCF54\uB4DC': a.ticker,
       name: a.name,
       total_score: 0,
       signals: [a.alert!],

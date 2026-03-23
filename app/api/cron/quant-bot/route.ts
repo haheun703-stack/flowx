@@ -43,10 +43,10 @@ export async function GET(req: Request) {
       return {
         date,
         signal_type: 'BUY',
-        code: s.ticker,
+        '\uCF54\uB4DC': s.ticker,
         name: s.name,
         total_score: s.score,
-        grade: grade?.grade ?? 'N/A',
+        '\uB4F1\uAE09': grade?.grade ?? 'N/A',
         volume_ratio: s.volumeRatio,
         entry_price: ep,
         target_price: ep > 0 ? Math.round(ep * 1.1) : null,
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
     const sellRows = sellSignals.map(s => ({
       date,
       signal_type: 'QUANT_SELL',
-      code: s.ticker,
+      '\uCF54\uB4DC': s.ticker,
       name: s.name,
       total_score: 0,
       signals: [s.reason],

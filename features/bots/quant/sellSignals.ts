@@ -18,13 +18,22 @@ export async function checkSellSignals(): Promise<SellSignal[]> {
 
   // 현재 보유 중인 QUANT 시그널 가져오기 (최근 30일 이내 매수 시그널)
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
-  const { data: holdings } = await supabase
+  const { data: rawHoldings } = await supabase
     .from('short_signals')
-    .select('code, name, entry_price, stop_loss, target_price')
+    .select('*')
     .eq('signal_type', 'BUY')
     .gte('date', thirtyDaysAgo)
 
-  if (!holdings || holdings.length === 0) return []
+  if (!rawHoldings || rawHoldings.length === 0) return []
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const holdings = rawHoldings.map((r: any) => ({
+    code: (r['\uCF54\uB4DC'] ?? '') as string,
+    name: (r.name ?? '') as string,
+    entry_price: r.entry_price as number | null,
+    stop_loss: r.stop_loss as number | null,
+    target_price: r.target_price as number | null,
+  }))
 
   const signals: SellSignal[] = []
 

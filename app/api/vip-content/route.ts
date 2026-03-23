@@ -16,19 +16,22 @@ interface SectorMomentumFile {
   }[]
 }
 
-interface ShortSignal {
-  code: string
-  name: string
-  grade: string
-  signal_type: string
-  total_score: number
-  entry_price: number
-  target_price: number
-  stop_loss: number
-  volume_ratio: number
-  holding_days: number
-  date: string
-  source?: string
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapSignalRow(row: any) {
+  return {
+    code: (row['\uCF54\uB4DC'] ?? '') as string,
+    name: (row.name ?? '') as string,
+    grade: (row['\uB4F1\uAE09'] ?? 'N/A') as string,
+    signal_type: row.signal_type as string,
+    total_score: (row.total_score ?? 0) as number,
+    entry_price: (row.entry_price ?? 0) as number,
+    target_price: (row.target_price ?? 0) as number,
+    stop_loss: (row.stop_loss ?? 0) as number,
+    volume_ratio: (row.volume_ratio ?? 0) as number,
+    holding_days: (row.holding_days ?? 0) as number,
+    date: row.date as string,
+    source: row.source as string | undefined,
+  }
 }
 
 /* ── Panel 6: 릴레이 체인 (섹터 로테이션 + 원자재) ── */
@@ -75,13 +78,15 @@ async function buildPanel7() {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
   const dateStr = thirtyDaysAgo.toISOString().split('T')[0]
 
-  const { data: signals } = await supabase
+  const { data: rawSignals } = await supabase
     .from('short_signals')
-    .select('grade, signal_type, total_score, entry_price, target_price, stop_loss, source')
+    .select('*')
     .gte('date', dateStr)
     .order('date', { ascending: false })
 
-  if (!signals || signals.length === 0) return null
+  if (!rawSignals || rawSignals.length === 0) return null
+
+  const signals = rawSignals.map(mapSignalRow)
 
   // 소스별 그룹핑 (signal_type or source 기반)
   const sourceMap = new Map<string, { total: number; hit: number }>()
@@ -140,13 +145,15 @@ async function buildPanel8() {
 
   if (!latest) return null
 
-  const { data: signals } = await supabase
+  const { data: rawSignals } = await supabase
     .from('short_signals')
-    .select('code, name, grade, total_score, entry_price, target_price, stop_loss, holding_days, volume_ratio')
+    .select('*')
     .eq('date', latest.date)
     .order('total_score', { ascending: true })
 
-  if (!signals || signals.length === 0) return null
+  if (!rawSignals || rawSignals.length === 0) return null
+
+  const signals = rawSignals.map(mapSignalRow)
 
   const items: { ticker: string; type: string; reason: string; severity: string }[] = []
 
