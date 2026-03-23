@@ -80,46 +80,46 @@ export interface SupplyDemandData {
 
 // ─── Hooks ───
 
-export function useIntelligenceNews(scope?: 'GLOBAL' | 'DOMESTIC') {
+export function useInformationNews(scope?: 'GLOBAL' | 'DOMESTIC') {
   const params = new URLSearchParams()
   if (scope) params.set('scope', scope)
   // PaywallBlur 해제 상태 — 전체 공개. 복구 시 tier=FREE로 변경
   // params.set('tier', 'FREE')
 
   return useQuery<{ date: string | null; items: NewsItem[]; count: number }>({
-    queryKey: ['intelligence-news', scope],
-    queryFn: () => axios.get(`/api/intelligence/news?${params}`).then(r => r.data),
+    queryKey: ['information-news', scope],
+    queryFn: () => axios.get(`/api/information/news?${params}`).then(r => r.data),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
 }
 
-export function useIntelligenceDisclosures(source?: 'DART' | 'EDGAR') {
+export function useInformationDisclosures(source?: 'DART' | 'EDGAR') {
   const params = new URLSearchParams()
   if (source) params.set('source', source)
 
   return useQuery<{ date: string | null; items: DisclosureItem[]; count: number }>({
-    queryKey: ['intelligence-disclosures', source],
-    queryFn: () => axios.get(`/api/intelligence/disclosures?${params}`).then(r => r.data),
+    queryKey: ['information-disclosures', source],
+    queryFn: () => axios.get(`/api/information/disclosures?${params}`).then(r => r.data),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
 }
 
-export function useIntelligenceScenarios(session?: 'AM' | 'PM') {
+export function useInformationScenarios(session?: 'AM' | 'PM') {
   const params = session ? `?session=${session}` : ''
   return useQuery<{ items: ScenarioItem[]; count: number; hit_summary?: { hit_rate_pct: number; total_tagged: number } }>({
-    queryKey: ['intelligence-scenarios', session],
-    queryFn: () => axios.get(`/api/intelligence/scenarios${params}`).then(r => r.data),
+    queryKey: ['information-scenarios', session],
+    queryFn: () => axios.get(`/api/information/scenarios${params}`).then(r => r.data),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
 }
 
-export function useIntelligenceSupplyDemand() {
+export function useInformationSupplyDemand() {
   return useQuery<SupplyDemandData>({
-    queryKey: ['intelligence-supply-demand'],
-    queryFn: () => axios.get('/api/intelligence/supply-demand?tier=FREE').then(r => r.data),
+    queryKey: ['information-supply-demand'],
+    queryFn: () => axios.get('/api/information/supply-demand?tier=FREE').then(r => r.data),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })

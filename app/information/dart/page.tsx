@@ -1,7 +1,7 @@
 'use client'
 
 import { CARD_INNER, CONTAINER } from '@/shared/lib/card-styles'
-import { DisclosuresPanel } from '@/features/intelligence/ui/DisclosuresPanel'
+import { DisclosuresPanel } from '@/features/information/ui/DisclosuresPanel'
 
 export default function DartPage() {
   return (

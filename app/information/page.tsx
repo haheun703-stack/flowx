@@ -1,12 +1,12 @@
 'use client'
 
 import { CARD_INNER, GRID, CONTAINER } from '@/shared/lib/card-styles'
-import { MarketVerdictHero } from '@/features/intelligence/ui/MarketVerdictHero'
-import { SupplyDemandPanel } from '@/features/intelligence/ui/SupplyDemandPanel'
-import { ScenarioAnalysisPanel } from '@/features/intelligence/ui/ScenarioAnalysisPanel'
-import { HotIssuesPanel } from '@/features/intelligence/ui/HotIssuesPanel'
+import { MarketVerdictHero } from '@/features/information/ui/MarketVerdictHero'
+import { SupplyDemandPanel } from '@/features/information/ui/SupplyDemandPanel'
+import { ScenarioAnalysisPanel } from '@/features/information/ui/ScenarioAnalysisPanel'
+import { HotIssuesPanel } from '@/features/information/ui/HotIssuesPanel'
 
-export default function IntelligencePage() {
+export default function InformationPage() {
   return (
     <div className={`${CONTAINER} pt-6 space-y-6`}>
       {/* 1. 오늘의 한 줄 판정 (L카드 — 히어로) */}

@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { PAGE, PAGE_HEADER } from '@/shared/lib/card-styles'
 
 const TABS = [
-  { href: '/intelligence', label: '시그널', badge: 'SIGNAL', badgeColor: '#00ff88' },
-  { href: '/intelligence/dart', label: 'DART 공시', dot: '#00ff88' },
-  { href: '/intelligence/edgar', label: 'EDGAR 공시', dot: '#a855f7' },
+  { href: '/information', label: '시그널', badge: 'SIGNAL', badgeColor: '#00ff88' },
+  { href: '/information/dart', label: 'DART 공시', dot: '#00ff88' },
+  { href: '/information/edgar', label: 'EDGAR 공시', dot: '#a855f7' },
 ] as const
 
-export default function IntelligenceLayout({ children }: { children: React.ReactNode }) {
+export default function InformationLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   return (
@@ -18,7 +18,7 @@ export default function IntelligenceLayout({ children }: { children: React.React
       <div className={PAGE_HEADER}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold tracking-wider uppercase text-white">Intelligence</h1>
+            <h1 className="text-2xl font-bold tracking-wider uppercase text-white">Information</h1>
             {/* 서브탭 */}
             <div className="flex items-center gap-2">
               {TABS.map(tab => {

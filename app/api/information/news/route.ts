@@ -61,6 +61,6 @@ export async function GET(req: Request) {
       count: items.length,
     })
   } catch {
-    return NextResponse.json({ error: 'Intelligence news unavailable' }, { status: 503 })
+    return NextResponse.json({ error: 'Information news unavailable' }, { status: 503 })
   }
 }

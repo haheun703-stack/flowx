@@ -1,6 +1,6 @@
 'use client'
 
-import { useIntelligenceSupplyDemand } from '../api/useIntelligence'
+import { useInformationSupplyDemand } from '../api/useInformation'
 
 type Verdict = 'BUY' | 'SELL' | 'HOLD'
 
@@ -52,7 +52,7 @@ const VERDICT_STYLE: Record<Verdict, { bg: string; border: string; textColor: st
 }
 
 export function MarketVerdictHero() {
-  const { data, isLoading } = useIntelligenceSupplyDemand()
+  const { data, isLoading } = useInformationSupplyDemand()
 
   if (isLoading) {
     return (

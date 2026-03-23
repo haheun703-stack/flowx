@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useIntelligenceScenarios, type ScenarioItem, type ScenarioOption } from '../api/useIntelligence'
+import { useInformationScenarios, type ScenarioItem, type ScenarioOption } from '../api/useInformation'
 
 /**
  * 시나리오 이름 → 쉬운 한국어 + 부제 매핑
@@ -219,7 +219,7 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
 
 export function ScenarioAnalysisPanel() {
   const [sessionFilter, setSessionFilter] = useState<'AM' | 'PM' | undefined>(undefined)
-  const { data, isLoading } = useIntelligenceScenarios(sessionFilter)
+  const { data, isLoading } = useInformationScenarios(sessionFilter)
   const items = data?.items ?? []
   const hitSummary = data?.hit_summary
 

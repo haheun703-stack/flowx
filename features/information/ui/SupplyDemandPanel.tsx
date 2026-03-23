@@ -1,6 +1,6 @@
 'use client'
 
-import { useIntelligenceSupplyDemand } from '../api/useIntelligence'
+import { useInformationSupplyDemand } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
@@ -188,7 +188,7 @@ function SupplyWaterfall({
 // ════════════════════════════════════════════════════════
 
 export function SupplyDemandPanel() {
-  const { data, isLoading } = useIntelligenceSupplyDemand()
+  const { data, isLoading } = useInformationSupplyDemand()
   const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
   const isStale = rel ? rel.daysAgo >= 7 : false

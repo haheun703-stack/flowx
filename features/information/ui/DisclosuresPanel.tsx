@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useIntelligenceDisclosures, type DisclosureItem } from '../api/useIntelligence'
+import { useInformationDisclosures, type DisclosureItem } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const SENTIMENT_STYLE: Record<string, { label: string; color: string; bg: string; border: string }> = {
@@ -69,7 +69,7 @@ interface DisclosuresPanelProps {
 }
 
 export function DisclosuresPanel({ source, title, accentColor }: DisclosuresPanelProps) {
-  const { data, isLoading } = useIntelligenceDisclosures(source)
+  const { data, isLoading } = useInformationDisclosures(source)
   const [showAll, setShowAll] = useState(false)
   const items = data?.items ?? []
   const dateStr = data?.date ?? ''

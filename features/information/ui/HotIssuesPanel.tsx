@@ -1,6 +1,6 @@
 'use client'
 
-import { useIntelligenceNews, type NewsItem } from '../api/useIntelligence'
+import { useInformationNews, type NewsItem } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 /** 영향 방향 뱃지 */
@@ -89,7 +89,7 @@ interface HotIssuesPanelProps {
 }
 
 export function HotIssuesPanel({ scope, title, accentColor }: HotIssuesPanelProps) {
-  const { data, isLoading } = useIntelligenceNews(scope)
+  const { data, isLoading } = useInformationNews(scope)
   const items = data?.items ?? []
   const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
