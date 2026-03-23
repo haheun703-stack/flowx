@@ -20,6 +20,7 @@ export interface TreemapSector {
 
 interface TreemapResponse {
   sectors: TreemapSector[]
+  meta?: { totalStocks: number; lastUpdated: string }
 }
 
 export function useTreemap() {

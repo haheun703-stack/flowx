@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { readFileSync } from 'fs'
 import path from 'path'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 interface SectorMapping {
   [ticker: string]: { name: string; sector: string }
@@ -55,8 +55,8 @@ export async function GET() {
 
     // 2. KOSPI + KOSDAQ 시가총액 데이터 가져오기
     const [kospi, kosdaq] = await Promise.all([
-      fetchNaverStocks('KOSPI', 80),
-      fetchNaverStocks('KOSDAQ', 20),
+      fetchNaverStocks('KOSPI', 100),
+      fetchNaverStocks('KOSDAQ', 50),
     ])
     const allStocks = [...kospi, ...kosdaq]
 
@@ -91,7 +91,11 @@ export async function GET() {
       }))
       .sort((a, b) => b.marketCap - a.marketCap)
 
-    return NextResponse.json({ sectors })
+    const totalStocks = sectors.reduce((sum, s) => sum + s.stocks.length, 0)
+    return NextResponse.json({
+      sectors,
+      meta: { totalStocks, lastUpdated: new Date().toISOString() },
+    })
   } catch (e) {
     console.error('Treemap API error:', e)
     return NextResponse.json({ sectors: [] }, { status: 500 })

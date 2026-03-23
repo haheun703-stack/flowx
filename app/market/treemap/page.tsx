@@ -31,7 +31,6 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
       className="w-[260px] shrink-0 border-l border-[#1a2535] bg-[#0a0f18] flex flex-col"
       style={{ fontFamily: FONT }}
     >
-      {/* 헤더 */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]">
         <span className="text-white font-bold text-sm">{stock.name}</span>
         <button
@@ -42,9 +41,7 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
         </button>
       </div>
 
-      {/* 상세 정보 */}
       <div className="flex flex-col gap-4 p-4">
-        {/* 티커 + 섹터 */}
         <div>
           <div className="text-[#94a3b8] text-xs mb-1">종목코드</div>
           <div className="text-white font-bold text-sm">{stock.ticker}</div>
@@ -54,7 +51,6 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
           <div className="text-[#fbbf24] font-bold text-sm">{stock.sector}</div>
         </div>
 
-        {/* 등락률 */}
         <div className="border-t border-[#1a2535] pt-4">
           <div className="text-[#94a3b8] text-xs mb-1">등락률</div>
           <div className={`text-2xl font-black ${color}`}>
@@ -62,7 +58,6 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
           </div>
         </div>
 
-        {/* 시총 + 거래대금 */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <div className="text-[#94a3b8] text-xs mb-1">시총</div>
@@ -82,12 +77,14 @@ export default function TreemapPage() {
   const { data: sectors, isLoading } = useTreemap()
   const [sizeBy, setSizeBy] = useState<SizeBy>('marketCap')
   const [selected, setSelected] = useState<LeafNode | null>(null)
+  const [drilledSector, setDrilledSector] = useState<string | null>(null)
 
   const currentFilter = FILTERS.find(f => f.key === sizeBy)!
+  const totalStocks = sectors?.reduce((sum, s) => sum + s.stocks.length, 0) ?? 0
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)]" style={{ background: '#131722' }}>
-      {/* 헤더 */}
+    <div className="flex flex-col min-h-[calc(100vh-88px)]" style={{ background: '#131722' }}>
+      {/* Header */}
       <div
         className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]"
         style={{ fontFamily: FONT }}
@@ -97,10 +94,23 @@ export default function TreemapPage() {
           <span className="text-base font-black tracking-widest uppercase text-white">
             시가총액 트리맵
           </span>
-          <span className="text-sm font-black text-[#94a3b8]">KOSPI · KOSDAQ 상위 50종목</span>
+          <span className="text-sm font-black text-[#94a3b8]">
+            {drilledSector
+              ? `KOSPI · KOSDAQ — ${drilledSector}`
+              : `KOSPI · KOSDAQ 상위 ${totalStocks}종목`
+            }
+          </span>
+          {drilledSector && (
+            <button
+              onClick={() => setDrilledSector(null)}
+              className="ml-2 px-2 py-1 text-xs font-bold text-[#fbbf24] border border-[#fbbf24]/30 rounded hover:bg-[#fbbf24]/10 transition-colors"
+            >
+              ← 전체 보기
+            </button>
+          )}
         </div>
 
-        {/* 필터 탭 */}
+        {/* Filter tabs */}
         <div className="flex items-center gap-1">
           {FILTERS.map(f => (
             <button
@@ -118,14 +128,22 @@ export default function TreemapPage() {
         </div>
       </div>
 
-      {/* 필터 설명 */}
-      <div className="px-4 py-1.5 text-xs text-[#64748b] border-b border-[#1a2535]/50" style={{ fontFamily: FONT }}>
-        {currentFilter.desc} · 색상 = 등락률
+      {/* Filter description + controls */}
+      <div
+        className="flex items-center justify-between px-4 py-1.5 border-b border-[#1a2535]/50"
+        style={{ fontFamily: FONT }}
+      >
+        <span className="text-xs text-[#64748b]">
+          {currentFilter.desc} · 색상 = 등락률 · 스크롤 = 줌 · 드래그 = 이동 · 섹터 클릭 = 확대
+        </span>
+        <span className="text-xs text-[#334155]">
+          더블클릭 = 전체보기
+        </span>
       </div>
 
-      {/* 트리맵 + 상세 패널 */}
-      <div className="flex flex-1">
-        <div className="flex-1 p-3">
+      {/* Treemap + Detail Panel */}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 p-2">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-[#334155] text-sm" style={{ fontFamily: FONT }}>
@@ -138,11 +156,11 @@ export default function TreemapPage() {
               sizeBy={sizeBy}
               selectedTicker={selected?.ticker}
               onStockClick={(stock) => setSelected(prev => prev?.ticker === stock.ticker ? null : stock)}
+              onSectorDrillDown={setDrilledSector}
             />
           )}
         </div>
 
-        {/* 상세 패널 */}
         {selected && (
           <DetailPanel stock={selected} onClose={() => setSelected(null)} />
         )}
