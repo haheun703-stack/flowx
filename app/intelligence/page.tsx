@@ -5,7 +5,6 @@ import { MarketVerdictHero } from '@/features/intelligence/ui/MarketVerdictHero'
 import { SupplyDemandPanel } from '@/features/intelligence/ui/SupplyDemandPanel'
 import { ScenarioAnalysisPanel } from '@/features/intelligence/ui/ScenarioAnalysisPanel'
 import { HotIssuesPanel } from '@/features/intelligence/ui/HotIssuesPanel'
-import { DisclosuresPanel } from '@/features/intelligence/ui/DisclosuresPanel'
 
 export default function IntelligencePage() {
   return (
@@ -45,15 +44,6 @@ export default function IntelligencePage() {
           </div>
         </div>
 
-        {/* 4. DART + EDGAR 공시 (M카드 2열) */}
-        <div className={GRID.col2}>
-          <div className={CARD_INNER.M}>
-            <DisclosuresPanel source="DART" title="DART 공시" accentColor="#00ff88" />
-          </div>
-          <div className={CARD_INNER.M}>
-            <DisclosuresPanel source="EDGAR" title="EDGAR 공시" accentColor="#a855f7" />
-          </div>
-        </div>
       </div>
     </div>
   )

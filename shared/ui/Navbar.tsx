@@ -33,6 +33,12 @@ export function Navbar() {
             인텔리전스
             <span className="text-[8px] px-1 py-px rounded border border-[#00ff88]/40 text-[#00ff88] font-bold leading-tight">SIGNAL</span>
           </Link>
+          <Link href="/intelligence/dart" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            DART공시
+          </Link>
+          <Link href="/intelligence/edgar" className="text-xs text-gray-400 hover:text-[#a855f7] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            EDGAR공시
+          </Link>
           <Link href="/macro" className="text-xs text-gray-400 hover:text-[#f59e0b] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
             매크로
             <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
