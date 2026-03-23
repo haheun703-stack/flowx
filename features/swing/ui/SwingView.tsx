@@ -378,9 +378,18 @@ function Panel6_RelayChain() {
         <div className="px-3 py-2 border-t border-[#2a2a3a]">
           <div className="text-[10px] text-[#555] font-bold mb-1">원자재 연동</div>
           <div className="flex gap-3 text-[11px]">
-            <span className="text-[#e2e8f0]">WTI <span className="text-[#ff3b5c] font-bold">+3.2%</span></span>
-            <span className="text-[#e2e8f0]">Gold <span className="text-[#0ea5e9] font-bold">-0.5%</span></span>
-            <span className="text-[#e2e8f0]">Copper <span className="text-[#64748b] font-bold">+0.1%</span></span>
+            {(relay?.commodities ?? [
+              { name: 'WTI 원유', change: '+0.0%' },
+              { name: '금', change: '+0.0%' },
+              { name: '구리', change: '+0.0%' },
+            ]).map((c: any) => (
+              <span key={c.name} className="text-[#e2e8f0]">
+                {c.name}{' '}
+                <span className={`font-bold ${c.change?.startsWith('+') ? 'text-[#ff3b5c]' : c.change?.startsWith('-') ? 'text-[#0ea5e9]' : 'text-[#64748b]'}`}>
+                  {c.change}
+                </span>
+              </span>
+            ))}
           </div>
         </div>
       </div>
