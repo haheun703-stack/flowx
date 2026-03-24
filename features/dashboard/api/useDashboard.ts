@@ -698,7 +698,7 @@ export interface Zone5SdPattern {
   name: string
   grade: string
   pattern: string
-  pattern_name: string
+  pattern_name?: string
   sd_score: number
 }
 

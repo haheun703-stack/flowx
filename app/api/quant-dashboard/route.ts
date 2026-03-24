@@ -12,6 +12,7 @@ interface DashboardState {
   zone4: Record<string, unknown>[]
   zone5: Record<string, unknown>
   zone6: Record<string, unknown>
+  zone7?: Record<string, unknown>[]
 }
 
 export async function GET() {

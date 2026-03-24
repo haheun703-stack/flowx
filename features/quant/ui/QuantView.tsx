@@ -18,7 +18,7 @@ const MONO = "'Space Mono', monospace"
 
 /* ── 유틸 ── */
 function moneyStr(v: number | undefined | null): string {
-  if (!v) return '0'
+  if (v == null || v === 0) return '0'
   const abs = Math.abs(v)
   const sign = v >= 0 ? '+' : '-'
   if (abs >= 100000000) return sign + (abs / 100000000).toFixed(0) + '억'
@@ -123,7 +123,7 @@ function VerdictZone({ z1 }: { z1: QuantDashboardState['zone1'] }) {
         </div>
         <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <InfoRow tag="시장" tagBg={C.blue2} tagColor={C.blue}>
-            <div style={{ fontSize: 13, color: C.text }}>KOSPI {z1.kospi ? z1.kospi.toLocaleString() : '—'} ({z1.kospi_chg > 0 ? '+' : ''}{z1.kospi_chg}%)</div>
+            <div style={{ fontSize: 13, color: C.text }}>KOSPI {z1.kospi != null ? z1.kospi.toLocaleString() : '—'} ({z1.kospi_chg > 0 ? '+' : ''}{z1.kospi_chg}%)</div>
             <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>VIX {z1.vix} · AI 신뢰도 {z1.brain_score}점</div>
           </InfoRow>
           <InfoRow tag="시장국면" tagBg={C.purple2} tagColor={C.purple}>
@@ -182,13 +182,13 @@ function StockCard({ a }: { a: Zone2Item }) {
       {/* 상세 */}
       <div style={{ padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {/* 가격 */}
-        {a.close && (
+        {a.close != null && (
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 11 }}>
             <span>현재가 <b style={{ color: pctColor(a.price_change ?? 0) }}>{a.close.toLocaleString()}원</b>{a.price_change ? ` (${pctSign(a.price_change)}${a.price_change}%)` : ''}</span>
             {a.stop_loss && <span><span style={{ color: C.muted, fontSize: 10 }}>손절</span> {a.stop_loss.toLocaleString()}</span>}
             {a.target_price && <span><span style={{ color: C.muted, fontSize: 10 }}>목표</span> {a.target_price.toLocaleString()}</span>}
             {a.drawdown && <span><span style={{ color: C.muted, fontSize: 10 }}>52주낙폭</span> <span style={{ color: C.red }}>{a.drawdown}%</span></span>}
-            {a.consensus_upside ? <span><span style={{ color: C.muted, fontSize: 10 }}>컨센</span> <span style={{ color: C.green }}>+{a.consensus_upside}%</span></span> : null}
+            {a.consensus_upside != null && a.consensus_upside !== 0 ? <span><span style={{ color: C.muted, fontSize: 10 }}>컨센</span> <span style={{ color: C.green }}>+{a.consensus_upside}%</span></span> : null}
           </div>
         )}
 
@@ -287,7 +287,7 @@ function PortfolioZone({ z3 }: { z3: QuantDashboardState['zone3'] }) {
         {/* 성과 그리드 */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: C.border, borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
           {[
-            { label: '총 자산', val: z3.equity ? z3.equity.toLocaleString() + '원' : '—', sub: `${pctSign(totRet)}${totRet.toFixed(2)}% (초기 ${(z3.initial_capital ?? 0).toLocaleString()}원)`, color: valCls(totRet) },
+            { label: '총 자산', val: z3.equity != null ? z3.equity.toLocaleString() + '원' : '—', sub: `${pctSign(totRet)}${totRet.toFixed(2)}% (초기 ${(z3.initial_capital ?? 0).toLocaleString()}원)`, color: valCls(totRet) },
             { label: '이번 주', val: `${pctSign(weekRet)}${weekRet.toFixed(2)}%`, sub: '', color: valCls(weekRet) },
             { label: '승률 / PF', val: `${wr}% / ${pf}`, sub: `총 ${z3.total_trades ?? 0}건 (${z3.wins ?? 0}승 ${z3.losses ?? 0}패)`, color: C.text },
             { label: 'MDD', val: mdd ? mdd.toFixed(1) + '%' : '—', sub: '한도 -10%', color: C.red },
@@ -516,7 +516,7 @@ export function QuantView() {
         <ActionZone z2={data.zone2} />
         <PortfolioZone z3={data.zone3} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))', gap: 16 }}>
           <SectorZone z4={data.zone4} />
           <SupplyZone z5={data.zone5} />
         </div>
