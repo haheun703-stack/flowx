@@ -620,3 +620,82 @@ export function useMarketSnapshot() {
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
+
+// ── Quant Dashboard (dashboard_state.json 6-Zone) ──
+export interface QuantDashboardState {
+  generated_at: string
+  zone1: {
+    verdict: string
+    cash_pct: number
+    buy_pct: number
+    regime: string
+    regime_transition: string
+    transition_prob: number
+    macro_grade: string
+    vix: number
+    kospi: number
+    kospi_chg: number
+    brain_score: number
+    shield_status: string
+    lens_summary: string
+    updated_at: string
+  }
+  zone2: {
+    ticker: string
+    name: string
+    action: string
+    grade: string
+    score: number
+    reason: string
+    strategy: string
+    close?: number
+    stop_loss?: number
+    target_price?: number
+  }[]
+  zone3: {
+    equity: number
+    initial_capital: number
+    total_return_pct: number
+    week_return_pct: number
+    month_return_pct: number
+    win_rate: number
+    pf: number
+    mdd: number
+    total_trades: number
+    wins: number
+    losses: number
+    positions: { ticker: string; name: string; pnl_pct: number; days: number; strategy: string; grade: string }[]
+    recent_trades: { ticker: string; name: string; side: string; pnl_pct: number; date: string }[]
+  }
+  zone4: {
+    name: string
+    score: number
+    ret_5d: number
+    rsi: number
+    rank: number
+    signal: string
+    relay: string | null
+  }[]
+  zone5: {
+    foreign_flow: { ticker: string; name: string; direction: string; score: number; z_score: number }[]
+    sd_patterns: unknown[]
+    supply_summary: { foreign: number; inst: number; indiv: number }
+  }
+  zone6: {
+    tomorrow_picks: number
+    whale_detect: number
+    volume_spike: number
+    brain: number
+    recent_10: number[]
+    active_signals: number
+  }
+}
+
+export function useQuantDashboard() {
+  return useQuery<QuantDashboardState>({
+    queryKey: ['quant-dashboard'],
+    queryFn: () => axios.get('/api/quant-dashboard').then(r => r.data),
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
