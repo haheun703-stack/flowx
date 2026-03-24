@@ -621,7 +621,87 @@ export function useMarketSnapshot() {
   })
 }
 
-// ── Quant Dashboard (dashboard_state.json 6-Zone) ──
+// ── Quant Dashboard V3 (dashboard_state.json 7-Zone) ──
+export interface Zone2Item {
+  ticker: string
+  name: string
+  action: string
+  grade: string
+  score: number
+  reason: string
+  strategy: string
+  // 가격
+  close?: number
+  price_change?: number
+  stop_loss?: number
+  target_price?: number
+  entry_price?: number
+  entry_condition?: string
+  // 기술지표
+  rsi?: number
+  adx?: number
+  stoch_k?: number
+  stoch_d?: number | null
+  bb_position?: number | null
+  above_ma20?: boolean
+  above_ma60?: boolean
+  ma5_gap?: number
+  sar_trend?: number  // 1=↑, -1=↓
+  // 수급
+  foreign_5d?: number
+  inst_5d?: number
+  // 매집
+  accum_phase?: string
+  accum_days?: number
+  accum_return?: number
+  // 안전
+  safety_signal?: string
+  safety_label?: string
+  // 점수 분해
+  score_breakdown?: { multi: number; individual: number; tech: number; flow: number; safety: number; overheat: number }
+  // AI
+  ai_action?: string
+  ai_tag?: string
+  ai_bonus?: number
+  // 과열
+  overheat_flags?: string[]
+  drawdown?: number
+  consensus_upside?: number
+  trade_strategy?: string
+}
+
+export interface Zone7MarketHeader {
+  _market_direction: string
+  _market_score: number
+  _market_confidence: number
+  _regime: string
+  _vix: number
+  _reasons: string[]
+}
+
+export interface Zone7EtfItem {
+  category: string
+  ticker: string
+  name: string
+  action: string
+  confidence: number
+  holding_period?: string
+  portfolio_pct?: number
+  stop_loss?: string
+  target?: string
+  entry_timing?: string
+  reasons?: string[]
+}
+
+export interface Zone5SdPattern {
+  ticker: string
+  name: string
+  grade: string
+  pattern: string
+  pattern_name: string
+  sd_score: number
+}
+
 export interface QuantDashboardState {
   generated_at: string
   zone1: {
@@ -640,18 +720,7 @@ export interface QuantDashboardState {
     lens_summary: string
     updated_at: string
   }
-  zone2: {
-    ticker: string
-    name: string
-    action: string
-    grade: string
-    score: number
-    reason: string
-    strategy: string
-    close?: number
-    stop_loss?: number
-    target_price?: number
-  }[]
+  zone2: Zone2Item[]
   zone3: {
     equity: number
     initial_capital: number
@@ -675,10 +744,13 @@ export interface QuantDashboardState {
     rank: number
     signal: string
     relay: string | null
+    etf_code?: string
+    etf_signal?: string
+    etf_sizing?: string
   }[]
   zone5: {
     foreign_flow: { ticker: string; name: string; direction: string; score: number; z_score: number }[]
-    sd_patterns: unknown[]
+    sd_patterns: Zone5SdPattern[]
     supply_summary: { foreign: number; inst: number; indiv: number }
   }
   zone6: {
@@ -689,6 +761,7 @@ export interface QuantDashboardState {
     recent_10: number[]
     active_signals: number
   }
+  zone7?: (Zone7MarketHeader | Zone7EtfItem)[]
 }
 
 export function useQuantDashboard() {
