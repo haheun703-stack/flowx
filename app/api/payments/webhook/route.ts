@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { createHmac } from 'crypto'
 
 /**
  * POST /api/payments/webhook
@@ -10,17 +11,31 @@ import { getSupabaseAdmin } from '@/lib/supabase'
  *   이벤트: BILLING_STATUS_CHANGED, PAYMENT_STATUS_CHANGED
  */
 export async function POST(request: NextRequest) {
-  const body = await request.json()
-  const { eventType, data } = body
+  // Toss 웹훅 서명 검증
+  const secret = process.env.TOSS_WEBHOOK_SECRET
+  let body: { eventType: string; data: Record<string, string> }
 
+  if (secret) {
+    const rawBody = await request.text()
+    const signature = request.headers.get('toss-signature') ?? ''
+    const expected = createHmac('sha256', secret).update(rawBody).digest('base64')
+    if (signature !== expected) {
+      console.error('webhook signature mismatch')
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 403 })
+    }
+    body = JSON.parse(rawBody)
+  } else {
+    console.warn('TOSS_WEBHOOK_SECRET not set — skipping signature check')
+    body = await request.json()
+  }
+
+  const { eventType, data } = body
   const supabase = getSupabaseAdmin()
 
   switch (eventType) {
     case 'BILLING_STATUS_CHANGED': {
-      // 빌링키 상태 변경 (카드 만료 등)
       const { customerKey, status } = data
       if (status === 'EXPIRED' || status === 'STOPPED') {
-        // 빌링키 만료 → 구독 실패 처리
         const userId = customerKey?.replace('flowx_', '')
         if (userId) {
           await supabase
@@ -39,10 +54,8 @@ export async function POST(request: NextRequest) {
     }
 
     case 'PAYMENT_STATUS_CHANGED': {
-      // 결제 상태 변경 (자동결제 실패 등)
       const { orderId, status: paymentStatus, failReason } = data
       if (paymentStatus === 'ABORTED' || paymentStatus === 'EXPIRED') {
-        // orderId에서 user_id 추출: flowx_{tier}_{userId}_{timestamp}
         const parts = orderId?.split('_')
         const userId = parts?.[2]
         if (userId) {

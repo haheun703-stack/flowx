@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { getSessionFromRequest, getUserTier, unauthorized } from '@/lib/api-auth'
 import { readJsonFile } from '@/shared/lib/dataReader'
 import { fetchWorldIndices } from '@/features/market-ticker/api/fetchWorldIndices'
 
@@ -219,6 +220,15 @@ async function buildPanel8() {
 
 /* ── Main Handler ── */
 export async function GET() {
+  // VIP 콘텐츠 — PRO/VIP 구독자만 접근 가능
+  const session = await getSessionFromRequest()
+  if (!session) return unauthorized()
+
+  const tier = await getUserTier()
+  if (tier === 'FREE' || tier === 'SIGNAL') {
+    return NextResponse.json({ error: 'PRO 이상 구독이 필요합니다' }, { status: 403 })
+  }
+
   try {
     const [panel6, panel7, panel8] = await Promise.allSettled([
       buildPanel6(),
