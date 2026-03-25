@@ -28,10 +28,14 @@ export async function GET() {
 
     // flowx_html 후처리
     if (data.flowx_html) {
-      // 왼쪽 맵 SVG를 상단 정렬 (기본은 세로 중앙)
+      // 왼쪽 맵 SVG를 상단 정렬 (기본 xMidYMid → xMidYMin)
       data.flowx_html = data.flowx_html.replace(
         '</style>',
-        '.map-stage{align-items:flex-start!important;justify-content:flex-start!important;padding-top:8px}\n</style>'
+        '.map-stage{align-items:flex-start!important;padding-top:8px}\n.map-stage svg{height:auto!important}\n</style>'
+      )
+      data.flowx_html = data.flowx_html.replaceAll(
+        'width="100%" height="100%">',
+        'width="100%" height="100%" preserveAspectRatio="xMidYMin meet">'
       )
       // 섹터 데이터 주입
       if (sectorRes.data?.length) {
