@@ -76,7 +76,7 @@ function ScenarioContent({ data }: { data: ScenarioData }) {
             background: C.bg,
             minHeight: 'calc(100vh - 120px)',
           }}
-          sandbox="allow-same-origin"
+          sandbox="allow-same-origin allow-scripts"
         />
       </div>
 
