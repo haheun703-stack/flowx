@@ -28,7 +28,11 @@ export async function GET() {
 
     // flowx_html 후처리
     if (data.flowx_html) {
-      // 원본 CSS에서 map-stage 세로 중앙 → 상단 정렬로 직접 변경
+      // 섹터 데이터 주입 (먼저 — SVG 생성)
+      if (sectorRes.data?.length) {
+        data.flowx_html = injectSectorScores(data.flowx_html, sectorRes.data)
+      }
+      // 원본 CSS에서 map-stage 세로 중앙 → 상단 정렬 + SVG height 제거 (마지막에)
       data.flowx_html = data.flowx_html
         .replace(
           'align-items:center;justify-content:center}',
@@ -38,10 +42,10 @@ export async function GET() {
           'width="100%" height="100%">',
           'width="100%" preserveAspectRatio="xMidYMin meet">'
         )
-      // 섹터 데이터 주입
-      if (sectorRes.data?.length) {
-        data.flowx_html = injectSectorScores(data.flowx_html, sectorRes.data)
-      }
+        .replaceAll(
+          'width="100%" height="100%" preserveAspectRatio',
+          'width="100%" preserveAspectRatio'
+        )
     }
 
     return NextResponse.json(data)
