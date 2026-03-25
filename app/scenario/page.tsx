@@ -5,20 +5,32 @@ import axios from 'axios'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
+interface ScenarioObj {
+  name: string
+  probability: number
+  narrative_3m: string
+  narrative_6m: string
+  inflow_sectors: string[]
+  outflow_sectors: string[]
+  trigger_events: string[]
+  historical_analogy: string
+}
+
 interface ScenarioData {
   date: string
   session: string
   flowx_html: string
   one_thing_title: string
   one_thing_body: string
-  scenario_main: string
-  scenario_sub: string
-  scenario_tail: string
+  one_thing_category?: string
+  scenario_main: ScenarioObj
+  scenario_sub: ScenarioObj
+  scenario_tail: ScenarioObj
   money_inflow: string
   money_outflow: string
-  picks: string
-  avoid: string
-  checkpoints: string
+  picks: string[]
+  avoid: string[]
+  checkpoints: string[]
 }
 
 function useScenario() {
@@ -77,17 +89,9 @@ function ScenarioContent({ data }: { data: ScenarioData }) {
         </Section>
 
         {/* 2. 시나리오 3종 */}
-        <Section label="기본 시나리오" color={C.blue}>
-          <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_main}</p>
-        </Section>
-
-        <Section label="상방 시나리오" color={C.green}>
-          <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_sub}</p>
-        </Section>
-
-        <Section label="하방 시나리오" color={C.red}>
-          <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_tail}</p>
-        </Section>
+        <ScenarioCard scenario={data.scenario_main} color={C.blue} />
+        <ScenarioCard scenario={data.scenario_sub} color={C.green} />
+        <ScenarioCard scenario={data.scenario_tail} color={C.red} />
 
         {/* 3. 자금 흐름 */}
         {data.money_inflow && (
@@ -102,25 +106,59 @@ function ScenarioContent({ data }: { data: ScenarioData }) {
         )}
 
         {/* 4. 관심 / 회피 종목 */}
-        {data.picks && (
+        {data.picks?.length > 0 && (
           <Section label="관심 종목" color={C.amber}>
-            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.picks}</p>
+            <ul style={{ fontSize: 13, color: C.text, lineHeight: 1.7, paddingLeft: 16, margin: 0 }}>
+              {data.picks.map((p, i) => <li key={i}>{p}</li>)}
+            </ul>
           </Section>
         )}
-        {data.avoid && (
+        {data.avoid?.length > 0 && (
           <Section label="회피 종목" color={C.red}>
-            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.avoid}</p>
+            <ul style={{ fontSize: 13, color: C.text, lineHeight: 1.7, paddingLeft: 16, margin: 0 }}>
+              {data.avoid.map((a, i) => <li key={i}>{a}</li>)}
+            </ul>
           </Section>
         )}
 
         {/* 5. 체크포인트 */}
-        {data.checkpoints && (
+        {data.checkpoints?.length > 0 && (
           <Section label="체크포인트" color={C.purple}>
-            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.checkpoints}</p>
+            <ul style={{ fontSize: 13, color: C.text, lineHeight: 1.7, paddingLeft: 16, margin: 0 }}>
+              {data.checkpoints.map((c, i) => <li key={i}>{c}</li>)}
+            </ul>
           </Section>
         )}
       </div>
     </div>
+  )
+}
+
+function ScenarioCard({ scenario, color }: { scenario: ScenarioObj; color: string }) {
+  return (
+    <Section label={`${scenario.name} (${scenario.probability}%)`} color={color}>
+      <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap', marginBottom: 8 }}>
+        <strong style={{ color }}>3개월:</strong> {scenario.narrative_3m}
+      </p>
+      <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap', marginBottom: 8 }}>
+        <strong style={{ color }}>6개월:</strong> {scenario.narrative_6m}
+      </p>
+      {scenario.trigger_events?.length > 0 && (
+        <div style={{ marginBottom: 8 }}>
+          <span style={{ fontSize: 11, color: C.muted, fontWeight: 600 }}>트리거:</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+            {scenario.trigger_events.map((t, i) => (
+              <span key={i} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 4, background: `${color}15`, border: `1px solid ${color}30`, color }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      )}
+      {scenario.historical_analogy && (
+        <p style={{ fontSize: 11, color: C.muted, fontStyle: 'italic' }}>
+          유사 사례: {scenario.historical_analogy}
+        </p>
+      )}
+    </Section>
   )
 }
 
