@@ -5,13 +5,23 @@ import axios from 'axios'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
+interface CountryItem {
+  country: string
+  category: string
+  prev: number
+  curr: number
+  change: number
+  change_pct: number
+  direction: string
+}
+
 interface NationalityData {
   date: string
   code: string
   name: string
   signal: string
   score: number
-  countries: Record<string, number>
+  countries: { date_new: string; date_old: string; items: CountryItem[] }
   arch_scores: Record<string, number>
 }
 
@@ -56,13 +66,16 @@ function formatVol(v: number): string {
 }
 
 function CardContent({ data }: { data: NationalityData }) {
-  // countries: Record<string, number> → 절대값 기준 상위 10개국 추출
-  const sorted = Object.entries(data.countries || {})
-    .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+  const items = data.countries?.items ?? []
+  const sorted = [...items]
+    .sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
     .slice(0, 10)
-  const maxAbs = sorted.length > 0 ? Math.abs(sorted[0][1]) : 1
+  const maxAbs = sorted.length > 0 ? Math.abs(sorted[0].change) : 1
   const archEntries = Object.entries(data.arch_scores || {})
   const sc = signalColor(data.signal)
+  const dateLabel = data.countries?.date_new
+    ? `${data.countries.date_new.slice(0, 4)}.${data.countries.date_new.slice(4, 6)}.${data.countries.date_new.slice(6)}`
+    : data.date
 
   return (
     <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 6, overflow: 'hidden' }}>
@@ -84,19 +97,21 @@ function CardContent({ data }: { data: NationalityData }) {
         {sorted.length === 0 ? (
           <div style={{ padding: 12, color: C.muted, fontSize: 12 }}>국적별 데이터 없음</div>
         ) : (
-          sorted.map(([country, vol], i) => {
-            const isBuy = vol > 0
+          sorted.map((item, i) => {
+            const isBuy = item.direction === '매수'
             const color = isBuy ? C.red : C.blue
             const arrow = isBuy ? '\u25B2' : '\u25BC'
-            const barW = Math.min(Math.abs(vol) / maxAbs * 100, 100)
+            const barW = Math.min(Math.abs(item.change) / maxAbs * 100, 100)
 
             return (
-              <div key={country} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: i < sorted.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                <span style={{ fontSize: 12, width: 70, flexShrink: 0, color: C.text }}>{country}</span>
+              <div key={`${item.country}-${item.category}`} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: i < sorted.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                <span style={{ fontSize: 12, width: 80, flexShrink: 0, color: C.text }}>{item.country}</span>
+                <span style={{ fontFamily: MONO, fontSize: 9, padding: '1px 5px', borderRadius: 3, background: `${C.muted}20`, color: C.muted, flexShrink: 0 }}>{item.category}</span>
                 <div style={{ flex: 1, position: 'relative', height: 5, background: C.border, borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: '100%', borderRadius: 3, width: `${barW}%`, background: color }} />
                 </div>
-                <span style={{ fontFamily: MONO, fontSize: 11, width: 60, textAlign: 'right', color }}>{formatVol(vol)}</span>
+                <span style={{ fontFamily: MONO, fontSize: 10, width: 50, textAlign: 'right', color: C.muted }}>{item.change_pct > 0 ? '+' : ''}{item.change_pct.toFixed(1)}%</span>
+                <span style={{ fontFamily: MONO, fontSize: 11, width: 60, textAlign: 'right', color }}>{formatVol(item.change)}</span>
                 <span style={{ fontSize: 12, width: 16, textAlign: 'center', color }}>{arrow}</span>
               </div>
             )
@@ -121,7 +136,7 @@ function CardContent({ data }: { data: NationalityData }) {
 
       {/* 날짜 */}
       <div style={{ padding: '6px 16px', borderTop: `1px solid ${C.border}`, textAlign: 'right' }}>
-        <span style={{ fontFamily: MONO, fontSize: 10, color: C.muted }}>{data.date}</span>
+        <span style={{ fontFamily: MONO, fontSize: 10, color: C.muted }}>{dateLabel}</span>
       </div>
     </div>
   )
