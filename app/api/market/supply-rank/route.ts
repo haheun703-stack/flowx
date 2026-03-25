@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { readJsonFile } from '@/shared/lib/dataReader'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 interface PickItem {
   ticker: string

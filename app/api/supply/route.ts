@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchSupply } from '@/features/supply-xray/api/fetchSupply'
 
-export const revalidate = 300 // 5분 캐시
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const ticker = req.nextUrl.searchParams.get('ticker') || '005930'

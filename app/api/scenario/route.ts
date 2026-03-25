@@ -57,6 +57,8 @@ export async function GET() {
 interface SectorStock { sector_key: string; sector_name: string; change_pct: number | null }
 
 function injectSectorScores(html: string, stocks: SectorStock[]): string {
+  // 과도한 HTML 방어 (500KB 초과 시 주입 스킵)
+  if (html.length > 512_000) return html
   // 섹터별 avgChange 계산
   const map = new Map<string, { name: string; total: number; count: number }>()
   for (const s of stocks) {

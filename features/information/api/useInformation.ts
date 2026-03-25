@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 
 // ─── Types ───
 
@@ -88,7 +87,7 @@ export function useInformationNews(scope?: 'GLOBAL' | 'DOMESTIC') {
 
   return useQuery<{ date: string | null; items: NewsItem[]; count: number }>({
     queryKey: ['information-news', scope],
-    queryFn: () => axios.get(`/api/information/news?${params}`).then(r => r.data),
+    queryFn: () => fetch(`/api/information/news?${params}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -100,7 +99,7 @@ export function useInformationDisclosures(source?: 'DART' | 'EDGAR') {
 
   return useQuery<{ date: string | null; items: DisclosureItem[]; count: number }>({
     queryKey: ['information-disclosures', source],
-    queryFn: () => axios.get(`/api/information/disclosures?${params}`).then(r => r.data),
+    queryFn: () => fetch(`/api/information/disclosures?${params}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -110,7 +109,7 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
   const params = session ? `?session=${session}` : ''
   return useQuery<{ items: ScenarioItem[]; count: number; hit_summary?: { hit_rate_pct: number; total_tagged: number } }>({
     queryKey: ['information-scenarios', session],
-    queryFn: () => axios.get(`/api/information/scenarios${params}`).then(r => r.data),
+    queryFn: () => fetch(`/api/information/scenarios${params}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -119,7 +118,7 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
 export function useInformationSupplyDemand() {
   return useQuery<SupplyDemandData>({
     queryKey: ['information-supply-demand'],
-    queryFn: () => axios.get('/api/information/supply-demand?tier=FREE').then(r => r.data),
+    queryFn: () => fetch('/api/information/supply-demand?tier=FREE').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })

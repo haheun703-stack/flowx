@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 export interface TreemapStock {
@@ -29,7 +28,7 @@ export function useTreemap() {
   return useQuery<TreemapSector[]>({
     queryKey: ['market-treemap'],
     queryFn: async () => {
-      const { data } = await axios.get<TreemapResponse>('/api/market/treemap')
+      const data: TreemapResponse = await fetch('/api/market/treemap').then(r => r.json())
       return data.sectors
     },
     staleTime: 1000 * 60 * 5,

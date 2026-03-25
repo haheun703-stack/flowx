@@ -2,8 +2,10 @@
 // Bearer $CRON_SECRET 헤더 검증
 
 export function verifyCronAuth(req: Request): boolean {
+  const secret = process.env.CRON_SECRET
+  if (!secret) return false
   const authHeader = req.headers.get('authorization')
-  return authHeader === `Bearer ${process.env.CRON_SECRET}`
+  return authHeader === `Bearer ${secret}`
 }
 
 /** KST 기준 오늘 날짜 (YYYY-MM-DD) */

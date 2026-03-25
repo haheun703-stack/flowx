@@ -1,7 +1,7 @@
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
-export const revalidate = 300 // 5분 캐시
+export const dynamic = 'force-dynamic'
 
 const VALID_PERIODS = ['30D', '60D', '90D', 'ALL'] as const
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
@@ -36,7 +35,7 @@ interface ScenarioData {
 function useScenario() {
   return useQuery<ScenarioData>({
     queryKey: ['scenario'],
-    queryFn: () => axios.get('/api/scenario').then(r => r.data),
+    queryFn: () => fetch('/api/scenario').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
   })
 }

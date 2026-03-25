@@ -4,7 +4,7 @@ import path from 'path'
 import { fetchIntradayKOSPI } from '@/features/market-summary/api/fetchIntradayIndex'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
 
-export const revalidate = 300 // 5분 캐시 — KIS API 호출 절약
+export const dynamic = 'force-dynamic'
 
 const CACHE_DIR = path.resolve(process.cwd(), '.cache')
 const CACHE_FILE = path.join(CACHE_DIR, 'intraday-kospi.json')

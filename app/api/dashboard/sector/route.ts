@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { readJsonFile } from '@/shared/lib/dataReader'
 import path from 'path'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {

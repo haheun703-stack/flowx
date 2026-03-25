@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
@@ -28,7 +27,7 @@ interface NationalityData {
 function useNationality(code: string) {
   return useQuery<NationalityData>({
     queryKey: ['nationality', code],
-    queryFn: () => axios.get(`/api/nationality?code=${code}`).then(r => r.data),
+    queryFn: () => fetch(`/api/nationality?code=${code}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
   })
 }

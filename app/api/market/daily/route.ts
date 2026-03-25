@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { fetchDailyKOSPI } from '@/features/market-summary/api/fetchDailyKOSPI'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {

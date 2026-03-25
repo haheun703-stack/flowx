@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 
 // ─── Types ───
 
@@ -49,7 +48,7 @@ interface CostFloorResponse {
 export function useMacroDaily() {
   return useQuery<MacroDailyResponse>({
     queryKey: ['macro-daily'],
-    queryFn: () => axios.get('/api/macro/daily').then(r => r.data),
+    queryFn: () => fetch('/api/macro/daily').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -58,7 +57,7 @@ export function useMacroDaily() {
 export function useCostFloor() {
   return useQuery<CostFloorResponse>({
     queryKey: ['macro-cost-floor'],
-    queryFn: () => axios.get('/api/macro/cost-floor').then(r => r.data),
+    queryFn: () => fetch('/api/macro/cost-floor').then(r => r.json()),
     staleTime: 1000 * 60 * 30,
   })
 }

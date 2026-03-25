@@ -1,7 +1,6 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { useRefetchInterval } from '@/shared/lib/marketUtils'
 
 // --- Tomorrow Picks ---
@@ -51,7 +50,7 @@ export interface PicksData {
 export function useDashboardPicks() {
   return useQuery<PicksData>({
     queryKey: ['dashboard-picks'],
-    queryFn: () => axios.get('/api/dashboard/picks').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/picks').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -82,7 +81,7 @@ export interface WhaleData {
 export function useDashboardWhale() {
   return useQuery<WhaleData>({
     queryKey: ['dashboard-whale'],
-    queryFn: () => axios.get('/api/dashboard/whale').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/whale').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -108,7 +107,7 @@ export interface MarketReport {
 export function useDashboardMarket() {
   return useQuery<MarketReport>({
     queryKey: ['dashboard-market'],
-    queryFn: () => axios.get('/api/dashboard/market-report').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/market-report').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -138,7 +137,7 @@ export interface SectorData {
 export function useDashboardSector() {
   return useQuery<SectorData>({
     queryKey: ['dashboard-sector'],
-    queryFn: () => axios.get('/api/dashboard/sector').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/sector').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -156,7 +155,7 @@ export interface SupplySnapshot {
 export function useDashboardSupply() {
   return useQuery<SupplySnapshot>({
     queryKey: ['dashboard-supply-snapshot'],
-    queryFn: () => axios.get('/api/dashboard/supply-snapshot').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/supply-snapshot').then(r => r.json()),
     staleTime: 1000 * 30,
     refetchInterval: useRefetchInterval(1000 * 30, 1000 * 60 * 10),
   })
@@ -188,7 +187,7 @@ export interface ChinaMoneyData {
 export function useDashboardChinaMoney() {
   return useQuery<ChinaMoneyData>({
     queryKey: ['dashboard-china-money'],
-    queryFn: () => axios.get('/api/dashboard/china-money').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/china-money').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -215,7 +214,7 @@ export interface SniperItem {
 export function useDashboardSniper() {
   return useQuery<SniperItem[]>({
     queryKey: ['dashboard-sniper'],
-    queryFn: () => axios.get('/api/dashboard/sniper').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/sniper').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -246,7 +245,7 @@ export interface EtfData {
 export function useDashboardEtf() {
   return useQuery<EtfData>({
     queryKey: ['dashboard-etf'],
-    queryFn: () => axios.get('/api/dashboard/etf').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/etf').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
@@ -271,7 +270,7 @@ export interface MorningData {
 export function useDashboardMorning() {
   return useQuery<MorningData>({
     queryKey: ['dashboard-morning'],
-    queryFn: () => axios.get('/api/dashboard/morning').then(r => r.data),
+    queryFn: () => fetch('/api/dashboard/morning').then(r => r.json()),
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -296,7 +295,7 @@ export interface IntradayData {
 export function useDashboardIntraday() {
   return useQuery<IntradayData>({
     queryKey: ['kospi-intraday'],
-    queryFn: () => axios.get('/api/market/intraday').then(r => r.data),
+    queryFn: () => fetch('/api/market/intraday').then(r => r.json()),
     staleTime: 1000 * 60,
     refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
   })
@@ -306,7 +305,7 @@ export function useDashboardIntraday() {
 export function useDashboardDaily() {
   return useQuery<IntradayData>({
     queryKey: ['kospi-daily'],
-    queryFn: () => axios.get('/api/market/daily').then(r => r.data),
+    queryFn: () => fetch('/api/market/daily').then(r => r.json()),
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 30,
   })
@@ -330,7 +329,7 @@ export interface BriefingData {
 export function useBriefing() {
   return useQuery<BriefingData>({
     queryKey: ['briefing'],
-    queryFn: () => axios.get('/api/briefing').then(r => r.data),
+    queryFn: () => fetch('/api/briefing').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -353,7 +352,7 @@ export interface HeatmapItem {
 export function useHeatmap() {
   return useQuery<HeatmapItem[]>({
     queryKey: ['heatmap'],
-    queryFn: () => axios.get('/api/heatmap').then(r => r.data),
+    queryFn: () => fetch('/api/heatmap').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -376,7 +375,7 @@ export interface AiRecommendData {
 export function useAiRecommend() {
   return useQuery<AiRecommendData>({
     queryKey: ['ai-recommend'],
-    queryFn: () => axios.get('/api/ai-recommend').then(r => r.data),
+    queryFn: () => fetch('/api/ai-recommend').then(r => r.json()),
     staleTime: 1000 * 60 * 60, // 1시간 캐시
     refetchInterval: 1000 * 60 * 60,
   })
@@ -406,7 +405,7 @@ export interface EtfSignalItem {
 export function useEtfSignals() {
   return useQuery<EtfSignalItem[]>({
     queryKey: ['etf-signals'],
-    queryFn: () => axios.get('/api/etf-signals').then(r => r.data),
+    queryFn: () => fetch('/api/etf-signals').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -430,7 +429,7 @@ export interface ChinaFlowItem {
 export function useChinaFlow() {
   return useQuery<ChinaFlowItem[]>({
     queryKey: ['china-flow'],
-    queryFn: () => axios.get('/api/china-flow').then(r => r.data),
+    queryFn: () => fetch('/api/china-flow').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -463,7 +462,7 @@ export interface PaperTradesData {
 export function usePaperTrades() {
   return useQuery<PaperTradesData>({
     queryKey: ['paper-trades'],
-    queryFn: () => axios.get('/api/paper-trades').then(r => r.data),
+    queryFn: () => fetch('/api/paper-trades').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -490,7 +489,7 @@ export interface ShortSignalItem {
 export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
   return useQuery<ShortSignalItem[]>({
     queryKey: ['short-signals', type],
-    queryFn: () => axios.get(`/api/short-signals?type=${type}`).then(r => r.data),
+    queryFn: () => fetch(`/api/short-signals?type=${type}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -525,7 +524,7 @@ export type ScoreboardPeriod = '30D' | '60D' | '90D' | 'ALL'
 export function useScoreboard(botType: 'QUANT' | 'DAYTRADING' = 'QUANT', period: ScoreboardPeriod = '30D') {
   return useQuery<ScoreboardData>({
     queryKey: ['scoreboard', botType, period],
-    queryFn: () => axios.get(`/api/scoreboard?bot_type=${botType}&period=${period}`).then(r => r.data),
+    queryFn: () => fetch(`/api/scoreboard?bot_type=${botType}&period=${period}`).then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -560,7 +559,7 @@ export function useSignals(botType?: string, status?: string) {
   if (status) params.set('status', status)
   return useQuery<{ signals: SignalItem[]; count: number }>({
     queryKey: ['signals', botType, status],
-    queryFn: () => axios.get(`/api/signals?${params}`).then(r => r.data),
+    queryFn: () => fetch(`/api/signals?${params}`).then(r => r.json()),
     staleTime: 1000 * 60,
     refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
   })
@@ -581,7 +580,7 @@ export interface MorningBriefingData {
 export function useMorningBriefing() {
   return useQuery<MorningBriefingData>({
     queryKey: ['morning-briefing'],
-    queryFn: () => axios.get('/api/morning-briefing').then(r => r.data),
+    queryFn: () => fetch('/api/morning-briefing').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -615,7 +614,7 @@ export interface MarketSnapshot {
 export function useMarketSnapshot() {
   return useQuery<MarketSnapshot>({
     queryKey: ['market-snapshot'],
-    queryFn: () => axios.get('/api/market/snapshot').then(r => r.data),
+    queryFn: () => fetch('/api/market/snapshot').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
@@ -767,7 +766,7 @@ export interface QuantDashboardState {
 export function useQuantDashboard() {
   return useQuery<QuantDashboardState>({
     queryKey: ['quant-dashboard'],
-    queryFn: () => axios.get('/api/quant-dashboard').then(r => r.data),
+    queryFn: () => fetch('/api/quant-dashboard').then(r => r.json()),
     staleTime: 1000 * 60 * 5,
     refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })

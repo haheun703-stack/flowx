@@ -13,12 +13,19 @@ function isPublic(pathname: string): boolean {
 }
 
 /* ── 인메모리 Rate Limiter (Edge Runtime 호환) ── */
+const RL_MAX_ENTRIES = 10_000
 const rlStore = new Map<string, { count: number; resetAt: number }>()
 
 function rateLimit(ip: string, limit: number, windowMs: number): number | null {
   const now = Date.now()
   const entry = rlStore.get(ip)
   if (!entry || entry.resetAt < now) {
+    // 만료된 엔트리 정리 (10,000개 초과 시)
+    if (rlStore.size > RL_MAX_ENTRIES) {
+      for (const [k, v] of rlStore) {
+        if (v.resetAt < now) rlStore.delete(k)
+      }
+    }
     rlStore.set(ip, { count: 1, resetAt: now + windowMs })
     return null
   }
