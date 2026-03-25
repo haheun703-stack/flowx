@@ -28,15 +28,16 @@ export async function GET() {
 
     // flowx_html 후처리
     if (data.flowx_html) {
-      // 왼쪽 맵 SVG를 상단 정렬 (기본 xMidYMid → xMidYMin)
-      data.flowx_html = data.flowx_html.replace(
-        '</style>',
-        '.map-stage{align-items:flex-start!important;padding-top:8px}\n.map-stage svg{height:auto!important}\n</style>'
-      )
-      data.flowx_html = data.flowx_html.replaceAll(
-        'width="100%" height="100%">',
-        'width="100%" height="100%" preserveAspectRatio="xMidYMin meet">'
-      )
+      // 원본 CSS에서 map-stage 세로 중앙 → 상단 정렬로 직접 변경
+      data.flowx_html = data.flowx_html
+        .replace(
+          'align-items:center;justify-content:center}',
+          'align-items:flex-start;justify-content:flex-start;padding:10px}'
+        )
+        .replaceAll(
+          'width="100%" height="100%">',
+          'width="100%" preserveAspectRatio="xMidYMin meet">'
+        )
       // 섹터 데이터 주입
       if (sectorRes.data?.length) {
         data.flowx_html = injectSectorScores(data.flowx_html, sectorRes.data)
