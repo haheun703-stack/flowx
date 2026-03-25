@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ChartContainer } from '@/features/supply-xray/ui/ChartContainer'
+import { NationalityFlowCard } from '@/features/supply-xray/ui/NationalityFlowCard'
 import { TICKER_NAME_MAP } from '@/shared/constants/tickers'
 
 export async function generateMetadata({ params }: { params: Promise<{ ticker: string }> }): Promise<Metadata> {
@@ -25,6 +26,7 @@ export default async function ChartPage({ params }: { params: Promise<{ ticker: 
         </p>
       </div>
       <ChartContainer ticker={ticker} companyName={TICKER_NAME_MAP[ticker] || ticker} />
+      <NationalityFlowCard ticker={ticker} />
     </main>
   )
 }
