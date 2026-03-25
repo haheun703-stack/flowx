@@ -122,7 +122,8 @@ function CardContent({ data }: { data: NationalityData }) {
       {/* 아키타입 요약 바 */}
       {archEntries.length > 0 && (
         <div style={{ display: 'flex', borderTop: `1px solid ${C.border}`, background: C.bg3 }}>
-          {archEntries.map(([label, val]) => {
+          {archEntries.map(([label, raw]) => {
+            const val = Math.round(raw * 10) / 10
             const vc = val > 0 ? C.green : val < 0 ? C.red : C.muted
             return (
               <div key={label} style={{ flex: 1, padding: '10px 14px', borderRight: `1px solid ${C.border}`, textAlign: 'center' }}>
