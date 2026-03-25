@@ -26,9 +26,17 @@ export async function GET() {
 
     const data = scenarioRes.data
 
-    // 섹터 데이터가 있으면 flowx_html에 주입
-    if (sectorRes.data?.length && data.flowx_html) {
-      data.flowx_html = injectSectorScores(data.flowx_html, sectorRes.data)
+    // flowx_html 후처리
+    if (data.flowx_html) {
+      // 왼쪽 맵 SVG를 상단 정렬 (기본은 세로 중앙)
+      data.flowx_html = data.flowx_html.replace(
+        '</style>',
+        '.map-stage{align-items:flex-start!important;justify-content:flex-start!important;padding-top:8px}\n</style>'
+      )
+      // 섹터 데이터 주입
+      if (sectorRes.data?.length) {
+        data.flowx_html = injectSectorScores(data.flowx_html, sectorRes.data)
+      }
     }
 
     return NextResponse.json(data)
