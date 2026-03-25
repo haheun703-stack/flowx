@@ -5,20 +5,13 @@ import axios from 'axios'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
-interface CountryFlow {
-  country: string
-  volume: number
-  direction: 'buy' | 'sell'
-  net?: number
-}
-
 interface NationalityData {
   date: string
   code: string
   name: string
   signal: string
   score: number
-  countries: CountryFlow[]
+  countries: Record<string, number>
   arch_scores: Record<string, number>
 }
 
@@ -63,7 +56,11 @@ function formatVol(v: number): string {
 }
 
 function CardContent({ data }: { data: NationalityData }) {
-  const top10 = (data.countries || []).slice(0, 10)
+  // countries: Record<string, number> → 절대값 기준 상위 10개국 추출
+  const sorted = Object.entries(data.countries || {})
+    .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+    .slice(0, 10)
+  const maxAbs = sorted.length > 0 ? Math.abs(sorted[0][1]) : 1
   const archEntries = Object.entries(data.arch_scores || {})
   const sc = signalColor(data.signal)
 
@@ -84,19 +81,18 @@ function CardContent({ data }: { data: NationalityData }) {
 
       {/* 국가별 행 */}
       <div style={{ padding: '8px 16px' }}>
-        {top10.length === 0 ? (
+        {sorted.length === 0 ? (
           <div style={{ padding: 12, color: C.muted, fontSize: 12 }}>국적별 데이터 없음</div>
         ) : (
-          top10.map((c, i) => {
-            const isBuy = c.direction === 'buy'
+          sorted.map(([country, vol], i) => {
+            const isBuy = vol > 0
             const color = isBuy ? C.red : C.blue
             const arrow = isBuy ? '\u25B2' : '\u25BC'
-            const vol = c.net != null ? c.net : c.volume
-            const barW = Math.min(Math.abs(vol) / Math.max(...top10.map(x => Math.abs(x.net ?? x.volume)), 1) * 100, 100)
+            const barW = Math.min(Math.abs(vol) / maxAbs * 100, 100)
 
             return (
-              <div key={c.country + i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: i < top10.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                <span style={{ fontSize: 12, width: 70, flexShrink: 0, color: C.text }}>{c.country}</span>
+              <div key={country} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: i < sorted.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                <span style={{ fontSize: 12, width: 70, flexShrink: 0, color: C.text }}>{country}</span>
                 <div style={{ flex: 1, position: 'relative', height: 5, background: C.border, borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: '100%', borderRadius: 3, width: `${barW}%`, background: color }} />
                 </div>
