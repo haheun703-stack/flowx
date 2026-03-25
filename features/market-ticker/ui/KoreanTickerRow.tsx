@@ -12,17 +12,17 @@ function TickerChip({ ticker, onClick }: { ticker: KoreanTicker; onClick?: () =>
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-2.5 px-5 h-12 border-r border-gray-800/60 whitespace-nowrap transition-colors shrink-0
+      className={`flex items-center gap-2 px-4 h-11 border-r border-gray-800/60 whitespace-nowrap transition-colors shrink-0
         ${ticker.isIndex
           ? 'cursor-default'
           : 'cursor-pointer hover:bg-gray-800/40'
         }`}
     >
-      <span className={`text-[15px] font-medium ${ticker.isIndex ? 'text-gray-300' : 'text-gray-400'}`}>
+      <span className={`text-sm font-medium ${ticker.isIndex ? 'text-gray-300' : 'text-gray-400'}`}>
         {ticker.name}
       </span>
-      <span className="text-white text-[15px] font-mono">{fmtPrice}</span>
-      <span className={`text-[15px] font-mono font-medium ${color}`}>
+      <span className="text-white text-sm font-mono">{fmtPrice}</span>
+      <span className={`text-sm font-mono font-medium ${color}`}>
         {sign}{ticker.changePercent.toFixed(2)}%
       </span>
     </div>
@@ -37,12 +37,12 @@ export function KoreanTickerRow({ tickers, isMarketOpen }: { tickers: KoreanTick
   const stocks  = tickers.filter(t => !t.isIndex)
 
   return (
-    <div className="flex items-center h-12 border-b border-gray-800/60 bg-[#080b10] leading-none">
+    <div className="flex items-center h-11 border-b border-gray-800/60 bg-[#080b10] leading-none">
       {/* 고정 라벨 */}
-      <div className="flex items-center gap-2 px-5 h-full border-r border-gray-700/60 shrink-0">
-        <img src="https://flagcdn.com/w20/kr.png" alt="KR" width={22} height={15} className="inline-block" />
-        <span className="text-[15px] text-gray-300 font-bold tracking-wider">한국</span>
-        <span className={`text-[15px] px-2 py-0.5 rounded-full font-medium ${
+      <div className="flex items-center gap-1.5 px-4 h-full border-r border-gray-700/60 shrink-0">
+        <img src="https://flagcdn.com/w20/kr.png" alt="KR" width={20} height={14} className="inline-block" />
+        <span className="text-sm text-gray-300 font-bold tracking-wider">한국</span>
+        <span className={`text-sm px-1.5 py-0.5 rounded-full font-medium ${
           isMarketOpen
             ? 'bg-green-500/20 text-green-400'
             : 'bg-gray-700/50 text-gray-500'
