@@ -145,7 +145,7 @@ function CardContent({ data }: { data: NationalityData }) {
               borderBottom: i < sorted.length - 1 ? `1px solid ${C.border}` : 'none',
             }}>
               {/* 좌: [카테고리] 국가 */}
-              <div style={{ width: 150, flexShrink: 0 }}>
+              <div style={{ width: 200, flexShrink: 0 }}>
                 <span style={{ fontFamily: MONO, fontSize: 11, color: C.muted }}>[{catAbbr(item.category)}]</span>
                 <span style={{ fontSize: 13, fontWeight: 600, color: C.text, marginLeft: 4 }}>{item.country}</span>
               </div>

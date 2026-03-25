@@ -39,16 +39,16 @@ function IndexChip({ index }: { index: WorldIndex }) {
     : new Intl.NumberFormat('ko-KR', { maximumFractionDigits: index.currency === 'JPY' ? 0 : 2 }).format(index.price)
 
   return (
-    <div className="flex items-center gap-2 px-4 h-11 border-r border-gray-800/40 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default shrink-0">
+    <div className="flex items-center gap-2.5 px-5 h-12 border-r border-gray-800/40 whitespace-nowrap hover:bg-gray-800/30 transition-colors cursor-default shrink-0">
       {/* 아이콘: 국기 또는 카테고리 심볼 */}
       {flagCode ? (
-        <img src={`https://flagcdn.com/w20/${flagCode}.png`} alt={flagCode.toUpperCase()} width={16} height={11} className="inline-block opacity-70" />
+        <img src={`https://flagcdn.com/w20/${flagCode}.png`} alt={flagCode.toUpperCase()} width={18} height={13} className="inline-block opacity-70" />
       ) : catSymbol ? (
-        <span className="text-sm">{catSymbol}</span>
+        <span className="text-base">{catSymbol}</span>
       ) : null}
-      <span className="text-gray-400 text-sm font-medium">{index.name}</span>
-      <span className="text-white text-sm font-mono font-bold">{fmtPrice}</span>
-      <span className={`text-sm font-mono font-bold ${color}`}>
+      <span className="text-gray-400 text-[15px] font-medium">{index.name}</span>
+      <span className="text-white text-[15px] font-mono font-bold">{fmtPrice}</span>
+      <span className={`text-[15px] font-mono font-bold ${color}`}>
         {sign}{index.changePercent.toFixed(2)}%
       </span>
     </div>
@@ -87,11 +87,11 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   }
 
   return (
-    <div className="flex items-center h-11 border-b border-gray-800/60 bg-[#080b10] leading-none">
+    <div className="flex items-center h-12 border-b border-gray-800/60 bg-[#080b10] leading-none">
       {/* 고정 라벨 */}
-      <div className="flex items-center gap-1.5 px-4 h-full border-r border-gray-700/60 shrink-0">
-        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span className="text-sm text-gray-300 font-bold uppercase tracking-wider">GLOBAL</span>
+      <div className="flex items-center gap-2 px-5 h-full border-r border-gray-700/60 shrink-0">
+        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span className="text-[15px] text-gray-300 font-bold uppercase tracking-wider">GLOBAL</span>
       </div>
 
       {/* 미국 3대 지수 고정 */}
