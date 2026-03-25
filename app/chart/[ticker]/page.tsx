@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ ticker: s
 export default async function ChartPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params
   return (
-    <main className="max-w-6xl mx-auto px-4 py-6">
+    <main className="max-w-[1400px] mx-auto px-6 py-6">
       <div className="mb-5">
         <h1 className="text-xl font-bold text-white">
           수급 X-Ray
