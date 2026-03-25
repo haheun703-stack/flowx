@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ ticker: s
 export default async function ChartPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params
   return (
-    <main className="w-full px-6 py-6">
-      <div className="mb-5">
+    <main>
+      <div className="px-4 pt-4 pb-2">
         <h1 className="text-xl font-bold text-white">
           수급 X-Ray
           <span className="ml-2 text-sm text-blue-400 font-normal">외인 · 기관 · 개인 순매수 분석</span>
@@ -25,8 +25,10 @@ export default async function ChartPage({ params }: { params: Promise<{ ticker: 
           마우스를 차트 위로 이동하면 해당 날짜의 수급이 실시간으로 표시됩니다.
         </p>
       </div>
-      <ChartContainer ticker={ticker} companyName={TICKER_NAME_MAP[ticker] || ticker} />
-      <NationalityFlowCard ticker={ticker} />
+      <div className="px-2">
+        <ChartContainer ticker={ticker} companyName={TICKER_NAME_MAP[ticker] || ticker} />
+        <NationalityFlowCard ticker={ticker} />
+      </div>
     </main>
   )
 }
