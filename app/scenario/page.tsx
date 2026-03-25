@@ -10,10 +10,15 @@ interface ScenarioData {
   session: string
   flowx_html: string
   one_thing_title: string
+  one_thing_body: string
   scenario_main: string
   scenario_sub: string
   scenario_tail: string
+  money_inflow: string
+  money_outflow: string
   picks: string
+  avoid: string
+  checkpoints: string
 }
 
 function useScenario() {
@@ -65,30 +70,55 @@ function ScenarioContent({ data }: { data: ScenarioData }) {
 
       {/* 우 40%: 텍스트 필드 */}
       <div style={{ padding: '24px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
-        {/* 오늘의 핵심 */}
+        {/* 1. 오늘의 핵심 */}
         <Section label="오늘의 핵심" color={C.green}>
           <p style={{ fontSize: 15, fontWeight: 600, color: C.text, lineHeight: 1.7 }}>{data.one_thing_title}</p>
+          {data.one_thing_body && <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.7, marginTop: 8, whiteSpace: 'pre-wrap' }}>{data.one_thing_body}</p>}
         </Section>
 
-        {/* 기본 시나리오 */}
+        {/* 2. 시나리오 3종 */}
         <Section label="기본 시나리오" color={C.blue}>
           <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_main}</p>
         </Section>
 
-        {/* 상방 시나리오 */}
         <Section label="상방 시나리오" color={C.green}>
           <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_sub}</p>
         </Section>
 
-        {/* 하방 시나리오 */}
         <Section label="하방 시나리오" color={C.red}>
           <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.scenario_tail}</p>
         </Section>
 
-        {/* 관심 종목 */}
-        <Section label="관심 종목" color={C.amber}>
-          <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.picks}</p>
-        </Section>
+        {/* 3. 자금 흐름 */}
+        {data.money_inflow && (
+          <Section label="자금 유입" color={C.green}>
+            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.money_inflow}</p>
+          </Section>
+        )}
+        {data.money_outflow && (
+          <Section label="자금 유출" color={C.red}>
+            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.money_outflow}</p>
+          </Section>
+        )}
+
+        {/* 4. 관심 / 회피 종목 */}
+        {data.picks && (
+          <Section label="관심 종목" color={C.amber}>
+            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.picks}</p>
+          </Section>
+        )}
+        {data.avoid && (
+          <Section label="회피 종목" color={C.red}>
+            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.avoid}</p>
+          </Section>
+        )}
+
+        {/* 5. 체크포인트 */}
+        {data.checkpoints && (
+          <Section label="체크포인트" color={C.purple}>
+            <p style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{data.checkpoints}</p>
+          </Section>
+        )}
       </div>
     </div>
   )
