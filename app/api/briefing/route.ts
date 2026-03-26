@@ -68,14 +68,18 @@ export async function GET() {
     }
 
     // news_picks (최신 뉴스에서 종목 추출)
+    // related_tickers는 jsonb — [{code, name, change_pct}] 객체 배열
     const newsPicks = (news ?? [])
-      .filter((n: { related_tickers?: string[] }) => n.related_tickers && n.related_tickers.length > 0)
+      .filter((n: { related_tickers?: unknown[] }) => n.related_tickers && n.related_tickers.length > 0)
       .slice(0, 3)
-      .map((n: { title: string; related_tickers: string[] }) => ({
-        code: n.related_tickers[0] ?? '',
-        name: n.related_tickers[0] ?? '',
-        reason: n.title,
-      }))
+      .map((n: { title: string; related_tickers: Record<string, unknown>[] }) => {
+        const t = n.related_tickers[0] ?? {}
+        return {
+          code: String(t.code ?? t.ticker ?? ''),
+          name: String(t.name ?? ''),
+          reason: n.title,
+        }
+      })
 
     return NextResponse.json({
       date: briefing.date,
