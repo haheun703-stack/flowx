@@ -7,76 +7,101 @@ import type { StockNode, SupplyLink } from '../api/useSectorData'
 
 // ── 연결 라벨 한국어 ──
 const RELATION_KO: Record<string, string> = {
-  'ETF 구성': 'ETF에 포함', 'HBM/파운드리': 'HBM 메모리 납품',
-  '장비 공급': '반도체 장비 납품', '광학/노광 장비': '노광장비 납품',
-  '파운드리/HBM': '위탁생산/메모리', '메모리 경쟁/소재': '메모리 경쟁사',
-  '증착/식각 장비': '증착·식각 장비 납품', '식각/세정 장비': '식각·세정 장비 납품',
-  '검사/테스트 장비': '검사장비 납품', '장비/패키징 납품': '장비·패키징 납품',
-  '파운드리 장비': '파운드리 장비 납품', '테스트 소켓': '테스트 소켓 납품',
-  'F-35 공급망': 'F-35 전투기 부품', '미사일/레이더': '미사일·레이더 기술',
-  '무인기/우주': '무인기·우주 기술', '장갑차량': '전차·장갑차 부품',
-  '항공엔진/부품': '항공엔진·부품 납품', '유도무기/통신': '유도무기·통신 장비',
-  'K2 전차 부품': 'K2 전차 부품 납품', '그룹사/엔진': '그룹사 엔진 공급',
-  'LNG 단열/배관': 'LNG선 단열·배관', '그룹사 엔진': '그룹사 엔진 공급',
-  '엔진 라이선스': '엔진 기술 라이선스', '엔진 기술제휴': '엔진 기술 제휴',
-  'CMO 위탁생산': '바이오의약품 위탁생산', '바이오시밀러 경쟁': '바이오시밀러 경쟁사',
-  '피하주사 기술제휴': '피하주사 플랫폼 제휴', 'ADC 기술협력': '항체약물접합 기술협력',
-  '원료의약품': '원료의약품 공급', '신약 라이선스': '신약 기술 라이선스',
-  'EV 경쟁/부품': '전기차 경쟁·부품', '그룹사 부품': '그룹사 부품 납품',
-  '자율주행 협력': '자율주행 기술 협력', '전장부품 기술': '전장부품 기술 제휴',
-  'ETF 구성종목': 'ETF 구성종목', 'CDMO 파트너': 'CDMO 위탁생산 파트너',
-  '글로벌 IB 협력': '글로벌 IB 협력', '글로벌 경쟁사': '글로벌 경쟁사',
-  'EV 경쟁': '전기차 경쟁', '산업용 로봇 경쟁': '산업용 로봇 경쟁',
-  '협동로봇 경쟁': '협동로봇 경쟁', '원전 수혜': '원전 수혜',
-  '원전 운영사': '원전 운영사', '풍력 타워 납품': '풍력 타워 납품',
-  'PUBG 퍼블리싱': 'PUBG 퍼블리싱', '게임 투자': '게임 투자',
-  '음반 유통': '음반 유통 파트너', '음원 스트리밍': '음원 스트리밍',
-  '콘텐츠 제작': '콘텐츠 제작 파트너', '콘텐츠 경쟁': '콘텐츠 경쟁',
-  '해운 얼라이언스': '해운 얼라이언스', '물류 경쟁': '물류 경쟁',
-  '스카이팀 동맹': '스카이팀 동맹', 'K-푸드 경쟁': 'K-푸드 경쟁',
-  '스낵 글로벌 경쟁': '스낵 글로벌 경쟁', '유제품 경쟁': '유제품 경쟁',
-  '건설장비 경쟁': '건설장비 경쟁', '글로벌 건설 경쟁': '글로벌 건설 경쟁',
-  '시멘트/건자재': '시멘트·건자재', 'K2 전차 협력': 'K2 전차 협력',
-  '장갑차 협력': '장갑차 기술 협력', '벌크 수혜': '벌크선 수혜',
+  'ETF 구성': 'ETF에 포함', 'HBM/파운드리': 'HBM 납품',
+  '장비 공급': '장비 납품', '광학/노광 장비': '노광장비',
+  '파운드리/HBM': '위탁생산', '메모리 경쟁/소재': '메모리 경쟁',
+  '증착/식각 장비': '증착·식각', '식각/세정 장비': '식각·세정',
+  '검사/테스트 장비': '검사장비', '장비/패키징 납품': '장비·패키징',
+  '파운드리 장비': '파운드리 장비', '테스트 소켓': '테스트 소켓',
+  'F-35 공급망': 'F-35 부품', '미사일/레이더': '미사일·레이더',
+  '무인기/우주': '무인기·우주', '장갑차량': '전차·장갑차',
+  '항공엔진/부품': '항공엔진', '유도무기/통신': '유도무기',
+  'K2 전차 부품': 'K2 전차', '그룹사/엔진': '그룹사 엔진',
+  'LNG 단열/배관': 'LNG 배관', '그룹사 엔진': '그룹사 엔진',
+  '엔진 라이선스': '엔진 라이선스', '엔진 기술제휴': '엔진 제휴',
+  'CMO 위탁생산': 'CMO 위탁', '바이오시밀러 경쟁': '바이오 경쟁',
+  '피하주사 기술제휴': '피하주사 제휴', 'ADC 기술협력': 'ADC 협력',
+  '원료의약품': '원료의약품', '신약 라이선스': '신약 라이선스',
+  'EV 경쟁/부품': 'EV 경쟁·부품', '그룹사 부품': '그룹사 부품',
+  '자율주행 협력': '자율주행', '전장부품 기술': '전장부품',
+  'ETF 구성종목': 'ETF 구성', 'CDMO 파트너': 'CDMO',
+  '글로벌 IB 협력': 'IB 협력', '글로벌 경쟁사': '글로벌 경쟁',
+  'EV 경쟁': 'EV 경쟁', '산업용 로봇 경쟁': '로봇 경쟁',
+  '협동로봇 경쟁': '협동로봇', '원전 수혜': '원전 수혜',
+  '원전 운영사': '원전 운영', '풍력 타워 납품': '풍력 타워',
+  'PUBG 퍼블리싱': 'PUBG', '게임 투자': '게임 투자',
+  '음반 유통': '음반 유통', '음원 스트리밍': '음원 스트리밍',
+  '콘텐츠 제작': '콘텐츠 제작', '콘텐츠 경쟁': '콘텐츠 경쟁',
+  '해운 얼라이언스': '해운 동맹', '물류 경쟁': '물류 경쟁',
+  '스카이팀 동맹': '스카이팀', 'K-푸드 경쟁': 'K-푸드 경쟁',
+  '스낵 글로벌 경쟁': '스낵 경쟁', '유제품 경쟁': '유제품 경쟁',
+  '건설장비 경쟁': '건설장비', '글로벌 건설 경쟁': '건설 경쟁',
+  '시멘트/건자재': '시멘트·건자재', 'K2 전차 협력': 'K2 전차',
+  '장갑차 협력': '장갑차 협력', '벌크 수혜': '벌크선 수혜',
+  'ASIC 설계': 'ASIC 설계',
 }
 
-const CANVAS_FONT = '-apple-system, "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif'
+const CANVAS_FONT = '-apple-system, "Malgun Gothic", "맑은 고딕", sans-serif'
 const TIER_LABELS: Record<number, string> = {
-  5: '글로벌 ETF', 4: '글로벌 대장주', 3: '소부장·장비', 2: '한국 대형주', 1: '한국 소부장',
+  5: 'ETF', 4: '글로벌', 3: '소부장·장비', 2: '한국 대형', 1: '한국 소부장',
+}
+
+// 다크 모드 노드 배경색 (TIER_COLORS.badge 기반 + 투명도)
+const DARK_NODE_BG: Record<number, string> = {
+  5: 'rgba(83,74,183,0.35)',   // 보라
+  4: 'rgba(24,95,165,0.35)',   // 파랑
+  3: 'rgba(15,110,86,0.35)',   // 초록
+  2: 'rgba(133,79,11,0.35)',   // 금색
+  1: 'rgba(153,60,29,0.35)',   // 주황
+}
+const DARK_NODE_BORDER: Record<number, string> = {
+  5: 'rgba(83,74,183,0.7)',
+  4: 'rgba(24,95,165,0.7)',
+  3: 'rgba(15,110,86,0.7)',
+  2: 'rgba(133,79,11,0.7)',
+  1: 'rgba(153,60,29,0.7)',
 }
 
 // ── Sankey 내부 타입 ──
 interface SankeyNode {
-  id: string              // "tier-subcategory"
+  id: string
   tier: number
   subCategory: string
-  stockNames: string[]    // 소속 종목명
+  stockNames: string[]
   tickers: string[]
   changePcts: number[]
   foreignNets: number[]
   themeTags: string[]
   x: number; y: number
   w: number; h: number
-  totalStrength: number   // 연결된 link strength 합
+  totalStrength: number
 }
 
 interface SankeyLink {
   sourceId: string
   targetId: string
-  strength: number        // 합산된 strength
-  relations: string[]     // 고유 관계 타입들
-  sourceY: number         // 소스 노드 내 Y offset
-  targetY: number         // 타겟 노드 내 Y offset
+  strength: number
+  relations: string[]
+  sourceY: number
+  targetY: number
 }
 
-// ── 빌드 로직 ──
+// ── 레이아웃 상수 ──
+const MARGIN_X = 16
+const MARGIN_Y = 50
+const NODE_GAP = 8
+const LINE_H = 18        // 종목 1줄 높이
+const HEADER_H = 26       // 그룹 헤더 높이
+const MIN_NODE_H = 44
+const LINK_SCALE = 2.5    // strength → px
+
 function buildSankey(
   stocks: StockNode[],
   links: SupplyLink[],
   width: number,
   height: number,
 ): { nodes: SankeyNode[]; links: SankeyLink[] } {
-  // 1. 종목 → sub_category별 그룹
+  // 1. sub_category별 그룹핑
   const stockToGroup = new Map<string, string>()
   const groupMap = new Map<string, SankeyNode>()
 
@@ -102,16 +127,13 @@ function buildSankey(
     }
   }
 
-  // 2. 링크 → 그룹 간 합산
-  const linkKey = (a: string, b: string) => `${a}|||${b}`
+  // 2. 링크 합산
   const aggLinks = new Map<string, { sourceId: string; targetId: string; strength: number; relations: Set<string> }>()
-
   for (const l of links) {
     const src = stockToGroup.get(l.from_stock)
     const tgt = stockToGroup.get(l.to_stock)
     if (!src || !tgt || src === tgt) continue
-
-    const key = linkKey(src, tgt)
+    const key = `${src}|||${tgt}`
     if (!aggLinks.has(key)) {
       aggLinks.set(key, { sourceId: src, targetId: tgt, strength: 0, relations: new Set() })
     }
@@ -120,7 +142,6 @@ function buildSankey(
     a.relations.add(l.relation)
   }
 
-  // 각 그룹의 totalStrength 계산
   for (const a of aggLinks.values()) {
     const sn = groupMap.get(a.sourceId)
     const tn = groupMap.get(a.targetId)
@@ -128,48 +149,41 @@ function buildSankey(
     if (tn) tn.totalStrength += a.strength
   }
 
-  // 3. 존재하는 Tier만 추출, 왼→오른쪽 배치
+  // 3. Tier columns
   const tierSet = new Set<number>()
   for (const n of groupMap.values()) tierSet.add(n.tier)
-  const tiers = Array.from(tierSet).sort((a, b) => b - a) // 5,4,3,2,1
+  const tierArr = Array.from(tierSet).sort((a, b) => b - a)
+  const colCount = tierArr.length
 
-  const MARGIN_X = 30
-  const MARGIN_Y = 60
-  const NODE_W = Math.min(160, Math.max(100, (width - MARGIN_X * 2) / (tiers.length * 2.5)))
-  const colGap = tiers.length > 1
-    ? (width - MARGIN_X * 2 - NODE_W) / (tiers.length - 1)
-    : 0
+  // 노드 폭: 캔버스를 column 수로 균등 분할 (간격 포함)
+  const gapBetweenCols = 40
+  const totalGaps = (colCount - 1) * gapBetweenCols
+  const nodeW = Math.max(130, Math.floor((width - MARGIN_X * 2 - totalGaps) / colCount))
 
-  const STRENGTH_SCALE = 6
-  const MIN_NODE_H = 40
-  const NODE_GAP = 10
-
-  // 4. 각 column 내 노드 Y 배치
-  for (let ci = 0; ci < tiers.length; ci++) {
-    const tier = tiers[ci]
+  // 4. column별 Y 배치 — 높이는 종목 수 기반
+  for (let ci = 0; ci < colCount; ci++) {
+    const tier = tierArr[ci]
     const colNodes = Array.from(groupMap.values()).filter(n => n.tier === tier)
-    // 연결 많은 순 정렬
     colNodes.sort((a, b) => b.totalStrength - a.totalStrength || b.stockNames.length - a.stockNames.length)
 
-    const x = MARGIN_X + ci * colGap
+    const x = MARGIN_X + ci * (nodeW + gapBetweenCols)
 
-    // 노드 높이 계산
-    let totalH = 0
+    // 각 노드: 높이 = 헤더 + 종목수 × LINE_H (최대 8줄까지 표시)
     for (const n of colNodes) {
-      n.w = NODE_W
-      n.h = Math.max(MIN_NODE_H, n.totalStrength * STRENGTH_SCALE)
-      // 종목 텍스트 높이도 반영 (종목당 ~16px + 헤더 28px)
-      const textH = 28 + n.stockNames.length * 16
-      n.h = Math.max(n.h, textH)
-      totalH += n.h
+      n.w = nodeW
+      const visibleLines = Math.min(n.stockNames.length, 8)
+      n.h = Math.max(MIN_NODE_H, HEADER_H + visibleLines * LINE_H + 6)
     }
-    totalH += (colNodes.length - 1) * NODE_GAP
 
-    // 높이가 캔버스를 초과하면 축소
+    let totalH = colNodes.reduce((s, n) => s + n.h, 0) + Math.max(0, colNodes.length - 1) * NODE_GAP
     const availH = height - MARGIN_Y * 2
+
+    // 초과 시 축소
     if (totalH > availH && colNodes.length > 0) {
       const scale = availH / totalH
-      for (const n of colNodes) n.h = Math.max(MIN_NODE_H, Math.round(n.h * scale))
+      for (const n of colNodes) {
+        n.h = Math.max(MIN_NODE_H, Math.round(n.h * scale))
+      }
       totalH = colNodes.reduce((s, n) => s + n.h, 0) + (colNodes.length - 1) * NODE_GAP
     }
 
@@ -181,35 +195,36 @@ function buildSankey(
     }
   }
 
-  // 5. 링크 Y offset 계산
-  // 각 노드에서 나가는/들어오는 링크에 순서대로 Y offset 배분
-  const nodeOutOffset = new Map<string, number>() // 현재까지 사용한 출력 높이
-  const nodeInOffset = new Map<string, number>()
-
+  // 5. 링크 Y offset
+  const nodeOutOff = new Map<string, number>()
+  const nodeInOff = new Map<string, number>()
   const sankeyLinks: SankeyLink[] = []
-  const sortedAgg = Array.from(aggLinks.values()).sort((a, b) => b.strength - a.strength)
+  const sorted = Array.from(aggLinks.values()).sort((a, b) => b.strength - a.strength)
 
-  for (const a of sortedAgg) {
+  for (const a of sorted) {
     const sn = groupMap.get(a.sourceId)
     const tn = groupMap.get(a.targetId)
     if (!sn || !tn) continue
 
-    const linkH = Math.max(2, a.strength * STRENGTH_SCALE * 0.5)
+    const linkH = Math.max(2, a.strength * LINK_SCALE)
+    const oOff = nodeOutOff.get(a.sourceId) ?? 0
+    const iOff = nodeInOff.get(a.targetId) ?? 0
 
-    const outOff = nodeOutOffset.get(a.sourceId) ?? 0
-    const inOff = nodeInOffset.get(a.targetId) ?? 0
+    // Y는 노드 중앙 부근에서 시작
+    const sCenter = sn.y + sn.h / 2
+    const tCenter = tn.y + tn.h / 2
 
     sankeyLinks.push({
       sourceId: a.sourceId,
       targetId: a.targetId,
       strength: a.strength,
       relations: Array.from(a.relations),
-      sourceY: sn.y + 24 + outOff + linkH / 2,   // 24px = header area
-      targetY: tn.y + 24 + inOff + linkH / 2,
+      sourceY: sCenter - (sorted.length * linkH / 4) + oOff + linkH / 2,
+      targetY: tCenter - (sorted.length * linkH / 4) + iOff + linkH / 2,
     })
 
-    nodeOutOffset.set(a.sourceId, outOff + linkH + 2)
-    nodeInOffset.set(a.targetId, inOff + linkH + 2)
+    nodeOutOff.set(a.sourceId, oOff + linkH + 1)
+    nodeInOff.set(a.targetId, iOff + linkH + 1)
   }
 
   return { nodes: Array.from(groupMap.values()), links: sankeyLinks }
@@ -229,12 +244,11 @@ export function SectorNetwork({
 }) {
   const allStocks = useMemo(() => stocks ?? Object.values(tiers).flat(), [stocks, tiers])
 
-  // Canvas 높이 동적 결정
   const canvasHeight = useMemo(() => {
     const n = allStocks.length
-    if (n > 80) return 1200
-    if (n > 50) return 1000
-    if (n > 30) return 800
+    if (n > 80) return 1400
+    if (n > 50) return 1100
+    if (n > 30) return 850
     if (n > 15) return 650
     return 500
   }, [allStocks.length])
@@ -251,14 +265,11 @@ export function SectorNetwork({
 
   const [tooltip, setTooltip] = useState<{
     x: number; y: number
-    name: string
-    stocks: string[]
-    changePct: number
-    foreignNet: number
+    name: string; stockList: string[]
+    changePct: number; foreignNet: number
     relations: string[]
   } | null>(null)
 
-  // 테마 필터 ref
   useEffect(() => {
     const set = new Set<string>()
     if (activeTheme && allStocks.length > 0) {
@@ -295,7 +306,6 @@ export function SectorNetwork({
     const nodeMap = new Map<string, SankeyNode>()
     for (const n of nodes) nodeMap.set(n.id, n)
 
-    // 연결된 노드 집합
     const connectedIds = new Set<string>()
     if (activeId) {
       connectedIds.add(activeId)
@@ -307,42 +317,33 @@ export function SectorNetwork({
       }
     }
 
-    // 노드에 테마 매칭 종목이 있는지 확인
     const nodeHasTheme = (n: SankeyNode) => {
       if (!hasTheme) return true
       return n.stockNames.some(s => themeSet.has(s))
     }
 
-    // ── Tier 헤더 라벨 ──
+    // ── Tier 헤더 ──
     const drawnTiers = new Set<number>()
-    ctx.font = `bold 13px ${CANVAS_FONT}`
-    ctx.textAlign = 'center'
     for (const n of nodes) {
       if (drawnTiers.has(n.tier)) continue
       drawnTiers.add(n.tier)
-      ctx.fillStyle = '#94a3b8'
-      ctx.fillText(TIER_LABELS[n.tier] ?? `Tier ${n.tier}`, n.x + n.w / 2, 28)
-      // 아래 화살표 방향 표시 (마지막 tier 제외)
+      ctx.font = `bold 14px ${CANVAS_FONT}`
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#e2e8f0'
+      ctx.fillText(TIER_LABELS[n.tier] ?? `Tier ${n.tier}`, n.x + n.w / 2, 30)
     }
     // Tier 간 화살표
     const sortedTiers = Array.from(drawnTiers).sort((a, b) => b - a)
+    ctx.font = `16px ${CANVAS_FONT}`
+    ctx.fillStyle = '#475569'
+    ctx.textAlign = 'center'
     for (let i = 0; i < sortedTiers.length - 1; i++) {
-      const t1 = sortedTiers[i]
-      const t2 = sortedTiers[i + 1]
-      const n1 = nodes.find(n => n.tier === t1)
-      const n2 = nodes.find(n => n.tier === t2)
-      if (n1 && n2) {
-        const midX = (n1.x + n1.w + n2.x) / 2
-        ctx.fillStyle = '#475569'
-        ctx.font = `18px ${CANVAS_FONT}`
-        ctx.textAlign = 'center'
-        ctx.fillText('→', midX, 28)
-      }
+      const n1 = nodes.find(n => n.tier === sortedTiers[i])
+      const n2 = nodes.find(n => n.tier === sortedTiers[i + 1])
+      if (n1 && n2) ctx.fillText('→', (n1.x + n1.w + n2.x) / 2, 30)
     }
 
-    // ── 링크 그리기 ──
-    const STRENGTH_PX = 3  // 1 strength = 3px width
-
+    // ── 링크 ──
     for (const l of sLinks) {
       const sn = nodeMap.get(l.sourceId)
       const tn = nodeMap.get(l.targetId)
@@ -350,148 +351,152 @@ export function SectorNetwork({
 
       const isHL = activeId && (l.sourceId === activeId || l.targetId === activeId)
       const isDim = activeId && !isHL
-      const isThemeDim = hasTheme && !activeId
-        && !nodeHasTheme(sn) && !nodeHasTheme(tn)
+      const isThemeDim = hasTheme && !activeId && !nodeHasTheme(sn) && !nodeHasTheme(tn)
 
-      const lineW = Math.max(2, l.strength * STRENGTH_PX)
+      const lineW = Math.max(2, l.strength * LINK_SCALE)
       const x0 = sn.x + sn.w
-      const y0 = l.sourceY
+      const y0 = Math.max(sn.y + 10, Math.min(sn.y + sn.h - 10, l.sourceY))
       const x1 = tn.x
-      const y1 = l.targetY
+      const y1 = Math.max(tn.y + 10, Math.min(tn.y + tn.h - 10, l.targetY))
       const cpx = (x0 + x1) / 2
 
       ctx.beginPath()
       ctx.moveTo(x0, y0)
       ctx.bezierCurveTo(cpx, y0, cpx, y1, x1, y1)
       ctx.lineWidth = lineW
+      ctx.lineCap = 'round'
 
       if (isHL) {
-        // Gradient from source tier to target tier color
         const grad = ctx.createLinearGradient(x0, 0, x1, 0)
-        const sc = TIER_COLORS[sn.tier] ?? TIER_COLORS[1]
-        const tc = TIER_COLORS[tn.tier] ?? TIER_COLORS[1]
-        grad.addColorStop(0, sc.badge)
-        grad.addColorStop(1, tc.badge)
+        grad.addColorStop(0, TIER_COLORS[sn.tier]?.badge ?? '#7F77DD')
+        grad.addColorStop(1, TIER_COLORS[tn.tier]?.badge ?? '#7F77DD')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.85
+        ctx.globalAlpha = 0.9
       } else if (isDim || isThemeDim) {
-        ctx.strokeStyle = '#334155'
-        ctx.globalAlpha = 0.08
+        ctx.strokeStyle = '#1e293b'
+        ctx.globalAlpha = 0.1
       } else {
         const grad = ctx.createLinearGradient(x0, 0, x1, 0)
-        const sc = TIER_COLORS[sn.tier] ?? TIER_COLORS[1]
-        const tc = TIER_COLORS[tn.tier] ?? TIER_COLORS[1]
-        grad.addColorStop(0, sc.light)
-        grad.addColorStop(1, tc.light)
+        grad.addColorStop(0, TIER_COLORS[sn.tier]?.light ?? '#9DC8F5')
+        grad.addColorStop(1, TIER_COLORS[tn.tier]?.light ?? '#9DC8F5')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.3
+        ctx.globalAlpha = 0.25
       }
-      ctx.lineCap = 'round'
       ctx.stroke()
       ctx.globalAlpha = 1
     }
 
-    // ── 노드 그리기 ──
+    // ── 노드 ──
     for (const n of nodes) {
-      const colors = TIER_COLORS[n.tier] ?? TIER_COLORS[1]
       const isActive = n.id === activeId
       const isConn = connectedIds.has(n.id)
       const isDim = activeId && !isActive && !isConn
       const isThemeDim = hasTheme && !activeId && !nodeHasTheme(n)
 
-      ctx.globalAlpha = isDim ? 0.15 : isThemeDim ? 0.1 : 1
+      ctx.globalAlpha = isDim ? 0.12 : isThemeDim ? 0.08 : 1
 
-      // 노드 배경 (rounded rect)
-      const r = 6
+      // 배경
       ctx.beginPath()
-      ctx.roundRect(n.x, n.y, n.w, n.h, r)
-      ctx.fillStyle = isActive ? colors.border : colors.bg
+      ctx.roundRect(n.x, n.y, n.w, n.h, 6)
+      ctx.fillStyle = isActive
+        ? (DARK_NODE_BORDER[n.tier] ?? 'rgba(100,100,100,0.6)')
+        : (DARK_NODE_BG[n.tier] ?? 'rgba(50,50,50,0.3)')
       ctx.fill()
-      ctx.strokeStyle = isActive ? '#C4B5FD' : colors.border
-      ctx.lineWidth = isActive ? 2.5 : 1.2
+      ctx.strokeStyle = isActive ? '#C4B5FD' : (DARK_NODE_BORDER[n.tier] ?? 'rgba(100,100,100,0.4)')
+      ctx.lineWidth = isActive ? 2 : 1
       ctx.stroke()
 
-      // glow for active
-      if (isActive) {
-        ctx.shadowColor = colors.badge
-        ctx.shadowBlur = 12
-        ctx.beginPath()
-        ctx.roundRect(n.x, n.y, n.w, n.h, r)
-        ctx.stroke()
-        ctx.shadowBlur = 0
-      }
-
-      // 헤더: sub_category 이름
-      ctx.font = `bold 12px ${CANVAS_FONT}`
+      // 헤더: sub_category
+      ctx.font = `bold 13px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
-      ctx.fillStyle = isActive ? '#ffffff' : colors.text
-      ctx.fillText(n.subCategory, n.x + 8, n.y + 18)
+      ctx.fillStyle = '#ffffff'
+      const headerText = n.subCategory.length > 10
+        ? n.subCategory.slice(0, 9) + '…' : n.subCategory
+      ctx.fillText(headerText, n.x + 8, n.y + 17)
 
-      // 종목 개수 badge
-      ctx.font = `bold 10px ${CANVAS_FONT}`
+      // 종목 수
+      ctx.font = `bold 11px ${CANVAS_FONT}`
       ctx.textAlign = 'right'
-      ctx.fillStyle = isActive ? 'rgba(255,255,255,0.7)' : colors.badge
-      ctx.fillText(`${n.stockNames.length}종목`, n.x + n.w - 8, n.y + 18)
+      ctx.fillStyle = '#94a3b8'
+      ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 8, n.y + 17)
+
+      // 구분선
+      ctx.beginPath()
+      ctx.moveTo(n.x + 6, n.y + HEADER_H - 2)
+      ctx.lineTo(n.x + n.w - 6, n.y + HEADER_H - 2)
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'
+      ctx.lineWidth = 1
+      ctx.stroke()
 
       // 종목 리스트
-      ctx.font = `11px ${CANVAS_FONT}`
-      ctx.textAlign = 'left'
-      const maxVisible = Math.floor((n.h - 28) / 16)
-      const visibleStocks = n.stockNames.slice(0, maxVisible)
-      for (let si = 0; si < visibleStocks.length; si++) {
-        const sName = getDisplayName(visibleStocks[si])
-        const cy = n.y + 34 + si * 16
+      const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
+      const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
+
+      for (let si = 0; si < visible.length; si++) {
+        const cy = n.y + HEADER_H + 4 + si * LINE_H + 12
+        const name = getDisplayName(visible[si])
         const pct = n.changePcts[si] ?? 0
 
-        // 종목명
-        ctx.fillStyle = isActive ? 'rgba(255,255,255,0.9)' : '#cbd5e1'
-        ctx.fillText(sName, n.x + 10, cy)
-
-        // 등락률
-        ctx.textAlign = 'right'
-        ctx.fillStyle = pct >= 0 ? '#ff3b5c' : '#0ea5e9'
-        ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 8, cy)
+        // 종목명 (왼쪽 정렬, 흰색)
+        ctx.font = `12px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
+        ctx.fillStyle = '#e2e8f0'
+        // 이름이 너무 길면 자르기
+        const maxNameW = n.w - 60
+        let displayN = name
+        while (ctx.measureText(displayN).width > maxNameW && displayN.length > 2) {
+          displayN = displayN.slice(0, -1)
+        }
+        if (displayN !== name) displayN += '…'
+        ctx.fillText(displayN, n.x + 8, cy)
+
+        // 등락률 (오른쪽 정렬)
+        ctx.font = `bold 11px ${CANVAS_FONT}`
+        ctx.textAlign = 'right'
+        ctx.fillStyle = pct >= 0 ? '#ff3b5c' : '#38bdf8'
+        ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 8, cy)
       }
-      if (n.stockNames.length > maxVisible) {
-        const cy = n.y + 34 + maxVisible * 16
-        ctx.fillStyle = isActive ? 'rgba(255,255,255,0.5)' : '#64748b'
-        ctx.fillText(`+${n.stockNames.length - maxVisible}개 더...`, n.x + 10, cy)
+
+      // +N개 더
+      if (n.stockNames.length > visible.length) {
+        const cy = n.y + HEADER_H + 4 + visible.length * LINE_H + 12
+        ctx.font = `11px ${CANVAS_FONT}`
+        ctx.textAlign = 'left'
+        ctx.fillStyle = '#64748b'
+        ctx.fillText(`+${n.stockNames.length - visible.length}개`, n.x + 8, cy)
       }
 
       ctx.globalAlpha = 1
     }
 
-    // ── 선택된 노드: 연결 관계 라벨 ──
+    // ── 선택 시 관계 라벨 ──
     if (selected) {
       ctx.font = `bold 11px ${CANVAS_FONT}`
+      let labelIdx = 0
       for (const l of sLinks) {
         if (l.sourceId !== selected && l.targetId !== selected) continue
         const sn = nodeMap.get(l.sourceId)
         const tn = nodeMap.get(l.targetId)
         if (!sn || !tn) continue
 
-        const x0 = sn.x + sn.w
-        const x1 = tn.x
-        const mx = (x0 + x1) / 2
-        const my = (l.sourceY + l.targetY) / 2
+        const mx = (sn.x + sn.w + tn.x) / 2
+        const my = (l.sourceY + l.targetY) / 2 + (labelIdx % 2 === 0 ? -14 : 14)
 
         const label = l.relations.map(r => RELATION_KO[r] ?? r).join(', ')
-        const tw = ctx.measureText(label).width + 14
-        const th = 22
+        const tw = ctx.measureText(label).width + 12
+        const th = 20
 
-        // 배경 박스
-        ctx.fillStyle = 'rgba(0,0,0,0.85)'
+        ctx.fillStyle = 'rgba(0,0,0,0.9)'
         ctx.beginPath()
         ctx.roundRect(mx - tw / 2, my - th / 2, tw, th, 4)
         ctx.fill()
 
-        // 텍스트
         ctx.fillStyle = '#FBBF24'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(label, mx, my)
         ctx.textBaseline = 'alphabetic'
+        labelIdx++
       }
     }
 
@@ -502,8 +507,7 @@ export function SectorNetwork({
   useEffect(() => {
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
-    const sankey = buildSankey(allStocks, links, w, canvasHeight)
-    sankeyRef.current = sankey
+    sankeyRef.current = buildSankey(allStocks, links, w, canvasHeight)
     needsDrawRef.current = true
     draw()
   }, [allStocks, links, draw, canvasHeight])
@@ -536,7 +540,6 @@ export function SectorNetwork({
     return { x: (e.clientX - rect.left) / zoom, y: (e.clientY - rect.top) / zoom }
   }, [])
 
-  // ── 마우스 이벤트 ──
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const pos = getPos(e)
     const node = findNode(pos.x, pos.y)
@@ -549,7 +552,6 @@ export function SectorNetwork({
         const avgPct = node.changePcts.length > 0
           ? node.changePcts.reduce((a, b) => a + b, 0) / node.changePcts.length : 0
         const totalForeign = node.foreignNets.reduce((a, b) => a + b, 0)
-        // 연결 관계 수집
         const rels: string[] = []
         for (const l of sankeyRef.current.links) {
           if (l.sourceId === node.id || l.targetId === node.id) {
@@ -559,7 +561,7 @@ export function SectorNetwork({
         setTooltip({
           x: pos.x, y: pos.y - 16,
           name: node.subCategory,
-          stocks: node.stockNames.map(getDisplayName),
+          stockList: node.stockNames.map(getDisplayName),
           changePct: avgPct,
           foreignNet: totalForeign,
           relations: [...new Set(rels)],
@@ -573,11 +575,7 @@ export function SectorNetwork({
   const handleClick = useCallback((e: React.MouseEvent) => {
     const pos = getPos(e)
     const node = findNode(pos.x, pos.y)
-    if (node) {
-      selectedRef.current = selectedRef.current === node.id ? null : node.id
-    } else {
-      selectedRef.current = null
-    }
+    selectedRef.current = node ? (selectedRef.current === node.id ? null : node.id) : null
     needsDrawRef.current = true
   }, [findNode, getPos])
 
@@ -594,13 +592,7 @@ export function SectorNetwork({
   }
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: canvasHeight, minWidth: 800 }}>
-      <div
-        className="absolute top-1 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
-        style={{ fontSize: 12, color: '#555' }}
-      >
-        그룹을 클릭하면 거래관계가 표시됩니다
-      </div>
+    <div ref={containerRef} className="relative" style={{ height: canvasHeight, minWidth: 700 }}>
       <canvas
         ref={canvasRef}
         className="w-full h-full"
@@ -613,26 +605,26 @@ export function SectorNetwork({
         <div
           className="absolute pointer-events-none z-20"
           style={{
-            left: Math.min(tooltip.x, (containerRef.current?.offsetWidth ?? 800) - 280),
-            top: tooltip.y,
+            left: Math.min(tooltip.x, (containerRef.current?.offsetWidth ?? 700) - 260),
+            top: Math.max(40, tooltip.y),
             transform: 'translate(-50%, -100%)',
-            background: 'rgba(0,0,0,0.9)',
+            background: 'rgba(15,23,42,0.95)',
             color: '#e2e8f0',
             fontSize: 12,
             border: '1px solid #7F77DD',
             borderRadius: 8,
             padding: '10px 14px',
-            lineHeight: 1.6,
-            maxWidth: 280,
+            lineHeight: 1.5,
+            maxWidth: 260,
           }}
         >
           <div style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>{tooltip.name}</div>
           <div style={{ color: '#94a3b8', fontSize: 11 }}>
-            {tooltip.stocks.slice(0, 6).join(', ')}
-            {tooltip.stocks.length > 6 ? ` 외 ${tooltip.stocks.length - 6}개` : ''}
+            {tooltip.stockList.slice(0, 5).join(', ')}
+            {tooltip.stockList.length > 5 ? ` 외 ${tooltip.stockList.length - 5}개` : ''}
           </div>
           <div style={{ marginTop: 4 }}>
-            <span style={{ color: tooltip.changePct >= 0 ? '#ff3b5c' : '#0ea5e9', fontWeight: 700 }}>
+            <span style={{ color: tooltip.changePct >= 0 ? '#ff3b5c' : '#38bdf8', fontWeight: 700 }}>
               평균 {tooltip.changePct >= 0 ? '+' : ''}{tooltip.changePct.toFixed(1)}%
             </span>
             <span style={{ color: '#94a3b8', marginLeft: 8 }}>
@@ -640,8 +632,8 @@ export function SectorNetwork({
             </span>
           </div>
           {tooltip.relations.length > 0 && (
-            <div style={{ color: '#FBBF24', fontSize: 11, marginTop: 4 }}>
-              {tooltip.relations.slice(0, 4).join(' · ')}
+            <div style={{ color: '#FBBF24', fontSize: 11, marginTop: 3 }}>
+              {tooltip.relations.slice(0, 3).join(' · ')}
             </div>
           )}
         </div>
