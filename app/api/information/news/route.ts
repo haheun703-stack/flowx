@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
+import { safeStringArray } from '@/shared/lib/safeJson'
 
 export const dynamic = 'force-dynamic'
 
@@ -50,7 +51,7 @@ export async function GET(req: Request) {
       impact_score: row.impact_score ?? 3,
       kr_impact: row.kr_impact ?? row.summary ?? null,
       related_tickers: row.related_tickers ?? [],
-      sectors: row.sectors ?? row.impact_sectors ?? [],
+      sectors: safeStringArray(row.sectors ?? row.impact_sectors),
       source: row.source ?? null,
       published_at: row.published_at ?? null,
     }))

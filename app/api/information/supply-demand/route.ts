@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
+import { safeString } from '@/shared/lib/safeJson'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,8 +31,8 @@ export async function GET(req: Request) {
       individual_net: row.individual_net ?? 0,
       foreign_streak: typeof row.foreign_streak === 'number' ? row.foreign_streak : 0,
       inst_streak: typeof row.inst_streak === 'number' ? row.inst_streak : 0,
-      sector_flows: tier === 'FREE' ? [] : (row.sector_flows ?? []),
-      summary: row.summary ?? null,
+      sector_flows: tier === 'FREE' ? [] : (Array.isArray(row.sector_flows) ? row.sector_flows : []),
+      summary: safeString(row.summary),
     }
 
     return NextResponse.json(mapped)
