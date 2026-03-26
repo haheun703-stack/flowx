@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 import { WorldIndex, KoreanTicker } from '../types'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
 
@@ -10,14 +11,14 @@ export function useMarketTicker() {
 
   const worldQuery = useQuery<WorldIndex[]>({
     queryKey: ['world-indices'],
-    queryFn: () => fetch('/api/world-indices').then(r => r.json()),
+    queryFn: () => fetchJson('/api/world-indices'),
     staleTime: 1000 * 60,
     refetchInterval: 1000 * 60,
   })
 
   const koreanQuery = useQuery<KoreanTicker[]>({
     queryKey: ['korean-tickers'],
-    queryFn: () => fetch('/api/korean-tickers').then(r => r.json()),
+    queryFn: () => fetchJson('/api/korean-tickers'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: koreanRefetchInterval,
   })

@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 
 // ─── Types ───
 
@@ -87,7 +88,7 @@ export function useInformationNews(scope?: 'GLOBAL' | 'DOMESTIC') {
 
   return useQuery<{ date: string | null; items: NewsItem[]; count: number }>({
     queryKey: ['information-news', scope],
-    queryFn: () => fetch(`/api/information/news?${params}`).then(r => r.json()),
+    queryFn: () => fetchJson(`/api/information/news?${params}`),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -99,7 +100,7 @@ export function useInformationDisclosures(source?: 'DART' | 'EDGAR') {
 
   return useQuery<{ date: string | null; items: DisclosureItem[]; count: number }>({
     queryKey: ['information-disclosures', source],
-    queryFn: () => fetch(`/api/information/disclosures?${params}`).then(r => r.json()),
+    queryFn: () => fetchJson(`/api/information/disclosures?${params}`),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -109,7 +110,7 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
   const params = session ? `?session=${session}` : ''
   return useQuery<{ items: ScenarioItem[]; count: number; hit_summary?: { hit_rate_pct: number; total_tagged: number } }>({
     queryKey: ['information-scenarios', session],
-    queryFn: () => fetch(`/api/information/scenarios${params}`).then(r => r.json()),
+    queryFn: () => fetchJson(`/api/information/scenarios${params}`),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -118,7 +119,7 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
 export function useInformationSupplyDemand() {
   return useQuery<SupplyDemandData>({
     queryKey: ['information-supply-demand'],
-    queryFn: () => fetch('/api/information/supply-demand?tier=FREE').then(r => r.json()),
+    queryFn: () => fetchJson('/api/information/supply-demand?tier=FREE'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })

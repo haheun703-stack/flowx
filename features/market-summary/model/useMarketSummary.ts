@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 import { IntradayPoint, IndexCard, SectorData, SupplyStock, WatchItem } from '../types'
 import { KoreanTicker, WorldIndex } from '@/features/market-ticker/types'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
@@ -12,7 +13,7 @@ export function useMarketSummary() {
 
   const intradayQuery = useQuery<IntradayPoint[]>({
     queryKey: ['market-intraday'],
-    queryFn: () => fetch('/api/market/intraday').then(r => r.json()),
+    queryFn: () => fetchJson('/api/market/intraday'),
     staleTime: 1000 * 30,
     refetchInterval: fastInterval,
   })
@@ -21,8 +22,8 @@ export function useMarketSummary() {
     queryKey: ['market-indices'],
     queryFn: async () => {
       const [kr, world] = await Promise.all([
-        fetch('/api/korean-tickers').then(r => r.json()),
-        fetch('/api/world-indices').then(r => r.json()),
+        fetchJson<KoreanTicker[]>('/api/korean-tickers'),
+        fetchJson<WorldIndex[]>('/api/world-indices'),
       ])
       const kospi = kr.find((t: KoreanTicker) => t.code === '0001')
       const kosdaq = kr.find((t: KoreanTicker) => t.code === '1001')
@@ -40,14 +41,14 @@ export function useMarketSummary() {
 
   const sectorQuery = useQuery<SectorData[]>({
     queryKey: ['market-sector-heatmap'],
-    queryFn: () => fetch('/api/market/sector-heatmap').then(r => r.json()),
+    queryFn: () => fetchJson('/api/market/sector-heatmap'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: slowInterval,
   })
 
   const supplyQuery = useQuery<{ foreign: SupplyStock[]; inst: SupplyStock[] }>({
     queryKey: ['market-supply-rank'],
-    queryFn: () => fetch('/api/market/supply-rank').then(r => r.json()),
+    queryFn: () => fetchJson('/api/market/supply-rank'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: slowInterval,
   })
@@ -56,7 +57,7 @@ export function useMarketSummary() {
   const watchlistQuery = useQuery<WatchItem[]>({
     queryKey: ['market-watchlist'],
     queryFn: async () => {
-      const kr = await fetch('/api/korean-tickers').then(r => r.json())
+      const kr = await fetchJson<KoreanTicker[]>('/api/korean-tickers')
       return kr
         .filter((t: KoreanTicker) => !t.isIndex)
         .map((t: KoreanTicker) => ({

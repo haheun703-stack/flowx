@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 
 // ─── Types ───
 
@@ -48,7 +49,7 @@ interface CostFloorResponse {
 export function useMacroDaily() {
   return useQuery<MacroDailyResponse>({
     queryKey: ['macro-daily'],
-    queryFn: () => fetch('/api/macro/daily').then(r => r.json()),
+    queryFn: () => fetchJson('/api/macro/daily'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 10,
   })
@@ -57,7 +58,7 @@ export function useMacroDaily() {
 export function useCostFloor() {
   return useQuery<CostFloorResponse>({
     queryKey: ['macro-cost-floor'],
-    queryFn: () => fetch('/api/macro/cost-floor').then(r => r.json()),
+    queryFn: () => fetchJson('/api/macro/cost-floor'),
     staleTime: 1000 * 60 * 30,
   })
 }

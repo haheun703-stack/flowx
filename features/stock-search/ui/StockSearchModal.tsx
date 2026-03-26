@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 import { StockItem } from '../types'
+import { fetchJson } from '@/shared/lib/fetchJson'
 
 const POPULAR: StockItem[] = [
   { code: '005930', name: '삼성전자', market: 'KOSPI' },
@@ -33,9 +34,8 @@ export function StockSearchModal({ open, onClose }: Props) {
   useEffect(() => {
     if (stockCache) return
     let cancelled = false
-    fetch('/api/stock-list')
-      .then(r => r.json())
-      .then((data: StockItem[]) => {
+    fetchJson<StockItem[]>('/api/stock-list')
+      .then((data) => {
         if (cancelled) return
         stockCache = data
         setStocks(data)

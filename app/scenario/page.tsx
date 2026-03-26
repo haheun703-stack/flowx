@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
@@ -35,7 +36,7 @@ interface ScenarioData {
 function useScenario() {
   return useQuery<ScenarioData>({
     queryKey: ['scenario'],
-    queryFn: () => fetch('/api/scenario').then(r => r.json()),
+    queryFn: () => fetchJson('/api/scenario'),
     staleTime: 1000 * 60 * 5,
   })
 }

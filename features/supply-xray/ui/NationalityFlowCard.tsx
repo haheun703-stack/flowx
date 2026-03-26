@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { fetchJson } from '@/shared/lib/fetchJson'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
@@ -27,7 +28,7 @@ interface NationalityData {
 function useNationality(code: string) {
   return useQuery<NationalityData>({
     queryKey: ['nationality', code],
-    queryFn: () => fetch(`/api/nationality?code=${code}`).then(r => r.json()),
+    queryFn: () => fetchJson(`/api/nationality?code=${code}`),
     staleTime: 1000 * 60 * 5,
   })
 }
