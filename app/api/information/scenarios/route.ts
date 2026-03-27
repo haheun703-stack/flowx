@@ -19,24 +19,17 @@ export async function GET(req: Request) {
 
     if (session) query = query.eq('session', session)
 
-    const { data, error } = await query
+    const [scenarioResult, summaryResult] = await Promise.all([
+      query,
+      Promise.resolve(supabase.from('scenario_hit_summary').select('*').single()).then(r => r.data).catch(() => null),
+    ])
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    // 적중률 요약 조회
-    let hit_summary = null
-    try {
-      const { data: summary } = await supabase
-        .from('scenario_hit_summary')
-        .select('*')
-        .single()
-      hit_summary = summary
-    } catch { /* view 없으면 무시 */ }
+    if (scenarioResult.error) return NextResponse.json({ error: scenarioResult.error.message }, { status: 500 })
 
     return NextResponse.json({
-      items: data ?? [],
-      count: data?.length ?? 0,
-      hit_summary,
+      items: scenarioResult.data ?? [],
+      count: scenarioResult.data?.length ?? 0,
+      hit_summary: summaryResult,
     })
   } catch {
     return NextResponse.json({ error: 'Scenarios unavailable' }, { status: 503 })

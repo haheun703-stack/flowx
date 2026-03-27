@@ -6,16 +6,18 @@ import { FlowxLogo } from '@/shared/ui/logo'
 function useCountUp(target: number, duration = 2000) {
   const [count, setCount] = useState(0)
   useEffect(() => {
-    const step = target / (duration / 16)
-    const timer = setInterval(() => {
-      setCount(prev => {
-        if (prev >= target) { clearInterval(timer); return target }
-        return Math.min(prev + step, target)
-      })
-    }, 16)
-    return () => clearInterval(timer)
+    setCount(0)
+    const start = performance.now()
+    let raf: number
+    const tick = () => {
+      const progress = Math.min((performance.now() - start) / duration, 1)
+      setCount(Math.round(progress * target))
+      if (progress < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
   }, [target, duration])
-  return Math.floor(count)
+  return count
 }
 
 export function HeroSection() {
@@ -93,8 +95,8 @@ export function HeroSection() {
           { value: stockCount.toLocaleString(), label: 'KOSPI·KOSDAQ 종목', unit: '+' },
           { value: panelCount,                  label: '실시간 분석 패널', unit: '개' },
           { value: indexCount,                  label: '글로벌 지수 추적', unit: '개' },
-        ].map((stat, i) => (
-          <div key={i} className="text-center">
+        ].map((stat) => (
+          <div key={stat.label} className="text-center">
             <div className="text-xl sm:text-3xl md:text-4xl font-bold font-mono text-white">
               {stat.value}
               <span className="text-[#00ff88] text-base sm:text-xl">{stat.unit}</span>

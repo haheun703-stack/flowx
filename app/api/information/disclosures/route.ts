@@ -7,7 +7,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const source = searchParams.get('source') // DART | EDGAR | null(전체)
   const dateStr = searchParams.get('date')
-  const limit = Math.min(parseInt(searchParams.get('limit') ?? '30', 10), 100)
+  const rawLimit = parseInt(searchParams.get('limit') ?? '30', 10)
+  const limit = Math.min(Math.max(Number.isNaN(rawLimit) ? 30 : rawLimit, 1), 100)
 
   try {
     const supabase = getSupabaseAdmin()

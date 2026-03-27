@@ -1,5 +1,6 @@
 'use client'
 
+import { useId } from 'react'
 import { useInformationSupplyDemand } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 import {
@@ -34,7 +35,8 @@ function SupplyPictogram({
   const isSell = amount < 0
   const fillColor = isSell ? '#378ADD' : '#E24B4A'  // 한국식: 매도=파랑, 매수=빨강
   const fillPct = Math.min(Math.max(Math.abs(ratio), 5), 100)
-  const clipId = `fill-${label}`
+  const uid = useId()
+  const clipId = `fill-${uid}`
   // clipPath y: 전체 높이 200 중 아래서 비율만큼
   const bodyH = 170
   const clipY = 200 - (fillPct / 100 * bodyH)
@@ -113,32 +115,19 @@ function SupplyWaterfall({
   const afterI = afterF + iEok
   const total = afterI + pEok
 
-  const data = [
-    {
-      name: '외국인', value: fEok,
-      invisible: Math.min(0, afterF),
-      visible: Math.abs(fEok),
-    },
-    {
-      name: '기관', value: iEok,
-      invisible: Math.min(afterF, afterI),
-      visible: Math.abs(iEok),
-    },
-    {
-      name: '개인', value: pEok,
-      invisible: Math.min(afterI, total),
-      visible: Math.abs(pEok),
-    },
-    {
-      name: '순합계', value: total,
-      invisible: Math.min(0, total),
-      visible: Math.abs(total),
-      isTotal: true,
-    },
+  interface WaterfallDatum {
+    name: string; value: number; invisible: number; visible: number; isTotal?: boolean
+  }
+
+  const data: WaterfallDatum[] = [
+    { name: '외국인', value: fEok, invisible: Math.min(0, afterF), visible: Math.abs(fEok) },
+    { name: '기관', value: iEok, invisible: Math.min(afterF, afterI), visible: Math.abs(iEok) },
+    { name: '개인', value: pEok, invisible: Math.min(afterI, total), visible: Math.abs(pEok) },
+    { name: '순합계', value: total, invisible: Math.min(0, total), visible: Math.abs(total), isTotal: true },
   ]
 
   const colors = data.map(d =>
-    (d as { isTotal?: boolean }).isTotal ? '#666' : d.value >= 0 ? '#E24B4A' : '#378ADD'
+    d.isTotal ? '#666' : d.value >= 0 ? '#E24B4A' : '#378ADD'
   )
 
   return (
@@ -158,7 +147,10 @@ function SupplyWaterfall({
             tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}`}
             axisLine={false}
             tickLine={false}
-            domain={[(min: number) => Math.floor(min * 1.3), (max: number) => Math.ceil(max * 1.3)]}
+            domain={[
+              (min: number) => Math.floor(min * 1.3),
+              (max: number) => Math.ceil(max * 1.3),
+            ] as const}
           />
           <ReferenceLine y={0} stroke="#555" strokeWidth={1} />
 
@@ -186,6 +178,20 @@ function SupplyWaterfall({
 // ════════════════════════════════════════════════════════
 // 3. 메인 패널
 // ════════════════════════════════════════════════════════
+
+function PictogramSection({ data }: { data: { foreign_net: number; inst_net: number; individual_net: number; foreign_streak: number; inst_streak: number } }) {
+  const total = Math.abs(data.foreign_net) + Math.abs(data.inst_net) + Math.abs(data.individual_net)
+  const fRatio = total > 0 ? (Math.abs(data.foreign_net) / total) * 100 : 33
+  const iRatio = total > 0 ? (Math.abs(data.inst_net) / total) * 100 : 33
+  const pRatio = total > 0 ? (Math.abs(data.individual_net) / total) * 100 : 33
+  return (
+    <div className="flex justify-center gap-8 sm:gap-14">
+      <SupplyPictogram label="외국인" amount={data.foreign_net} ratio={fRatio} streak={data.foreign_streak} />
+      <SupplyPictogram label="기관" amount={data.inst_net} ratio={iRatio} streak={data.inst_streak} />
+      <SupplyPictogram label="개인" amount={data.individual_net} ratio={pRatio} streak={0} />
+    </div>
+  )
+}
 
 export function SupplyDemandPanel() {
   const { data, isLoading } = useInformationSupplyDemand()
@@ -217,19 +223,7 @@ export function SupplyDemandPanel() {
         ) : (
           <>
             {/* 그림 백분율 차트: 3명 가로 배치 */}
-            {(() => {
-              const total = Math.abs(data.foreign_net) + Math.abs(data.inst_net) + Math.abs(data.individual_net)
-              const fRatio = total > 0 ? (Math.abs(data.foreign_net) / total) * 100 : 33
-              const iRatio = total > 0 ? (Math.abs(data.inst_net) / total) * 100 : 33
-              const pRatio = total > 0 ? (Math.abs(data.individual_net) / total) * 100 : 33
-              return (
-                <div className="flex justify-center gap-8 sm:gap-14">
-                  <SupplyPictogram label="외국인" amount={data.foreign_net} ratio={fRatio} streak={data.foreign_streak} />
-                  <SupplyPictogram label="기관" amount={data.inst_net} ratio={iRatio} streak={data.inst_streak} />
-                  <SupplyPictogram label="개인" amount={data.individual_net} ratio={pRatio} streak={0} />
-                </div>
-              )
-            })()}
+            <PictogramSection data={data} />
 
             {/* 구분선 */}
             <div className="border-t border-[#2a2a3a]" />

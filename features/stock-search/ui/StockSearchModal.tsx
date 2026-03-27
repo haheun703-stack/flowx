@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 import { StockItem } from '../types'
-import { fetchJson } from '@/shared/lib/fetchJson'
+import { useStockList } from '../model/useStockSearch'
 
 const POPULAR: StockItem[] = [
   { code: '005930', name: '삼성전자', market: 'KOSPI' },
@@ -15,8 +15,7 @@ const POPULAR: StockItem[] = [
   { code: '005380', name: '현대차', market: 'KOSPI' },
 ]
 
-// 모듈 레벨 캐시 — 한번 로드하면 페이지 새로고침까지 유지
-let stockCache: StockItem[] | null = null
+const CODE_RE = /^\d{6}$/
 
 interface Props {
   open: boolean
@@ -25,25 +24,10 @@ interface Props {
 
 export function StockSearchModal({ open, onClose }: Props) {
   const [query, setQuery] = useState('')
-  const [stocks, setStocks] = useState<StockItem[]>(stockCache ?? [])
-  const [loading, setLoading] = useState(!stockCache)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
-  // 종목 데이터 로드
-  useEffect(() => {
-    if (stockCache) return
-    let cancelled = false
-    fetchJson<StockItem[]>('/api/stock-list')
-      .then((data) => {
-        if (cancelled) return
-        stockCache = data
-        setStocks(data)
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-    return () => { cancelled = true }
-  }, [])
+  const { data: stocks = [], isLoading } = useStockList(open)
 
   const filtered = useMemo(() => {
     if (!query.trim()) return POPULAR
@@ -58,29 +42,36 @@ export function StockSearchModal({ open, onClose }: Props) {
     return results
   }, [query, stocks])
 
+  const handleSelect = useCallback((code: string) => {
+    if (!CODE_RE.test(code)) return
+    router.push(`/chart/${code}`)
+    onClose()
+  }, [router, onClose])
+
+  // 모달 열릴 때 input focus + body scroll lock
   useEffect(() => {
-    if (open) {
-      setQuery('')
-      setTimeout(() => inputRef.current?.focus(), 50)
-    }
+    if (!open) return
+    setQuery('')
+    setTimeout(() => inputRef.current?.focus(), 50)
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
   }, [open])
+
+  // 키보드 핸들러 — useRef로 stale closure 방지
+  const filteredRef = useRef(filtered)
+  filteredRef.current = filtered
 
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
-      if (e.key === 'Enter' && filtered.length > 0) {
-        handleSelect(filtered[0].code)
+      if (e.key === 'Enter' && !e.isComposing && filteredRef.current.length > 0) {
+        handleSelect(filteredRef.current[0].code)
       }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [open, onClose, filtered])
-
-  const handleSelect = (code: string) => {
-    router.push(`/chart/${code}`)
-    onClose()
-  }
+  }, [open, onClose, handleSelect])
 
   if (!open) return null
 
@@ -117,7 +108,7 @@ export function StockSearchModal({ open, onClose }: Props) {
 
         {/* 결과 리스트 */}
         <div className="max-h-[50vh] overflow-y-auto">
-          {loading ? (
+          {isLoading ? (
             <div className="px-4 py-8 text-center text-sm text-[#334155]">
               종목 데이터 로딩 중...
             </div>
@@ -134,7 +125,7 @@ export function StockSearchModal({ open, onClose }: Props) {
               )}
               {filtered.map(s => (
                 <button
-                  key={s.code}
+                  key={`${s.market}-${s.code}`}
                   onClick={() => handleSelect(s.code)}
                   className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#0d1420] transition-colors group"
                 >

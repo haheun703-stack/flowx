@@ -21,7 +21,7 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
   const recent20 = data.slice(-20)
 
   // ─────────────────────────────────────────
-  // 외국인 채점 (최대 +45pt)
+  // 외국인 채점 (카테고리 캡: +45pt)
   // ─────────────────────────────────────────
 
   // 외국인 연속 순매수 (일수 × 5pt, 최대 +25pt)
@@ -37,12 +37,14 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
     })
   }
 
-  // 외국인 20일 대규모 누적 순매수
-  const foreignNet20 = sumField(recent20, 'foreign')
-  if (foreignNet20 > 1000000) {
-    items.push({ id: 'foreign_big20', icon: '🟢', text: `외국인 20일 누적 ${fmt(foreignNet20)}주 대규모 순매수`, score: 20, category: 'foreign' })
-  } else if (foreignNet20 > 300000) {
-    items.push({ id: 'foreign_mid20', icon: '🟡', text: `외국인 20일 누적 ${fmt(foreignNet20)}주 순매수`, score: 10, category: 'foreign' })
+  // 외국인 20일 대규모 누적 순매수 (20일 미만 데이터 시 스킵)
+  if (recent20.length >= 20) {
+    const foreignNet20 = sumField(recent20, 'foreign')
+    if (foreignNet20 > 1000000) {
+      items.push({ id: 'foreign_big20', icon: '🟢', text: `외국인 20일 누적 ${fmt(foreignNet20)}주 대규모 순매수`, score: 20, category: 'foreign' })
+    } else if (foreignNet20 > 300000) {
+      items.push({ id: 'foreign_mid20', icon: '🟡', text: `외국인 20일 누적 ${fmt(foreignNet20)}주 순매수`, score: 10, category: 'foreign' })
+    }
   }
 
   // 외국인 연속 순매도 (페널티)
@@ -54,15 +56,15 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
   }
 
   // ─────────────────────────────────────────
-  // 기관 채점 (최대 +30pt)
+  // 기관 채점 (카테고리 캡: +30pt)
   // ─────────────────────────────────────────
 
-  // 기관 20일 누적 전환 (마이너스→플러스)
-  const institutionNet20 = sumField(recent20, 'institution')
-  const institutionNet10 = sumField(recent10, 'institution')
-  if (institutionNet20 > 0 && institutionNet10 > 0) {
+  // 기관 누적 전환 (10일/20일 윈도우 충분할 때만 적용)
+  const institutionNet10 = recent10.length >= 10 ? sumField(recent10, 'institution') : null
+  const institutionNet20 = recent20.length >= 20 ? sumField(recent20, 'institution') : null
+  if (institutionNet20 !== null && institutionNet10 !== null && institutionNet20 > 0 && institutionNet10 > 0) {
     items.push({ id: 'institution_turn', icon: '🟢', text: `기관 10·20일 누적 순매수 유지 — 포지션 구축 중`, score: 15, category: 'institution' })
-  } else if (institutionNet10 > 0) {
+  } else if (institutionNet10 !== null && institutionNet10 > 0) {
     items.push({ id: 'institution_recent', icon: '🟡', text: `기관 최근 10일 순매수 전환`, score: 8, category: 'institution' })
   }
 
@@ -73,11 +75,11 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
   }
 
   // ─────────────────────────────────────────
-  // 패턴 채점 (복합 패턴, 최대 +25pt)
+  // 패턴 채점 (카테고리 캡: +25pt)
   // ─────────────────────────────────────────
 
   // 쌍끌이 패턴: 외국인+기관 동시 순매수
-  const doubleBuyDays = recent5.filter(d => d.foreign > 0 && d.institution > 0).length
+  const doubleBuyDays = recent5.filter(d => (d.foreign ?? 0) > 0 && (d.institution ?? 0) > 0).length
   if (doubleBuyDays >= 4) {
     items.push({ id: 'double_buy', icon: '🟢', text: `외국인·기관 동시 순매수 ${doubleBuyDays}일 — 쌍끌이 패턴`, score: 20, category: 'pattern' })
   } else if (doubleBuyDays >= 2) {
@@ -85,7 +87,7 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
   }
 
   // 매집 패턴: 개인 매도 + 기관 매수
-  const accumDays = recent5.filter(d => d.individual < 0 && d.institution > 0).length
+  const accumDays = recent5.filter(d => (d.individual ?? 0) < 0 && (d.institution ?? 0) > 0).length
   if (accumDays >= 4) {
     items.push({ id: 'accum_pattern', icon: '🟢', text: `개인 매도·기관 매수 역방향 ${accumDays}일 — 스마트머니 매집`, score: 20, category: 'pattern' })
   } else if (accumDays >= 3) {
@@ -93,21 +95,34 @@ export function runWhyNowEngine(data: SupplyData[]): WhyNowResult {
   }
 
   // 개인 과매수 경고: 개인만 사고 기관·외국인 다 팔 때
-  const individualOverbuyDays = recent5.filter(d => d.individual > 0 && d.foreign < 0 && d.institution < 0).length
+  const individualOverbuyDays = recent5.filter(d => (d.individual ?? 0) > 0 && (d.foreign ?? 0) < 0 && (d.institution ?? 0) < 0).length
   if (individualOverbuyDays >= 3) {
     items.push({ id: 'individual_overbuy', icon: '🔴', text: `개인만 순매수·외인·기관 매도 ${individualOverbuyDays}일 — 과열 주의`, score: -15, category: 'individual' })
   }
 
   // 개인 패닉셀: 개인이 팔고 외국인·기관이 살 때 (역발상 강세 신호)
-  const panicSellDays = recent3.filter(d => d.individual < 0 && d.foreign > 0 && d.institution > 0).length
+  const panicSellDays = recent3.filter(d => (d.individual ?? 0) < 0 && (d.foreign ?? 0) > 0 && (d.institution ?? 0) > 0).length
   if (panicSellDays >= 2) {
     items.push({ id: 'panic_sell_reversal', icon: '🟢', text: `개인 패닉셀 + 외인·기관 동반 매수 ${panicSellDays}일 — 역발상 강세`, score: 25, category: 'pattern' })
   }
 
   // ─────────────────────────────────────────
-  // 점수 합산 (0~100 클램핑)
+  // 점수 합산 (카테고리별 캡 적용 후 0~100 클램핑)
   // ─────────────────────────────────────────
-  const rawScore = items.reduce((sum, item) => sum + item.score, 50) // 기준점 50
+  const CATEGORY_CAP: Record<ScoreItem['category'], number> = {
+    foreign: 45, institution: 30, pattern: 25, individual: 0,
+  }
+  const categorySum: Record<string, number> = {}
+  for (const item of items) {
+    categorySum[item.category] = (categorySum[item.category] ?? 0) + item.score
+  }
+  let cappedTotal = 0
+  for (const [cat, sum] of Object.entries(categorySum)) {
+    const cap = CATEGORY_CAP[cat as ScoreItem['category']]
+    // 양수만 캡 적용, 감점은 그대로 반영
+    cappedTotal += sum > 0 ? Math.min(sum, cap) : sum
+  }
+  const rawScore = cappedTotal + 50 // 기준점 50
   const totalScore = Math.max(0, Math.min(100, rawScore))
   const grade = getGrade(totalScore)
 
@@ -131,7 +146,7 @@ function getConsecutiveDays(
 ): number {
   let count = 0
   for (let i = data.length - 1; i >= 0; i--) {
-    const val = data[i][field]
+    const val = data[i][field] ?? 0
     if (direction === 'buy' ? val > 0 : val < 0) count++
     else break
   }
@@ -142,13 +157,14 @@ function sumField(
   data: SupplyData[],
   field: keyof Pick<SupplyData, 'foreign' | 'institution' | 'individual'>
 ): number {
-  return data.reduce((s, d) => s + d[field], 0)
+  return data.reduce((s, d) => s + (d[field] ?? 0), 0)
 }
 
 function fmt(val: number): string {
+  const sign = val < 0 ? '-' : ''
   const abs = Math.abs(val)
-  if (abs >= 10000) return `${(abs / 10000).toFixed(0)}만`
-  return abs.toLocaleString()
+  if (abs >= 10000) return `${sign}${(abs / 10000).toFixed(0)}만`
+  return `${sign}${abs.toLocaleString()}`
 }
 
 function getGrade(score: number): SignalGrade {

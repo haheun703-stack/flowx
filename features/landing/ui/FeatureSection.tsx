@@ -38,9 +38,9 @@ export function FeatureSection() {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {features.map((f, i) => (
+        {features.map((f) => (
           <div
-            key={i}
+            key={f.title}
             className="relative p-6 rounded-2xl border border-gray-800 bg-gray-900/30 hover:border-gray-600 transition-all group"
           >
             <div className="absolute inset-0 rounded-2xl bg-[#00ff88] opacity-0 group-hover:opacity-[0.02] transition-opacity" />

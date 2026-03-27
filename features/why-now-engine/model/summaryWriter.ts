@@ -5,7 +5,7 @@ export function writeSummary(items: ScoreItem[], grade: SignalGrade): string {
   const hasInstitution   = items.some(i => i.category === 'institution' && i.score > 0)
   const hasAccum         = items.some(i => i.id === 'accum_pattern' || i.id === 'accum_mid')
   const hasDoubleBuy     = items.some(i => i.id === 'double_buy' || i.id === 'double_buy_mid')
-  const hasSellSignal    = items.some(i => i.id === 'foreign_sell' || i.id === 'individual_overbuy')
+  const hasSellSignal    = items.some(i => i.id === 'foreign_sell' || i.id === 'foreign_sell_mid' || i.id === 'individual_overbuy')
   const hasPanicReversal = items.some(i => i.id === 'panic_sell_reversal')
 
   // 패턴 조합에 따른 자연어 요약 생성
@@ -29,6 +29,12 @@ export function writeSummary(items: ScoreItem[], grade: SignalGrade): string {
   }
   if (grade === 'NEUTRAL') {
     return '뚜렷한 수급 방향성이 없음. 방향 확인 전까지 관망이 유리.'
+  }
+  if (grade === 'CAUTION') {
+    return '부정적 수급 신호 다수 감지. 신규 진입보다 기존 포지션 점검이 우선.'
+  }
+  if (grade === 'AVOID') {
+    return '외국인·기관 이탈 신호 강함. 포지션 축소 또는 관망이 안전.'
   }
 
   return '수급 데이터를 종합 분석 중입니다.'

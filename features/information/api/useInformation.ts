@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { fetchJson } from '@/shared/lib/fetchJson'
+import { getRefetchInterval } from '@/shared/lib/marketUtils'
 
 // ─── Types ───
 
@@ -90,7 +91,7 @@ export function useInformationNews(scope?: 'GLOBAL' | 'DOMESTIC') {
     queryKey: ['information-news', scope],
     queryFn: () => fetchJson(`/api/information/news?${params}`),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -102,7 +103,7 @@ export function useInformationDisclosures(source?: 'DART' | 'EDGAR') {
     queryKey: ['information-disclosures', source],
     queryFn: () => fetchJson(`/api/information/disclosures?${params}`),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -112,7 +113,7 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
     queryKey: ['information-scenarios', session],
     queryFn: () => fetchJson(`/api/information/scenarios${params}`),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -121,6 +122,6 @@ export function useInformationSupplyDemand() {
     queryKey: ['information-supply-demand'],
     queryFn: () => fetchJson('/api/information/supply-demand?tier=FREE'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }

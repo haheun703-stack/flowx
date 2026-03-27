@@ -10,6 +10,7 @@ import {
   fetchInvestorTrend,
   fetchSectorPrices,
 } from '@/features/market-ticker/api/fetchKoreanTickers'
+import { botTimer, checkEnvVars } from '@/shared/lib/botLogger'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,10 +25,21 @@ function saveToFile(snapshot: Record<string, unknown>) {
 }
 
 export async function GET(req: Request) {
+  const timer = botTimer('update-market')
+
   // 인증: Vercel Cron 또는 외부 cron 서비스
   const authHeader = req.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    await timer.end('error', { error: 'Unauthorized — CRON_SECRET 불일치 또는 미설정' })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // 환경변수 사전 검증
+  const missing = checkEnvVars()
+  if (missing.length > 0) {
+    const msg = `환경변수 누락: ${missing.join(', ')}`
+    await timer.end('error', { error: msg })
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 })
   }
 
   try {
@@ -52,6 +64,7 @@ export async function GET(req: Request) {
     // 1-1. 전체 가격이 0이면 API 장애 — 기존 데이터 보호
     const validStocks = stocks.filter(s => s.price > 0)
     if (validStocks.length === 0 && kospi.price === 0) {
+      await timer.end('error', { error: 'All prices returned 0 — KIS API 장애 의심' })
       return NextResponse.json({ ok: false, error: 'All prices returned 0, skipping save to protect existing data' }, { status: 502 })
     }
 
@@ -85,7 +98,7 @@ export async function GET(req: Request) {
       else console.warn('Supabase upsert skipped:', error.message)
     } catch { /* Supabase 테이블 미생성 시 무시 */ }
 
-    return NextResponse.json({
+    const result = {
       ok: true,
       supabase: supabaseOk,
       updated_at: snapshot.updated_at,
@@ -96,10 +109,13 @@ export async function GET(req: Request) {
       foreign_inst: foreignInst,
       sectors_count: sectors.length,
       sectors: sectors.slice(0, 5),
-    })
+    }
+
+    await timer.end('ok', { summary: { kospi: kospi.price, kosdaq: kosdaq.price, stocks: stocks.length, supabase: supabaseOk } })
+    return NextResponse.json(result)
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error'
-    console.error('cron/update-market error:', msg)
+    await timer.end('error', { error: msg })
     return NextResponse.json({ ok: false, error: msg }, { status: 500 })
   }
 }

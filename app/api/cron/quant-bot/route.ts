@@ -3,6 +3,7 @@
 
 import { NextResponse } from 'next/server'
 import { verifyCronAuth, todayKST } from '@/shared/lib/cron-auth'
+import { botTimer, checkEnvVars } from '@/shared/lib/botLogger'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { getKISToken } from '@/shared/lib/kisAuth'
 import { fetchInvestorTrend } from '@/features/market-ticker/api/fetchKoreanTickers'
@@ -14,8 +15,18 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 55
 
 export async function GET(req: Request) {
+  const timer = botTimer('quant-bot')
+
   if (!verifyCronAuth(req)) {
+    await timer.end('error', { error: 'Unauthorized — CRON_SECRET 불일치 또는 미설정' })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const missing = checkEnvVars()
+  if (missing.length > 0) {
+    const msg = `환경변수 누락: ${missing.join(', ')}`
+    await timer.end('error', { error: msg })
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 })
   }
 
   const date = todayKST()
@@ -79,7 +90,7 @@ export async function GET(req: Request) {
       await supabase.from('short_signals').delete().eq('date', date).in('signal_type', ['BUY', 'QUANT_SELL']).lt('created_at', cutoff)
     }
 
-    return NextResponse.json({
+    const result = {
       ok: true,
       regime: regime.regime,
       vix: regime.vix,
@@ -88,10 +99,13 @@ export async function GET(req: Request) {
       sell_signals: sellSignals.length,
       grades_sample: grades.slice(0, 5).map(g => `${g.name}: ${g.grade}(${g.totalScore})`),
       updated_at: new Date().toISOString(),
-    })
+    }
+
+    await timer.end('ok', { summary: { regime: regime.regime, scored: stocks.length, buys: buyRows.length, sells: sellRows.length } })
+    return NextResponse.json(result)
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
-    console.error('quant-bot error:', msg)
+    await timer.end('error', { error: msg })
     return NextResponse.json({ ok: false, error: msg }, { status: 500 })
   }
 }

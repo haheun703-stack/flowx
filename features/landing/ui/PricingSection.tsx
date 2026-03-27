@@ -93,13 +93,13 @@ export function PricingSection() {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {PLANS.map((plan, i) => {
+        {PLANS.map((plan) => {
           const isFree = plan.price === 0
           const canSubscribe = PAYMENTS_READY && !isFree
 
           return (
             <div
-              key={i}
+              key={plan.name}
               className={`relative p-6 rounded-2xl border bg-gray-900/30 flex flex-col ${plan.color} ${
                 isFree ? 'shadow-2xl shadow-[#00ff88]/10' : ''
               }`}
@@ -137,7 +137,7 @@ export function PricingSection() {
 
               {isFree ? (
                 <Link
-                  href={plan.href!}
+                  href={plan.href ?? '/dashboard'}
                   className="w-full text-center py-3 rounded-xl text-sm transition-all font-mono
                              bg-[#00ff88] text-black font-bold hover:bg-[#00ff88]/90"
                 >

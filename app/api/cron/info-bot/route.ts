@@ -4,6 +4,7 @@
 
 import { NextResponse } from 'next/server'
 import { verifyCronAuth } from '@/shared/lib/cron-auth'
+import { botTimer, checkEnvVars } from '@/shared/lib/botLogger'
 import { collectMacro } from '@/features/bots/info/collectMacro'
 import { collectSupplyDemand } from '@/features/bots/info/collectSupplyDemand'
 import { collectDart } from '@/features/bots/info/collectDart'
@@ -16,8 +17,18 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 55 // Vercel Pro: 최대 60초
 
 export async function GET(req: Request) {
+  const timer = botTimer('info-bot')
+
   if (!verifyCronAuth(req)) {
+    await timer.end('error', { error: 'Unauthorized — CRON_SECRET 불일치 또는 미설정' })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const missing = checkEnvVars(['DART_API_KEY', 'FINNHUB_API_KEY'])
+  if (missing.length > 0) {
+    const msg = `환경변수 누락: ${missing.join(', ')}`
+    await timer.end('error', { error: msg })
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 })
   }
 
   // Step 1: 데이터 수집 (병렬)
@@ -45,7 +56,16 @@ export async function GET(req: Request) {
     updated_at: new Date().toISOString(),
   }
 
-  const allOk = [...collectResults, ...aiResults].every(r => r.status === 'fulfilled')
+  const allResults = [...collectResults, ...aiResults]
+  const allOk = allResults.every(r => r.status === 'fulfilled')
+  const failCount = allResults.filter(r => r.status === 'rejected').length
+
+  const status: 'ok' | 'partial' | 'error' = allOk ? 'ok' : failCount === allResults.length ? 'error' : 'partial'
+  await timer.end(status, {
+    error: !allOk ? `${failCount}/${allResults.length} tasks failed` : undefined,
+    summary: { allOk, failCount, totalTasks: allResults.length },
+  })
+
   return NextResponse.json({ ok: allOk, ...summary }, { status: allOk ? 200 : 207 })
 }
 

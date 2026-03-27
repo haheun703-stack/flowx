@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { SupplyData } from '@/entities/stock/types'
 import { runWhyNowEngine } from '@/features/why-now-engine/model/scoreEngine'
 import { SignalGrade } from '@/features/why-now-engine/types'
@@ -13,7 +14,7 @@ const GRADE_CONFIG: Record<SignalGrade, { label: string; color: string; bg: stri
 export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
   if (!supplyData || supplyData.length < 5) return null
 
-  const result = runWhyNowEngine(supplyData)
+  const result = useMemo(() => runWhyNowEngine(supplyData), [supplyData])
   const cfg = GRADE_CONFIG[result.grade]
 
   return (

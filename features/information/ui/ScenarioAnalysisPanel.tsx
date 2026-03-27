@@ -93,24 +93,27 @@ function getDirectionInfo(impact: string): { emoji: string; color: string; label
   return { emoji: '🟡', color: '#f59e0b', label: '보합' }
 }
 
+const LABEL_MAP = new Map(LABEL_ENTRIES)
+const SUBTITLE_MAP = new Map(SUBTITLE_ENTRIES)
+
 /** 시나리오 이름 한글화 — 정확 매칭 → 부분 매칭(includes) 폴백 */
 function getScenarioLabel(name: string): string {
   const n = name.trim()
-  // 1. 정확 매칭
-  const exact = LABEL_ENTRIES.find(([k]) => k === n)
-  if (exact) return exact[1]
-  // 2. 부분 매칭 (DB에서 "예상대로 (컨센서스)" 같이 올 수 있음)
-  const partial = LABEL_ENTRIES.find(([k]) => n.includes(k) || k.includes(n))
-  if (partial) return partial[1]
+  const exact = LABEL_MAP.get(n)
+  if (exact) return exact
+  for (const [k, v] of LABEL_MAP) {
+    if (n.includes(k) || k.includes(n)) return v
+  }
   return name
 }
 
 function getScenarioSubtitle(name: string): string | null {
   const n = name.trim()
-  const exact = SUBTITLE_ENTRIES.find(([k]) => k === n)
-  if (exact) return exact[1]
-  const partial = SUBTITLE_ENTRIES.find(([k]) => n.includes(k) || k.includes(n))
-  if (partial) return partial[1]
+  const exact = SUBTITLE_MAP.get(n)
+  if (exact) return exact
+  for (const [k, v] of SUBTITLE_MAP) {
+    if (n.includes(k) || k.includes(n)) return v
+  }
   return null
 }
 
@@ -148,9 +151,7 @@ function SimpleScenarioCard({ sc }: { sc: ScenarioOption }) {
           <span className="text-lg">{dir.emoji}</span>
           <div className="flex-1 min-w-0">
             <span className="text-sm text-[#e2e8f0] font-bold">{getScenarioLabel(sc.name)}</span>
-            {getScenarioSubtitle(sc.name) && (
-              <div className="text-[11px] text-[#64748b] mt-0.5">{getScenarioSubtitle(sc.name)}</div>
-            )}
+            {getScenarioSubtitle(sc.name) && <div className="text-[11px] text-[#64748b] mt-0.5">{getScenarioSubtitle(sc.name)}</div>}
           </div>
           <span className="text-2xl sm:text-3xl font-black tabular-nums shrink-0" style={{ color: dir.color }}>
             {sc.probability}%
@@ -209,8 +210,8 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
         )}
       </div>
       <div className="space-y-1.5">
-        {(item.scenarios ?? []).map((sc) => (
-          <SimpleScenarioCard key={sc.name} sc={sc} />
+        {(item.scenarios ?? []).map((sc, idx) => (
+          <SimpleScenarioCard key={`${sc.name}-${idx}`} sc={sc} />
         ))}
       </div>
     </div>
