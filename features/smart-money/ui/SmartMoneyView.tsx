@@ -55,7 +55,7 @@ export default function SmartMoneyView() {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-3">
+      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="h-16 bg-gray-800 rounded-lg" />
         ))}
@@ -65,7 +65,7 @@ export default function SmartMoneyView() {
 
   if (!items.length) {
     return (
-      <div className="text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
         <p className="text-gray-500">세력 포착 데이터가 아직 없습니다.</p>
         <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -77,7 +77,7 @@ export default function SmartMoneyView() {
   const inst = items.filter((i) => i.signal_type === 'INST_BUY')
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>

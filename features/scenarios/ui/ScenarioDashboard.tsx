@@ -37,7 +37,7 @@ export default function ScenarioDashboardView() {
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-6">
+      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-20 bg-gray-800 rounded-lg" />
@@ -51,7 +51,7 @@ export default function ScenarioDashboardView() {
 
   if (!data) {
     return (
-      <div className="text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
         <p className="text-gray-500">시나리오 데이터가 아직 없습니다.</p>
         <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -59,7 +59,7 @@ export default function ScenarioDashboardView() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
       <section>
         <MarketStatusBar status={data.market_status} />
       </section>
