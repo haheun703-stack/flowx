@@ -18,7 +18,6 @@ export async function collectSupplyDemand(): Promise<{ ok: boolean }> {
   const supabase = getSupabaseAdmin()
 
   const payload = {
-    id: `supply-${date}`,
     date,
     foreign_net: trend.foreign_net,
     inst_net: trend.inst_net,
@@ -40,7 +39,7 @@ export async function collectSupplyDemand(): Promise<{ ok: boolean }> {
     updated_at: new Date().toISOString(),
   }
 
-  const { error } = await supabase.from('intelligence_supply_demand').upsert(payload)
+  const { error } = await supabase.from('intelligence_supply_demand').upsert(payload, { onConflict: 'date' })
   if (error) throw new Error(`supply_demand upsert: ${error.message}`)
 
   return { ok: true }

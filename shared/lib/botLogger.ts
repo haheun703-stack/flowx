@@ -83,18 +83,25 @@ export function botTimer(botName: BotName) {
 
 // ── 데이터 신선도 체크 ──
 
-const FRESHNESS_CHECKS: { table: string; label: string; field: string; maxHours: number }[] = [
-  { table: 'market_snapshots', label: '시장 데이터', field: 'updated_at', maxHours: 6 },
+/** 주말(토·일)이면 true — KIS API 비활성 기간 */
+function isWeekend(): boolean {
+  const kstDay = new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCDay()
+  return kstDay === 0 || kstDay === 6
+}
+
+const FRESHNESS_CHECKS: { table: string; label: string; field: string; maxHours: number; weekendExtra?: number }[] = [
+  { table: 'market_snapshots', label: '시장 데이터', field: 'updated_at', maxHours: 6, weekendExtra: 60 },
   { table: 'macro_data', label: '매크로 데이터', field: 'updated_at', maxHours: 26 },
-  { table: 'short_signals', label: '매매 시그널', field: 'created_at', maxHours: 26 },
+  { table: 'short_signals', label: '매매 시그널', field: 'created_at', maxHours: 26, weekendExtra: 60 },
   { table: 'intelligence_news', label: '뉴스', field: 'created_at', maxHours: 26 },
-  { table: 'intelligence_supply_demand', label: '수급 흐름', field: 'updated_at', maxHours: 26 },
+  { table: 'intelligence_supply_demand', label: '수급 흐름', field: 'updated_at', maxHours: 26, weekendExtra: 60 },
 ]
 
 /** Supabase 각 테이블의 최신 데이터 시간 조회 */
 export async function checkDataFreshness(): Promise<DataFreshness[]> {
   const supabase = getSupabaseAdmin()
   const now = Date.now()
+  const weekend = isWeekend()
   const results: DataFreshness[] = []
 
   for (const check of FRESHNESS_CHECKS) {
@@ -114,9 +121,10 @@ export async function checkDataFreshness(): Promise<DataFreshness[]> {
       const ts = String((data as unknown as Record<string, unknown>)[check.field] ?? '')
       const age_hours = Math.round((now - new Date(ts).getTime()) / (1000 * 60 * 60) * 10) / 10
 
+      const limit = weekend && check.weekendExtra ? check.weekendExtra : check.maxHours
       let status: DataFreshness['status'] = 'fresh'
-      if (age_hours > check.maxHours * 3) status = 'critical'
-      else if (age_hours > check.maxHours) status = 'stale'
+      if (age_hours > limit * 3) status = 'critical'
+      else if (age_hours > limit) status = 'stale'
 
       results.push({ table: check.table, label: check.label, last_updated: ts, age_hours, status })
     } catch {
