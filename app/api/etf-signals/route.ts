@@ -1,51 +1,33 @@
-import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
+import { getSupabase } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const supabase = getSupabaseAdmin()
+    const supabase = getSupabase()
 
-    const { data: latest } = await supabase
-      .from('etf_signals')
-      .select('date')
-      .order('date', { ascending: false })
-      .limit(1)
-      .single()
-
-    if (!latest) return NextResponse.json([])
-
+    // 최신 날짜 기준 전체 ETF, 점수 내림차순
     const { data, error } = await supabase
-      .from('etf_signals')
+      .from('dashboard_etf_signals')
       .select('*')
-      .eq('date', latest.date)
-      .order('sector_rotation_rank', { ascending: true })
+      .order('date', { ascending: false })
+      .order('score', { ascending: false })
+      .limit(100)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    const SIGNAL_KR: Record<string, string> = {
-      STRONG_BUY: '적극매수', BUY: '매수', HOLD: '관망', SELL: '매도', STRONG_SELL: '적극매도',
+    if (error) {
+      console.error('[API /etf-signals] Supabase error:', error.message)
+      return NextResponse.json({ error: 'ETF 시그널 조회 오류' }, { status: 500 })
     }
 
-    const mapped = (data ?? []).map((row: Record<string, unknown>) => ({
-      date: row.date,
-      sector: row.name,
-      etf_code: row.code,
-      etf_name: row.name,
-      close: 0,
-      ret_1: (row.change_1d as number) ?? 0,
-      ret_5: (row.change_5d as number) ?? 0,
-      ret_20: 0,
-      rsi: (row.rsi as number) ?? 0,
-      score: (row.score as number) ?? 0,
-      grade: SIGNAL_KR[row.signal as string] ?? '관망',
-      sector_rotation_rank: (row.sector_rotation_rank as number) ?? 0,
-      reasons: [],
-    }))
-    return NextResponse.json(mapped)
-  } catch (e) {
-    console.error('etf-signals error:', e)
-    return NextResponse.json([])
+    if (!data?.length) return NextResponse.json({ items: [], date: null })
+
+    const latestDate = data[0].date
+    const items = data.filter((d) => d.date === latestDate)
+
+    return NextResponse.json({ items, date: latestDate })
+  } catch (err) {
+    console.error('[API /etf-signals] error:', err)
+    return NextResponse.json({ error: 'ETF 시그널 조회 오류' }, { status: 500 })
   }
 }

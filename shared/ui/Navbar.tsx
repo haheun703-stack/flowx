@@ -33,6 +33,10 @@ export function Navbar() {
             인포메이션
             <span className="text-[8px] px-1 py-px rounded border border-[#00ff88]/40 text-[#00ff88] font-bold leading-tight">SIGNAL</span>
           </Link>
+          <Link href="/etf-signals" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            ETF시그널
+            <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
           <Link href="/scenario" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
             시나리오
             <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
