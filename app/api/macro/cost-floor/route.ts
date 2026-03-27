@@ -52,6 +52,6 @@ export async function GET() {
     return NextResponse.json({ items })
   } catch (e) {
     console.error('[macro/cost-floor]', e)
-    return NextResponse.json({ items: [] })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

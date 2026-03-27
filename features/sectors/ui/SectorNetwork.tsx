@@ -42,7 +42,7 @@ const RELATION_KO: Record<string, string> = {
 }
 
 const CANVAS_FONT = '-apple-system, "Malgun Gothic", "맑은 고딕", sans-serif'
-const TIER_LABELS: Record<number, string> = {
+const NETWORK_TIER_LABELS: Record<number, string> = {
   5: 'ETF', 4: '글로벌', 3: '소부장·장비', 2: '한국 대형', 1: '한국 소부장',
 }
 
@@ -195,11 +195,20 @@ function buildSankey(
     }
   }
 
-  // 5. 링크 Y offset
+  // 5. 링크 Y offset — per-node link count 기반 (BUG-04 수정)
   const nodeOutOff = new Map<string, number>()
   const nodeInOff = new Map<string, number>()
   const sankeyLinks: SankeyLink[] = []
   const sorted = Array.from(aggLinks.values()).sort((a, b) => b.strength - a.strength)
+
+  // 노드별 연결 링크 총 높이 사전 계산
+  const nodeOutTotal = new Map<string, number>()
+  const nodeInTotal = new Map<string, number>()
+  for (const a of sorted) {
+    const linkH = Math.max(2, a.strength * LINK_SCALE)
+    nodeOutTotal.set(a.sourceId, (nodeOutTotal.get(a.sourceId) ?? 0) + linkH + 1)
+    nodeInTotal.set(a.targetId, (nodeInTotal.get(a.targetId) ?? 0) + linkH + 1)
+  }
 
   for (const a of sorted) {
     const sn = groupMap.get(a.sourceId)
@@ -210,17 +219,19 @@ function buildSankey(
     const oOff = nodeOutOff.get(a.sourceId) ?? 0
     const iOff = nodeInOff.get(a.targetId) ?? 0
 
-    // Y는 노드 중앙 부근에서 시작
+    // Y는 노드 중앙 부근에서 시작 — per-node fan 크기 사용
     const sCenter = sn.y + sn.h / 2
     const tCenter = tn.y + tn.h / 2
+    const srcFan = nodeOutTotal.get(a.sourceId) ?? linkH
+    const tgtFan = nodeInTotal.get(a.targetId) ?? linkH
 
     sankeyLinks.push({
       sourceId: a.sourceId,
       targetId: a.targetId,
       strength: a.strength,
       relations: Array.from(a.relations),
-      sourceY: sCenter - (sorted.length * linkH / 4) + oOff + linkH / 2,
-      targetY: tCenter - (sorted.length * linkH / 4) + iOff + linkH / 2,
+      sourceY: sCenter - srcFan / 2 + oOff + linkH / 2,
+      targetY: tCenter - tgtFan / 2 + iOff + linkH / 2,
     })
 
     nodeOutOff.set(a.sourceId, oOff + linkH + 1)
@@ -258,10 +269,11 @@ export function SectorNetwork({
   const sankeyRef = useRef<{ nodes: SankeyNode[]; links: SankeyLink[] }>({ nodes: [], links: [] })
   const hoveredRef = useRef<string | null>(null)
   const selectedRef = useRef<string | null>(null)
-  const needsDrawRef = useRef(true)
   const animRef = useRef<number>(0)
   const themeMatchRef = useRef<Set<string>>(new Set())
   const hasThemeRef = useRef(false)
+  const dimsRef = useRef({ w: 0, h: 0, dpr: 1 })
+  const truncCache = useRef(new Map<string, string>())
 
   const [tooltip, setTooltip] = useState<{
     x: number; y: number
@@ -279,8 +291,21 @@ export function SectorNetwork({
     }
     themeMatchRef.current = set
     hasThemeRef.current = !!activeTheme && set.size > 0
-    needsDrawRef.current = true
   }, [activeTheme, allStocks])
+
+  // ── Canvas 사이즈 세팅 (리사이즈 시에만) ──
+  const syncCanvasSize = useCallback(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const dpr = window.devicePixelRatio || 1
+    const w = canvas.offsetWidth
+    const h = canvas.offsetHeight
+    if (dimsRef.current.w === w && dimsRef.current.h === h && dimsRef.current.dpr === dpr) return
+    canvas.width = w * dpr
+    canvas.height = h * dpr
+    dimsRef.current = { w, h, dpr }
+    truncCache.current.clear()
+  }, [])
 
   // ── Canvas Draw ──
   const draw = useCallback(() => {
@@ -289,12 +314,8 @@ export function SectorNetwork({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const dpr = window.devicePixelRatio || 1
-    const w = canvas.offsetWidth
-    const h = canvas.offsetHeight
-    canvas.width = w * dpr
-    canvas.height = h * dpr
-    ctx.scale(dpr, dpr)
+    const { w, h, dpr } = dimsRef.current
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, w, h)
 
     const { nodes, links: sLinks } = sankeyRef.current
@@ -323,23 +344,25 @@ export function SectorNetwork({
     }
 
     // ── Tier 헤더 ──
-    const drawnTiers = new Set<number>()
+    const tierFirstNode = new Map<number, SankeyNode>()
     for (const n of nodes) {
-      if (drawnTiers.has(n.tier)) continue
-      drawnTiers.add(n.tier)
+      if (!tierFirstNode.has(n.tier)) tierFirstNode.set(n.tier, n)
+    }
+    const drawnTiers = Array.from(tierFirstNode.keys()).sort((a, b) => b - a)
+    for (const tier of drawnTiers) {
+      const n = tierFirstNode.get(tier)!
       ctx.font = `bold 14px ${CANVAS_FONT}`
       ctx.textAlign = 'center'
       ctx.fillStyle = '#e2e8f0'
-      ctx.fillText(TIER_LABELS[n.tier] ?? `Tier ${n.tier}`, n.x + n.w / 2, 30)
+      ctx.fillText(NETWORK_TIER_LABELS[tier] ?? `Tier ${tier}`, n.x + n.w / 2, 30)
     }
     // Tier 간 화살표
-    const sortedTiers = Array.from(drawnTiers).sort((a, b) => b - a)
     ctx.font = `16px ${CANVAS_FONT}`
     ctx.fillStyle = '#475569'
     ctx.textAlign = 'center'
-    for (let i = 0; i < sortedTiers.length - 1; i++) {
-      const n1 = nodes.find(n => n.tier === sortedTiers[i])
-      const n2 = nodes.find(n => n.tier === sortedTiers[i + 1])
+    for (let i = 0; i < drawnTiers.length - 1; i++) {
+      const n1 = tierFirstNode.get(drawnTiers[i])
+      const n2 = tierFirstNode.get(drawnTiers[i + 1])
       if (n1 && n2) ctx.fillText('→', (n1.x + n1.w + n2.x) / 2, 30)
     }
 
@@ -432,22 +455,28 @@ export function SectorNetwork({
       const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
       const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
 
+      ctx.font = `12px ${CANVAS_FONT}`
+      const maxNameW = n.w - 60
+
       for (let si = 0; si < visible.length; si++) {
         const cy = n.y + HEADER_H + 4 + si * LINE_H + 12
         const name = getDisplayName(visible[si])
         const pct = n.changePcts[si] ?? 0
 
-        // 종목명 (왼쪽 정렬, 흰색)
+        // 종목명 (캐시된 truncation)
         ctx.font = `12px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
         ctx.fillStyle = '#e2e8f0'
-        // 이름이 너무 길면 자르기
-        const maxNameW = n.w - 60
-        let displayN = name
-        while (ctx.measureText(displayN).width > maxNameW && displayN.length > 2) {
-          displayN = displayN.slice(0, -1)
+        const cacheKey = `${name}|${maxNameW}`
+        let displayN = truncCache.current.get(cacheKey)
+        if (displayN === undefined) {
+          displayN = name
+          while (ctx.measureText(displayN).width > maxNameW && displayN.length > 2) {
+            displayN = displayN.slice(0, -1)
+          }
+          if (displayN !== name) displayN += '…'
+          truncCache.current.set(cacheKey, displayN)
         }
-        if (displayN !== name) displayN += '…'
         ctx.fillText(displayN, n.x + 8, cy)
 
         // 등락률 (오른쪽 정렬)
@@ -499,8 +528,21 @@ export function SectorNetwork({
         labelIdx++
       }
     }
+  }, [])
 
-    needsDrawRef.current = false
+  // ── on-demand 드로우 스케줄러 (BUG-01 수정: rAF 무한 루프 제거) ──
+  const scheduleDraw = useCallback(() => {
+    if (animRef.current) return
+    animRef.current = requestAnimationFrame(() => {
+      animRef.current = 0
+      syncCanvasSize()
+      draw()
+    })
+  }, [draw, syncCanvasSize])
+
+  // cleanup
+  useEffect(() => {
+    return () => { cancelAnimationFrame(animRef.current) }
   }, [])
 
   // 그래프 초기화
@@ -508,21 +550,31 @@ export function SectorNetwork({
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
     sankeyRef.current = buildSankey(allStocks, links, w, canvasHeight)
-    needsDrawRef.current = true
+    truncCache.current.clear()
+    syncCanvasSize()
     draw()
-  }, [allStocks, links, draw, canvasHeight])
+  }, [allStocks, links, draw, canvasHeight, syncCanvasSize])
 
-  // rAF 루프
+  // 테마 변경 시 리드로우
   useEffect(() => {
-    let active = true
-    const loop = () => {
-      if (!active) return
-      if (needsDrawRef.current) draw()
-      animRef.current = requestAnimationFrame(loop)
-    }
-    animRef.current = requestAnimationFrame(loop)
-    return () => { active = false; cancelAnimationFrame(animRef.current) }
-  }, [draw])
+    scheduleDraw()
+  }, [activeTheme, scheduleDraw])
+
+  // 리사이즈 감지
+  useEffect(() => {
+    if (!containerRef.current) return
+    const obs = new ResizeObserver(() => {
+      // 리사이즈 시 sankey 재빌드 + 캐시 클리어
+      if (!containerRef.current) return
+      const w = containerRef.current.offsetWidth
+      sankeyRef.current = buildSankey(allStocks, links, w, canvasHeight)
+      truncCache.current.clear()
+      syncCanvasSize()
+      draw()
+    })
+    obs.observe(containerRef.current)
+    return () => obs.disconnect()
+  }, [allStocks, links, canvasHeight, draw, syncCanvasSize])
 
   // ── 히트 테스트 ──
   const findNode = useCallback((mx: number, my: number): SankeyNode | null => {
@@ -532,12 +584,32 @@ export function SectorNetwork({
     return null
   }, [])
 
-  const getPos = useCallback((e: React.MouseEvent) => {
+  const getPos = useCallback((e: React.MouseEvent | React.Touch) => {
     const canvas = canvasRef.current
     if (!canvas) return { x: 0, y: 0 }
     const rect = canvas.getBoundingClientRect()
     const zoom = rect.width / canvas.offsetWidth || 1
     return { x: (e.clientX - rect.left) / zoom, y: (e.clientY - rect.top) / zoom }
+  }, [])
+
+  const showTooltipForNode = useCallback((node: SankeyNode, pos: { x: number; y: number }) => {
+    const avgPct = node.changePcts.length > 0
+      ? node.changePcts.reduce((a, b) => a + b, 0) / node.changePcts.length : 0
+    const totalForeign = node.foreignNets.reduce((a, b) => a + b, 0)
+    const rels: string[] = []
+    for (const l of sankeyRef.current.links) {
+      if (l.sourceId === node.id || l.targetId === node.id) {
+        for (const r of l.relations) rels.push(RELATION_KO[r] ?? r)
+      }
+    }
+    setTooltip({
+      x: pos.x, y: pos.y - 16,
+      name: node.subCategory,
+      stockList: node.stockNames.map(getDisplayName),
+      changePct: avgPct,
+      foreignNet: totalForeign,
+      relations: [...new Set(rels)],
+    })
   }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -547,43 +619,51 @@ export function SectorNetwork({
     hoveredRef.current = node?.id ?? null
 
     if (hoveredRef.current !== prev) {
-      needsDrawRef.current = true
+      scheduleDraw()
       if (node) {
-        const avgPct = node.changePcts.length > 0
-          ? node.changePcts.reduce((a, b) => a + b, 0) / node.changePcts.length : 0
-        const totalForeign = node.foreignNets.reduce((a, b) => a + b, 0)
-        const rels: string[] = []
-        for (const l of sankeyRef.current.links) {
-          if (l.sourceId === node.id || l.targetId === node.id) {
-            for (const r of l.relations) rels.push(RELATION_KO[r] ?? r)
-          }
-        }
-        setTooltip({
-          x: pos.x, y: pos.y - 16,
-          name: node.subCategory,
-          stockList: node.stockNames.map(getDisplayName),
-          changePct: avgPct,
-          foreignNet: totalForeign,
-          relations: [...new Set(rels)],
-        })
+        showTooltipForNode(node, pos)
       } else {
         setTooltip(null)
       }
     }
-  }, [findNode, getPos])
+  }, [findNode, getPos, scheduleDraw, showTooltipForNode])
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     const pos = getPos(e)
     const node = findNode(pos.x, pos.y)
     selectedRef.current = node ? (selectedRef.current === node.id ? null : node.id) : null
-    needsDrawRef.current = true
-  }, [findNode, getPos])
+    scheduleDraw()
+  }, [findNode, getPos, scheduleDraw])
 
   const handleMouseLeave = useCallback(() => {
     hoveredRef.current = null
     setTooltip(null)
-    needsDrawRef.current = true
-  }, [])
+    scheduleDraw()
+  }, [scheduleDraw])
+
+  // ── 터치 지원 (UX-02) ──
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    if (!touch) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const rect = canvas.getBoundingClientRect()
+    const zoom = rect.width / canvas.offsetWidth || 1
+    const pos = { x: (touch.clientX - rect.left) / zoom, y: (touch.clientY - rect.top) / zoom }
+    const node = findNode(pos.x, pos.y)
+    if (node) {
+      e.preventDefault()
+      selectedRef.current = selectedRef.current === node.id ? null : node.id
+      hoveredRef.current = node.id
+      showTooltipForNode(node, pos)
+      scheduleDraw()
+    } else {
+      selectedRef.current = null
+      hoveredRef.current = null
+      setTooltip(null)
+      scheduleDraw()
+    }
+  }, [findNode, scheduleDraw, showTooltipForNode])
 
   const formatForeign = (v: number) => {
     if (Math.abs(v) >= 1e8) return `${v > 0 ? '+' : ''}${(v / 1e8).toFixed(0)}억`
@@ -597,9 +677,13 @@ export function SectorNetwork({
         ref={canvasRef}
         className="w-full h-full"
         style={{ cursor: 'pointer' }}
+        role="img"
+        aria-label={`${allStocks.length}개 종목의 공급망 네트워크 시각화`}
+        tabIndex={0}
         onMouseMove={handleMouseMove}
         onClick={handleClick}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
       />
       {tooltip && (
         <div

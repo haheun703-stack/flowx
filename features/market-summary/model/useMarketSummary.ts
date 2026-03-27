@@ -6,15 +6,14 @@ import { IntradayPoint, IndexCard, SectorData, SupplyStock, WatchItem } from '..
 import { KoreanTicker, WorldIndex } from '@/features/market-ticker/types'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
 
-export function useMarketSummary() {
-  const marketOpen = isMarketOpen()
-  const fastInterval = marketOpen ? 1000 * 60 : 1000 * 60 * 10
-  const slowInterval = marketOpen ? 1000 * 60 * 5 : 1000 * 60 * 10
+const fastInterval = () => isMarketOpen() ? 60_000 : 600_000
+const slowInterval = () => isMarketOpen() ? 300_000 : 600_000
 
+export function useMarketSummary() {
   const intradayQuery = useQuery<IntradayPoint[]>({
     queryKey: ['market-intraday'],
     queryFn: () => fetchJson('/api/market/intraday'),
-    staleTime: 1000 * 30,
+    staleTime: 30_000,
     refetchInterval: fastInterval,
   })
 

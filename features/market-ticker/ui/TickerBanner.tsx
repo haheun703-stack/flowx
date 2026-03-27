@@ -4,7 +4,7 @@ import { WorldIndexRow } from './WorldIndexRow'
 import { KoreanTickerRow } from './KoreanTickerRow'
 
 export function TickerBanner() {
-  const { worldIndices, koreanTickers, isLoading, isMarketOpen } = useMarketTicker()
+  const { worldIndices, koreanTickers, isLoading } = useMarketTicker()
 
   if (isLoading) {
     return (
@@ -23,7 +23,7 @@ export function TickerBanner() {
       {/* 1행: 세계 지수 */}
       <WorldIndexRow indices={worldIndices} />
       {/* 2행: 한국 시장 */}
-      <KoreanTickerRow tickers={koreanTickers} isMarketOpen={isMarketOpen} />
+      <KoreanTickerRow tickers={koreanTickers} />
     </div>
   )
 }

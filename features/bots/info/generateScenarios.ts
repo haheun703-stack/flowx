@@ -64,10 +64,10 @@ export async function generateScenarios(): Promise<{ ok: boolean; count: number 
     created_at: new Date().toISOString(),
   }))
 
-  // 기존 오늘 데이터 삭제 후 삽입
-  await supabase.from('intelligence_scenarios').delete().eq('date', date).eq('session', 'PM')
+  // insert 먼저 → 성공 시 이전 데이터 삭제 (데이터 유실 방지)
   const { error } = await supabase.from('intelligence_scenarios').insert(rows)
   if (error) throw new Error(`scenarios insert: ${error.message}`)
+  await supabase.from('intelligence_scenarios').delete().eq('date', date).eq('session', 'PM').lt('created_at', rows[0].created_at)
 
   return { ok: true, count: rows.length }
 }

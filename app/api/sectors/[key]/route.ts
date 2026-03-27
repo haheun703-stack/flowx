@@ -12,7 +12,7 @@ export async function GET(
 
   // Validate sector key
   if (!SECTOR_LIST.some((s) => s.key === key)) {
-    return NextResponse.json({ error: `Invalid sector: ${key}` }, { status: 404 })
+    return NextResponse.json({ error: 'Sector not found' }, { status: 404 })
   }
 
   try {

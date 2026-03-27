@@ -38,7 +38,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
   return (
     <Link
       href={`/sectors/${sector.key}`}
-      className="group block bg-gray-900 rounded-xl p-5 min-h-[200px] hover:border hover:border-[#534AB7] transition-all hover:bg-gray-800/30"
+      className="group block bg-gray-900 rounded-xl p-5 min-h-[200px] border border-transparent hover:border-[#534AB7] transition-all hover:bg-gray-800/30"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">

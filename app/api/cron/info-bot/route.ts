@@ -29,11 +29,10 @@ export async function GET(req: Request) {
     collectNews(),
   ])
 
-  // Step 2: AI 생성 (수집 데이터 필요 → 순차)
-  const aiResults = await Promise.allSettled([
-    generateScenarios(),
-    generateBriefing(),
-  ])
+  // Step 2: AI 생성 (briefing은 scenarios 데이터를 읽으므로 순차 실행)
+  const scenarioResult = await Promise.allSettled([generateScenarios()])
+  const briefingResult = await Promise.allSettled([generateBriefing()])
+  const aiResults = [...scenarioResult, ...briefingResult]
 
   const summary = {
     macro: fmt(collectResults[0]),

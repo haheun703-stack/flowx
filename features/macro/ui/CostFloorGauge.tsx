@@ -73,7 +73,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         {/* Current price */}
         <text x={CX} y={CY - 24} textAnchor="middle" fill="#e2e8f0" fontSize="15" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.current_price?.toLocaleString() ?? '—'}
+          {item.current_price?.toLocaleString('ko-KR') ?? '—'}
         </text>
         {/* Position % */}
         <text x={CX} y={CY - 10} textAnchor="middle" fill={color} fontSize="12" fontWeight="bold">
@@ -85,7 +85,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         </text>
         <text x={CX - R} y={CY + 27} textAnchor="start" fill="#666" fontSize="10" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.floor_price.toLocaleString()}
+          {item.floor_price.toLocaleString('ko-KR')}
         </text>
         {/* Ceiling label (right) */}
         <text x={CX + R} y={CY + 15} textAnchor="end" fill="#555" fontSize="9">
@@ -93,7 +93,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         </text>
         <text x={CX + R} y={CY + 27} textAnchor="end" fill="#666" fontSize="10" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.ceiling_price.toLocaleString()}
+          {item.ceiling_price.toLocaleString('ko-KR')}
         </text>
       </svg>
 
@@ -113,7 +113,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
 }
 
 export function CostFloorGauge() {
-  const { data, isLoading } = useCostFloor()
+  const { data, isLoading, isError } = useCostFloor()
   const items = data?.items ?? []
 
   if (isLoading) {
@@ -122,6 +122,14 @@ export function CostFloorGauge() {
         {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
         ))}
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-32 text-red-400/70 text-sm">
+        원가 데이터 로드 실패
       </div>
     )
   }

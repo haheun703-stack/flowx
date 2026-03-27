@@ -21,7 +21,8 @@ function saveCache(raw: { time: string; value: number }[]) {
 function loadCache(): { time: string; value: number }[] | null {
   try {
     const data = JSON.parse(readFileSync(CACHE_FILE, 'utf-8'))
-    if (data?.raw?.length > 0) return data.raw
+    const today = new Date().toISOString().split('T')[0]
+    if (data?.date === today && data?.raw?.length > 0) return data.raw
   } catch { /* ignore */ }
   return null
 }
@@ -68,11 +69,13 @@ function loadDailyFallback(marketOpen: boolean) {
     try {
       const regime = JSON.parse(readFileSync(path.join(DATA_ROOT, 'kospi_regime.json'), 'utf-8'))
       if (regime.close) {
+        const regimeChange = regime.change ?? change
+        const regimePct = regime.changePercent ?? (regime.close - regimeChange > 0 ? (regimeChange / (regime.close - regimeChange)) * 100 : changePercent)
         return {
           points,
           currentPrice: regime.close,
-          change: regime.change ?? change,
-          changePercent: regime.change ?? changePercent,
+          change: regimeChange,
+          changePercent: regimePct,
           marketOpen,
           mode: 'daily' as const,
         }

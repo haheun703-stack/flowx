@@ -15,7 +15,7 @@ export function WhaleDetectCard() {
 
   if (isLoading || !data) return <CardSkeleton />
 
-  const topItems = data.items
+  const topItems = [...data.items]
     .sort((a, b) => b.strength - a.strength)
     .slice(0, 8)
 

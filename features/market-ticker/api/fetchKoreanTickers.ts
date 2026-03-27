@@ -1,6 +1,19 @@
 import { KoreanTicker } from '../types'
 import { getKISToken } from '@/shared/lib/kisAuth'
 import { getSupabaseAdmin } from '@/lib/supabase'
+
+const KIS_APP_KEY = process.env.KIS_APP_KEY ?? ''
+const KIS_APP_SECRET = process.env.KIS_APP_SECRET ?? ''
+
+/** KIS API rate limit 방지: 배열을 size 단위로 나눠 순차 실행 */
+async function batchAll<T>(fns: (() => Promise<T>)[], size = 5): Promise<T[]> {
+  const results: T[] = []
+  for (let i = 0; i < fns.length; i += size) {
+    const batch = await Promise.all(fns.slice(i, i + size).map(fn => fn()))
+    results.push(...batch)
+  }
+  return results
+}
 export const KOREAN_STOCKS = [
   { code: '005930', name: '삼성전자' },
   { code: '000660', name: 'SK하이닉스' },
@@ -37,8 +50,8 @@ export async function fetchKISPrice(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'appkey': process.env.KIS_APP_KEY!,
-          'appsecret': process.env.KIS_APP_SECRET!,
+          'appkey': KIS_APP_KEY,
+          'appsecret': KIS_APP_SECRET,
           'tr_id': 'FHKST01010100', // 주식 현재가 TR
         },
         next: { revalidate: 0 },
@@ -74,8 +87,8 @@ export async function fetchKISIndex(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'appkey': process.env.KIS_APP_KEY!,
-          'appsecret': process.env.KIS_APP_SECRET!,
+          'appkey': KIS_APP_KEY,
+          'appsecret': KIS_APP_SECRET,
           'tr_id': 'FHPUP02100000', // 지수 현재가 TR
         },
         next: { revalidate: 0 },
@@ -108,8 +121,8 @@ export async function fetchInvestorTrend(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'appkey': process.env.KIS_APP_KEY!,
-          'appsecret': process.env.KIS_APP_SECRET!,
+          'appkey': KIS_APP_KEY,
+          'appsecret': KIS_APP_SECRET,
           'tr_id': 'FHPTJ04400000', // 투자자별 매매동향
         },
         next: { revalidate: 0 },
@@ -163,8 +176,8 @@ export async function fetchSectorPrices(
   ]
 
   try {
-    const results = await Promise.all(
-      SECTORS.slice(4).map(async (s) => { // 종합/대형/중형/소형 제외
+    return await batchAll(
+      SECTORS.slice(4).map((s) => async () => { // 종합/대형/중형/소형 제외
         try {
           const res = await fetch(
             `https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/inquire-index-price?fid_cond_mrkt_div_code=U&fid_input_iscd=${s.code}`,
@@ -172,8 +185,8 @@ export async function fetchSectorPrices(
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
-                'appkey': process.env.KIS_APP_KEY!,
-                'appsecret': process.env.KIS_APP_SECRET!,
+                'appkey': KIS_APP_KEY,
+                'appsecret': KIS_APP_SECRET,
                 'tr_id': 'FHPUP02100000',
               },
               next: { revalidate: 0 },
@@ -190,16 +203,15 @@ export async function fetchSectorPrices(
         } catch {
           return { name: s.name, changePercent: 0 }
         }
-      })
+      }),
     )
-    return results
   } catch {
     return []
   }
 }
 
 // 최근 종가 폴백 (주말/API 장애 시 사용)
-const FALLBACK_PRICES: Record<string, { price: number; changePercent: number }> = {
+export const FALLBACK_PRICES: Record<string, { price: number; changePercent: number }> = {
   '0001': { price: 2580, changePercent: -0.42 },    // KOSPI
   '1001': { price: 730, changePercent: 0.31 },       // KOSDAQ
   '005930': { price: 57800, changePercent: -1.20 },  // 삼성전자
@@ -250,9 +262,9 @@ async function buildSupabaseFallback(): Promise<KoreanTicker[] | null> {
       return {
         code: s.code,
         name: s.name,
-        price: snap?.price || FALLBACK_PRICES[s.code]?.price || 0,
+        price: snap?.price ?? FALLBACK_PRICES[s.code]?.price ?? 0,
         change: snap?.change ?? 0,
-        changePercent: snap?.changePercent || FALLBACK_PRICES[s.code]?.changePercent || 0,
+        changePercent: snap?.changePercent ?? FALLBACK_PRICES[s.code]?.changePercent ?? 0,
       }
     })
 
@@ -271,12 +283,14 @@ export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
     return (await buildSupabaseFallback()) ?? buildFallbackTickers()
   }
 
-  // 모든 요청 병렬 처리
-  const [kospi, kosdaq, ...stocks] = await Promise.all([
+  // 지수 2개 먼저, 종목 20개는 5개씩 배치 (KIS rate limit 방지)
+  const [kospi, kosdaq] = await Promise.all([
     fetchKISIndex('0001', token),
     fetchKISIndex('1001', token),
-    ...KOREAN_STOCKS.map(s => fetchKISPrice(s.code, token)),
   ])
+  const stocks = await batchAll(
+    KOREAN_STOCKS.map(s => () => fetchKISPrice(s.code, token)),
+  )
 
   // API가 0을 반환하면 Supabase → 하드코딩 순서로 폴백
   if (kospi.price === 0 && kosdaq.price === 0) {
@@ -291,9 +305,9 @@ export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
   const stockTickers: KoreanTicker[] = KOREAN_STOCKS.map((s, i) => ({
     code: s.code,
     name: s.name,
-    price: stocks[i]?.price || FALLBACK_PRICES[s.code]?.price || 0,
+    price: stocks[i]?.price ?? FALLBACK_PRICES[s.code]?.price ?? 0,
     change: stocks[i]?.change ?? 0,
-    changePercent: stocks[i]?.changePercent || FALLBACK_PRICES[s.code]?.changePercent || 0,
+    changePercent: stocks[i]?.changePercent ?? FALLBACK_PRICES[s.code]?.changePercent ?? 0,
   }))
 
   return [...indices, ...stockTickers]
@@ -301,16 +315,16 @@ export async function fetchKoreanTickers(): Promise<KoreanTicker[]> {
 
 function buildFallbackTickers(): KoreanTicker[] {
   const indices: KoreanTicker[] = [
-    { code: '0001', name: 'KOSPI',  price: FALLBACK_PRICES['0001'].price,  change: 0, changePercent: FALLBACK_PRICES['0001'].changePercent,  isIndex: true },
-    { code: '1001', name: 'KOSDAQ', price: FALLBACK_PRICES['1001'].price, change: 0, changePercent: FALLBACK_PRICES['1001'].changePercent, isIndex: true },
+    { code: '0001', name: 'KOSPI',  price: FALLBACK_PRICES['0001']?.price ?? 0,  change: 0, changePercent: FALLBACK_PRICES['0001']?.changePercent ?? 0,  isIndex: true },
+    { code: '1001', name: 'KOSDAQ', price: FALLBACK_PRICES['1001']?.price ?? 0, change: 0, changePercent: FALLBACK_PRICES['1001']?.changePercent ?? 0, isIndex: true },
   ]
 
   const stockTickers: KoreanTicker[] = KOREAN_STOCKS.map(s => ({
     code: s.code,
     name: s.name,
-    price: FALLBACK_PRICES[s.code]?.price || 0,
+    price: FALLBACK_PRICES[s.code]?.price ?? 0,
     change: 0,
-    changePercent: FALLBACK_PRICES[s.code]?.changePercent || 0,
+    changePercent: FALLBACK_PRICES[s.code]?.changePercent ?? 0,
   }))
 
   return [...indices, ...stockTickers]

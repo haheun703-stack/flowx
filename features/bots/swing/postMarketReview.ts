@@ -109,9 +109,9 @@ export async function postMarketReview(): Promise<{ results: ReviewResult[] }> {
       created_at: new Date().toISOString(),
     }))
 
-    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'WATCH')
     const { error } = await supabase.from('short_signals').insert(alertRows)
-    if (error) console.error('swing alert insert:', error.message)
+    if (error) throw new Error(`swing alert insert: ${error.message}`)
+    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'WATCH').lt('created_at', alertRows[0].created_at)
   }
 
   return { results }

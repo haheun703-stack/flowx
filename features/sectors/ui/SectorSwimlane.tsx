@@ -5,6 +5,8 @@ import { TIER_COLORS, TIER_LABELS, CONNECTION_COLOR } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
+const EMPTY_SET = new Set<string>()
+
 /* ── Sub-category display order ── */
 const SUB_ORDER: Record<string, number> = {
   ETF: 0, '글로벌대형': 1, '글로벌서플라이어': 2, '지주사': 3, IDM: 4,
@@ -263,6 +265,7 @@ export function SectorSwimlane({
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
+  const selectedStockRef = useRef<string | null>(null)
   const [selectedStock, setSelectedStock] = useState<string | null>(null)
   const [connectedStocks, setConnectedStocks] = useState<Set<string>>(new Set())
   const [badges, setBadges] = useState<Record<string, string>>({})
@@ -277,16 +280,17 @@ export function SectorSwimlane({
     2: '소부장',
   }
 
-  // Build theme match set
-  const hasThemeFilter = !!activeTheme
-  const themeMatchSet = new Set<string>()
-  if (hasThemeFilter) {
-    for (const stock of stocks) {
-      if (stock.theme_tags?.includes(activeTheme!)) {
-        themeMatchSet.add(stock.stock_name)
+  // Build theme match set (BUG-03: 메모이제이션 적용)
+  const themeMatchSet = useMemo(() => {
+    const set = new Set<string>()
+    if (activeTheme) {
+      for (const stock of stocks) {
+        if (stock.theme_tags?.includes(activeTheme)) set.add(stock.stock_name)
       }
     }
-  }
+    return set
+  }, [activeTheme, stocks])
+  const hasThemeFilter = !!activeTheme
 
   // Build market lookup for cross-border detection
   const marketMap = useMemo(() => {
@@ -345,9 +349,10 @@ export function SectorSwimlane({
 
   const handleStockClick = useCallback(
     (stockName: string) => {
-      if (selectedStock === stockName) {
+      if (selectedStockRef.current === stockName) {
+        selectedStockRef.current = null
         setSelectedStock(null)
-        setConnectedStocks(new Set())
+        setConnectedStocks(EMPTY_SET)
         setBadges({})
         setPaths([])
         return
@@ -367,21 +372,24 @@ export function SectorSwimlane({
         }
       }
 
+      selectedStockRef.current = stockName
       setSelectedStock(stockName)
       setConnectedStocks(connected)
       setBadges(newBadges)
 
       requestAnimationFrame(() => drawConnections(stockName, connected))
     },
-    [links, selectedStock, drawConnections],
+    [links, drawConnections],
   )
 
   // Click outside to deselect
   const handleContainerClick = useCallback(
     (e: React.MouseEvent) => {
       if ((e.target as HTMLElement).closest('[data-stock]')) return
+      if (!selectedStockRef.current) return
+      selectedStockRef.current = null
       setSelectedStock(null)
-      setConnectedStocks(new Set())
+      setConnectedStocks(EMPTY_SET)
       setBadges({})
       setPaths([])
     },

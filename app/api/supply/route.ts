@@ -5,6 +5,9 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const ticker = req.nextUrl.searchParams.get('ticker') || '005930'
+  if (!/^\d{6}$/.test(ticker)) {
+    return NextResponse.json({ error: 'Invalid ticker format' }, { status: 400 })
+  }
   try {
     const data = await fetchSupply(ticker)
     return NextResponse.json(data, {

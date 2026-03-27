@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { useRefetchInterval } from '@/shared/lib/marketUtils'
+import { getRefetchInterval } from '@/shared/lib/marketUtils'
 import { fetchJson } from '@/shared/lib/fetchJson'
 
 // --- Tomorrow Picks ---
@@ -53,7 +53,7 @@ export function useDashboardPicks() {
     queryKey: ['dashboard-picks'],
     queryFn: () => fetchJson('/api/dashboard/picks'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -84,7 +84,7 @@ export function useDashboardWhale() {
     queryKey: ['dashboard-whale'],
     queryFn: () => fetchJson('/api/dashboard/whale'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -110,7 +110,7 @@ export function useDashboardMarket() {
     queryKey: ['dashboard-market'],
     queryFn: () => fetchJson('/api/dashboard/market-report'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -140,7 +140,7 @@ export function useDashboardSector() {
     queryKey: ['dashboard-sector'],
     queryFn: () => fetchJson('/api/dashboard/sector'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -158,7 +158,7 @@ export function useDashboardSupply() {
     queryKey: ['dashboard-supply-snapshot'],
     queryFn: () => fetchJson('/api/dashboard/supply-snapshot'),
     staleTime: 1000 * 30,
-    refetchInterval: useRefetchInterval(1000 * 30, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 30, 1000 * 60 * 10),
   })
 }
 
@@ -190,7 +190,7 @@ export function useDashboardChinaMoney() {
     queryKey: ['dashboard-china-money'],
     queryFn: () => fetchJson('/api/dashboard/china-money'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -217,7 +217,7 @@ export function useDashboardSniper() {
     queryKey: ['dashboard-sniper'],
     queryFn: () => fetchJson('/api/dashboard/sniper'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -248,7 +248,7 @@ export function useDashboardEtf() {
     queryKey: ['dashboard-etf'],
     queryFn: () => fetchJson('/api/dashboard/etf'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
   })
 }
 
@@ -298,7 +298,7 @@ export function useDashboardIntraday() {
     queryKey: ['kospi-intraday'],
     queryFn: () => fetchJson('/api/market/intraday'),
     staleTime: 1000 * 60,
-    refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60, 1000 * 60 * 10),
   })
 }
 
@@ -332,7 +332,7 @@ export function useBriefing() {
     queryKey: ['briefing'],
     queryFn: () => fetchJson('/api/briefing'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -355,7 +355,7 @@ export function useHeatmap() {
     queryKey: ['heatmap'],
     queryFn: () => fetchJson('/api/heatmap'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -408,7 +408,7 @@ export function useEtfSignals() {
     queryKey: ['etf-signals'],
     queryFn: () => fetchJson('/api/etf-signals'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -432,7 +432,7 @@ export function useChinaFlow() {
     queryKey: ['china-flow'],
     queryFn: () => fetchJson('/api/china-flow'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -465,7 +465,7 @@ export function usePaperTrades() {
     queryKey: ['paper-trades'],
     queryFn: () => fetchJson('/api/paper-trades'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -492,7 +492,7 @@ export function useShortSignals(type: 'all' | 'force' | 'watch' = 'all') {
     queryKey: ['short-signals', type],
     queryFn: () => fetchJson(`/api/short-signals?type=${type}`),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -527,7 +527,7 @@ export function useScoreboard(botType: 'QUANT' | 'DAYTRADING' = 'QUANT', period:
     queryKey: ['scoreboard', botType, period],
     queryFn: () => fetchJson(`/api/scoreboard?bot_type=${botType}&period=${period}`),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -562,7 +562,7 @@ export function useSignals(botType?: string, status?: string) {
     queryKey: ['signals', botType, status],
     queryFn: () => fetchJson(`/api/signals?${params}`),
     staleTime: 1000 * 60,
-    refetchInterval: useRefetchInterval(1000 * 60, 1000 * 60 * 10),
+    refetchInterval: getRefetchInterval(1000 * 60, 1000 * 60 * 10),
   })
 }
 
@@ -583,7 +583,7 @@ export function useMorningBriefing() {
     queryKey: ['morning-briefing'],
     queryFn: () => fetchJson('/api/morning-briefing'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -617,7 +617,7 @@ export function useMarketSnapshot() {
     queryKey: ['market-snapshot'],
     queryFn: () => fetchJson('/api/market/snapshot'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
 
@@ -769,6 +769,6 @@ export function useQuantDashboard() {
     queryKey: ['quant-dashboard'],
     queryFn: () => fetchJson('/api/quant-dashboard'),
     staleTime: 1000 * 60 * 5,
-    refetchInterval: useRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }

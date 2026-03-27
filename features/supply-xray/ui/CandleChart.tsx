@@ -41,6 +41,8 @@ function calcBollinger(data: CandleData[], period = 20, mult = 2) {
 
 export function CandleChart({ data, options, onCrosshairMove }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const onCrosshairMoveRef = useRef(onCrosshairMove)
+  onCrosshairMoveRef.current = onCrosshairMove
 
   useEffect(() => {
     if (!containerRef.current || !data.length) return
@@ -138,7 +140,16 @@ export function CandleChart({ data, options, onCrosshairMove }: Props) {
     chart.timeScale().fitContent()
 
     chart.subscribeCrosshairMove(p => {
-      onCrosshairMove?.((p.time as string) ?? null)
+      if (!p.time) {
+        onCrosshairMoveRef.current?.(null)
+        return
+      }
+      if (typeof p.time === 'object' && 'year' in p.time) {
+        const { year, month, day } = p.time
+        onCrosshairMoveRef.current?.(`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`)
+      } else {
+        onCrosshairMoveRef.current?.(String(p.time))
+      }
     })
 
     const handleResize = () => {

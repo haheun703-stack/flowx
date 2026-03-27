@@ -70,13 +70,13 @@ export async function GET(req: Request) {
       created_at: new Date().toISOString(),
     }))
 
-    // 기존 오늘 QUANT 시그널 삭제 후 삽입
-    await supabase.from('short_signals').delete().eq('date', date).in('signal_type', ['BUY', 'QUANT_SELL'])
-
+    // insert 먼저 → 성공 시 이전 데이터 삭제 (데이터 유실 방지)
     const allRows = [...buyRows, ...sellRows]
     if (allRows.length > 0) {
       const { error } = await supabase.from('short_signals').insert(allRows)
-      if (error) console.error('quant signals insert:', error.message)
+      if (error) throw new Error(`quant signals insert: ${error.message}`)
+      const cutoff = allRows[0].created_at
+      await supabase.from('short_signals').delete().eq('date', date).in('signal_type', ['BUY', 'QUANT_SELL']).lt('created_at', cutoff)
     }
 
     return NextResponse.json({

@@ -84,6 +84,7 @@ async function fetchIndicesFromYahoo(): Promise<WorldIndex[]> {
         headers: { 'User-Agent': 'Mozilla/5.0' },
         next: { revalidate: 120 },
       })
+      if (!res.ok) throw new Error(`Yahoo HTTP ${res.status}`)
       const json = await res.json()
       const m = json?.chart?.result?.[0]?.meta
       if (!m?.regularMarketPrice) throw new Error('no data')
@@ -114,27 +115,31 @@ async function fetchCommodities(): Promise<WorldIndex[]> {
   const token = process.env.FINNHUB_API_KEY
   if (!token) throw new Error('No FINNHUB_API_KEY')
 
-  const results: WorldIndex[] = []
-  for (const meta of COMMODITY_META) {
-    try {
+  const settled = await Promise.allSettled(
+    COMMODITY_META.map(async (meta) => {
       const res = await fetch(
         `https://finnhub.io/api/v1/quote?symbol=${meta.finnhub}`,
         { headers: { 'X-Finnhub-Token': token }, next: { revalidate: 120 } }
       )
+      if (!res.ok) throw new Error(`Finnhub HTTP ${res.status}`)
       const q = await res.json()
       if (q.c && q.c > 0) {
-        results.push({
+        return {
           symbol: meta.symbol, name: meta.name, currency: meta.currency,
           price: q.c, change: q.d ?? 0, changePercent: q.dp ?? 0,
-          category: 'commodity', icon: meta.icon,
-        })
-        continue
+          category: 'commodity' as const, icon: meta.icon,
+        }
       }
-    } catch { /* 폴백 */ }
+      throw new Error('no data')
+    })
+  )
+
+  return settled.map((r, i) => {
+    if (r.status === 'fulfilled') return r.value
+    const meta = COMMODITY_META[i]
     const sim = simulatePrice(meta.symbol)
-    results.push({ symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'commodity', icon: meta.icon })
-  }
-  return results
+    return { symbol: meta.symbol, name: meta.name, currency: meta.currency, ...sim, category: 'commodity' as const, icon: meta.icon }
+  })
 }
 
 // ── 환율: Finnhub /forex/rates ──
@@ -152,15 +157,22 @@ async function fetchForex(): Promise<WorldIndex[]> {
     rates = json?.quote ?? {}
   } catch { /* 폴백 */ }
 
+  function forexResult(symbol: string, name: string, currency: string, price: number, icon: string): WorldIndex {
+    const base = BASE_PRICES[symbol] ?? price
+    const change = Math.round((price - base) * 10000) / 10000
+    const changePercent = base > 0 ? Math.round(((price - base) / base) * 10000) / 100 : 0
+    return { symbol, name, currency, price, change, changePercent, category: 'forex', icon }
+  }
+
   return FOREX_META.map(meta => {
     if (meta.symbol === 'USDKRW' && rates.KRW) {
-      return { symbol: meta.symbol, name: meta.name, currency: meta.currency, price: Math.round(rates.KRW * 100) / 100, change: 0, changePercent: 0, category: 'forex' as const, icon: meta.icon }
+      return forexResult(meta.symbol, meta.name, meta.currency, Math.round(rates.KRW * 100) / 100, meta.icon)
     }
     if (meta.symbol === 'USDJPY' && rates.JPY) {
-      return { symbol: meta.symbol, name: meta.name, currency: meta.currency, price: Math.round(rates.JPY * 100) / 100, change: 0, changePercent: 0, category: 'forex' as const, icon: meta.icon }
+      return forexResult(meta.symbol, meta.name, meta.currency, Math.round(rates.JPY * 100) / 100, meta.icon)
     }
     if (meta.symbol === 'EURUSD' && rates.EUR) {
-      return { symbol: meta.symbol, name: meta.name, currency: meta.currency, price: Math.round((1 / rates.EUR) * 10000) / 10000, change: 0, changePercent: 0, category: 'forex' as const, icon: meta.icon }
+      return forexResult(meta.symbol, meta.name, meta.currency, Math.round((1 / rates.EUR) * 10000) / 10000, meta.icon)
     }
     // DXY, 기타 — 시뮬레이션
     const sim = simulatePrice(meta.symbol)
@@ -215,6 +227,7 @@ async function fetchBonds(): Promise<WorldIndex[]> {
         headers: { 'User-Agent': 'Mozilla/5.0' },
         next: { revalidate: 120 },
       })
+      if (!res.ok) throw new Error(`Yahoo HTTP ${res.status}`)
       const json = await res.json()
       const m = json?.chart?.result?.[0]?.meta
       if (!m?.regularMarketPrice) throw new Error('no data')

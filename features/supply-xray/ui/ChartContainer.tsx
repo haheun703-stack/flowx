@@ -18,7 +18,7 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
     bollinger: false,
   })
 
-  const { ohlcv, supply, isLoading, isError } = useSupplyXray(ticker)
+  const { ohlcv, supply, isSimulated, isLoading, isError } = useSupplyXray(ticker)
 
   const toggleOption = (key: keyof ChartOptions) => {
     setChartOptions(prev => ({ ...prev, [key]: !prev[key] }))
@@ -46,6 +46,13 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
   return (
     <div>
       <div className="bg-[#0f1117] rounded-xl overflow-hidden border border-gray-800">
+
+        {/* 시뮬레이션 경고 */}
+        {isSimulated && (
+          <div className="px-4 py-2 bg-yellow-900/30 border-b border-yellow-700/40 text-yellow-400 text-xs">
+            수급 데이터는 시뮬레이션 값입니다 (KIS API 미응답)
+          </div>
+        )}
 
         {/* 헤더 */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">

@@ -24,15 +24,13 @@ interface TreemapResponse {
 }
 
 export function useTreemap() {
-  const marketOpen = isMarketOpen()
-
   return useQuery<TreemapSector[]>({
     queryKey: ['market-treemap'],
     queryFn: async () => {
       const data = await fetchJson<TreemapResponse>('/api/market/treemap')
       return data.sectors
     },
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: marketOpen ? 1000 * 60 * 5 : 1000 * 60 * 30,
+    staleTime: 300_000,
+    refetchInterval: () => isMarketOpen() ? 300_000 : 1_800_000,
   })
 }

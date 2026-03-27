@@ -43,6 +43,8 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   US2Y:  { name_ko: '미국 2년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   // sentiment
   VIX: { name_ko: 'VIX', category: 'sentiment', unit: null, alert_threshold: 25, alert_direction: 'above' },
+  FNG: { name_ko: '공포탐욕지수', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
+  FEAR_GREED: { name_ko: '공포탐욕지수', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
 }
 
 interface JsonbItem { symbol: string; name?: string; price: number; change: number }
@@ -58,7 +60,11 @@ export async function GET() {
       .limit(1)
       .single()
 
-    if (error || !row) {
+    if (error) {
+      console.error('[macro/daily] DB error:', error.message)
+      return NextResponse.json({ error: 'Database error' }, { status: 500 })
+    }
+    if (!row) {
       return NextResponse.json({ date: null, items: [], categories: {} })
     }
 
@@ -129,6 +135,6 @@ export async function GET() {
     return NextResponse.json({ date: row.date, items, categories })
   } catch (e) {
     console.error('[macro/daily]', e)
-    return NextResponse.json({ date: null, items: [], categories: {} })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

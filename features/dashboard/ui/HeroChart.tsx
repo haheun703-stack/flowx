@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { createChart, AreaSeries } from 'lightweight-charts'
+import { createChart, AreaSeries, type IChartApi, type ISeriesApi, type AreaSeriesPartialOptions, type UTCTimestamp } from 'lightweight-charts'
 
 // 한국 주식 컬러: 상승=빨강, 하락=파랑
 const KR_UP = '#ff3b5c'
@@ -18,15 +18,16 @@ interface HeroChartProps {
 }
 
 export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate }: HeroChartProps) {
-  const chartRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<IChartApi | null>(null)
+  const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
 
+  // 차트 생성 (mount 1회)
   useEffect(() => {
-    if (!chartRef.current || !data.length) return
+    const el = containerRef.current
+    if (!el) return
 
-    const isPositive = changePercent >= 0
-    const lineColor = isPositive ? KR_UP : KR_DOWN
-
-    const chart = createChart(chartRef.current, {
+    const chart = createChart(el, {
       layout: {
         background: { color: 'transparent' },
         textColor: '#94a3b8',
@@ -46,38 +47,66 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       },
       timeScale: {
         borderColor: '#1a2535',
-        timeVisible: mode === 'intraday',
+        timeVisible: true,
         secondsVisible: false,
         fixLeftEdge: true,
         fixRightEdge: true,
       },
-      width: chartRef.current.clientWidth,
+      width: el.clientWidth,
       height: 220,
     })
 
     const series = chart.addSeries(AreaSeries, {
-      lineColor,
       lineWidth: 2,
+      priceLineVisible: false,
+      lastValueVisible: false,
+      crosshairMarkerBorderColor: '#131722',
+      crosshairMarkerRadius: 4,
+    })
+
+    chartRef.current = chart
+    seriesRef.current = series
+
+    let disposed = false
+    const ro = new ResizeObserver(() => {
+      if (!disposed && el) {
+        chart.applyOptions({ width: el.clientWidth })
+      }
+    })
+    ro.observe(el)
+
+    return () => {
+      disposed = true
+      ro.disconnect()
+      chart.remove()
+      chartRef.current = null
+      seriesRef.current = null
+    }
+  }, [])
+
+  // 데이터 + 스타일 업데이트 (data/changePercent/mode 변경 시)
+  useEffect(() => {
+    const chart = chartRef.current
+    const series = seriesRef.current
+    if (!chart || !series || !data.length) return
+
+    const isPositive = changePercent >= 0
+    const lineColor = isPositive ? KR_UP : KR_DOWN
+
+    const styleOpts: AreaSeriesPartialOptions = {
+      lineColor,
       topColor: isPositive ? 'rgba(255,59,92,0.15)' : 'rgba(14,165,233,0.15)',
       bottomColor: isPositive ? 'rgba(255,59,92,0.0)' : 'rgba(14,165,233,0.0)',
       crosshairMarkerBackgroundColor: lineColor,
-      crosshairMarkerBorderColor: '#131722',
-      crosshairMarkerRadius: 4,
-      priceLineVisible: false,
-      lastValueVisible: false,
+    }
+    series.applyOptions(styleOpts)
+
+    chart.applyOptions({
+      timeScale: { timeVisible: mode === 'intraday' },
     })
 
-    series.setData(data as any)
+    series.setData(data.map(p => ({ time: p.time as UTCTimestamp, value: p.value })))
     chart.timeScale().fitContent()
-
-    const ro = new ResizeObserver(() => {
-      if (chartRef.current) {
-        chart.applyOptions({ width: chartRef.current.clientWidth })
-      }
-    })
-    ro.observe(chartRef.current)
-
-    return () => { chart.remove(); ro.disconnect() }
   }, [data, changePercent, mode])
 
   const label = mode === 'daily' ? 'KOSPI 30일 추이' : 'KOSPI 종합지수'
@@ -106,7 +135,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       </div>
 
       {/* 차트 */}
-      <div ref={chartRef} className="w-full pt-12" />
+      <div ref={containerRef} className="w-full pt-12" />
 
       {/* 우측 상단 — 장 상태 */}
       <div className="absolute top-4 right-5 z-10 flex items-center gap-2">

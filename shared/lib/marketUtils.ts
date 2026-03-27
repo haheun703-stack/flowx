@@ -16,7 +16,7 @@ export function isMarketOpen(): boolean {
   return timeInMin >= 9 * 60 && timeInMin <= 15 * 60 + 30
 }
 
-/** 장중/장마감에 따라 React Query refetch 주기 조절 */
-export function useRefetchInterval(fastMs: number, slowMs: number) {
-  return isMarketOpen() ? fastMs : slowMs
+/** 장중/장마감에 따라 React Query refetch 주기 조절 (매 cycle 재평가) */
+export function getRefetchInterval(fastMs: number, slowMs: number) {
+  return () => isMarketOpen() ? fastMs : slowMs
 }

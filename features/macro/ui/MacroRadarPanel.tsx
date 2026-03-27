@@ -14,7 +14,7 @@ const CATEGORY_META: Record<string, { title: string; icon: string; accentColor: 
 
 /** 알림 조건 체크 */
 function isAlertTriggered(item: MacroItem): boolean {
-  if (!item.alert_threshold || !item.alert_direction) return false
+  if (item.alert_threshold == null || !item.alert_direction) return false
   if (item.alert_direction === 'above') return item.value >= item.alert_threshold
   return item.value <= item.alert_threshold
 }
@@ -37,7 +37,7 @@ function MacroItemRow({ item }: { item: MacroItem }) {
   const isAlert = isAlertTriggered(item)
   const isUp = item.change_pct >= 0
   const isHighlight = Math.abs(item.change_pct) >= 3
-  const changeColor = isUp ? '#ff3b5c' : '#0ea5e9'
+  const changeColor = item.change_pct === 0 ? '#64748b' : isUp ? '#ff3b5c' : '#0ea5e9'
 
   return (
     <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
@@ -78,7 +78,7 @@ function CategoryCard({ category, items }: { category: string; items: MacroItem[
 }
 
 export function MacroRadarPanel() {
-  const { data, isLoading } = useMacroDaily()
+  const { data, isLoading, isError } = useMacroDaily()
 
   if (isLoading) {
     return (
@@ -86,6 +86,14 @@ export function MacroRadarPanel() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
         ))}
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-gray-900 rounded-xl p-8 text-center text-red-400/70 text-sm">
+        매크로 데이터 로드 실패 — 잠시 후 다시 시도해주세요
       </div>
     )
   }

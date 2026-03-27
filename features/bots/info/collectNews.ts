@@ -20,14 +20,14 @@ export async function collectNews(): Promise<{ ok: boolean; count: number }> {
   const token = process.env.FINNHUB_API_KEY
   if (!token) throw new Error('FINNHUB_API_KEY 미설정')
 
+  const headers = { 'X-Finnhub-Token': token }
+
   // 글로벌 뉴스
-  const globalUrl = `https://finnhub.io/api/v1/news?category=general&token=${token}`
-  const globalRes = await fetch(globalUrl, { signal: AbortSignal.timeout(10000) })
+  const globalRes = await fetch('https://finnhub.io/api/v1/news?category=general', { headers, signal: AbortSignal.timeout(10000) })
   const globalNews: FinnhubNews[] = globalRes.ok ? await globalRes.json() : []
 
   // 한국 관련 뉴스 (Finnhub에서 한국 시장 뉴스)
-  const krUrl = `https://finnhub.io/api/v1/news?category=forex&token=${token}`
-  const krRes = await fetch(krUrl, { signal: AbortSignal.timeout(10000) })
+  const krRes = await fetch('https://finnhub.io/api/v1/news?category=forex', { headers, signal: AbortSignal.timeout(10000) })
   const krNews: FinnhubNews[] = krRes.ok ? await krRes.json() : []
 
   const date = todayKST()
@@ -72,10 +72,11 @@ export async function collectNews(): Promise<{ ok: boolean; count: number }> {
   })
 
   if (rows.length > 0) {
-    // 오늘 날짜 기존 데이터 삭제 후 새로 삽입
-    await supabase.from('intelligence_news').delete().eq('date', date)
+    // insert 먼저 → 성공 시 이전 데이터 삭제 (데이터 유실 방지)
     const { error } = await supabase.from('intelligence_news').insert(rows)
     if (error) throw new Error(`news insert: ${error.message}`)
+    // 방금 넣은 row는 created_at이 현재 시각 → 이전 것만 삭제
+    await supabase.from('intelligence_news').delete().eq('date', date).lt('created_at', rows[0].created_at)
   }
 
   return { ok: true, count: rows.length }

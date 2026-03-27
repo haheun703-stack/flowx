@@ -307,9 +307,13 @@ export function StockTreemap({
     const dpr = window.devicePixelRatio || 1
     const w = canvas.offsetWidth
     const h = canvas.offsetHeight
-    canvas.width = w * dpr
-    canvas.height = h * dpr
-    ctx.scale(dpr, dpr)
+    const targetW = Math.round(w * dpr)
+    const targetH = Math.round(h * dpr)
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW
+      canvas.height = targetH
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, w, h)
 
     const cam = cameraRef.current

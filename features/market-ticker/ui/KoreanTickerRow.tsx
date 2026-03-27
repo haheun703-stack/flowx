@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { KoreanTicker } from '../types'
+import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 function TickerChip({ ticker, onClick }: { ticker: KoreanTicker; onClick?: () => void }) {
   const isPositive = ticker.changePercent >= 0
@@ -29,10 +30,11 @@ function TickerChip({ ticker, onClick }: { ticker: KoreanTicker; onClick?: () =>
   )
 }
 
-export function KoreanTickerRow({ tickers, isMarketOpen }: { tickers: KoreanTicker[]; isMarketOpen: boolean }) {
+export function KoreanTickerRow({ tickers }: { tickers: KoreanTicker[] }) {
   const router = useRouter()
   if (!tickers.length) return null
 
+  const marketOpen = isMarketOpen()
   const indices = tickers.filter(t => t.isIndex)
   const stocks  = tickers.filter(t => !t.isIndex)
 
@@ -43,11 +45,11 @@ export function KoreanTickerRow({ tickers, isMarketOpen }: { tickers: KoreanTick
         <img src="https://flagcdn.com/w20/kr.png" alt="KR" width={20} height={14} className="inline-block" />
         <span className="text-sm text-gray-300 font-bold tracking-wider">한국</span>
         <span className={`text-sm px-1.5 py-0.5 rounded-full font-medium ${
-          isMarketOpen
+          marketOpen
             ? 'bg-green-500/20 text-green-400'
             : 'bg-gray-700/50 text-gray-500'
         }`}>
-          {isMarketOpen ? '장중' : '장마감'}
+          {marketOpen ? '장중' : '장마감'}
         </span>
       </div>
 

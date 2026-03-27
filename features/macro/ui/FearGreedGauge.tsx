@@ -1,5 +1,6 @@
 'use client'
 
+import { useId } from 'react'
 import { useMacroDaily } from '../api/useMacroDashboard'
 
 /** 0~100 값을 공포/탐욕 라벨로 */
@@ -13,6 +14,7 @@ function getLabel(value: number): { text: string; color: string } {
 
 /** 반원 SVG 게이지 */
 function SemiCircleGauge({ value, size = 220 }: { value: number; size?: number }) {
+  const gradId = useId()
   const cx = size / 2
   const cy = size / 2 + 10
   const r = size / 2 - 20
@@ -34,7 +36,7 @@ function SemiCircleGauge({ value, size = 220 }: { value: number; size?: number }
     <svg width={size} height={size / 2 + 40} viewBox={`0 0 ${size} ${size / 2 + 40}`} className="mx-auto">
       {/* 배경 그라데이션 정의 */}
       <defs>
-        <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#ef4444" />
           <stop offset="25%" stopColor="#f97316" />
           <stop offset="50%" stopColor="#eab308" />
@@ -47,7 +49,7 @@ function SemiCircleGauge({ value, size = 220 }: { value: number; size?: number }
       <path d={bgArc} fill="none" stroke="#1e293b" strokeWidth="16" strokeLinecap="round" />
 
       {/* 값 호 (그라데이션) */}
-      <path d={valArc} fill="none" stroke="url(#gauge-grad)" strokeWidth="16" strokeLinecap="round" />
+      <path d={valArc} fill="none" stroke={`url(#${gradId})`} strokeWidth="16" strokeLinecap="round" />
 
       {/* 바늘 */}
       <circle cx={needleX} cy={needleY} r="6" fill={label.color} stroke="#080b10" strokeWidth="2" />
@@ -80,14 +82,23 @@ function describeArc(cx: number, cy: number, r: number, startAngle: number, endA
 }
 
 export function FearGreedGauge() {
-  const { data, isLoading } = useMacroDaily()
+  const { data, isLoading, isError } = useMacroDaily()
 
-  // F&G 값 찾기
-  const fgItem = data?.items?.find(i => i.symbol === 'FNG' || i.symbol === 'FEAR_GREED')
-  const vixItem = data?.items?.find(i => i.symbol === 'VIX')
+  // F&G 값 찾기 (sentiment 카테고리에서 우선 검색)
+  const sentimentItems = data?.categories?.sentiment ?? data?.items
+  const fgItem = sentimentItems?.find(i => i.symbol === 'FNG' || i.symbol === 'FEAR_GREED')
+  const vixItem = sentimentItems?.find(i => i.symbol === 'VIX') ?? data?.items?.find(i => i.symbol === 'VIX')
 
   if (isLoading) {
     return <div className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-gray-900 rounded-xl p-6 min-h-[200px] flex items-center justify-center text-red-400/70 text-sm">
+        데이터 로드 실패
+      </div>
+    )
   }
 
   const fgValue = fgItem?.value ?? 50

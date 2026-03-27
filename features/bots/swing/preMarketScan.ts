@@ -135,9 +135,9 @@ export async function preMarketScan(): Promise<{ candidates: SwingCandidate[]; r
       }
     })
 
-    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'FORCE_BUY')
     const { error } = await supabase.from('short_signals').insert(rows)
-    if (error) console.error('swing entry insert:', error.message)
+    if (error) throw new Error(`swing entry insert: ${error.message}`)
+    await supabase.from('short_signals').delete().eq('date', date).eq('signal_type', 'FORCE_BUY').lt('created_at', rows[0].created_at)
   }
 
   return { candidates: positioned, regime: regime.regime }
