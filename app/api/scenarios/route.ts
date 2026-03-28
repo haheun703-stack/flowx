@@ -20,7 +20,10 @@ export async function GET() {
     const row = data?.[0]
     if (!row) return NextResponse.json(null)
 
-    return NextResponse.json({ ...row.data, date: row.date })
+    const payload = typeof row.data === 'object' && row.data !== null
+      ? { ...row.data, date: row.date }
+      : { date: row.date }
+    return NextResponse.json(payload)
   } catch (err) {
     console.error('[API /scenarios] error:', err)
     return NextResponse.json({ error: '시나리오 조회 오류' }, { status: 500 })
