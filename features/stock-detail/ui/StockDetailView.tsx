@@ -83,6 +83,20 @@ interface Valuations {
   valuation_score: number
 }
 
+interface MlPrediction {
+  date: string
+  pred_type: string
+  code: string
+  name: string
+  prob_up: number
+  prob_down: number
+  decision: string
+  top_factors: { factor: string; importance: number }[]
+  base_price: number
+  actual_result: string
+  success: boolean | null
+}
+
 interface StockData {
   ticker: string
   pick: {
@@ -102,6 +116,7 @@ interface StockData {
   why_now: WhyNow | null
   technicals: Technicals | null
   valuations: Valuations | null
+  ml_prediction: MlPrediction | null
   signals: SignalItem[]
   briefing_mentions: { date: string; market_status: string }[]
 }
@@ -146,7 +161,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
   if (loading) return <div className="text-gray-500 text-center py-20">로딩 중...</div>
   if (!data) return <div className="text-gray-500 text-center py-20">데이터 없음</div>
 
-  const { pick, why_now, technicals, valuations, signals, briefing_mentions } = data
+  const { pick, why_now, technicals, valuations, ml_prediction, signals, briefing_mentions } = data
 
   return (
     <div className="space-y-6">
@@ -509,6 +524,74 @@ export function StockDetailView({ ticker }: { ticker: string }) {
               </span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ML 예측 */}
+      {ml_prediction && (
+        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white">AI 예측 (XGBoost)</h3>
+            <span className="text-[10px] text-gray-500">{ml_prediction.date}</span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            {/* 판정 */}
+            <div className="bg-gray-800/50 rounded-xl p-4 text-center">
+              <span className="text-[10px] text-gray-500 block mb-1">판정</span>
+              <span className={`text-sm font-bold px-3 py-1 rounded-lg border ${
+                ml_prediction.decision.includes("매수") || ml_prediction.decision.includes("레버리지") || ml_prediction.decision.includes("상승")
+                  ? "bg-[#00ff88]/20 text-[#00ff88] border-[#00ff88]/30"
+                  : ml_prediction.decision.includes("인버스") || ml_prediction.decision.includes("하락")
+                  ? "bg-[#ff3b5c]/20 text-[#ff3b5c] border-[#ff3b5c]/30"
+                  : "bg-gray-700/50 text-gray-400 border-gray-600"
+              }`}>
+                {ml_prediction.decision}
+              </span>
+            </div>
+
+            {/* 상승 확률 */}
+            <div className="bg-gray-800/50 rounded-xl p-4 text-center">
+              <span className="text-[10px] text-gray-500 block mb-1">상승 확률</span>
+              <span className={`text-2xl font-bold font-mono ${
+                ml_prediction.prob_up >= 0.6 ? "text-[#00ff88]" : ml_prediction.prob_up <= 0.4 ? "text-[#ff3b5c]" : "text-gray-300"
+              }`}>
+                {(ml_prediction.prob_up * 100).toFixed(1)}%
+              </span>
+            </div>
+
+            {/* 기준가 */}
+            <div className="bg-gray-800/50 rounded-xl p-4 text-center">
+              <span className="text-[10px] text-gray-500 block mb-1">기준가</span>
+              <span className="text-lg font-bold text-white font-mono">
+                {ml_prediction.base_price.toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {/* 주요 팩터 */}
+          {ml_prediction.top_factors?.length > 0 && (
+            <div>
+              <span className="text-[10px] text-gray-500 block mb-2">주요 예측 팩터</span>
+              <div className="flex flex-wrap gap-1.5">
+                {ml_prediction.top_factors.slice(0, 8).map((f, i) => (
+                  <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400 border border-gray-700">
+                    {f.factor}
+                    <span className="ml-1 text-[#0ea5e9] font-mono">{(f.importance * 100).toFixed(0)}%</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 적중 결과 (있을 경우) */}
+          {ml_prediction.actual_result && (
+            <div className="mt-3 text-[10px] text-gray-500">
+              실제 결과: <span className={ml_prediction.success ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
+                {ml_prediction.actual_result} {ml_prediction.success ? "(적중)" : "(미적중)"}
+              </span>
+            </div>
+          )}
         </div>
       )}
 

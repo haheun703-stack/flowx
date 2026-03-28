@@ -65,6 +65,16 @@ export async function GET(req: Request) {
       .limit(1)
       .single()
 
+    // 6. ml_predictions에서 ML 예측
+    const { data: mlRow } = await sb
+      .from('ml_predictions')
+      .select('*')
+      .eq('code', ticker)
+      .eq('pred_type', 'stock')
+      .order('date', { ascending: false })
+      .limit(1)
+      .single()
+
     // briefing에서 해당 종목 언급 찾기
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const briefingMentions = (briefings ?? []).filter((b: any) => {
@@ -83,6 +93,7 @@ export async function GET(req: Request) {
       why_now: pick?.why_now ?? null,
       technicals: techRow ?? null,
       valuations: valRow ?? null,
+      ml_prediction: mlRow ?? null,
       signals: (signals ?? []).map((s) => ({
         date: s.date,
         signal_type: s.signal_type,
