@@ -25,6 +25,10 @@ export function Navbar() {
           <Link href="/market/treemap" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2">
             트리맵
           </Link>
+          <Link href="/market/overview" className="text-xs text-gray-400 hover:text-[#00ff88] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
+            시장개요
+            <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
           <Link href="/sectors" className="text-xs text-gray-400 hover:text-[#7F77DD] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
             섹터맵
             <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
