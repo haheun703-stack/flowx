@@ -11,8 +11,15 @@ CREATE TABLE IF NOT EXISTS treemap_stocks (
     foreign_net BIGINT DEFAULT 0,
     institution_net BIGINT DEFAULT 0,
     price BIGINT DEFAULT 0,
+    market_cap BIGINT DEFAULT 0,
     updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- 기존 테이블에 market_cap 컬럼이 없으면 추가
+DO $$ BEGIN
+    ALTER TABLE treemap_stocks ADD COLUMN market_cap BIGINT DEFAULT 0;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
 
 ALTER TABLE treemap_stocks ENABLE ROW LEVEL SECURITY;
 

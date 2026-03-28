@@ -23,7 +23,7 @@ export async function GET() {
 
     const { data, error } = await sb
       .from('treemap_stocks')
-      .select('ticker, name, sector, market, change_pct, foreign_net, institution_net, price, updated_at')
+      .select('ticker, name, sector, market, change_pct, foreign_net, institution_net, price, market_cap, updated_at')
       .order('sector')
 
     if (error) {
@@ -36,18 +36,16 @@ export async function GET() {
     }
 
     // 섹터별 그룹핑
-    // NOTE: treemap_stocks에 market_cap 컬럼 없음 → price를 대체 사용
-    //       정보봇에 market_cap 추가 요청 예정
     const sectorMap = new Map<string, TreemapStock[]>()
 
     for (const row of data) {
-      const price = Number(row.price) || 0
-      if (price <= 0) continue
+      const marketCap = Number(row.market_cap) || Number(row.price) || 0
+      if (marketCap <= 0) continue
 
       const stock: TreemapStock = {
         ticker: row.ticker,
         name: row.name,
-        marketCap: price,          // TODO: market_cap 컬럼 추가 후 교체
+        marketCap,
         changePercent: Number(row.change_pct) || 0,
         tradingValue: Math.abs(Number(row.foreign_net) || 0) + Math.abs(Number(row.institution_net) || 0),
       }

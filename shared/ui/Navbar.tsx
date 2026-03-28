@@ -53,6 +53,10 @@ export function Navbar() {
             스윙시스템
             <span className="text-[8px] px-1 py-px rounded border border-[#a855f7]/40 text-[#a855f7] font-bold leading-tight">VIP</span>
           </Link>
+          <Link href="/scalper/brain" className="text-xs text-gray-400 hover:text-[#ff3b5c] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            단타시스템
+            <span className="text-[8px] px-1 py-px rounded bg-[#ff3b5c] text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
         </div>
         <div className="flex items-center gap-3">
           <div className="hidden sm:block">
