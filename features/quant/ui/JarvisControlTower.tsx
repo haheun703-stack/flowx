@@ -48,8 +48,10 @@ interface JarvisData {
     regime?: string;
     direction?: string;
     vix?: number;
+    vix_grade?: string;
     cash_ratio?: number;
     recommendation?: string;
+    danger_mode?: string;
   } | null;
   shield: {
     status?: string;
@@ -62,7 +64,15 @@ interface JarvisData {
     hot_sectors?: { sector: string; ret_5: number }[];
     cold_sectors?: { sector: string; ret_5: number }[];
     vix?: number;
+    vix_grade?: string;
     cash_ratio?: number;
+    danger_mode?: string;
+    stale?: {
+      stale: boolean;
+      age_days: number;
+      last_update: string;
+      message: string;
+    } | null;
   } | null;
   sectors?: {
     date?: string;
@@ -78,39 +88,82 @@ interface JarvisData {
       ret_5d: number;
     }[];
   } | null;
+  signals?: {
+    total?: number;
+    sources?: {
+      source: string;
+      count: number;
+      hit_rate: number;
+      total_tested: number;
+    }[];
+    cross_validation?: {
+      single: number;
+      double: number;
+      triple_plus: number;
+    };
+    top_combos?: { combo: string; count: number }[];
+  } | null;
+  performance?: {
+    daily_trend?: {
+      date: string;
+      avg_hit_rate: number;
+      market_avg_ret: number;
+      up_ratio: number;
+      sources: Record<string, { hit_rate: number; total: number; avg_ret: number }>;
+    }[];
+    latest?: {
+      date: string;
+      avg_hit_rate: number;
+      market_avg_ret: number;
+      up_ratio: number;
+      sources: Record<string, { hit_rate: number; total: number; avg_ret: number }>;
+    };
+  } | null;
   updated_at?: string | null;
   date?: string | null;
 }
 
+/* ─── 아이콘 (유니코드 이스케이프) ─── */
+const ICO = {
+  WARN: "\u26A0\uFE0F",
+  STOP: "\uD83D\uDED1",
+  SIREN: "\uD83D\uDEA8",
+  SHIELD: "\uD83D\uDEE1\uFE0F",
+  CHART_DOWN: "\uD83D\uDCC9",
+  FIRE: "\uD83D\uDD25",
+  ICE: "\uD83E\uDDCA",
+  YELLOW_CIRCLE: "\uD83D\uDFE1",
+};
+
 /* ─── 상수 ─── */
 
 const GRADE_COLORS: Record<string, string> = {
-  "적극매수": "bg-red-600 text-white",
-  "매수": "bg-green-600 text-white",
-  "관심매수": "bg-blue-600 text-white",
-  "관찰": "bg-yellow-600 text-white",
-  "보류": "bg-gray-700 text-gray-400",
+  "\uC801\uADF9\uB9E4\uC218": "bg-red-600 text-white",
+  "\uB9E4\uC218": "bg-green-600 text-white",
+  "\uAD00\uC2EC\uB9E4\uC218": "bg-blue-600 text-white",
+  "\uAD00\uCC30": "bg-yellow-600 text-white",
+  "\uBCF4\uB958": "bg-gray-700 text-gray-400",
 };
 
 const REGIME_DISPLAY: Record<string, { icon: string; label: string; color: string; bg: string }> = {
-  BULL: { icon: "🟢", label: "상승장", color: "text-green-400", bg: "border-green-800/50" },
-  BEAR: { icon: "🔴", label: "하락장", color: "text-red-400", bg: "border-red-800/50" },
-  CAUTION: { icon: "🟡", label: "주의", color: "text-yellow-400", bg: "border-yellow-800/50" },
-  NEUTRAL: { icon: "⚪", label: "보합", color: "text-gray-400", bg: "border-gray-800" },
-  CRISIS: { icon: "🔴", label: "위기", color: "text-red-500", bg: "border-red-900/50" },
+  BULL: { icon: "\uD83D\uDFE2", label: "\uC0C1\uC2B9\uC7A5", color: "text-green-400", bg: "border-green-800/50" },
+  BEAR: { icon: "\uD83D\uDD34", label: "\uD558\uB77D\uC7A5", color: "text-red-400", bg: "border-red-800/50" },
+  CAUTION: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-yellow-400", bg: "border-yellow-800/50" },
+  NEUTRAL: { icon: "\u26AA", label: "\uBCF4\uD569", color: "text-gray-400", bg: "border-gray-800" },
+  CRISIS: { icon: "\uD83D\uDD34", label: "\uC704\uAE30", color: "text-red-500", bg: "border-red-900/50" },
 };
 
 const SHIELD_DISPLAY: Record<string, { icon: string; label: string; color: string }> = {
-  GREEN: { icon: "🟢", label: "안전", color: "text-green-400" },
-  YELLOW: { icon: "🟡", label: "주의", color: "text-yellow-400" },
-  RED: { icon: "🔴", label: "위험", color: "text-red-400" },
+  GREEN: { icon: "\uD83D\uDFE2", label: "\uC548\uC804", color: "text-green-400" },
+  YELLOW: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-yellow-400" },
+  RED: { icon: "\uD83D\uDD34", label: "\uC704\uD5D8", color: "text-red-400" },
 };
 
 const TAB_ITEMS = [
-  { key: "recommend", label: "오늘의 추천", icon: "🎯" },
-  { key: "sectors", label: "업종 분석", icon: "📊", soon: true },
-  { key: "signals", label: "매매 신호", icon: "📡", soon: true },
-  { key: "performance", label: "성과", icon: "📈", soon: true },
+  { key: "recommend", label: "\uC624\uB298\uC758 \uCD94\uCC9C", icon: "\uD83C\uDFAF" },
+  { key: "sectors", label: "\uC5C5\uC885 \uBD84\uC11D", icon: "\uD83D\uDCCA" },
+  { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
+  { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
 ];
 
 /* ─── 메인 컴포넌트 ─── */
@@ -168,7 +221,7 @@ export default function JarvisControlTower() {
 
   const allPicks = picks?.picks ?? [];
   const buyable = allPicks
-    .filter((p) => ["적극매수", "매수", "관심매수", "관찰"].includes(p.grade))
+    .filter((p) => ["\uC801\uADF9\uB9E4\uC218", "\uB9E4\uC218", "\uAD00\uC2EC\uB9E4\uC218", "\uAD00\uCC30"].includes(p.grade))
     .sort((a, b) => b.total_score - a.total_score);
 
   const stats = picks?.stats ?? {};
@@ -202,17 +255,14 @@ export default function JarvisControlTower() {
         {TAB_ITEMS.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => !tab.soon && setActiveTab(tab.key)}
+            onClick={() => setActiveTab(tab.key)}
             className={`flex-1 py-2 px-3 rounded-md text-xs font-medium transition-colors ${
               activeTab === tab.key
                 ? "bg-blue-600 text-white"
-                : tab.soon
-                  ? "text-gray-600 cursor-not-allowed"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                : "text-gray-400 hover:text-white hover:bg-gray-800"
             }`}
           >
             {tab.icon} {tab.label}
-            {tab.soon && <span className="ml-1 text-[10px] opacity-50">soon</span>}
           </button>
         ))}
       </nav>
@@ -220,10 +270,8 @@ export default function JarvisControlTower() {
       {/* 탭 콘텐츠 */}
       {activeTab === "recommend" && (
         <div className="space-y-6">
-          {/* ETF 배분 + 가속 섹터 */}
           {etf_picks && <ETFSection etf={etf_picks} />}
 
-          {/* 추천 종목 */}
           <section>
             <h2 className="text-white text-lg font-bold mb-3">
               {buyable.length > 0
@@ -244,7 +292,6 @@ export default function JarvisControlTower() {
             )}
           </section>
 
-          {/* 등급 분포 + 시그널 소스 */}
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
               <h3 className="text-gray-400 text-xs mb-3">등급 분포 ({picks?.total_candidates ?? 0}종목)</h3>
@@ -280,7 +327,6 @@ export default function JarvisControlTower() {
             </div>
           </section>
 
-          {/* 시그널 정확도 */}
           {accuracy && (
             <section>
               <h2 className="text-white text-lg font-bold mb-3">매매 신호 적중률</h2>
@@ -305,6 +351,18 @@ export default function JarvisControlTower() {
           )}
         </div>
       )}
+
+      {activeTab === "sectors" && data.sectors?.top && (
+        <SectorsTab sectors={data.sectors} />
+      )}
+
+      {activeTab === "signals" && (
+        <SignalsTab signals={data.signals} accuracy={data.accuracy} />
+      )}
+
+      {activeTab === "performance" && (
+        <PerformanceTab performance={data.performance} />
+      )}
     </div>
   );
 }
@@ -320,39 +378,85 @@ function MarketGuideBanner({
 }) {
   const hot = guide.hot_sectors ?? [];
   const cold = guide.cold_sectors ?? [];
+  const dangerMode = guide.danger_mode ?? "NORMAL";
+  const stale = guide.stale;
+
+  const bannerStyle = dangerMode === "PANIC"
+    ? "bg-red-950 rounded-xl p-5 ring-2 ring-red-500/50"
+    : dangerMode === "DANGER"
+      ? "bg-red-950/60 rounded-xl p-5 ring-1 ring-red-800/50"
+      : `bg-gray-900 rounded-xl p-5 ${regimeInfo.bg ? `border ${regimeInfo.bg}` : ""}`;
+
+  const summaryColor = dangerMode === "PANIC"
+    ? "text-red-400"
+    : dangerMode === "DANGER"
+      ? "text-orange-400"
+      : regimeInfo.color;
+
+  const summaryIcon = dangerMode === "PANIC"
+    ? ICO.WARN
+    : dangerMode === "DANGER"
+      ? ICO.SIREN
+      : regimeInfo.icon;
 
   return (
-    <div className={`bg-gray-900 rounded-lg p-5 border ${regimeInfo.bg}`}>
+    <div className={bannerStyle}>
+      {stale && (
+        <div className="bg-yellow-900/30 text-yellow-400 text-xs px-3 py-2 rounded-lg mb-3">
+          {ICO.WARN} {stale.message}
+        </div>
+      )}
+
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className={`${regimeInfo.color} text-sm font-bold`}>
-            {regimeInfo.icon} {guide.summary}
+          <p className={`${summaryColor} text-sm font-bold`}>
+            {summaryIcon} {guide.summary}
           </p>
           {guide.strategy && (
             <p className="text-gray-400 text-xs mt-1">{guide.strategy}</p>
           )}
         </div>
-        {guide.vix != null && guide.vix > 0 && (
-          <span className={`text-xs px-2 py-1 rounded ${
-            guide.vix >= 30 ? "bg-red-900/50 text-red-400" :
-            guide.vix >= 20 ? "bg-yellow-900/50 text-yellow-400" :
-            "bg-green-900/50 text-green-400"
-          }`}>
-            공포지수 {guide.vix}
-          </span>
-        )}
+        <div className="flex gap-2">
+          {guide.vix != null && guide.vix > 0 && (
+            <span className={`text-xs px-2 py-1 rounded ${
+              guide.vix >= 40 ? "bg-red-900/80 text-red-300 font-bold animate-pulse" :
+              guide.vix >= 30 ? "bg-red-900/50 text-red-400" :
+              guide.vix >= 20 ? "bg-yellow-900/50 text-yellow-400" :
+              "bg-green-900/50 text-green-400"
+            }`}>
+              {ICO.CHART_DOWN} {guide.vix}
+            </span>
+          )}
+          {dangerMode !== "NORMAL" && (
+            <span className={`text-xs px-2 py-1 rounded font-bold ${
+              dangerMode === "PANIC" ? "bg-red-600 text-gray-200 animate-pulse" :
+              dangerMode === "DANGER" ? "bg-orange-900/50 text-orange-400" :
+              "bg-yellow-900/50 text-yellow-400"
+            }`}>
+              {dangerMode === "PANIC" ? `${ICO.STOP} PANIC` :
+               dangerMode === "DANGER" ? `${ICO.WARN} DANGER` :
+               `${ICO.YELLOW_CIRCLE} WARNING`}
+            </span>
+          )}
+        </div>
       </div>
+
+      {dangerMode === "PANIC" && (
+        <div className="bg-red-900/30 text-red-300 text-xs px-3 py-2 rounded-lg mb-3">
+          {ICO.SHIELD} <strong>ETF(금/채권) 95%</strong> + 개별주 5% 이하 | 현금 55% 이상 유지 권장
+        </div>
+      )}
 
       {(hot.length > 0 || cold.length > 0) && (
         <div className="flex flex-wrap gap-2 text-xs">
           {hot.map((s) => (
-            <span key={s.sector} className="bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full border border-red-800/30">
-              🔥 {s.sector} {s.ret_5 > 0 ? `+${s.ret_5.toFixed(1)}%` : `${s.ret_5.toFixed(1)}%`}
+            <span key={s.sector} className="bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full">
+              {ICO.FIRE} {s.sector} {s.ret_5 > 0 ? `+${s.ret_5.toFixed(1)}%` : `${s.ret_5.toFixed(1)}%`}
             </span>
           ))}
           {cold.map((s) => (
-            <span key={s.sector} className="bg-blue-900/20 text-blue-300/60 px-2 py-0.5 rounded-full border border-blue-800/20">
-              🧊 {s.sector} {s.ret_5.toFixed(1)}%
+            <span key={s.sector} className="bg-blue-900/20 text-blue-300/60 px-2 py-0.5 rounded-full">
+              {ICO.ICE} {s.sector} {s.ret_5.toFixed(1)}%
             </span>
           ))}
         </div>
@@ -365,7 +469,6 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
   const alloc = etf.allocation ?? {};
   const accel = etf.accelerations ?? [];
 
-  // 0이 아닌 배분만 표시
   const activeAlloc = Object.entries(alloc).filter(([, v]) => v > 0);
 
   const ALLOC_LABELS: Record<string, string> = {
@@ -384,7 +487,6 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
     <section className="bg-gray-900 rounded-lg p-4 border border-gray-800">
       <h3 className="text-white text-sm font-bold mb-3">자산 배분 현황</h3>
 
-      {/* 배분 바 */}
       {activeAlloc.length > 0 && (
         <div className="mb-3">
           <div className="flex rounded-full h-3 overflow-hidden">
@@ -408,7 +510,6 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
         </div>
       )}
 
-      {/* 가속 섹터 */}
       {accel.length > 0 && (
         <div>
           <p className="text-gray-500 text-xs mb-2">급부상 업종 (순위 급상승)</p>
@@ -511,6 +612,302 @@ function PickRow({ pick }: { pick: PickItem }) {
         <p className="text-gray-500 text-xs mt-2">
           {pick.reasons.slice(0, 3).join(" · ")}
         </p>
+      )}
+    </div>
+  );
+}
+
+function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }) {
+  const top = sectors.top ?? [];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-gray-200 text-lg font-bold">
+          {ICO.CHART_DOWN} 업종 모멘텀 TOP 10
+        </h2>
+        {sectors.date && (
+          <span className="text-gray-500 text-xs">{sectors.date} 기준</span>
+        )}
+      </div>
+
+      {top.length > 0 ? (
+        <div className="space-y-2">
+          {top.map((s) => {
+            const isAccel = s.acceleration;
+            const ret5Color = s.ret_5 >= 0 ? "text-red-400" : "text-blue-400";
+            const ret20Color = s.ret_20 >= 0 ? "text-red-400" : "text-blue-400";
+            const rankColor = s.rank_change > 0 ? "text-green-400" : s.rank_change < 0 ? "text-red-400" : "text-gray-500";
+
+            return (
+              <div key={s.sector} className={`bg-gray-900 rounded-xl p-4 ${isAccel ? "ring-1 ring-orange-800/40" : ""}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-500 text-sm font-mono w-6">{s.rank}</span>
+                    <span className="text-gray-200 font-medium">
+                      {isAccel && `${ICO.FIRE} `}{s.sector}
+                    </span>
+                    {s.rank_change !== 0 && (
+                      <span className={`text-xs ${rankColor}`}>
+                        {s.rank_change > 0 ? `+${s.rank_change}\u2191` : `${s.rank_change}\u2193`}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-blue-400 font-bold text-sm">{s.score.toFixed(0)}점</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-500">5일 수익</span>{" "}
+                    <span className={ret5Color}>
+                      {s.ret_5 >= 0 ? "+" : ""}{s.ret_5.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">20일 수익</span>{" "}
+                    <span className={ret20Color}>
+                      {s.ret_20 >= 0 ? "+" : ""}{s.ret_20.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">과열도</span>{" "}
+                    <span className={`${s.rsi >= 70 ? "text-red-400" : s.rsi <= 30 ? "text-green-400" : "text-gray-300"}`}>
+                      {s.rsi.toFixed(0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="bg-gray-900 rounded-xl p-6 text-center">
+          <p className="text-gray-400 text-sm">업종 데이터가 아직 없습니다</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Phase 3: 매매 신호 탭 ─── */
+
+function SignalsTab({
+  signals,
+  accuracy,
+}: {
+  signals: JarvisData["signals"];
+  accuracy: JarvisData["accuracy"];
+}) {
+  const sources = signals?.sources ?? [];
+  const cv = signals?.cross_validation;
+  const combos = signals?.top_combos ?? [];
+  const total = signals?.total ?? 0;
+  const maxCount = Math.max(...sources.map((s) => s.count), 1);
+
+  return (
+    <div className="space-y-6">
+      {cv && (
+        <div className="bg-gray-900 rounded-xl p-4">
+          <h3 className="text-gray-400 text-xs mb-3">교차검증 필터링</h3>
+          <div className="flex items-end justify-between gap-2 h-24">
+            {[
+              { label: "전체 감지", value: total, color: "bg-gray-600" },
+              { label: "1소스", value: cv.single, color: "bg-gray-500" },
+              { label: "2소스", value: cv.double, color: "bg-blue-500" },
+              { label: "3소스+", value: cv.triple_plus, color: "bg-green-500" },
+            ].map((item) => {
+              const pct = total > 0 ? (item.value / total) * 100 : 0;
+              return (
+                <div key={item.label} className="flex-1 flex flex-col items-center gap-1">
+                  <span className="text-gray-200 text-sm font-bold">{item.value}</span>
+                  <div className="w-full flex justify-center" style={{ height: "80px" }}>
+                    <div
+                      className={`${item.color} rounded-t w-full max-w-[48px]`}
+                      style={{ height: `${Math.max(pct, 4)}%` }}
+                    />
+                  </div>
+                  <span className="text-gray-500 text-[10px]">{item.label}</span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-gray-500 text-[10px] mt-2 text-center">
+            2소스 이상 교차검증 통과 = 실제 매수 후보
+          </p>
+        </div>
+      )}
+
+      <div className="bg-gray-900 rounded-xl p-4">
+        <h3 className="text-gray-400 text-xs mb-3">시그널 소스 활성도</h3>
+        <div className="space-y-2">
+          {sources.map((s) => {
+            const barPct = (s.count / maxCount) * 100;
+            const hasAccuracy = s.total_tested > 0;
+            const accColor = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
+            return (
+              <div key={s.source} className="flex items-center gap-3">
+                <span className="text-gray-300 text-xs w-16 shrink-0 truncate">{s.source}</span>
+                <div className="flex-1 bg-gray-800 rounded-full h-3 relative">
+                  <div
+                    className="bg-blue-600 rounded-full h-3 transition-all"
+                    style={{ width: `${barPct}%` }}
+                  />
+                </div>
+                <span className="text-gray-400 text-xs w-8 text-right">{s.count}</span>
+                {hasAccuracy ? (
+                  <span className={`${accColor} text-xs w-12 text-right font-medium`}>
+                    {s.hit_rate}%
+                  </span>
+                ) : (
+                  <span className="text-gray-600 text-xs w-12 text-right">-</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-end mt-2 gap-4 text-[10px] text-gray-600">
+          <span>| 감지수</span>
+          <span>| 적중률</span>
+        </div>
+      </div>
+
+      {combos.length > 0 && (
+        <div className="bg-gray-900 rounded-xl p-4">
+          <h3 className="text-gray-400 text-xs mb-3">자주 나타나는 시그널 조합</h3>
+          <div className="space-y-2">
+            {combos.map((c) => (
+              <div key={c.combo} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+                <div className="flex flex-wrap gap-1">
+                  {c.combo.split("+").map((src) => (
+                    <span key={src} className="bg-blue-900/50 text-blue-300 text-xs px-2 py-0.5 rounded">
+                      {src}
+                    </span>
+                  ))}
+                </div>
+                <span className="text-gray-300 text-sm font-medium ml-3">{c.count}건</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {accuracy && Object.keys(accuracy).length > 0 && (
+        <div className="bg-gray-900 rounded-xl p-4">
+          <h3 className="text-gray-400 text-xs mb-3">시그널 적중률 상세</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {Object.entries(accuracy)
+              .filter(([, v]) => typeof v === "object" && v !== null && ((v as Record<string, number>).total ?? 0) > 0)
+              .sort(([, a], [, b]) => ((b as Record<string, number>).hit_rate ?? 0) - ((a as Record<string, number>).hit_rate ?? 0))
+              .map(([name, detail]) => {
+                const d = detail as Record<string, number>;
+                const rate = d.hit_rate ?? 0;
+                const color = rate >= 60 ? "text-green-400" : rate >= 45 ? "text-yellow-400" : "text-red-400";
+                return (
+                  <div key={name} className="bg-gray-800 rounded-lg p-3 text-center">
+                    <p className="text-gray-500 text-[10px] truncate">{name}</p>
+                    <p className={`${color} text-xl font-bold`}>{rate}%</p>
+                    <p className="text-gray-600 text-[10px]">{d.total ?? 0}건 검증</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Phase 4: 성과 탭 ─── */
+
+function PerformanceTab({ performance }: { performance: JarvisData["performance"] }) {
+  const trend = performance?.daily_trend ?? [];
+  const latest = performance?.latest;
+
+  if (trend.length === 0) {
+    return (
+      <div className="bg-gray-900 rounded-xl p-6 text-center">
+        <p className="text-gray-400 text-sm">성과 데이터가 아직 없습니다</p>
+      </div>
+    );
+  }
+
+  const maxHit = Math.max(...trend.map((d) => d.avg_hit_rate), 1);
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-900 rounded-xl p-4">
+        <h3 className="text-gray-400 text-xs mb-3">일별 시그널 적중률 추이</h3>
+        <div className="flex items-end gap-2 h-32">
+          {trend.map((d) => {
+            const pct = (d.avg_hit_rate / maxHit) * 100;
+            const color = d.avg_hit_rate >= 60 ? "bg-green-500" : d.avg_hit_rate >= 40 ? "bg-yellow-500" : "bg-red-500";
+            return (
+              <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+                <span className="text-gray-200 text-xs font-bold">{d.avg_hit_rate}%</span>
+                <div className="w-full flex justify-center" style={{ height: "80px" }}>
+                  <div
+                    className={`${color} rounded-t w-full max-w-[40px] transition-all`}
+                    style={{ height: `${Math.max(pct, 5)}%`, marginTop: "auto" }}
+                  />
+                </div>
+                <span className="text-gray-500 text-[10px]">{d.date.slice(5)}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl p-4">
+        <h3 className="text-gray-400 text-xs mb-3">일별 시장 현황</h3>
+        <div className="space-y-2">
+          {trend.map((d) => {
+            const retColor = d.market_avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+            return (
+              <div key={d.date} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+                <span className="text-gray-300 text-xs">{d.date.slice(5)}</span>
+                <div className="flex gap-4 text-xs">
+                  <span className="text-gray-400">
+                    상승 <span className="text-red-400">{d.up_ratio}%</span>
+                  </span>
+                  <span className={retColor}>
+                    평균 {d.market_avg_ret >= 0 ? "+" : ""}{d.market_avg_ret}%
+                  </span>
+                  <span className={`${d.avg_hit_rate >= 50 ? "text-green-400" : "text-yellow-400"}`}>
+                    적중 {d.avg_hit_rate}%
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {latest?.sources && Object.keys(latest.sources).length > 0 && (
+        <div className="bg-gray-900 rounded-xl p-4">
+          <h3 className="text-gray-400 text-xs mb-3">
+            {latest.date ? `${latest.date} ` : ""}소스별 적중률
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {Object.entries(latest.sources)
+              .sort(([, a], [, b]) => b.hit_rate - a.hit_rate)
+              .map(([name, s]) => {
+                const color = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
+                const retColor = s.avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+                return (
+                  <div key={name} className="bg-gray-800 rounded-lg p-3">
+                    <p className="text-gray-400 text-[10px] truncate mb-1">{name}</p>
+                    <div className="flex items-baseline justify-between">
+                      <span className={`${color} text-lg font-bold`}>{s.hit_rate}%</span>
+                      <span className={`${retColor} text-xs`}>
+                        {s.avg_ret >= 0 ? "+" : ""}{s.avg_ret}%
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-[10px] mt-1">{s.total}건 검증</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
       )}
     </div>
   );
