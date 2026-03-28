@@ -119,8 +119,80 @@ interface JarvisData {
       sources: Record<string, { hit_rate: number; total: number; avg_ret: number }>;
     };
   } | null;
+  cfo?: {
+    health_score: number;
+    risk_level: string;
+    positions_count: number;
+    cash_ratio: number;
+    max_sector_name: string;
+    max_sector_pct: number;
+    var_95: number;
+    warnings: string[];
+    recommendations: string[];
+    drawdown_action: string;
+    drawdown_pct: number;
+    regime: string;
+  } | null;
+  cto?: {
+    total_records: number;
+    source_performance: {
+      source: string;
+      win_rate: number;
+      avg_return: number;
+      total: number;
+      decay: boolean;
+    }[];
+    decay_alerts: string[];
+    data_health_score: number;
+    stale_count: number;
+    missing_count: number;
+    suggestions: {
+      action: string;
+      detail: string;
+      priority: string;
+    }[];
+  } | null;
+  fundamentals?: {
+    earnings: {
+      date: string;
+      total_analyzed: number;
+      status_counts: Record<string, number>;
+      turnaround_strong: FundamentalStock[];
+      turnaround_early: FundamentalStock[];
+      accelerating: FundamentalStock[];
+    };
+    turnaround: {
+      date: string;
+      total_screened: number;
+      candidates_found: number;
+      strong: TurnaroundStock[];
+      early: TurnaroundStock[];
+    };
+  } | null;
   updated_at?: string | null;
   date?: string | null;
+}
+
+interface FundamentalStock {
+  ticker: string;
+  name: string;
+  status: string;
+  score: number;
+  latest_op_income: number;
+  prev_op_income: number;
+  qoq_change: number;
+  acceleration: number;
+}
+
+interface TurnaroundStock {
+  ticker: string;
+  name: string;
+  turnaround_type: string;
+  score: number;
+  op_income_q1: number;
+  op_income_latest: number;
+  debt_ratio: number;
+  est_turnaround: string;
 }
 
 interface EtfSignalItem {
@@ -246,6 +318,7 @@ const TAB_ITEMS = [
   { key: "sectors", label: "\uC5C5\uC885 \uBD84\uC11D", icon: "\uD83D\uDCCA" },
   { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
   { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
+  { key: "fundamentals", label: "\uD39C\uB354\uBA58\uD138", icon: "\uD83D\uDCCB" },
   { key: "etf-signals", label: "ETF\uC2DC\uADF8\uB110", icon: "\uD83D\uDCB0" },
   { key: "relay", label: "\uB9B4\uB808\uC774", icon: "\uD83D\uDD04" },
   { key: "sniper", label: "\uC2A4\uB098\uC774\uD37C", icon: "\u26A1" },
@@ -477,7 +550,11 @@ export default function JarvisControlTower() {
       )}
 
       {activeTab === "performance" && (
-        <PerformanceTab performance={data.performance} />
+        <PerformanceTab performance={data.performance} cfo={data.cfo} cto={data.cto} />
+      )}
+
+      {activeTab === "fundamentals" && (
+        <FundamentalsTab fundamentals={data.fundamentals} />
       )}
 
       {activeTab === "etf-signals" && (
@@ -953,11 +1030,17 @@ function SignalsTab({
 
 /* ─── Phase 4: 성과 탭 ─── */
 
-function PerformanceTab({ performance }: { performance: JarvisData["performance"] }) {
+function PerformanceTab({ performance, cfo, cto }: {
+  performance: JarvisData["performance"];
+  cfo: JarvisData["cfo"];
+  cto: JarvisData["cto"];
+}) {
   const trend = performance?.daily_trend ?? [];
   const latest = performance?.latest;
 
-  if (trend.length === 0) {
+  const hasCfoOrCto = cfo || cto;
+
+  if (trend.length === 0 && !hasCfoOrCto) {
     return (
       <div className="bg-gray-900 rounded-xl p-6 text-center">
         <p className="text-gray-400 text-sm">성과 데이터가 아직 없습니다</p>
@@ -967,81 +1050,219 @@ function PerformanceTab({ performance }: { performance: JarvisData["performance"
 
   const maxHit = Math.max(...trend.map((d) => d.avg_hit_rate), 1);
 
+  const DRAWDOWN_STYLE: Record<string, { color: string; label: string }> = {
+    "\uC720\uC9C0": { color: "text-green-400", label: "\uC720\uC9C0" },
+    "\uCD95\uC18C": { color: "text-yellow-400", label: "\uCD95\uC18C" },
+    "\uC911\uB2E8": { color: "text-red-400", label: "\uC911\uB2E8" },
+    "\uAE34\uAE09": { color: "text-red-500 animate-pulse", label: "\uAE34\uAE09" },
+  };
+
   return (
     <div className="space-y-6">
-      <div className="bg-gray-900 rounded-xl p-4">
-        <h3 className="text-gray-400 text-xs mb-3">일별 시그널 적중률 추이</h3>
-        <div className="flex items-end gap-2 h-32">
-          {trend.map((d) => {
-            const pct = (d.avg_hit_rate / maxHit) * 100;
-            const color = d.avg_hit_rate >= 60 ? "bg-green-500" : d.avg_hit_rate >= 40 ? "bg-yellow-500" : "bg-red-500";
-            return (
-              <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-gray-200 text-xs font-bold">{d.avg_hit_rate}%</span>
-                <div className="w-full flex justify-center" style={{ height: "80px" }}>
-                  <div
-                    className={`${color} rounded-t w-full max-w-[40px] transition-all`}
-                    style={{ height: `${Math.max(pct, 5)}%`, marginTop: "auto" }}
-                  />
-                </div>
-                <span className="text-gray-500 text-[10px]">{d.date.slice(5)}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      {/* CFO 포트폴리오 건강 */}
+      {cfo && (
+        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white text-sm font-bold">CFO 포트폴리오 건강</h3>
+            <span className={`text-xs font-bold ${
+              DRAWDOWN_STYLE[cfo.drawdown_action]?.color ?? "text-gray-400"
+            }`}>
+              {DRAWDOWN_STYLE[cfo.drawdown_action]?.label ?? cfo.drawdown_action}
+            </span>
+          </div>
 
-      <div className="bg-gray-900 rounded-xl p-4">
-        <h3 className="text-gray-400 text-xs mb-3">일별 시장 현황</h3>
-        <div className="space-y-2">
-          {trend.map((d) => {
-            const retColor = d.market_avg_ret >= 0 ? "text-red-400" : "text-blue-400";
-            return (
-              <div key={d.date} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
-                <span className="text-gray-300 text-xs">{d.date.slice(5)}</span>
-                <div className="flex gap-4 text-xs">
-                  <span className="text-gray-400">
-                    상승 <span className="text-red-400">{d.up_ratio}%</span>
-                  </span>
-                  <span className={retColor}>
-                    평균 {d.market_avg_ret >= 0 ? "+" : ""}{d.market_avg_ret}%
-                  </span>
-                  <span className={`${d.avg_hit_rate >= 50 ? "text-green-400" : "text-yellow-400"}`}>
-                    적중 {d.avg_hit_rate}%
-                  </span>
-                </div>
+          <div className="grid grid-cols-4 gap-3 mb-4">
+            {/* 건강 점수 게이지 */}
+            <div className="text-center">
+              <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full border-4 ${
+                cfo.health_score >= 70 ? "border-green-500" : cfo.health_score >= 40 ? "border-yellow-500" : "border-red-500"
+              }`}>
+                <span className={`text-xl font-bold ${
+                  cfo.health_score >= 70 ? "text-green-400" : cfo.health_score >= 40 ? "text-yellow-400" : "text-red-400"
+                }`}>{Math.round(cfo.health_score)}</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
+              <p className="text-gray-500 text-[10px] mt-1">\uAC74\uAC15\uC810\uC218</p>
+            </div>
 
-      {latest?.sources && Object.keys(latest.sources).length > 0 && (
-        <div className="bg-gray-900 rounded-xl p-4">
-          <h3 className="text-gray-400 text-xs mb-3">
-            {latest.date ? `${latest.date} ` : ""}소스별 적중률
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {Object.entries(latest.sources)
-              .sort(([, a], [, b]) => b.hit_rate - a.hit_rate)
-              .map(([name, s]) => {
-                const color = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
-                const retColor = s.avg_ret >= 0 ? "text-red-400" : "text-blue-400";
-                return (
-                  <div key={name} className="bg-gray-800 rounded-lg p-3">
-                    <p className="text-gray-400 text-[10px] truncate mb-1">{name}</p>
-                    <div className="flex items-baseline justify-between">
-                      <span className={`${color} text-lg font-bold`}>{s.hit_rate}%</span>
-                      <span className={`${retColor} text-xs`}>
-                        {s.avg_ret >= 0 ? "+" : ""}{s.avg_ret}%
+            <div className="text-center">
+              <p className={`text-2xl font-bold font-mono ${cfo.cash_ratio < 10 ? "text-red-400" : cfo.cash_ratio < 20 ? "text-yellow-400" : "text-green-400"}`}>
+                {cfo.cash_ratio.toFixed(1)}%
+              </p>
+              <p className="text-gray-500 text-[10px]">\uD604\uAE08\uBE44\uC728</p>
+            </div>
+
+            <div className="text-center">
+              <p className={`text-2xl font-bold font-mono ${cfo.max_sector_pct > 50 ? "text-red-400" : "text-gray-300"}`}>
+                {cfo.max_sector_pct.toFixed(0)}%
+              </p>
+              <p className="text-gray-500 text-[10px]">{cfo.max_sector_name} \uC9D1\uC911</p>
+            </div>
+
+            <div className="text-center">
+              <p className="text-2xl font-bold font-mono text-red-400">
+                {cfo.var_95.toFixed(1)}%
+              </p>
+              <p className="text-gray-500 text-[10px]">VaR-95</p>
+            </div>
+          </div>
+
+          {/* 경고 */}
+          {cfo.warnings.length > 0 && (
+            <div className="space-y-1">
+              {cfo.warnings.map((w, i) => (
+                <div key={i} className="text-xs bg-red-900/20 text-red-400 px-3 py-1.5 rounded border border-red-800/30">
+                  {w}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* CTO 시스템 성과 */}
+      {cto && (
+        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white text-sm font-bold">CTO \uC2DC\uC2A4\uD15C \uC131\uACFC</h3>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-mono ${
+                cto.data_health_score >= 90 ? "text-green-400" : cto.data_health_score >= 70 ? "text-yellow-400" : "text-red-400"
+              }`}>
+                \uB370\uC774\uD130 {cto.data_health_score.toFixed(0)}\uC810
+              </span>
+              <span className="text-gray-600 text-xs">{cto.total_records}\uAC74</span>
+            </div>
+          </div>
+
+          {/* 소스별 승률 바 차트 */}
+          {cto.source_performance.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {cto.source_performance
+                .sort((a, b) => b.win_rate - a.win_rate)
+                .map((s) => {
+                  const barColor = s.decay ? "bg-red-500" : s.win_rate >= 50 ? "bg-green-500" : s.win_rate >= 35 ? "bg-yellow-500" : "bg-red-500";
+                  const retColor = s.avg_return >= 0 ? "text-green-400" : "text-red-400";
+                  return (
+                    <div key={s.source} className="flex items-center gap-2">
+                      <span className="text-gray-300 text-xs w-16 shrink-0 truncate">
+                        {s.decay && "\uD83D\uDD34 "}{s.source}
                       </span>
+                      <div className="flex-1 bg-gray-800 rounded-full h-3">
+                        <div className={`${barColor} rounded-full h-3 transition-all`}
+                          style={{ width: `${Math.min(s.win_rate, 100)}%` }} />
+                      </div>
+                      <span className={`text-xs w-10 text-right font-mono ${
+                        s.win_rate >= 50 ? "text-green-400" : s.win_rate >= 35 ? "text-yellow-400" : "text-red-400"
+                      }`}>{s.win_rate.toFixed(0)}%</span>
+                      <span className={`text-xs w-14 text-right font-mono ${retColor}`}>
+                        {s.avg_return >= 0 ? "+" : ""}{s.avg_return.toFixed(1)}%
+                      </span>
+                      <span className="text-gray-600 text-xs w-8 text-right">{s.total}</span>
                     </div>
-                    <p className="text-gray-600 text-[10px] mt-1">{s.total}건 검증</p>
+                  );
+                })}
+              <div className="flex justify-end gap-4 text-[10px] text-gray-600 mt-1">
+                <span>| \uC2B9\uB960</span>
+                <span>| \uD3C9\uADE0\uC218\uC775</span>
+                <span>| \uAC74\uC218</span>
+              </div>
+            </div>
+          )}
+
+          {/* 제안 */}
+          {cto.suggestions.length > 0 && (
+            <div className="space-y-1">
+              {cto.suggestions.map((s, i) => (
+                <div key={i} className={`text-xs px-3 py-1.5 rounded border ${
+                  s.priority === "HIGH" ? "bg-red-900/20 text-red-400 border-red-800/30" :
+                  s.priority === "MEDIUM" ? "bg-yellow-900/20 text-yellow-400 border-yellow-800/30" :
+                  "bg-gray-800/50 text-gray-400 border-gray-700"
+                }`}>
+                  {s.detail}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {trend.length > 0 && (
+        <>
+          <div className="bg-gray-900 rounded-xl p-4">
+            <h3 className="text-gray-400 text-xs mb-3">일별 시그널 적중률 추이</h3>
+            <div className="flex items-end gap-2 h-32">
+              {trend.map((d) => {
+                const pct = (d.avg_hit_rate / maxHit) * 100;
+                const color = d.avg_hit_rate >= 60 ? "bg-green-500" : d.avg_hit_rate >= 40 ? "bg-yellow-500" : "bg-red-500";
+                return (
+                  <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+                    <span className="text-gray-200 text-xs font-bold">{d.avg_hit_rate}%</span>
+                    <div className="w-full flex justify-center" style={{ height: "80px" }}>
+                      <div
+                        className={`${color} rounded-t w-full max-w-[40px] transition-all`}
+                        style={{ height: `${Math.max(pct, 5)}%`, marginTop: "auto" }}
+                      />
+                    </div>
+                    <span className="text-gray-500 text-[10px]">{d.date.slice(5)}</span>
                   </div>
                 );
               })}
+            </div>
           </div>
-        </div>
+
+          <div className="bg-gray-900 rounded-xl p-4">
+            <h3 className="text-gray-400 text-xs mb-3">일별 시장 현황</h3>
+            <div className="space-y-2">
+              {trend.map((d) => {
+                const retColor = d.market_avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+                return (
+                  <div key={d.date} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+                    <span className="text-gray-300 text-xs">{d.date.slice(5)}</span>
+                    <div className="flex gap-4 text-xs">
+                      <span className="text-gray-400">
+                        상승 <span className="text-red-400">{d.up_ratio}%</span>
+                      </span>
+                      <span className={retColor}>
+                        평균 {d.market_avg_ret >= 0 ? "+" : ""}{d.market_avg_ret}%
+                      </span>
+                      <span className={`${d.avg_hit_rate >= 50 ? "text-green-400" : "text-yellow-400"}`}>
+                        적중 {d.avg_hit_rate}%
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {latest?.sources && Object.keys(latest.sources).length > 0 && (
+            <div className="bg-gray-900 rounded-xl p-4">
+              <h3 className="text-gray-400 text-xs mb-3">
+                {latest.date ? `${latest.date} ` : ""}소스별 적중률
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {Object.entries(latest.sources)
+                  .sort(([, a], [, b]) => b.hit_rate - a.hit_rate)
+                  .map(([name, s]) => {
+                    const color = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
+                    const retColor = s.avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+                    return (
+                      <div key={name} className="bg-gray-800 rounded-lg p-3">
+                        <p className="text-gray-400 text-[10px] truncate mb-1">{name}</p>
+                        <div className="flex items-baseline justify-between">
+                          <span className={`${color} text-lg font-bold`}>{s.hit_rate}%</span>
+                          <span className={`${retColor} text-xs`}>
+                            {s.avg_ret >= 0 ? "+" : ""}{s.avg_ret}%
+                          </span>
+                        </div>
+                        <p className="text-gray-600 text-[10px] mt-1">{s.total}건 검증</p>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -1064,6 +1285,210 @@ function TabEmpty({ label }: { label: string }) {
     <div className="bg-gray-900 rounded-xl p-6 text-center">
       <p className="text-gray-400 text-sm">{label} 데이터가 아직 없습니다</p>
       <p className="text-gray-600 text-xs mt-1">매일 장마감 후 업데이트됩니다</p>
+    </div>
+  );
+}
+
+/* ─── 펀더멘탈 탭 ─── */
+
+const STATUS_STYLE: Record<string, { color: string; label: string }> = {
+  TURNAROUND_STRONG: { color: "bg-emerald-600 text-white", label: "강한 전환" },
+  TURNAROUND_EARLY: { color: "bg-amber-600 text-white", label: "초기 전환" },
+  ACCELERATING: { color: "bg-blue-600 text-white", label: "성장 가속" },
+  DECELERATING: { color: "bg-orange-600 text-white", label: "성장 둔화" },
+  DETERIORATING: { color: "bg-gray-600 text-gray-300", label: "악화" },
+};
+
+function fmtBil(v: number) {
+  const b = v / 1e8;
+  if (Math.abs(b) >= 10000) return `${(b / 10000).toFixed(1)}조`;
+  return `${b.toFixed(0)}억`;
+}
+
+function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundamentals"] }) {
+  if (!fundamentals) {
+    return <TabEmpty label="펀더멘탈" />;
+  }
+
+  const { earnings, turnaround } = fundamentals;
+  const counts = earnings?.status_counts ?? {};
+  const totalAnalyzed = earnings?.total_analyzed ?? 0;
+
+  const STATUS_ORDER = ["TURNAROUND_STRONG", "TURNAROUND_EARLY", "ACCELERATING", "DECELERATING", "DETERIORATING"];
+  const STATUS_COLORS: Record<string, string> = {
+    TURNAROUND_STRONG: "bg-emerald-500",
+    TURNAROUND_EARLY: "bg-amber-500",
+    ACCELERATING: "bg-blue-500",
+    DECELERATING: "bg-orange-500",
+    DETERIORATING: "bg-gray-500",
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* 실적 상태 분포 */}
+      {totalAnalyzed > 0 && (
+        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+          <h3 className="text-white text-sm font-bold mb-3">
+            실적 상태 분포 ({totalAnalyzed}종목)
+          </h3>
+          {/* 바 차트 */}
+          <div className="flex rounded-full h-4 overflow-hidden mb-3">
+            {STATUS_ORDER.map((key) => {
+              const count = counts[key] ?? 0;
+              if (count === 0) return null;
+              return (
+                <div key={key} className={STATUS_COLORS[key]}
+                  style={{ width: `${(count / totalAnalyzed) * 100}%` }}
+                  title={`${STATUS_STYLE[key]?.label}: ${count}`} />
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-3 text-xs">
+            {STATUS_ORDER.map((key) => {
+              const count = counts[key] ?? 0;
+              if (count === 0) return null;
+              return (
+                <span key={key} className="text-gray-400 flex items-center gap-1">
+                  <span className={`inline-block w-2 h-2 rounded-full ${STATUS_COLORS[key]}`} />
+                  {STATUS_STYLE[key]?.label} {count}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 턴어라운드 — Strong */}
+      {turnaround?.strong && turnaround.strong.length > 0 && (
+        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+            <span className="text-sm font-bold text-white">적자→흑자 전환 (STRONG)</span>
+            <span className="text-xs text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                  <th className="text-left py-2 px-3">종목</th>
+                  <th className="text-right px-2">점수</th>
+                  <th className="text-right px-2">이전 영업이익</th>
+                  <th className="text-right px-2">최근 영업이익</th>
+                  <th className="text-right px-2">부채비율</th>
+                  <th className="text-center px-2">전환시점</th>
+                </tr>
+              </thead>
+              <tbody>
+                {turnaround.strong.map((s) => (
+                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                    <td className="py-2 px-3">
+                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                    </td>
+                    <td className="text-right px-2 font-mono font-bold text-emerald-400">{s.score}</td>
+                    <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
+                    <td className="text-right px-2 font-mono text-green-400">{fmtBil(s.op_income_latest)}</td>
+                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-red-400" : "text-gray-300"}`}>
+                      {s.debt_ratio.toFixed(0)}%
+                    </td>
+                    <td className="text-center px-2 text-gray-400">{s.est_turnaround}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 턴어라운드 — Early */}
+      {turnaround?.early && turnaround.early.length > 0 && (
+        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-800">
+            <span className="text-sm font-bold text-white">적자 축소 중 (EARLY)</span>
+            <span className="text-xs text-gray-500 ml-2">{turnaround.early.length}건</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                  <th className="text-left py-2 px-3">종목</th>
+                  <th className="text-right px-2">점수</th>
+                  <th className="text-right px-2">이전 영업이익</th>
+                  <th className="text-right px-2">최근 영업이익</th>
+                  <th className="text-right px-2">부채비율</th>
+                  <th className="text-center px-2">예상전환</th>
+                </tr>
+              </thead>
+              <tbody>
+                {turnaround.early.map((s) => (
+                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                    <td className="py-2 px-3">
+                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                    </td>
+                    <td className="text-right px-2 font-mono font-bold text-amber-400">{s.score}</td>
+                    <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
+                    <td className="text-right px-2 font-mono text-yellow-400">{fmtBil(s.op_income_latest)}</td>
+                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-red-400" : "text-gray-300"}`}>
+                      {s.debt_ratio.toFixed(0)}%
+                    </td>
+                    <td className="text-center px-2 text-gray-400">{s.est_turnaround}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 실적 가속 (Accelerating) */}
+      {earnings?.accelerating && earnings.accelerating.length > 0 && (
+        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-800">
+            <span className="text-sm font-bold text-white">실적 가속 종목</span>
+            <span className="text-xs text-gray-500 ml-2">{earnings.accelerating.length}건</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                  <th className="text-left py-2 px-3">종목</th>
+                  <th className="text-right px-2">점수</th>
+                  <th className="text-right px-2">이전 영업이익</th>
+                  <th className="text-right px-2">최근 영업이익</th>
+                  <th className="text-right px-2">QoQ</th>
+                  <th className="text-right px-2">가속도</th>
+                </tr>
+              </thead>
+              <tbody>
+                {earnings.accelerating.slice(0, 30).map((s) => (
+                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                    <td className="py-2 px-3">
+                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                    </td>
+                    <td className="text-right px-2 font-mono font-bold text-blue-400">{s.score}</td>
+                    <td className="text-right px-2 font-mono text-gray-400">{fmtBil(s.prev_op_income)}</td>
+                    <td className={`text-right px-2 font-mono ${s.latest_op_income >= 0 ? "text-green-400" : "text-red-400"}`}>
+                      {fmtBil(s.latest_op_income)}
+                    </td>
+                    <td className={`text-right px-2 font-mono ${s.qoq_change >= 0 ? "text-green-400" : "text-red-400"}`}>
+                      {s.qoq_change >= 0 ? "+" : ""}{(s.qoq_change * 100).toFixed(0)}%
+                    </td>
+                    <td className={`text-right px-2 font-mono font-bold ${s.acceleration > 0 ? "text-blue-400" : "text-gray-500"}`}>
+                      {s.acceleration.toFixed(1)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {earnings.accelerating.length > 30 && (
+              <div className="text-center py-2 text-gray-600 text-xs">
+                +{earnings.accelerating.length - 30}건 더 있음
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
