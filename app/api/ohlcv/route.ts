@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchOHLCV } from '@/features/supply-xray/api/fetchOHLCV'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   const ticker = req.nextUrl.searchParams.get('ticker') || '005930'
   if (!/^\d{6}$/.test(ticker)) {

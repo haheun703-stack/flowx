@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
-import { getSupabase } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const supabase = getSupabase()
+    const supabase = getSupabaseAdmin()
 
     // 최신 날짜 기준 전체 ETF, 점수 내림차순
     const { data, error } = await supabase

@@ -5,7 +5,8 @@ import { createServerClient } from '@supabase/ssr'
 const PUBLIC_PATHS = [
   '/', '/pricing', '/auth', '/terms', '/privacy',
   '/dashboard', '/market', '/sectors', '/information',
-  '/scenario', '/macro', '/quant', '/swing', '/chart',
+  '/scenario', '/scenarios', '/macro', '/quant', '/swing', '/chart',
+  '/smart-money', '/etf-signals', '/relay', '/stock',
 ]
 
 function isPublic(pathname: string): boolean {
