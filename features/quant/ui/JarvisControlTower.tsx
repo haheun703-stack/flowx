@@ -123,6 +123,52 @@ interface JarvisData {
   date?: string | null;
 }
 
+interface EtfSignalItem {
+  ticker: string;
+  name: string;
+  sector: string;
+  close: number;
+  change_pct: number;
+  aum: number;
+  aum_change: number;
+  aum_change_pct: number;
+  volume: number;
+  value: number;
+  signal_type: string;
+  score: number;
+}
+
+interface RelayItem {
+  lead_sector: string;
+  lag_sector: string;
+  lead_return_1d: number;
+  lead_return_5d: number;
+  lead_breadth: number;
+  lag_return_1d: number;
+  lag_return_5d: number;
+  gap: number;
+  signal_type: string;
+  score: number;
+}
+
+interface SniperItem {
+  ticker: string;
+  name: string;
+  sector: string;
+  close: number;
+  change_pct: number;
+  rsi: number;
+  ma20_gap: number;
+  bb_position: number;
+  adx: number;
+  foreign_days: number;
+  inst_days: number;
+  exec_strength: number;
+  vol_ratio: number;
+  signal_type: string;
+  score: number;
+}
+
 /* ─── 아이콘 (유니코드 이스케이프) ─── */
 const ICO = {
   WARN: "\u26A0\uFE0F",
@@ -159,11 +205,50 @@ const SHIELD_DISPLAY: Record<string, { icon: string; label: string; color: strin
   RED: { icon: "\uD83D\uDD34", label: "\uC704\uD5D8", color: "text-red-400" },
 };
 
+const ETF_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
+  "\uB300\uB7C9 \uC790\uAE08\uC720\uC785": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
+  "\uC790\uAE08\uC720\uC785": { color: "text-red-300", bg: "bg-red-900/20 border-red-800/30" },
+  "\uAC15\uC138 \uAE09\uB4F1": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
+  "\uAC15\uC138": { color: "text-orange-300", bg: "bg-orange-900/20 border-orange-800/30" },
+  "\uB300\uB7C9 \uC790\uAE08\uC720\uCD9C": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
+  "\uC790\uAE08\uC720\uCD9C": { color: "text-blue-300", bg: "bg-blue-900/20 border-blue-800/30" },
+  "\uC57D\uC138 \uAE09\uB77D": { color: "text-cyan-400", bg: "bg-cyan-900/30 border-cyan-800/50" },
+  "\uC57D\uC138": { color: "text-cyan-300", bg: "bg-cyan-900/20 border-cyan-800/30" },
+  "\uBCF4\uD569": { color: "text-gray-400", bg: "bg-gray-800/30 border-gray-700/50" },
+};
+
+const RELAY_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
+  "\uAC15\uD55C \uB9E4\uC218 \uAE30\uD68C": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
+  "\uB9E4\uC218 \uAE30\uD68C": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
+  "\uAD00\uC2EC \uAD6C\uAC04": { color: "text-yellow-400", bg: "bg-yellow-900/30 border-yellow-800/50" },
+  "\uCD94\uACA9 \uC9C4\uD589\uC911": { color: "text-green-400", bg: "bg-green-900/30 border-green-800/50" },
+  "\uC120\uD589 \uD558\uB77D": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
+  "\uB300\uAE30": { color: "text-gray-400", bg: "bg-gray-800/30 border-gray-700/50" },
+};
+
+const SNIPER_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
+  "\uACE8\uB4E0\uD06C\uB85C\uC2A4": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
+  "\uACFC\uB9E4\uB3C4 \uBC18\uB4F1": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
+  "\uC218\uAE09 \uBC18\uC804": { color: "text-green-400", bg: "bg-green-900/30 border-green-800/50" },
+  "\uBCFC\uBC34 \uD558\uB2E8": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
+  "\uCD94\uC138 \uC2DC\uC791": { color: "text-purple-400", bg: "bg-purple-900/30 border-purple-800/50" },
+};
+
+function formatBil(n: number) {
+  const bil = n / 100_000_000;
+  if (Math.abs(bil) >= 100) return `${bil >= 0 ? "+" : ""}${(bil / 10000).toFixed(1)}\uC870`;
+  if (Math.abs(bil) >= 1) return `${bil >= 0 ? "+" : ""}${bil.toFixed(0)}\uC5B5`;
+  return `${bil >= 0 ? "+" : ""}${bil.toFixed(1)}\uC5B5`;
+}
+
 const TAB_ITEMS = [
   { key: "recommend", label: "\uC624\uB298\uC758 \uCD94\uCC9C", icon: "\uD83C\uDFAF" },
   { key: "sectors", label: "\uC5C5\uC885 \uBD84\uC11D", icon: "\uD83D\uDCCA" },
   { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
   { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
+  { key: "etf-signals", label: "ETF\uC2DC\uADF8\uB110", icon: "\uD83D\uDCB0" },
+  { key: "relay", label: "\uB9B4\uB808\uC774", icon: "\uD83D\uDD04" },
+  { key: "sniper", label: "\uC2A4\uB098\uC774\uD37C", icon: "\u26A1" },
 ];
 
 /* ─── 메인 컴포넌트 ─── */
@@ -172,6 +257,10 @@ export default function JarvisControlTower() {
   const [data, setData] = useState<JarvisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("recommend");
+  const [etfData, setEtfData] = useState<{ items: EtfSignalItem[]; date: string | null } | null>(null);
+  const [relayData, setRelayData] = useState<{ items: RelayItem[]; date: string | null } | null>(null);
+  const [sniperData, setSniperData] = useState<{ items: SniperItem[]; date: string | null } | null>(null);
+  const [tabLoading, setTabLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -189,6 +278,33 @@ export default function JarvisControlTower() {
     load();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "etf-signals" && !etfData) {
+      setTabLoading("etf-signals");
+      fetch("/api/etf-signals")
+        .then((r) => r.json())
+        .then((json) => setEtfData({ items: json.items ?? [], date: json.date }))
+        .catch(() => setEtfData({ items: [], date: null }))
+        .finally(() => setTabLoading(null));
+    }
+    if (activeTab === "relay" && !relayData) {
+      setTabLoading("relay");
+      fetch("/api/relay")
+        .then((r) => r.json())
+        .then((json) => setRelayData({ items: json.items ?? [], date: json.date }))
+        .catch(() => setRelayData({ items: [], date: null }))
+        .finally(() => setTabLoading(null));
+    }
+    if (activeTab === "sniper" && !sniperData) {
+      setTabLoading("sniper");
+      fetch("/api/sniper")
+        .then((r) => r.json())
+        .then((json) => setSniperData({ items: json.items ?? [], date: json.date }))
+        .catch(() => setSniperData({ items: [], date: null }))
+        .finally(() => setTabLoading(null));
+    }
+  }, [activeTab, etfData, relayData, sniperData]);
 
   if (loading) {
     return (
@@ -251,12 +367,12 @@ export default function JarvisControlTower() {
       </section>
 
       {/* 탭 네비게이션 */}
-      <nav className="flex gap-1 bg-gray-900 rounded-lg p-1 border border-gray-800">
+      <nav className="flex gap-1 bg-gray-900 rounded-lg p-1 border border-gray-800 overflow-x-auto">
         {TAB_ITEMS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-2 px-3 rounded-md text-xs font-medium transition-colors ${
+            className={`shrink-0 py-2 px-3 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
               activeTab === tab.key
                 ? "bg-blue-600 text-white"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
@@ -362,6 +478,24 @@ export default function JarvisControlTower() {
 
       {activeTab === "performance" && (
         <PerformanceTab performance={data.performance} />
+      )}
+
+      {activeTab === "etf-signals" && (
+        tabLoading === "etf-signals" ? <TabLoadingSkeleton /> :
+        etfData && etfData.items.length > 0 ? <EtfSignalsTabContent data={etfData} /> :
+        <TabEmpty label="ETF 시그널" />
+      )}
+
+      {activeTab === "relay" && (
+        tabLoading === "relay" ? <TabLoadingSkeleton /> :
+        relayData && relayData.items.length > 0 ? <RelayTabContent data={relayData} /> :
+        <TabEmpty label="릴레이" />
+      )}
+
+      {activeTab === "sniper" && (
+        tabLoading === "sniper" ? <TabLoadingSkeleton /> :
+        sniperData && sniperData.items.length > 0 ? <SniperTabContent data={sniperData} /> :
+        <TabEmpty label="스나이퍼" />
       )}
     </div>
   );
@@ -909,6 +1043,272 @@ function PerformanceTab({ performance }: { performance: JarvisData["performance"
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ─── 공통 탭 유틸 ─── */
+
+function TabLoadingSkeleton() {
+  return (
+    <div className="animate-pulse space-y-3">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className="h-12 bg-gray-800 rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
+function TabEmpty({ label }: { label: string }) {
+  return (
+    <div className="bg-gray-900 rounded-xl p-6 text-center">
+      <p className="text-gray-400 text-sm">{label} 데이터가 아직 없습니다</p>
+      <p className="text-gray-600 text-xs mt-1">매일 장마감 후 업데이트됩니다</p>
+    </div>
+  );
+}
+
+/* ─── ETF시그널 탭 ─── */
+
+function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: string | null } }) {
+  const { items, date } = data;
+  const inflow = items.filter((i) => i.signal_type.includes("유입") || i.signal_type.includes("강세"));
+  const outflow = items.filter((i) => i.signal_type.includes("유출") || i.signal_type.includes("약세"));
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-gray-200 text-lg font-bold">ETF 자금흐름 시그널</h2>
+        {date && <span className="text-gray-500 text-xs">{date}</span>}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">유입/강세</p>
+          <p className="text-red-400 text-xl font-bold">{inflow.length}</p>
+        </div>
+        <div className="bg-blue-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">유출/약세</p>
+          <p className="text-blue-400 text-xl font-bold">{outflow.length}</p>
+        </div>
+        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">전체</p>
+          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+        </div>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+              <th className="text-left py-2 px-2">ETF</th>
+              <th className="text-center py-2 px-2">시그널</th>
+              <th className="text-right py-2 px-2">점수</th>
+              <th className="text-right py-2 px-2">현재가</th>
+              <th className="text-right py-2 px-2">등락</th>
+              <th className="text-right py-2 px-2">설정액변동</th>
+              <th className="text-right py-2 px-2">변동률</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => {
+              const sig = ETF_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              return (
+                <tr key={item.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <td className="py-2 px-2">
+                    <span className="text-gray-200">{item.name}</span>
+                    <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
+                  </td>
+                  <td className="text-center py-2 px-2">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-red-400" : item.score >= 40 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                  </td>
+                  <td className="text-right py-2 px-2 text-gray-300 font-mono">{item.close.toLocaleString()}</td>
+                  <td className={`text-right py-2 px-2 font-mono ${item.change_pct >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {item.change_pct >= 0 ? "+" : ""}{Number(item.change_pct).toFixed(2)}%
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${item.aum_change >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {formatBil(item.aum_change)}
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.aum_change_pct) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {Number(item.aum_change_pct) >= 0 ? "+" : ""}{Number(item.aum_change_pct).toFixed(1)}%
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ─── 릴레이 탭 ─── */
+
+function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | null } }) {
+  const { items, date } = data;
+  const buySignals = items.filter((i) => i.signal_type.includes("매수") || i.signal_type === "관심 구간");
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-gray-200 text-lg font-bold">섹터 릴레이 (Lead-Lag)</h2>
+        {date && <span className="text-gray-500 text-xs">{date}</span>}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">매수 기회</p>
+          <p className="text-red-400 text-xl font-bold">{buySignals.length}</p>
+        </div>
+        <div className="bg-blue-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">기타</p>
+          <p className="text-blue-400 text-xl font-bold">{items.length - buySignals.length}</p>
+        </div>
+        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">전체 쌍</p>
+          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+        </div>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+              <th className="text-left py-2 px-2">선행 → 후행</th>
+              <th className="text-center py-2 px-2">시그널</th>
+              <th className="text-right py-2 px-2">점수</th>
+              <th className="text-right py-2 px-2">괴리율</th>
+              <th className="text-right py-2 px-2">선행 5D</th>
+              <th className="text-right py-2 px-2">후행 5D</th>
+              <th className="text-right py-2 px-2">종목비</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => {
+              const sig = RELAY_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              const gapNum = Number(item.gap);
+              return (
+                <tr key={`${item.lead_sector}-${item.lag_sector}`} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <td className="py-2 px-2">
+                    <span className="text-gray-200">{item.lead_sector}</span>
+                    <span className="text-gray-600 mx-1">→</span>
+                    <span className="text-gray-300">{item.lag_sector}</span>
+                  </td>
+                  <td className="text-center py-2 px-2">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    <span className={`font-bold font-mono ${item.score >= 50 ? "text-red-400" : item.score >= 30 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono font-bold ${gapNum >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {gapNum >= 0 ? "+" : ""}{gapNum.toFixed(1)}%p
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lead_return_5d) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {Number(item.lead_return_5d) >= 0 ? "+" : ""}{Number(item.lead_return_5d).toFixed(2)}%
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lag_return_5d) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {Number(item.lag_return_5d) >= 0 ? "+" : ""}{Number(item.lag_return_5d).toFixed(2)}%
+                  </td>
+                  <td className="text-right py-2 px-2 font-mono text-gray-400">
+                    {Number(item.lead_breadth).toFixed(0)}%
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ─── 스나이퍼 탭 ─── */
+
+function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string | null } }) {
+  const { items, date } = data;
+  const highScore = items.filter((i) => i.score >= 70);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-gray-200 text-lg font-bold">스나이퍼워치</h2>
+        {date && <span className="text-gray-500 text-xs">{date}</span>}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">고점수 (70+)</p>
+          <p className="text-red-400 text-xl font-bold">{highScore.length}</p>
+        </div>
+        <div className="bg-yellow-900/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">관심 (40-69)</p>
+          <p className="text-yellow-400 text-xl font-bold">{items.filter((i) => i.score >= 40 && i.score < 70).length}</p>
+        </div>
+        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+          <p className="text-gray-500 text-[10px]">전체</p>
+          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+        </div>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+              <th className="text-left py-2 px-2">종목</th>
+              <th className="text-center py-2 px-2">시그널</th>
+              <th className="text-right py-2 px-2">점수</th>
+              <th className="text-right py-2 px-2">현재가</th>
+              <th className="text-right py-2 px-2">등락</th>
+              <th className="text-right py-2 px-2">RSI</th>
+              <th className="text-right py-2 px-2">MA20갭</th>
+              <th className="text-right py-2 px-2">외인</th>
+              <th className="text-right py-2 px-2">기관</th>
+              <th className="text-right py-2 px-2">거래량비</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => {
+              const sig = SNIPER_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              return (
+                <tr key={item.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <td className="py-2 px-2">
+                    <span className="text-gray-200">{item.name}</span>
+                    <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
+                  </td>
+                  <td className="text-center py-2 px-2">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-red-400" : item.score >= 40 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                  </td>
+                  <td className="text-right py-2 px-2 text-gray-300 font-mono">{item.close.toLocaleString()}</td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.change_pct) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {Number(item.change_pct) >= 0 ? "+" : ""}{Number(item.change_pct).toFixed(2)}%
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.rsi) <= 30 ? "text-green-400" : Number(item.rsi) >= 70 ? "text-red-400" : "text-gray-300"}`}>
+                    {Number(item.rsi).toFixed(0)}
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.ma20_gap) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                    {Number(item.ma20_gap) >= 0 ? "+" : ""}{Number(item.ma20_gap).toFixed(1)}%
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    {item.foreign_days > 0 ? <span className="text-green-400 font-mono">{item.foreign_days}일</span> : <span className="text-gray-700">-</span>}
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    {item.inst_days > 0 ? <span className="text-blue-400 font-mono">{item.inst_days}일</span> : <span className="text-gray-700">-</span>}
+                  </td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.vol_ratio) >= 2 ? "text-yellow-400" : "text-gray-500"}`}>
+                    {Number(item.vol_ratio).toFixed(1)}x
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
