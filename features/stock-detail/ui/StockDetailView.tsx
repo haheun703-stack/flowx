@@ -23,6 +23,35 @@ interface SignalItem {
   reasons: string[]
 }
 
+interface Technicals {
+  ticker: string
+  name: string
+  date: string
+  price: number
+  volume: number
+  ma5: number
+  ma20: number
+  ma60: number
+  ma120: number
+  rsi: number
+  macd: number
+  macd_signal: number
+  macd_histogram: number
+  adx: number
+  bb_upper: number
+  bb_lower: number
+  bb_pct: number
+  stoch_k: number
+  stoch_d: number
+  atr: number
+  obv: number
+  volume_ratio: number
+  trix: number
+  trix_signal: number
+  tech_signal: string
+  tech_score: number
+}
+
 interface StockData {
   ticker: string
   pick: {
@@ -40,6 +69,7 @@ interface StockData {
   } | null
   jarvis_date: string | null
   why_now: WhyNow | null
+  technicals: Technicals | null
   signals: SignalItem[]
   briefing_mentions: { date: string; market_status: string }[]
 }
@@ -84,7 +114,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
   if (loading) return <div className="text-gray-500 text-center py-20">로딩 중...</div>
   if (!data) return <div className="text-gray-500 text-center py-20">데이터 없음</div>
 
-  const { pick, why_now, signals, briefing_mentions } = data
+  const { pick, why_now, technicals, signals, briefing_mentions } = data
 
   return (
     <div className="space-y-6">
@@ -232,6 +262,122 @@ export function StockDetailView({ ticker }: { ticker: string }) {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* 기술적 지표 */}
+      {technicals && (
+        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white">기술적 지표</h3>
+            <div className="flex items-center gap-2">
+              {technicals.tech_signal && (
+                <span className={`text-[10px] px-2 py-0.5 rounded border ${
+                  technicals.tech_signal.includes("매수") || technicals.tech_signal.includes("반등")
+                    ? "bg-[#00ff88]/20 text-[#00ff88] border-[#00ff88]/30"
+                    : technicals.tech_signal.includes("매도") || technicals.tech_signal.includes("하락")
+                    ? "bg-[#ff3b5c]/20 text-[#ff3b5c] border-[#ff3b5c]/30"
+                    : "bg-gray-700/50 text-gray-400 border-gray-600"
+                }`}>
+                  {technicals.tech_signal}
+                </span>
+              )}
+              <span className="text-[10px] text-gray-500">{technicals.date}</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* RSI */}
+            <div className="bg-gray-800/50 rounded-lg p-3">
+              <span className="text-[10px] text-gray-500 block">RSI (14)</span>
+              <span className={`text-lg font-bold font-mono ${
+                technicals.rsi >= 70 ? "text-[#ff3b5c]" : technicals.rsi <= 30 ? "text-[#00ff88]" : "text-white"
+              }`}>{technicals.rsi.toFixed(1)}</span>
+              <span className="text-[10px] text-gray-600 block">
+                {technicals.rsi >= 70 ? "과매수" : technicals.rsi <= 30 ? "과매도" : "중립"}
+              </span>
+            </div>
+
+            {/* MACD */}
+            <div className="bg-gray-800/50 rounded-lg p-3">
+              <span className="text-[10px] text-gray-500 block">MACD</span>
+              <span className={`text-lg font-bold font-mono ${signColor(technicals.macd_histogram)}`}>
+                {technicals.macd_histogram > 0 ? "+" : ""}{technicals.macd_histogram.toFixed(2)}
+              </span>
+              <span className="text-[10px] text-gray-600 block">
+                {technicals.macd_histogram > 0 ? "매수 신호" : "매도 신호"}
+              </span>
+            </div>
+
+            {/* 볼린저밴드 %B */}
+            <div className="bg-gray-800/50 rounded-lg p-3">
+              <span className="text-[10px] text-gray-500 block">BB %B</span>
+              <span className={`text-lg font-bold font-mono ${
+                technicals.bb_pct >= 80 ? "text-[#ff3b5c]" : technicals.bb_pct <= 20 ? "text-[#00ff88]" : "text-white"
+              }`}>{technicals.bb_pct.toFixed(1)}%</span>
+              <span className="text-[10px] text-gray-600 block">
+                {technicals.bb_pct >= 80 ? "상단 돌파" : technicals.bb_pct <= 20 ? "하단 이탈" : "밴드 내"}
+              </span>
+            </div>
+
+            {/* ADX */}
+            <div className="bg-gray-800/50 rounded-lg p-3">
+              <span className="text-[10px] text-gray-500 block">ADX (추세강도)</span>
+              <span className={`text-lg font-bold font-mono ${
+                technicals.adx >= 25 ? "text-[#f59e0b]" : "text-gray-400"
+              }`}>{technicals.adx.toFixed(1)}</span>
+              <span className="text-[10px] text-gray-600 block">
+                {technicals.adx >= 40 ? "강한 추세" : technicals.adx >= 25 ? "추세 진행" : "비추세"}
+              </span>
+            </div>
+          </div>
+
+          {/* 2단 상세 */}
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-3">
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">Stoch K</span>
+              <span className={`text-xs font-mono ${signColor(technicals.stoch_k - 50)}`}>{technicals.stoch_k.toFixed(1)}</span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">Stoch D</span>
+              <span className={`text-xs font-mono ${signColor(technicals.stoch_d - 50)}`}>{technicals.stoch_d.toFixed(1)}</span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">ATR</span>
+              <span className="text-xs font-mono text-gray-300">{technicals.atr.toFixed(0)}</span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">거래비</span>
+              <span className={`text-xs font-mono ${technicals.volume_ratio > 1.5 ? "text-yellow-400" : "text-gray-400"}`}>
+                x{technicals.volume_ratio.toFixed(1)}
+              </span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">TRIX</span>
+              <span className={`text-xs font-mono ${signColor(technicals.trix)}`}>{technicals.trix.toFixed(3)}</span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">종합점수</span>
+              <span className={`text-xs font-mono font-bold ${signColor(technicals.tech_score)}`}>{technicals.tech_score.toFixed(1)}</span>
+            </div>
+          </div>
+
+          {/* 이동평균선 */}
+          <div className="flex gap-3 mt-3 text-[10px]">
+            <span className="text-gray-500">이평선</span>
+            <span className={technicals.price > technicals.ma5 ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
+              5일 {technicals.ma5.toLocaleString()}
+            </span>
+            <span className={technicals.price > technicals.ma20 ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
+              20일 {technicals.ma20.toLocaleString()}
+            </span>
+            <span className={technicals.price > technicals.ma60 ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
+              60일 {technicals.ma60.toLocaleString()}
+            </span>
+            <span className={technicals.price > technicals.ma120 ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
+              120일 {technicals.ma120.toLocaleString()}
+            </span>
+          </div>
         </div>
       )}
 
