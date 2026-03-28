@@ -44,7 +44,7 @@ export function StockSearchModal({ open, onClose }: Props) {
 
   const handleSelect = useCallback((code: string) => {
     if (!CODE_RE.test(code)) return
-    router.push(`/chart/${code}`)
+    router.push(`/stock/${code}`)
     onClose()
   }, [router, onClose])
 
