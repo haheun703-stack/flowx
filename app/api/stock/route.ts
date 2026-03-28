@@ -75,6 +75,13 @@ export async function GET(req: Request) {
       .limit(1)
       .single()
 
+    // 7. stock_master에서 기본정보
+    const { data: masterRow } = await sb
+      .from('stock_master')
+      .select('*')
+      .eq('ticker', ticker)
+      .single()
+
     // briefing에서 해당 종목 언급 찾기
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const briefingMentions = (briefings ?? []).filter((b: any) => {
@@ -88,6 +95,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       ticker,
+      master: masterRow ?? null,
       pick,
       jarvis_date: jarvisDate,
       why_now: pick?.why_now ?? null,

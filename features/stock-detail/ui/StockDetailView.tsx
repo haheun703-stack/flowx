@@ -97,8 +97,17 @@ interface MlPrediction {
   success: boolean | null
 }
 
+interface StockMaster {
+  ticker: string
+  name: string
+  sector: string
+  market: string
+  market_cap: number
+}
+
 interface StockData {
   ticker: string
+  master: StockMaster | null
   pick: {
     name: string
     grade: string
@@ -161,7 +170,8 @@ export function StockDetailView({ ticker }: { ticker: string }) {
   if (loading) return <div className="text-gray-500 text-center py-20">로딩 중...</div>
   if (!data) return <div className="text-gray-500 text-center py-20">데이터 없음</div>
 
-  const { pick, why_now, technicals, valuations, ml_prediction, signals, briefing_mentions } = data
+  const { master, pick, why_now, technicals, valuations, ml_prediction, signals, briefing_mentions } = data
+  const stockName = pick?.name ?? master?.name ?? technicals?.name ?? valuations?.name ?? ticker
 
   return (
     <div className="space-y-6">
@@ -169,8 +179,14 @@ export function StockDetailView({ ticker }: { ticker: string }) {
       <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-white">{pick?.name ?? ticker}</h2>
+            <h2 className="text-xl font-bold text-white">{stockName}</h2>
             <span className="text-sm font-mono text-gray-500">{ticker}</span>
+            {master?.market && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400">{master.market}</span>
+            )}
+            {master?.sector && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-500">{master.sector}</span>
+            )}
             {pick?.grade && (
               <span className={`text-lg font-bold ${gradeColor(pick.grade)}`}>{pick.grade}</span>
             )}
