@@ -7,12 +7,14 @@ import { SectorFlowView } from "@/features/quant-scalper/ui/SectorFlowView"
 import { SectorMomentumView } from "@/features/quant-scalper/ui/SectorMomentumView"
 import { EtfFlowView } from "@/features/quant-scalper/ui/EtfFlowView"
 import { EtfPicksView } from "@/features/quant-scalper/ui/EtfPicksView"
+import { SectorRotationView } from "@/features/quant-scalper/ui/SectorRotationView"
 
 const TABS = [
   { key: "dashboard", label: "대시보드" },
   { key: "brain", label: "BRAIN 판단" },
   { key: "sector-flow", label: "섹터수급" },
   { key: "sector-momentum", label: "섹터모멘텀" },
+  { key: "sector-rotation", label: "섹터로테이션" },
   { key: "etf-flow", label: "ETF수급" },
   { key: "etf-picks", label: "ETF추천" },
 ] as const
@@ -56,6 +58,11 @@ export function SwingTabsView() {
       {tab === "sector-momentum" && (
         <div className="max-w-[1400px] mx-auto px-6 pt-6">
           <SectorMomentumView />
+        </div>
+      )}
+      {tab === "sector-rotation" && (
+        <div className="max-w-[1400px] mx-auto px-6 pt-6">
+          <SectorRotationView />
         </div>
       )}
       {tab === "etf-flow" && (
