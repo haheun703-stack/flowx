@@ -57,6 +57,14 @@ export async function GET(req: Request) {
       .limit(1)
       .single()
 
+    // 5. stock_valuations에서 밸류에이션
+    const { data: valRow } = await sb
+      .from('stock_valuations')
+      .select('*')
+      .eq('ticker', ticker)
+      .limit(1)
+      .single()
+
     // briefing에서 해당 종목 언급 찾기
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const briefingMentions = (briefings ?? []).filter((b: any) => {
@@ -74,6 +82,7 @@ export async function GET(req: Request) {
       jarvis_date: jarvisDate,
       why_now: pick?.why_now ?? null,
       technicals: techRow ?? null,
+      valuations: valRow ?? null,
       signals: (signals ?? []).map((s) => ({
         date: s.date,
         signal_type: s.signal_type,

@@ -52,6 +52,37 @@ interface Technicals {
   tech_score: number
 }
 
+interface Valuations {
+  ticker: string
+  name: string
+  date: string
+  price: number
+  market_cap: number
+  fair_value_1yr: number
+  fair_value_2yr: number
+  fair_value_3yr: number
+  safety_margin: number
+  per_value: number
+  dcf_value: number
+  rim_value: number
+  peg_value: number
+  ev_ebitda_value: number
+  roe: number
+  debt_to_equity: number
+  per_5yr_avg: number
+  eps_ttm: number
+  revenue_growth: number
+  earnings_stability: number
+  latest_q_revenue: number
+  latest_q_op_income: number
+  latest_q_net_income: number
+  op_margin: number
+  revenue_yoy: number
+  op_income_yoy: number
+  valuation_signal: string
+  valuation_score: number
+}
+
 interface StockData {
   ticker: string
   pick: {
@@ -70,6 +101,7 @@ interface StockData {
   jarvis_date: string | null
   why_now: WhyNow | null
   technicals: Technicals | null
+  valuations: Valuations | null
   signals: SignalItem[]
   briefing_mentions: { date: string; market_status: string }[]
 }
@@ -114,7 +146,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
   if (loading) return <div className="text-gray-500 text-center py-20">로딩 중...</div>
   if (!data) return <div className="text-gray-500 text-center py-20">데이터 없음</div>
 
-  const { pick, why_now, technicals, signals, briefing_mentions } = data
+  const { pick, why_now, technicals, valuations, signals, briefing_mentions } = data
 
   return (
     <div className="space-y-6">
@@ -377,6 +409,105 @@ export function StockDetailView({ ticker }: { ticker: string }) {
             <span className={technicals.price > technicals.ma120 ? "text-[#00ff88]" : "text-[#ff3b5c]"}>
               120일 {technicals.ma120.toLocaleString()}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* 밸류에이션 */}
+      {valuations && (
+        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white">밸류에이션</h3>
+            <div className="flex items-center gap-2">
+              {valuations.valuation_signal && (
+                <span className={`text-[10px] px-2 py-0.5 rounded border ${
+                  valuations.valuation_signal.includes("저평가") || valuations.valuation_signal.includes("우량")
+                    ? "bg-[#00ff88]/20 text-[#00ff88] border-[#00ff88]/30"
+                    : valuations.valuation_signal.includes("고평가") || valuations.valuation_signal.includes("위험")
+                    ? "bg-[#ff3b5c]/20 text-[#ff3b5c] border-[#ff3b5c]/30"
+                    : "bg-gray-700/50 text-gray-400 border-gray-600"
+                }`}>
+                  {valuations.valuation_signal}
+                </span>
+              )}
+              <span className="text-[10px] text-gray-500">{valuations.date}</span>
+            </div>
+          </div>
+
+          {/* 적정가 vs 현재가 */}
+          <div className="bg-gray-800/50 rounded-xl p-4 mb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-gray-500 block">현재가</span>
+                <span className="text-lg font-bold text-white">{valuations.price.toLocaleString()}원</span>
+              </div>
+              <div className="text-center">
+                <span className="text-[10px] text-gray-500 block">적정가 (1yr)</span>
+                <span className="text-lg font-bold text-[#0ea5e9]">{Math.round(valuations.fair_value_1yr).toLocaleString()}원</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-gray-500 block">안전마진</span>
+                <span className={`text-lg font-bold ${valuations.safety_margin > 0 ? "text-[#00ff88]" : "text-[#ff3b5c]"}`}>
+                  {valuations.safety_margin > 0 ? "+" : ""}{valuations.safety_margin.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 5개 모델 */}
+          <div className="grid grid-cols-5 gap-2 mb-3">
+            {[
+              { label: "PER", val: valuations.per_value },
+              { label: "DCF", val: valuations.dcf_value },
+              { label: "RIM", val: valuations.rim_value },
+              { label: "PEG", val: valuations.peg_value },
+              { label: "EV/EBITDA", val: valuations.ev_ebitda_value },
+            ].map((m) => (
+              <div key={m.label} className="text-center p-2 bg-gray-800/30 rounded">
+                <span className="text-[10px] text-gray-500 block">{m.label}</span>
+                <span className={`text-xs font-mono ${m.val > valuations.price ? "text-[#00ff88]" : m.val > 0 ? "text-[#ff3b5c]" : "text-gray-600"}`}>
+                  {m.val > 0 ? Math.round(m.val).toLocaleString() : "-"}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* 펀더멘탈 */}
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">ROE</span>
+              <span className={`text-xs font-mono font-bold ${valuations.roe >= 10 ? "text-[#00ff88]" : "text-gray-400"}`}>
+                {valuations.roe.toFixed(1)}%
+              </span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">D/E</span>
+              <span className={`text-xs font-mono ${valuations.debt_to_equity > 100 ? "text-[#ff3b5c]" : "text-gray-300"}`}>
+                {valuations.debt_to_equity.toFixed(0)}%
+              </span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">영업이익률</span>
+              <span className={`text-xs font-mono ${signColor(valuations.op_margin)}`}>{valuations.op_margin.toFixed(1)}%</span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">매출 YoY</span>
+              <span className={`text-xs font-mono ${signColor(valuations.revenue_yoy)}`}>
+                {valuations.revenue_yoy > 0 ? "+" : ""}{valuations.revenue_yoy.toFixed(1)}%
+              </span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">매출성장</span>
+              <span className={`text-xs font-mono ${signColor(valuations.revenue_growth)}`}>
+                {valuations.revenue_growth > 0 ? "+" : ""}{valuations.revenue_growth.toFixed(1)}%
+              </span>
+            </div>
+            <div className="text-center p-2 bg-gray-800/30 rounded">
+              <span className="text-[10px] text-gray-500 block">종합점수</span>
+              <span className={`text-xs font-mono font-bold ${signColor(valuations.valuation_score)}`}>
+                {valuations.valuation_score.toFixed(1)}
+              </span>
+            </div>
           </div>
         </div>
       )}
