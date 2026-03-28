@@ -1,10 +1,10 @@
-import { SwingView } from '@/features/swing/ui/SwingView'
+import SwingDashboardView from '@/features/swing/ui/SwingDashboardView'
 
 export const metadata = {
-  title: 'FLOWX — 스윙시스템 (VIP)',
-  description: 'AI 추천 상세, 세력 포착, 스나이퍼 워치, 시그널 히스토리',
+  title: 'FLOWX — 스윙시스템 대시보드 (VIP)',
+  description: 'BRAIN AI 판단 + 자산배분 + 추천종목 + NXT 야간매매',
 }
 
 export default function SwingPage() {
-  return <SwingView />
+  return <SwingDashboardView />
 }
