@@ -1,11 +1,32 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { createChart, AreaSeries, type IChartApi, type ISeriesApi, type AreaSeriesPartialOptions, type UTCTimestamp } from 'lightweight-charts'
+import {
+  createChart,
+  AreaSeries,
+  LineSeries,
+  LineStyle,
+  type IChartApi,
+  type ISeriesApi,
+  type AreaSeriesPartialOptions,
+  type UTCTimestamp,
+} from 'lightweight-charts'
 
 // 한국 주식 컬러: 상승=빨강, 하락=파랑
 const KR_UP = '#dc2626'
 const KR_DOWN = '#2563eb'
+
+// 투자자 색상
+const FOREIGN_COLOR = '#111827'  // 외국인 = 검정
+const INST_COLOR = '#ec4899'     // 기관 = 핑크
+const INDIV_COLOR = '#eab308'    // 개인 = 노랑
+
+export interface InvestorFlowPoint {
+  date: string
+  foreign_net: number
+  inst_net: number
+  indiv_net: number
+}
 
 interface HeroChartProps {
   data: { time: number; value: number }[]
@@ -15,12 +36,16 @@ interface HeroChartProps {
   marketOpen?: boolean
   mode?: 'intraday' | 'daily' | 'empty'
   lastDate?: string
+  investorFlow?: InvestorFlowPoint[]
 }
 
-export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate }: HeroChartProps) {
+export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate, investorFlow }: HeroChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const foreignRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const instRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const indivRef = useRef<ISeriesApi<'Line'> | null>(null)
 
   // 차트 생성 (mount 1회)
   useEffect(() => {
@@ -45,6 +70,11 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
         borderColor: '#e5e7eb',
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
+      leftPriceScale: {
+        visible: true,
+        borderColor: '#e5e7eb',
+        scaleMargins: { top: 0.1, bottom: 0.1 },
+      },
       timeScale: {
         borderColor: '#e5e7eb',
         timeVisible: true,
@@ -53,7 +83,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
         fixRightEdge: true,
       },
       width: el.clientWidth,
-      height: 220,
+      height: 260,
     })
 
     const series = chart.addSeries(AreaSeries, {
@@ -64,8 +94,42 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       crosshairMarkerRadius: 4,
     })
 
+    // 투자자 라인 시리즈 (왼쪽 축)
+    const foreignLine = chart.addSeries(LineSeries, {
+      color: FOREIGN_COLOR,
+      lineWidth: 2,
+      lineStyle: LineStyle.Dashed,
+      priceScaleId: 'left',
+      priceLineVisible: false,
+      lastValueVisible: false,
+      crosshairMarkerVisible: false,
+    })
+
+    const instLine = chart.addSeries(LineSeries, {
+      color: INST_COLOR,
+      lineWidth: 2,
+      lineStyle: LineStyle.Dashed,
+      priceScaleId: 'left',
+      priceLineVisible: false,
+      lastValueVisible: false,
+      crosshairMarkerVisible: false,
+    })
+
+    const indivLine = chart.addSeries(LineSeries, {
+      color: INDIV_COLOR,
+      lineWidth: 2,
+      lineStyle: LineStyle.Dashed,
+      priceScaleId: 'left',
+      priceLineVisible: false,
+      lastValueVisible: false,
+      crosshairMarkerVisible: false,
+    })
+
     chartRef.current = chart
     seriesRef.current = series
+    foreignRef.current = foreignLine
+    instRef.current = instLine
+    indivRef.current = indivLine
 
     let disposed = false
     const ro = new ResizeObserver(() => {
@@ -81,6 +145,9 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       chart.remove()
       chartRef.current = null
       seriesRef.current = null
+      foreignRef.current = null
+      instRef.current = null
+      indivRef.current = null
     }
   }, [])
 
@@ -109,8 +176,26 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     chart.timeScale().fitContent()
   }, [data, changePercent, mode])
 
+  // 투자자 흐름 데이터 업데이트
+  useEffect(() => {
+    const foreignLine = foreignRef.current
+    const instLine = instRef.current
+    const indivLine = indivRef.current
+    if (!foreignLine || !instLine || !indivLine || !investorFlow?.length) return
+
+    const toTime = (d: string) => Math.floor(new Date(`${d}T09:00:00+09:00`).getTime() / 1000) as UTCTimestamp
+
+    // 백만원 → 억원 변환
+    const toEok = (v: number) => Math.round(v / 100)
+
+    foreignLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.foreign_net) })))
+    instLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.inst_net) })))
+    indivLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.indiv_net) })))
+  }, [investorFlow])
+
   const label = mode === 'daily' ? 'KOSPI 30일 추이' : 'KOSPI 종합지수'
   const priceColor = changePercent >= 0 ? KR_UP : KR_DOWN
+  const hasFlow = investorFlow && investorFlow.length > 0
 
   return (
     <div className="relative border-b border-[var(--border)] bg-white">
@@ -137,8 +222,24 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       {/* 차트 */}
       <div ref={containerRef} className="w-full pt-12" />
 
-      {/* 우측 상단 — 장 상태 */}
+      {/* 우측 상단 — 장 상태 + 투자자 범례 */}
       <div className="absolute top-4 right-5 z-10 flex items-center gap-2">
+        {hasFlow && (
+          <div className="flex items-center gap-3 mr-4">
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: FOREIGN_COLOR }} />
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">외국인</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: INST_COLOR }} />
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">기관</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: INDIV_COLOR }} />
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">개인</span>
+            </span>
+          </div>
+        )}
         {marketOpen ? (
           <>
             <div className="w-1.5 h-1.5 rounded-full animate-pulse bg-[var(--green)]" />
@@ -157,7 +258,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
 
       {/* 데이터 없을 때 */}
       {data.length === 0 && (
-        <div className="flex items-center justify-center h-[220px] text-sm font-mono text-[var(--text-muted)]">
+        <div className="flex items-center justify-center h-[260px] text-sm font-mono text-[var(--text-muted)]">
           데이터 로딩 중...
         </div>
       )}

@@ -12,10 +12,11 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
-import { useDashboardDaily } from '../api/useDashboard'
+import { useDashboardDaily, useInvestorFlow } from '../api/useDashboard'
 
 export function BloombergDashboard() {
   const { data: intraday } = useDashboardDaily()
+  const { data: investorFlow } = useInvestorFlow()
 
   return (
     <div className="flex flex-col h-[calc(100vh/1.25-88px)] bg-[var(--bg-base)]">
@@ -39,6 +40,7 @@ export function BloombergDashboard() {
           marketOpen={intraday?.marketOpen ?? false}
           mode={(intraday?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
           lastDate={intraday?.lastDate}
+          investorFlow={investorFlow}
         />
 
         {/* 메인 그리드 */}

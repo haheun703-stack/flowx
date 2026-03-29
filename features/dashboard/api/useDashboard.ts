@@ -312,6 +312,23 @@ export function useDashboardDaily() {
   })
 }
 
+// --- KOSPI 투자자별 일별 순매수 (30일) ---
+export interface InvestorFlowPoint {
+  date: string
+  foreign_net: number
+  inst_net: number
+  indiv_net: number
+}
+
+export function useInvestorFlow() {
+  return useQuery<InvestorFlowPoint[]>({
+    queryKey: ['investor-flow'],
+    queryFn: () => fetchJson('/api/market/investor-flow'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 30,
+  })
+}
+
 // ============================================
 // Supabase-backed APIs (Phase A)
 // ============================================

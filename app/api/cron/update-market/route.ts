@@ -96,6 +96,17 @@ export async function GET(req: Request) {
       const { error } = await supabase.from('market_snapshots').upsert(snapshot)
       if (!error) supabaseOk = true
       else console.warn('Supabase upsert skipped:', error.message)
+
+      // 4-1. 투자자별 일별 순매수 저장
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' })
+      await supabase.from('kospi_investor_daily').upsert({
+        date: today,
+        foreign_net: foreignInst.foreign_net,
+        inst_net: foreignInst.inst_net,
+        indiv_net: foreignInst.individual_net,
+      }).then(({ error: e2 }) => {
+        if (e2) console.warn('investor_daily upsert skipped:', e2.message)
+      })
     } catch { /* Supabase 테이블 미생성 시 무시 */ }
 
     const result = {
