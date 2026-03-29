@@ -1,11 +1,11 @@
 'use client'
 
-import { useId } from 'react'
-import { useInformationSupplyDemand } from '../api/useInformation'
+import { useInformationSupplyDemand, useInformationSupplyDemandHistory, type SupplyDemandData } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
-  ReferenceLine, LabelList, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid,
+  ReferenceLine, ResponsiveContainer,
+  LineChart, Line, Tooltip, Legend,
 } from 'recharts'
 
 function formatKrNumber(v: number): string {
@@ -16,186 +16,200 @@ function formatKrNumber(v: number): string {
   return `${sign}${abs.toLocaleString()}`
 }
 
-// ── 억 단위 변환 (API가 원 단위일 때) ──
-function toEok(v: number): number {
-  if (Math.abs(v) >= 1_0000) return Math.round(v / 1_0000)
-  return v
-}
-
 // ════════════════════════════════════════════════════════
-// 1. 그림 백분율 차트 (Pictorial Fraction Chart)
+// 좌측: 일별 수급흐름 (당일 수평 바차트 + 섹터별)
 // ════════════════════════════════════════════════════════
 
-function SupplyPictogram({
-  label, amount, ratio, streak,
-}: {
-  label: string; amount: number; ratio: number; streak: number
-}) {
-  const isSell = amount < 0
-  const fillColor = isSell ? '#2563eb' : '#dc2626'  // 한국식: 매도=파랑, 매수=빨강
-  const fillPct = Math.min(Math.max(Math.abs(ratio), 5), 100)
-  const uid = useId()
-  const clipId = `fill-${uid}`
-  const bodyH = 170
-  const clipY = 200 - (fillPct / 100 * bodyH)
-  const clipH = fillPct / 100 * bodyH + 30
+function DailySupplyFlow({ data }: { data: SupplyDemandData }) {
+  const items = [
+    { label: '외국인', value: data.foreign_net, streak: data.foreign_streak, posColor: '#EF4444', negColor: '#3B82F6' },
+    { label: '기관', value: data.inst_net, streak: data.inst_streak, posColor: '#8B5CF6', negColor: '#6366F1' },
+    { label: '개인', value: data.individual_net, streak: 0, posColor: '#10B981', negColor: '#059669' },
+  ]
+  const maxAbs = Math.max(...items.map(i => Math.abs(i.value)), 1)
+
+  // sector_flows top 5
+  const sectorFlows = (data.sector_flows ?? [])
+    .sort((a, b) => Math.abs(b.foreign_net ?? b.net ?? 0) - Math.abs(a.foreign_net ?? a.net ?? 0))
+    .slice(0, 5)
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <span className="text-sm text-[var(--text-dim)] font-bold">{label}</span>
+    <div className="space-y-4">
+      <div className="text-sm text-[var(--text-dim)] font-bold">📊 일별 수급흐름</div>
 
-      {streak !== 0 && (
-        <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-          streak > 0 ? 'bg-[var(--up-bg)] text-[var(--up)]' : 'bg-[var(--down-bg)] text-[var(--down)]'
-        }`}>
-          {streak > 0 ? '매수' : '매도'} {Math.abs(streak)}일째
-        </span>
+      {/* 수평 바 3행 */}
+      <div className="space-y-3">
+        {items.map(item => {
+          const pct = (Math.abs(item.value) / maxAbs) * 100
+          const isPositive = item.value >= 0
+          const color = isPositive ? item.posColor : item.negColor
+          return (
+            <div key={item.label}>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold text-[var(--text-primary)]">{item.label}</span>
+                <div className="flex items-center gap-2">
+                  {item.streak !== 0 && (
+                    <span className={`text-[10px] font-bold ${item.streak > 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
+                      {item.streak > 0 ? '매수' : '매도'} {Math.abs(item.streak)}일째
+                    </span>
+                  )}
+                  <span className="text-sm font-black tabular-nums" style={{ color }}>
+                    {formatKrNumber(item.value)}
+                  </span>
+                </div>
+              </div>
+              <div className="w-full h-5 bg-gray-100 rounded-full overflow-hidden relative">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${isPositive ? '' : 'ml-auto'}`}
+                  style={{
+                    width: `${Math.max(pct, 3)}%`,
+                    backgroundColor: color,
+                    opacity: 0.7,
+                  }}
+                />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* 섹터별 외국인 순매수 TOP 5 */}
+      {sectorFlows.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-[var(--border)]">
+          <div className="text-xs text-[var(--text-dim)] font-bold mb-2">섹터별 외국인 순매수</div>
+          <div className="space-y-1">
+            {sectorFlows.map(sf => {
+              const net = sf.foreign_net ?? sf.net ?? 0
+              const isBuy = net >= 0
+              return (
+                <div key={sf.sector} className="flex items-center justify-between text-xs">
+                  <span className="text-[var(--text-primary)]">{sf.sector}</span>
+                  <span className={`font-bold tabular-nums ${isBuy ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
+                    {isBuy ? '▲' : '▼'} {formatKrNumber(net)}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
 
-      <svg width="110" height="200" viewBox="0 0 110 200">
-        <defs>
-          <clipPath id={clipId}>
-            <rect x="0" y={clipY} width="110" height={clipH} />
-          </clipPath>
-        </defs>
-
-        {/* 회색 배경 사람 */}
-        <circle cx="55" cy="24" r="16" fill="#d1d5db" />
-        <path d="M25,50 L36,50 L36,110 L25,110 Z" fill="#d1d5db" />
-        <path d="M74,50 L85,50 L85,110 L74,110 Z" fill="#d1d5db" />
-        <path d="M36,46 L74,46 L74,125 L36,125 Z" fill="#d1d5db" />
-        <path d="M36,125 L50,125 L50,192 L36,192 Z" fill="#d1d5db" />
-        <path d="M60,125 L74,125 L74,192 L60,192 Z" fill="#d1d5db" />
-
-        {/* 색칠된 사람 (아래서부터 채움) */}
-        <g clipPath={`url(#${clipId})`}>
-          <circle cx="55" cy="24" r="16" fill={fillColor} />
-          <path d="M25,50 L36,50 L36,110 L25,110 Z" fill={fillColor} />
-          <path d="M74,50 L85,50 L85,110 L74,110 Z" fill={fillColor} />
-          <path d="M36,46 L74,46 L74,125 L36,125 Z" fill={fillColor} />
-          <path d="M36,125 L50,125 L50,192 L36,192 Z" fill={fillColor} />
-          <path d="M60,125 L74,125 L74,192 L60,192 Z" fill={fillColor} />
-        </g>
-
-        {/* 비율 경계선 */}
-        <line
-          x1="15" y1={clipY} x2="95" y2={clipY}
-          stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 3" opacity="0.5"
-        />
-      </svg>
-
-      {/* 금액 */}
-      <div className={`text-xl font-black tabular-nums ${isSell ? 'text-[var(--down)]' : 'text-[var(--up)]'}`}>
-        {formatKrNumber(amount)}
-      </div>
-      {/* 비율 */}
-      <div className="text-xs text-[var(--text-dim)]">
-        {isSell ? '매도' : '매수'} 강도 {fillPct.toFixed(0)}%
-      </div>
+      {/* 트렌드 텍스트 */}
+      {(data.foreign_trend || data.inst_trend) && (
+        <div className="mt-2 space-y-1">
+          {data.foreign_trend && (
+            <div className="text-[11px] text-[var(--text-dim)]">외국인: {data.foreign_trend}</div>
+          )}
+          {data.inst_trend && (
+            <div className="text-[11px] text-[var(--text-dim)]">기관: {data.inst_trend}</div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
 // ════════════════════════════════════════════════════════
-// 2. 폭포 차트 (Waterfall Chart) — Recharts
+// 우측: 수급 누적흐름 (20일 라인차트)
 // ════════════════════════════════════════════════════════
 
-function SupplyWaterfall({
-  foreign, institution, individual,
-}: {
-  foreign: number; institution: number; individual: number
-}) {
-  const fEok = toEok(foreign)
-  const iEok = toEok(institution)
-  const pEok = toEok(individual)
+interface CumulativePoint {
+  date: string
+  label: string
+  foreign: number
+  institution: number
+  individual: number
+}
 
-  const afterF = fEok
-  const afterI = afterF + iEok
-  const total = afterI + pEok
+function calcCumulative(rows: SupplyDemandData[]): CumulativePoint[] {
+  // rows는 최신→오래된 순 → 오름차순으로 뒤집기
+  const sorted = [...rows].reverse()
+  let foreignCum = 0, instCum = 0, indivCum = 0
+  return sorted.map(r => {
+    foreignCum += r.foreign_net
+    instCum += r.inst_net
+    indivCum += r.individual_net
+    const d = r.date
+    const mm = d.slice(5, 7)
+    const dd = d.slice(8, 10)
+    return {
+      date: r.date,
+      label: `${mm}/${dd}`,
+      foreign: foreignCum,
+      institution: instCum,
+      individual: indivCum,
+    }
+  })
+}
 
-  interface WaterfallDatum {
-    name: string; value: number; invisible: number; visible: number; isTotal?: boolean
+function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
+  const cumData = calcCumulative(history)
+
+  if (cumData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-[var(--text-muted)] text-sm">
+        누적 데이터 없음
+      </div>
+    )
   }
-
-  const data: WaterfallDatum[] = [
-    { name: '외국인', value: fEok, invisible: Math.min(0, afterF), visible: Math.abs(fEok) },
-    { name: '기관', value: iEok, invisible: Math.min(afterF, afterI), visible: Math.abs(iEok) },
-    { name: '개인', value: pEok, invisible: Math.min(afterI, total), visible: Math.abs(pEok) },
-    { name: '순합계', value: total, invisible: Math.min(0, total), visible: Math.abs(total), isTotal: true },
-  ]
-
-  const colors = data.map(d =>
-    d.isTotal ? '#9ca3af' : d.value >= 0 ? '#dc2626' : '#2563eb'
-  )
 
   return (
     <div>
-      <div className="text-sm text-[var(--text-dim)] font-bold mb-3">수급 누적 흐름 (억원)</div>
-      <ResponsiveContainer width="100%" height={320}>
-        <BarChart data={data} barCategoryGap="20%" margin={{ top: 30, right: 10, bottom: 5, left: 10 }}>
+      <div className="text-sm text-[var(--text-dim)] font-bold mb-3">📈 수급 누적흐름 ({cumData.length}일)</div>
+      <ResponsiveContainer width="100%" height={280}>
+        <LineChart data={cumData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e5ea" vertical={false} />
           <XAxis
-            dataKey="name"
-            tick={{ fill: '#6b7280', fontSize: 13, fontWeight: 600 }}
+            dataKey="label"
+            tick={{ fill: '#9ca3af', fontSize: 11 }}
             axisLine={{ stroke: '#d1d5db' }}
             tickLine={false}
+            interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fill: '#9ca3af', fontSize: 12 }}
-            tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}`}
+            tick={{ fill: '#9ca3af', fontSize: 11 }}
+            tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${Math.round(v).toLocaleString()}`}
             axisLine={false}
             tickLine={false}
-            domain={[
-              (min: number) => Math.floor(min * 1.3),
-              (max: number) => Math.ceil(max * 1.3),
-            ] as const}
           />
-          <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1} />
-
-          {/* 투명 스택 (누적 시작점) */}
-          <Bar dataKey="invisible" stackId="stack" fill="transparent" />
-
-          {/* 실제 보이는 바 */}
-          <Bar dataKey="visible" stackId="stack" radius={[4, 4, 0, 0]}>
-            {data.map((_, i) => (
-              <Cell key={i} fill={colors[i]} />
-            ))}
-            <LabelList
-              dataKey="value"
-              position="top"
-              formatter={(v) => { const n = Number(v); return `${n >= 0 ? '+' : ''}${n.toLocaleString()}` }}
-              style={{ fill: '#111827', fontSize: 14, fontWeight: 700 }}
-            />
-          </Bar>
-        </BarChart>
+          <ReferenceLine y={0} stroke="#9ca3af" strokeDasharray="4 3" />
+          <Tooltip
+            formatter={(value, name) => {
+              const v = Number(value) || 0
+              return [
+                `${v >= 0 ? '+' : ''}${Math.round(v).toLocaleString()}억`,
+                name === 'foreign' ? '외국인' : name === 'institution' ? '기관' : '개인'
+              ]
+            }}
+            labelFormatter={(label) => String(label)}
+            contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e5ea' }}
+          />
+          <Legend
+            formatter={(value: string) =>
+              value === 'foreign' ? '외국인' : value === 'institution' ? '기관' : '개인'
+            }
+            wrapperStyle={{ fontSize: 11 }}
+          />
+          <Line type="monotone" dataKey="foreign" stroke="#EF4444" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="institution" stroke="#8B5CF6" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="individual" stroke="#10B981" strokeWidth={2} dot={false} />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   )
 }
 
 // ════════════════════════════════════════════════════════
-// 3. 메인 패널
+// 메인 패널
 // ════════════════════════════════════════════════════════
-
-function PictogramSection({ data }: { data: { foreign_net: number; inst_net: number; individual_net: number; foreign_streak: number; inst_streak: number } }) {
-  const total = Math.abs(data.foreign_net) + Math.abs(data.inst_net) + Math.abs(data.individual_net)
-  const fRatio = total > 0 ? (Math.abs(data.foreign_net) / total) * 100 : 33
-  const iRatio = total > 0 ? (Math.abs(data.inst_net) / total) * 100 : 33
-  const pRatio = total > 0 ? (Math.abs(data.individual_net) / total) * 100 : 33
-  return (
-    <div className="flex justify-center gap-8 sm:gap-14">
-      <SupplyPictogram label="외국인" amount={data.foreign_net} ratio={fRatio} streak={data.foreign_streak} />
-      <SupplyPictogram label="기관" amount={data.inst_net} ratio={iRatio} streak={data.inst_streak} />
-      <SupplyPictogram label="개인" amount={data.individual_net} ratio={pRatio} streak={0} />
-    </div>
-  )
-}
 
 export function SupplyDemandPanel() {
   const { data, isLoading } = useInformationSupplyDemand()
+  const { data: historyData, isLoading: historyLoading } = useInformationSupplyDemandHistory()
   const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
   const isStale = rel ? rel.daysAgo >= 7 : false
+  const history = historyData?.items ?? []
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
@@ -210,8 +224,8 @@ export function SupplyDemandPanel() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-        {isLoading ? (
+      <div className="flex-1 overflow-y-auto px-6 py-5">
+        {isLoading || historyLoading ? (
           <div className="space-y-3">
             <div className="h-[180px] bg-gray-200 animate-pulse rounded" />
             <div className="h-[200px] bg-gray-200 animate-pulse rounded" />
@@ -219,28 +233,21 @@ export function SupplyDemandPanel() {
         ) : !data ? (
           <div className="flex items-center justify-center h-full text-[var(--text-muted)]">데이터 없음</div>
         ) : (
-          <>
-            {/* 그림 백분율 차트: 3명 가로 배치 */}
-            <PictogramSection data={data} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 좌: 일별 수급흐름 */}
+            <DailySupplyFlow data={data} />
 
-            {/* 구분선 */}
-            <div className="border-t border-[var(--border)]" />
+            {/* 우: 누적 흐름 라인차트 */}
+            <CumulativeSupplyFlow history={history.length > 0 ? history : [data]} />
+          </div>
+        )}
 
-            {/* 폭포 차트: 누적 흐름 */}
-            <SupplyWaterfall
-              foreign={data.foreign_net}
-              institution={data.inst_net}
-              individual={data.individual_net}
-            />
-
-            {/* AI 요약 */}
-            {data.summary && (
-              <div className="p-3 bg-gray-50 rounded-lg border border-[var(--border)]">
-                <div className="text-xs text-[var(--text-dim)] font-bold mb-1">AI 한 줄 요약</div>
-                <div className="text-sm text-[var(--text-primary)] leading-relaxed">{data.summary}</div>
-              </div>
-            )}
-          </>
+        {/* AI 요약 */}
+        {data?.summary && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-[var(--border)]">
+            <div className="text-xs text-[var(--text-dim)] font-bold mb-1">AI 한 줄 요약</div>
+            <div className="text-sm text-[var(--text-primary)] leading-relaxed">{data.summary}</div>
+          </div>
         )}
       </div>
     </div>

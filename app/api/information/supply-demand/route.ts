@@ -7,23 +7,22 @@ export const dynamic = 'force-dynamic'
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const tier = searchParams.get('tier') ?? 'FREE'
+  const days = Math.min(Number(searchParams.get('days')) || 1, 30)
 
   try {
     const supabase = getSupabaseAdmin()
 
-    // 최신 날짜 1건
     const { data, error } = await supabase
       .from('intelligence_supply_demand')
       .select('*')
       .order('date', { ascending: false })
-      .limit(1)
-      .single()
+      .limit(days)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (!data?.length) return NextResponse.json({ error: 'No data' }, { status: 404 })
 
     // 봇 컬럼명 → 프론트엔드 타입 매핑
-    const row = data as Record<string, unknown>
-    const mapped = {
+    const mapRow = (row: Record<string, unknown>) => ({
       id: row.id,
       date: row.date,
       foreign_net: row.foreign_net ?? 0,
@@ -31,11 +30,22 @@ export async function GET(req: Request) {
       individual_net: row.individual_net ?? 0,
       foreign_streak: typeof row.foreign_streak === 'number' ? row.foreign_streak : 0,
       inst_streak: typeof row.inst_streak === 'number' ? row.inst_streak : 0,
+      foreign_trend: typeof row.foreign_trend === 'string' ? row.foreign_trend : null,
+      inst_trend: typeof row.institution_trend === 'string' ? row.institution_trend : null,
       sector_flows: tier === 'FREE' ? [] : (Array.isArray(row.sector_flows) ? row.sector_flows : []),
       summary: safeString(row.summary),
+    })
+
+    // 1일만 요청 → 기존 호환 (single object)
+    if (days === 1) {
+      return NextResponse.json(mapRow(data[0] as Record<string, unknown>))
     }
 
-    return NextResponse.json(mapped)
+    // 여러 날 → 배열 반환 (최신→오래된 순)
+    return NextResponse.json({
+      items: data.map(r => mapRow(r as Record<string, unknown>)),
+      count: data.length,
+    })
   } catch {
     return NextResponse.json({ error: 'Supply-demand unavailable' }, { status: 503 })
   }

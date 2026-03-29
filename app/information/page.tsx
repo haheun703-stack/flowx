@@ -12,17 +12,17 @@ export default function InformationPage() {
       {/* 1. 오늘의 한 줄 판정 (L카드 — 히어로) */}
       <MarketVerdictHero />
 
-      {/* 2. 수급 흐름 + 시나리오 확률 (M카드 2열) */}
-      <div className={GRID.col2}>
-        <div className={CARD_INNER.M}>
-          <SupplyDemandPanel />
-        </div>
-        <div className={CARD_INNER.M}>
-          <ScenarioAnalysisPanel />
-        </div>
+      {/* 2. 시나리오 확률 (전체 너비 — 가로 카드) */}
+      <div className={CARD_INNER.M}>
+        <ScenarioAnalysisPanel />
       </div>
 
-      {/* 3. 글로벌 + 국내 핫이슈 (M카드 2열) */}
+      {/* 3. 수급 흐름 (전체 너비 — 좌우 2분할) */}
+      <div className={CARD_INNER.M}>
+        <SupplyDemandPanel />
+      </div>
+
+      {/* 4. 글로벌 + 국내 핫이슈 (M카드 2열) */}
       <div className={GRID.col2}>
         <div className={CARD_INNER.M}>
           <HotIssuesPanel scope="GLOBAL" title="글로벌 핫이슈" accentColor="#0ea5e9" />

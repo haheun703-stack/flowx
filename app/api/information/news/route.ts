@@ -50,6 +50,7 @@ export async function GET(req: Request) {
       impact: row.impact ?? row.impact_level ?? 'MEDIUM',
       impact_score: row.impact_score ?? 3,
       kr_impact: row.kr_impact ?? row.summary ?? null,
+      impact_description: row.impact_description ?? null,
       related_tickers: row.related_tickers ?? [],
       sectors: safeStringArray(row.sectors ?? row.impact_sectors),
       source: row.source ?? null,

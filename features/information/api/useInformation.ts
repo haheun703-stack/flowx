@@ -15,6 +15,7 @@ export interface NewsItem {
   impact: 'HIGH' | 'MEDIUM' | 'LOW'
   impact_score: number
   kr_impact: string | null
+  impact_description: string | null
   related_tickers: { code: string; name: string; change_pct: number }[]
   sectors: string[]
   source: string | null
@@ -40,7 +41,7 @@ export interface ScenarioOption {
   probability: number
   kospi_impact: string
   description: string
-  affected_sectors: string[]
+  affected_sectors: string[] | string
   action: string
   timeline: string
   stock_impacts: { name: string; ticker: string; direction: string; sector?: string; note?: string }[]
@@ -75,7 +76,9 @@ export interface SupplyDemandData {
   individual_net: number
   foreign_streak: number
   inst_streak: number
-  sector_flows: { sector: string; foreign_net: number; streak: number }[]
+  foreign_trend: string | null
+  inst_trend: string | null
+  sector_flows: { sector: string; foreign_net?: number; net?: number; inst_net?: number; direction?: string; count?: number; streak?: number }[]
   summary: string | null
 }
 
@@ -117,11 +120,22 @@ export function useInformationScenarios(session?: 'AM' | 'PM') {
   })
 }
 
+/** 최신 1일 수급 데이터 (기존 호환) */
 export function useInformationSupplyDemand() {
   return useQuery<SupplyDemandData>({
     queryKey: ['information-supply-demand'],
     queryFn: () => fetchJson('/api/information/supply-demand?tier=FREE'),
     staleTime: 1000 * 60 * 5,
     refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
+  })
+}
+
+/** 최근 20일 수급 히스토리 (누적 차트용) */
+export function useInformationSupplyDemandHistory() {
+  return useQuery<{ items: SupplyDemandData[]; count: number }>({
+    queryKey: ['information-supply-demand-history'],
+    queryFn: () => fetchJson('/api/information/supply-demand?days=20'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 10, 1000 * 60 * 60),
   })
 }
