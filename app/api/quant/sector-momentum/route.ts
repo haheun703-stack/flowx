@@ -18,7 +18,8 @@ export async function GET() {
       return NextResponse.json({ data: null })
     }
 
-    return NextResponse.json({ data })
+    const payload = data?.data ? { date: data.date, ...data.data } : data
+    return NextResponse.json({ data: payload })
   } catch (e) {
     console.error('[sector-momentum] error:', e)
     return NextResponse.json({ data: null })
