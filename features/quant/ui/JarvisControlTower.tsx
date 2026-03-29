@@ -972,7 +972,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-gray-500 text-sm font-mono w-6">{s.rank}</span>
-                    <span className="text-gray-200 font-medium">
+                    <span className="text-gray-900 font-bold">
                       {isAccel && `${ICO.FIRE} `}{s.sector}
                     </span>
                     {s.rank_change !== 0 && (
