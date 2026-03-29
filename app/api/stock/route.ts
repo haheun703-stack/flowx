@@ -24,7 +24,8 @@ export async function GET(req: Request) {
     let pick: any = null
     let jarvisDate: string | null = null
     for (const row of jarvis ?? []) {
-      const picks = row.data?.picks ?? []
+      const rawPicks = row.data?.picks
+      const picks = Array.isArray(rawPicks) ? rawPicks : []
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const found = picks.find((p: any) => p.ticker === ticker)
       if (found) {
@@ -50,37 +51,38 @@ export async function GET(req: Request) {
       .limit(5)
 
     // 4. stock_technicals에서 기술지표
-    const { data: techRow } = await sb
+    const { data: techRows } = await sb
       .from('stock_technicals')
       .select('*')
       .eq('ticker', ticker)
       .limit(1)
-      .single()
+    const techRow = techRows?.[0] ?? null
 
     // 5. stock_valuations에서 밸류에이션
-    const { data: valRow } = await sb
+    const { data: valRows } = await sb
       .from('stock_valuations')
       .select('*')
       .eq('ticker', ticker)
       .limit(1)
-      .single()
+    const valRow = valRows?.[0] ?? null
 
     // 6. ml_predictions에서 ML 예측
-    const { data: mlRow } = await sb
+    const { data: mlRows } = await sb
       .from('ml_predictions')
       .select('*')
       .eq('code', ticker)
       .eq('pred_type', 'stock')
       .order('date', { ascending: false })
       .limit(1)
-      .single()
+    const mlRow = mlRows?.[0] ?? null
 
     // 7. stock_master에서 기본정보
-    const { data: masterRow } = await sb
+    const { data: masterRows } = await sb
       .from('stock_master')
       .select('*')
       .eq('ticker', ticker)
-      .single()
+      .limit(1)
+    const masterRow = masterRows?.[0] ?? null
 
     // briefing에서 해당 종목 언급 찾기
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
