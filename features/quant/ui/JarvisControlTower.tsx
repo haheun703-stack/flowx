@@ -752,7 +752,7 @@ function MarketGuideBanner({
               guide.vix >= 20 ? "bg-yellow-50 text-[var(--yellow)]" :
               "bg-green-50 text-[var(--green)]"
             }`}>
-              {ICO.CHART_DOWN} {guide.vix}
+              공포지수 {guide.vix}
             </span>
           )}
           {dangerMode !== "NORMAL" && (
@@ -761,9 +761,9 @@ function MarketGuideBanner({
               dangerMode === "DANGER" ? "bg-orange-50 text-orange-600" :
               "bg-yellow-50 text-[var(--yellow)]"
             }`}>
-              {dangerMode === "PANIC" ? `${ICO.STOP} PANIC` :
-               dangerMode === "DANGER" ? `${ICO.WARN} DANGER` :
-               `${ICO.YELLOW_CIRCLE} WARNING`}
+              {dangerMode === "PANIC" ? `${ICO.STOP} 긴급경보` :
+               dangerMode === "DANGER" ? `${ICO.WARN} 위험경보` :
+               `${ICO.YELLOW_CIRCLE} 주의경보`}
             </span>
           )}
         </div>
@@ -1479,7 +1479,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
       {turnaround?.strong && turnaround.strong.length > 0 && (
         <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
-            <span className="text-sm font-bold text-[var(--text-primary)]">적자→흑자 전환 (STRONG)</span>
+            <span className="text-sm font-bold text-[var(--text-primary)]">적자→흑자 전환 (강력)</span>
             <span className="text-xs text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
           </div>
           <div className="overflow-x-auto">
@@ -1873,11 +1873,25 @@ const CONVICTION_STYLE: Record<string, string> = {
   LOW: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
+const CONVICTION_LABEL: Record<string, string> = {
+  HIGH: "확신 높음",
+  MEDIUM: "보통",
+  LOW: "낮음",
+};
+
+const INST_GRADE_LABEL: Record<string, string> = {
+  STRONG: "강력",
+  MODERATE: "양호",
+  NOTABLE: "주목",
+  WATCH: "관찰",
+};
+
 const ACTION_STYLE: Record<string, string> = {
   "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
   "\uAD00\uC2EC\uB9E4\uC218": "bg-amber-50 text-amber-700 border-amber-200",
   "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
   BUY: "bg-red-50 text-[var(--up)] border-red-200",
+  "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
   "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
 };
 
@@ -1940,20 +1954,29 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
           <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">시장 환경</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
             <div className={`rounded-lg p-3 border ${regimeColor}`}>
-              <p className="text-[10px] opacity-70">레짐</p>
-              <p className="text-lg font-black">{env.regime ?? "-"}</p>
+              <p className="text-[10px] opacity-70">시장상태</p>
+              <p className="text-lg font-black">{
+                env.regime === "NORMAL" ? "정상" :
+                env.regime === "CAUTION" ? "주의" :
+                env.regime === "BEAR" ? "하락장" :
+                env.regime === "CRISIS" ? "위기" : env.regime ?? "-"
+              }</p>
             </div>
             <div className={`rounded-lg p-3 border ${
               (env.vix ?? 0) < 20 ? "text-green-600 bg-green-50 border-green-200"
               : (env.vix ?? 0) <= 25 ? "text-amber-600 bg-amber-50 border-amber-200"
               : "text-red-600 bg-red-50 border-red-200"
             }`}>
-              <p className="text-[10px] opacity-70">VIX</p>
+              <p className="text-[10px] opacity-70">공포지수</p>
               <p className="text-lg font-black">{env.vix ?? "-"}</p>
             </div>
             <div className={`rounded-lg p-3 border ${shieldColor}`}>
-              <p className="text-[10px] opacity-70">SHIELD</p>
-              <p className="text-lg font-black">{env.shield ?? "-"}</p>
+              <p className="text-[10px] opacity-70">방어등급</p>
+              <p className="text-lg font-black">{
+                env.shield === "GREEN" ? "안전" :
+                env.shield === "YELLOW" ? "주의" :
+                env.shield === "RED" ? "위험" : env.shield ?? "-"
+              }</p>
             </div>
             <div className="rounded-lg p-3 border border-[var(--border)] bg-white">
               <p className="text-[10px] text-[var(--text-muted)]">현금비중</p>
@@ -2024,7 +2047,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                   <div className="flex items-center gap-1.5">
                     {c.conviction && (
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${CONVICTION_STYLE[c.conviction] ?? CONVICTION_STYLE.LOW}`}>
-                        {c.conviction}
+                        {CONVICTION_LABEL[c.conviction] ?? c.conviction}
                       </span>
                     )}
                     {c.action && (
@@ -2087,7 +2110,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                   {e.sizing && <span className="text-[10px] text-[var(--text-muted)]">{e.sizing}</span>}
                   {e.action && (
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[e.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
-                      {e.action}
+                      {e.action === "BUY" ? "매수" : e.action}
                     </span>
                   )}
                 </div>
@@ -2156,7 +2179,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                   </div>
                   {p.grade && (
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${INST_GRADE_STYLE[p.grade] ?? INST_GRADE_STYLE.WATCH}`}>
-                      {p.grade}
+                      {INST_GRADE_LABEL[p.grade] ?? p.grade}
                     </span>
                   )}
                   <div className="flex items-center gap-1">
