@@ -161,7 +161,12 @@ export function StockDetailView({ ticker }: { ticker: string }) {
     const ac = new AbortController()
     fetch(`/api/stock?ticker=${ticker}`, { signal: ac.signal })
       .then((r) => r.json())
-      .then((j) => setData(j))
+      .then((j) => {
+        if (j.ml_prediction?.top_factors && typeof j.ml_prediction.top_factors === 'string') {
+          try { j.ml_prediction.top_factors = JSON.parse(j.ml_prediction.top_factors) } catch { j.ml_prediction.top_factors = [] }
+        }
+        setData(j)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
     return () => ac.abort()
