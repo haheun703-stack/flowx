@@ -9,6 +9,19 @@ interface Pick {
   hold_days: number; conviction: string; catalyst: string
   rr_ratio: number; regime: string; supply_score: number
   tv_pattern: string; nat_power_grade: string
+  // 신규 필드 (퀀트봇 핸드오프)
+  category?: string          // "KRX" | "NXT"
+  category_label?: string    // "주간 매매" | "야간 매매"
+  star?: boolean             // 진입 추천 여부
+  action?: string            // "매수" | "관심매수" | "관찰"
+  conviction_label?: string  // "확신 높음" | "보통" | "낮음"
+  reasons?: string[]         // 추천 근거
+  close?: number             // 현재가
+  chg_pct?: number           // 등락률
+  rsi?: number               // RSI
+  vol_ratio?: number         // 거래량 배수
+  sector?: string            // 섹터
+  is_etf?: boolean           // NXT: ETF 여부
 }
 
 interface EtfPick {
@@ -57,6 +70,26 @@ const REGIME_STYLE: Record<string, string> = {
   PANIC: 'text-red-500',
 }
 
+/* ── action 배지 스타일 ── */
+function actionBadge(action?: string) {
+  switch (action) {
+    case '매수': return 'bg-red-50 border-red-200 text-[var(--up)]'
+    case '관심매수': return 'bg-orange-50 border-orange-200 text-orange-600'
+    case '관찰': return 'bg-gray-100 border-[var(--border)] text-[var(--text-muted)]'
+    default: return 'bg-gray-100 border-[var(--border)] text-[var(--text-muted)]'
+  }
+}
+
+/* ── conviction 스타일 ── */
+function convictionStyle(label?: string) {
+  switch (label) {
+    case '확신 높음': return 'text-[var(--up)] font-bold'
+    case '보통': return 'text-[var(--yellow)]'
+    case '낮음': return 'text-[var(--text-muted)]'
+    default: return 'text-[var(--text-dim)]'
+  }
+}
+
 export default function SwingDashboardView() {
   const [data, setData] = useState<SwingData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -99,6 +132,11 @@ export default function SwingDashboardView() {
   }
 
   const verdict = VERDICT_STYLE[data.brain_verdict] ?? VERDICT_STYLE['관망']
+
+  // picks를 KRX/NXT로 분리 (category 필드가 있으면)
+  const hasCategory = data.picks?.some(p => p.category)
+  const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
+  const nxtPicks = hasCategory ? data.picks.filter(p => p.category === 'NXT') : []
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-6">
@@ -173,50 +211,14 @@ export default function SwingDashboardView() {
         </div>
       </section>
 
-      {/* ── 추천종목 ── */}
-      {data.picks?.length > 0 && (
-        <section>
-          <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">추천 종목</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-[var(--text-muted)] text-xs border-b border-[var(--border)]">
-                  <th className="text-left py-2 px-2">종목</th>
-                  <th className="text-center py-2 px-2">등급</th>
-                  <th className="text-right py-2 px-2">점수</th>
-                  <th className="text-right py-2 px-2">진입가</th>
-                  <th className="text-right py-2 px-2">목표가</th>
-                  <th className="text-right py-2 px-2">손절가</th>
-                  <th className="text-right py-2 px-2">R:R</th>
-                  <th className="text-right py-2 px-2">보유일</th>
-                  <th className="text-left py-2 px-2">촉매</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.picks.map((p) => (
-                  <tr key={p.code} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
-                    <td className="py-2.5 px-2">
-                      <span className="text-[var(--text-primary)] font-medium">{p.name}</span>
-                      <span className="text-[var(--text-muted)] text-xs ml-1.5">{p.code}</span>
-                    </td>
-                    <td className="text-center py-2.5 px-2">
-                      <span className={`text-xs px-2 py-0.5 rounded border ${gradeStyle(p.grade)}`}>{p.grade}</span>
-                    </td>
-                    <td className="text-right py-2.5 px-2">
-                      <span className={`font-bold font-mono ${p.score >= 70 ? 'text-[var(--up)]' : p.score >= 50 ? 'text-[var(--yellow)]' : 'text-[var(--text-dim)]'}`}>{p.score}</span>
-                    </td>
-                    <td className="text-right py-2.5 px-2 text-[var(--text-primary)] font-mono">{p.entry_price?.toLocaleString()}</td>
-                    <td className="text-right py-2.5 px-2 text-[var(--up)] font-mono">{p.target_price?.toLocaleString()}</td>
-                    <td className="text-right py-2.5 px-2 text-[var(--down)] font-mono">{p.stop_price?.toLocaleString()}</td>
-                    <td className="text-right py-2.5 px-2 text-[var(--yellow)] font-mono">{p.rr_ratio?.toFixed(1)}</td>
-                    <td className="text-right py-2.5 px-2 text-[var(--text-dim)] font-mono">{p.hold_days}일</td>
-                    <td className="text-left py-2.5 px-2 text-[var(--text-muted)] text-xs max-w-[200px] truncate">{p.catalyst}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+      {/* ── 추천 종목 (KRX 주간 매매) ── */}
+      {krxPicks?.length > 0 && (
+        <PicksTable title={hasCategory ? "추천 종목 — 주간 매매 (KRX)" : "추천 종목"} picks={krxPicks} />
+      )}
+
+      {/* ── 추천 종목 (NXT 야간 매매) ── */}
+      {nxtPicks.length > 0 && (
+        <PicksTable title="추천 종목 — 야간 매매 (NXT)" picks={nxtPicks} />
       )}
 
       {/* ── ETF 추천 ── */}
@@ -280,8 +282,8 @@ export default function SwingDashboardView() {
         </section>
       )}
 
-      {/* ── NXT 야간매매 ── */}
-      {data.nxt_signal_text && (
+      {/* ── NXT 야간매매 (레거시: nxt_targets 별도 섹션) ── */}
+      {!hasCategory && data.nxt_signal_text && (
         <section>
           <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">NXT 야간매매</h2>
           <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-5">
@@ -335,6 +337,102 @@ export default function SwingDashboardView() {
   )
 }
 
+/* ── 추천종목 테이블 (KRX/NXT 공용) ── */
+function PicksTable({ title, picks }: { title: string; picks: Pick[] }) {
+  const hasNewFields = picks.some(p => p.action || p.star !== undefined)
+
+  return (
+    <section>
+      <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">{title}</h2>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-[var(--text-muted)] text-xs border-b border-[var(--border)]">
+              <th className="text-left py-2 px-2">종목</th>
+              {hasNewFields && <th className="text-center py-2 px-2">행동</th>}
+              <th className="text-center py-2 px-2">등급</th>
+              <th className="text-right py-2 px-2">점수</th>
+              {hasNewFields && <th className="text-right py-2 px-2">현재가</th>}
+              {hasNewFields && <th className="text-right py-2 px-2">등락</th>}
+              <th className="text-right py-2 px-2">진입가</th>
+              <th className="text-right py-2 px-2">목표가</th>
+              <th className="text-right py-2 px-2">손절가</th>
+              <th className="text-right py-2 px-2">R:R</th>
+              {hasNewFields && <th className="text-right py-2 px-2">RSI</th>}
+              {hasNewFields && <th className="text-right py-2 px-2">거래량</th>}
+              <th className="text-right py-2 px-2">보유일</th>
+              {hasNewFields && <th className="text-center py-2 px-2">확신</th>}
+              <th className="text-left py-2 px-2">{hasNewFields ? '근거' : '촉매'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {picks.map((p) => (
+              <tr key={p.code} className={`border-b border-[var(--border)]/50 hover:bg-gray-50 ${p.star ? 'bg-yellow-50/50' : ''}`}>
+                <td className="py-2.5 px-2">
+                  <div className="flex items-center gap-1">
+                    {p.star && <span className="text-[var(--yellow)] text-xs">★</span>}
+                    <span className="text-[var(--text-primary)] font-medium">{p.name}</span>
+                    <span className="text-[var(--text-muted)] text-xs ml-1">{p.code}</span>
+                  </div>
+                  {p.sector && <p className="text-[var(--text-muted)] text-[10px] mt-0.5">{p.sector}</p>}
+                </td>
+                {hasNewFields && (
+                  <td className="text-center py-2.5 px-2">
+                    {p.action && <span className={`text-xs px-2 py-0.5 rounded border ${actionBadge(p.action)}`}>{p.action}</span>}
+                  </td>
+                )}
+                <td className="text-center py-2.5 px-2">
+                  <span className={`text-xs px-2 py-0.5 rounded border ${gradeStyle(p.grade)}`}>{p.grade}</span>
+                </td>
+                <td className="text-right py-2.5 px-2">
+                  <span className={`font-bold font-mono ${p.score >= 70 ? 'text-[var(--up)]' : p.score >= 50 ? 'text-[var(--yellow)]' : 'text-[var(--text-dim)]'}`}>{p.score}</span>
+                </td>
+                {hasNewFields && (
+                  <td className="text-right py-2.5 px-2 text-[var(--text-primary)] font-mono">{p.close?.toLocaleString() ?? '-'}</td>
+                )}
+                {hasNewFields && (
+                  <td className="text-right py-2.5 px-2 font-mono">
+                    <span className={(p.chg_pct ?? 0) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>
+                      {p.chg_pct != null ? `${p.chg_pct >= 0 ? '+' : ''}${p.chg_pct.toFixed(1)}%` : '-'}
+                    </span>
+                  </td>
+                )}
+                <td className="text-right py-2.5 px-2 text-[var(--text-primary)] font-mono">{p.entry_price?.toLocaleString()}</td>
+                <td className="text-right py-2.5 px-2 text-[var(--up)] font-mono">{p.target_price?.toLocaleString()}</td>
+                <td className="text-right py-2.5 px-2 text-[var(--down)] font-mono">{p.stop_price?.toLocaleString()}</td>
+                <td className="text-right py-2.5 px-2 text-[var(--yellow)] font-mono">{p.rr_ratio?.toFixed(1)}</td>
+                {hasNewFields && (
+                  <td className="text-right py-2.5 px-2 text-[var(--text-dim)] font-mono">{p.rsi?.toFixed(0) ?? '-'}</td>
+                )}
+                {hasNewFields && (
+                  <td className="text-right py-2.5 px-2 text-[var(--text-dim)] font-mono">{p.vol_ratio ? `${p.vol_ratio.toFixed(1)}x` : '-'}</td>
+                )}
+                <td className="text-right py-2.5 px-2 text-[var(--text-dim)] font-mono">{p.hold_days}일</td>
+                {hasNewFields && (
+                  <td className="text-center py-2.5 px-2">
+                    <span className={`text-xs ${convictionStyle(p.conviction_label)}`}>{p.conviction_label ?? p.conviction}</span>
+                  </td>
+                )}
+                <td className="text-left py-2.5 px-2 text-[var(--text-muted)] text-xs max-w-[200px]">
+                  {p.reasons?.length ? (
+                    <div className="flex flex-wrap gap-1">
+                      {p.reasons.slice(0, 4).map((r, i) => (
+                        <span key={i} className="px-1.5 py-0.5 rounded bg-gray-100 border border-[var(--border)] text-[10px]">{r}</span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="truncate block">{p.catalyst}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
 /* ── 헬퍼 컴포넌트 ── */
 function AllocCard({ label, pct, color }: { label: string; pct: number; color: string }) {
   return (
@@ -378,6 +476,12 @@ function formatAnalysisKey(key: string): string {
     sector_summary: '섹터 요약',
     flow_summary: '수급 요약',
     risk_summary: '리스크 요약',
+    시장상태: '시장 상태',
+    시장요약: '시장 요약',
+    경고: '경고',
+    전략요약: '전략 요약',
+    나이트워치: '나이트워치',
+    매매안내: '매매 안내',
   }
   return map[key] ?? key
 }
