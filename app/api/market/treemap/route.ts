@@ -23,7 +23,7 @@ export async function GET() {
 
     const { data, error } = await sb
       .from('treemap_stocks')
-      .select('ticker, name, sector, market, change_pct, foreign_net, institution_net, price, market_cap, updated_at')
+      .select('ticker, name, sector, market, change_pct, foreign_net, institution_net, price, market_cap, trading_volume, updated_at')
       .order('sector')
 
     if (error) {
@@ -47,7 +47,7 @@ export async function GET() {
         name: row.name,
         marketCap,
         changePercent: Number(row.change_pct) || 0,
-        tradingValue: Math.abs(Number(row.foreign_net) || 0) + Math.abs(Number(row.institution_net) || 0),
+        tradingValue: Number(row.trading_volume) || (Math.abs(Number(row.foreign_net) || 0) + Math.abs(Number(row.institution_net) || 0)),
       }
 
       const existing = sectorMap.get(row.sector) ?? []
