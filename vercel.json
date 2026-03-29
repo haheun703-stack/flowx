@@ -2,31 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/update-market",
-      "schedule": "0 0,2,4,6 * * 1-5"
-    },
-    {
-      "path": "/api/cron/check-subscriptions",
-      "schedule": "0 15 * * *"
-    },
-    {
-      "path": "/api/cron/info-bot",
-      "schedule": "0 9 * * 1-5"
-    },
-    {
-      "path": "/api/cron/quant-bot",
-      "schedule": "10 9 * * 1-5"
-    },
-    {
-      "path": "/api/cron/swing-bot",
-      "schedule": "55 23 * * 0-4"
-    },
-    {
-      "path": "/api/cron/swing-bot",
-      "schedule": "40 6 * * 1-5"
-    },
-    {
-      "path": "/api/cron/health",
-      "schedule": "30 * * * *"
+      "schedule": "0 6 * * 1-5"
     }
   ]
 }
