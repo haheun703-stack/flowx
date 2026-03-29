@@ -26,13 +26,13 @@ export async function GET() {
       .order('rank')
 
     if (error) {
-      console.error('[sector-rotation] DB error:', error.message)
-      return NextResponse.json({ data: [], date: null }, { status: 500 })
+      console.warn('[sector-rotation] DB:', error.message)
+      return NextResponse.json({ data: [], date: null })
     }
 
     return NextResponse.json({ data: data ?? [], date: latest.date })
   } catch (e) {
     console.error('[sector-rotation] error:', e)
-    return NextResponse.json({ data: [], date: null }, { status: 500 })
+    return NextResponse.json({ data: [], date: null })
   }
 }

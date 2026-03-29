@@ -69,7 +69,7 @@ export function EtfPicksView() {
   }, [])
 
   if (loading) return <div className="text-[var(--text-muted)] text-center py-20">로딩 중...</div>
-  if (!data) return <div className="text-[var(--text-muted)] text-center py-20">데이터 없음</div>
+  if (!data) return <div className="text-[var(--text-muted)] text-center py-20">데이터 준비 중 — 퀀트봇이 업로드하면 자동 표시됩니다</div>
 
   const picks = data.picks ?? []
 

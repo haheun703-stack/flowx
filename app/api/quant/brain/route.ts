@@ -14,13 +14,13 @@ export async function GET() {
       .single()
 
     if (error) {
-      console.error('[brain] DB error:', error.message)
-      return NextResponse.json({ data: null }, { status: 500 })
+      console.warn('[brain] DB:', error.message)
+      return NextResponse.json({ data: null })
     }
 
     return NextResponse.json({ data })
   } catch (e) {
     console.error('[brain] error:', e)
-    return NextResponse.json({ data: null }, { status: 500 })
+    return NextResponse.json({ data: null })
   }
 }

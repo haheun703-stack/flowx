@@ -14,13 +14,13 @@ export async function GET() {
       .single()
 
     if (error) {
-      console.error('[etf-picks] DB error:', error.message)
-      return NextResponse.json({ data: null }, { status: 500 })
+      console.warn('[etf-picks] DB:', error.message)
+      return NextResponse.json({ data: null })
     }
 
     return NextResponse.json({ data })
   } catch (e) {
     console.error('[etf-picks] error:', e)
-    return NextResponse.json({ data: null }, { status: 500 })
+    return NextResponse.json({ data: null })
   }
 }
