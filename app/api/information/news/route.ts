@@ -51,7 +51,13 @@ export async function GET(req: Request) {
       impact_score: row.impact_score ?? 3,
       kr_impact: row.kr_impact ?? row.summary ?? null,
       impact_description: row.impact_description ?? null,
-      related_tickers: row.related_tickers ?? [],
+      related_tickers: Array.isArray(row.related_tickers)
+        ? (row.related_tickers as Record<string, unknown>[]).map(t => ({
+            code: t.code ?? t.ticker ?? '',
+            name: t.name ?? '',
+            change_pct: Number(t.change_pct) || 0,
+          }))
+        : [],
       sectors: safeStringArray(row.sectors ?? row.impact_sectors),
       source: row.source ?? null,
       published_at: row.published_at ?? null,
