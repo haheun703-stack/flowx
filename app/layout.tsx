@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={`${dmSerif.variable} ${dmMono.variable} ${orbitron.variable} ${jetbrains.variable}`}>
-      <body className="bg-[#080b10] min-h-screen">
+      <body className="bg-[var(--bg-base)] min-h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -33,31 +33,31 @@ export function StatusBar() {
 
   const stance = data?.market_stance ?? '—'
   const stanceColor = {
-    '강세': 'text-[#00ff88]',
-    '약세': 'text-[#ff3b5c]',
-    '관망': 'text-[#f59e0b]',
-  }[stance] ?? 'text-[#64748b]'
+    '강세': 'text-[var(--green)]',
+    '약세': 'text-[var(--up)]',
+    '관망': 'text-[var(--yellow)]',
+  }[stance] ?? 'text-[var(--text-dim)]'
 
   return (
-    <div className="flex items-center gap-0 border-b border-[#2a2a3a] bg-[#0a0f18] text-sm h-11 leading-none"
+    <div className="flex items-center gap-0 border-b border-[var(--border)] bg-white text-sm h-11 leading-none shadow-sm"
       style={{ fontFamily: 'var(--font-terminal)' }}>
       {/* 장세 레짐 */}
-      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a] ${regimeColor}`}>
+      <div className={`flex items-center gap-2 px-4 h-full border-r border-[var(--border)] ${regimeColor}`}>
         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
         <span className="font-bold tracking-widest">{regime}</span>
       </div>
 
       {/* 장세 판단 */}
-      <div className={`flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a] ${stanceColor}`}>
+      <div className={`flex items-center gap-2 px-4 h-full border-r border-[var(--border)] ${stanceColor}`}>
         <span className="font-bold">{stance}</span>
       </div>
 
       {/* KOSPI 지수 */}
       {snap && snap.kospi_price > 0 && (
-        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[#2a2a3a]">
-          <span className="text-[#64748b]">KOSPI</span>
-          <span className="text-[#e2e8f0] font-bold tabular-nums">{snap.kospi_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span className={`font-bold tabular-nums ${snap.kospi_change >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[var(--border)]">
+          <span className="text-[var(--text-dim)]">KOSPI</span>
+          <span className="text-[var(--text-primary)] font-bold tabular-nums">{snap.kospi_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className={`font-bold tabular-nums ${snap.kospi_change >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
             {snap.kospi_change >= 0 ? '+' : ''}{snap.kospi_change.toFixed(2)}%
           </span>
         </div>
@@ -65,39 +65,39 @@ export function StatusBar() {
 
       {/* KOSDAQ 지수 */}
       {snap && snap.kosdaq_price > 0 && (
-        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[#2a2a3a]">
-          <span className="text-[#64748b]">KOSDAQ</span>
-          <span className="text-[#e2e8f0] font-bold tabular-nums">{snap.kosdaq_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span className={`font-bold tabular-nums ${snap.kosdaq_change >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+        <div className="flex items-center gap-1.5 px-4 h-full border-r border-[var(--border)]">
+          <span className="text-[var(--text-dim)]">KOSDAQ</span>
+          <span className="text-[var(--text-primary)] font-bold tabular-nums">{snap.kosdaq_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className={`font-bold tabular-nums ${snap.kosdaq_change >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
             {snap.kosdaq_change >= 0 ? '+' : ''}{snap.kosdaq_change.toFixed(2)}%
           </span>
         </div>
       )}
 
       {/* 매수 슬롯 */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
-        <span className="text-[#64748b]">슬롯</span>
-        <span className="text-[#00ff88] font-bold">{data?.kospi_slots ?? 0}</span>
-        <span className="text-[#334155]">/ 5</span>
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[var(--border)]">
+        <span className="text-[var(--text-dim)]">슬롯</span>
+        <span className="text-[var(--green)] font-bold">{data?.kospi_slots ?? 0}</span>
+        <span className="text-[var(--text-muted)]">/ 5</span>
       </div>
 
       {/* US */}
-      <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
-        <span className="text-[#64748b]">US</span>
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[var(--border)]">
+        <span className="text-[var(--text-dim)]">US</span>
         <span className={`font-bold ${
-          data?.us_grade === 'BULLISH' ? 'text-[#00ff88]' :
-          data?.us_grade === 'BEARISH' ? 'text-[#ff3b5c]' :
-          'text-[#f59e0b]'
+          data?.us_grade === 'BULLISH' ? 'text-[var(--green)]' :
+          data?.us_grade === 'BEARISH' ? 'text-[var(--up)]' :
+          'text-[var(--yellow)]'
         }`}>{data?.us_grade ?? '—'}</span>
       </div>
 
       {/* 외국인/기관 */}
       {snap && (snap.foreign_inst.foreign_net !== 0 || snap.foreign_inst.inst_net !== 0) && (
-        <div className="flex items-center gap-2 px-4 h-full border-r border-[#2a2a3a]">
-          <span className={`font-bold ${snap.foreign_inst.foreign_net >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+        <div className="flex items-center gap-2 px-4 h-full border-r border-[var(--border)]">
+          <span className={`font-bold ${snap.foreign_inst.foreign_net >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
             외{snap.foreign_inst.foreign_net >= 0 ? '▲' : '▼'}
           </span>
-          <span className={`font-bold ${snap.foreign_inst.inst_net >= 0 ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'}`}>
+          <span className={`font-bold ${snap.foreign_inst.inst_net >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
             기{snap.foreign_inst.inst_net >= 0 ? '▲' : '▼'}
           </span>
         </div>
@@ -106,14 +106,14 @@ export function StatusBar() {
       <div className="flex-1" />
 
       {/* 실시간 시계 */}
-      <div className="px-4 text-[#94a3b8] text-sm font-bold tracking-wider font-mono">
+      <div className="px-4 text-[var(--text-dim)] text-sm font-bold tracking-wider font-mono">
         {clock}
       </div>
 
       {/* LIVE 인디케이터 */}
-      <div className="flex items-center gap-1.5 px-4 h-full border-l border-[#2a2a3a]">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-ping opacity-75" />
-        <span className="text-[#00ff88] text-xs tracking-widest font-bold">LIVE</span>
+      <div className="flex items-center gap-1.5 px-4 h-full border-l border-[var(--border)]">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--green)] animate-ping opacity-75" />
+        <span className="text-[var(--green)] text-xs tracking-widest font-bold">LIVE</span>
       </div>
     </div>
   )

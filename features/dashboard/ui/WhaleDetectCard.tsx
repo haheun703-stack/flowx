@@ -5,9 +5,9 @@ import { useDashboardWhale } from '../api/useDashboard'
 import { DashboardCard, CardSkeleton } from './DashboardCard'
 
 const GRADE_STYLES: Record<string, string> = {
-  '세력포착': 'text-red-400 bg-red-500/10',
-  '매집의심': 'text-orange-400 bg-orange-500/10',
-  '이상감지': 'text-yellow-400 bg-yellow-500/10',
+  '세력포착': 'text-red-600 bg-red-50',
+  '매집의심': 'text-orange-600 bg-orange-50',
+  '이상감지': 'text-yellow-600 bg-yellow-50',
 }
 
 export function WhaleDetectCard() {
@@ -25,7 +25,7 @@ export function WhaleDetectCard() {
       <div className="flex gap-3 mb-3 text-[10px]">
         {Object.entries(data.stats).map(([grade, count]) => (
           <span key={grade} className="text-gray-500">
-            {grade} <span className="text-white font-semibold">{count}</span>
+            {grade} <span className="text-[var(--text-primary)] font-semibold">{count}</span>
           </span>
         ))}
       </div>
@@ -36,20 +36,20 @@ export function WhaleDetectCard() {
           <Link
             key={item.ticker}
             href={`/chart/${item.ticker}`}
-            className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-gray-800/50 transition-colors"
+            className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <span className={`text-[10px] px-1.5 py-0.5 rounded ${GRADE_STYLES[item.grade] ?? 'text-gray-400 bg-gray-800'}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded ${GRADE_STYLES[item.grade] ?? 'text-gray-500 bg-gray-100'}`}>
                 {item.grade}
               </span>
-              <span className="text-xs text-white truncate">{item.name}</span>
+              <span className="text-xs text-[var(--text-primary)] truncate">{item.name}</span>
             </div>
             <div className="flex items-center gap-2 text-xs shrink-0">
               <span className="text-gray-500">{item.close.toLocaleString()}</span>
-              <span className={item.price_change >= 0 ? 'text-red-400' : 'text-blue-400'}>
+              <span className={item.price_change >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>
                 {item.price_change >= 0 ? '+' : ''}{item.price_change.toFixed(1)}%
               </span>
-              <span className="text-yellow-500 font-mono text-[10px]">
+              <span className="text-[var(--yellow)] font-mono text-[10px]">
                 x{item.volume_surge_ratio.toFixed(1)}
               </span>
             </div>

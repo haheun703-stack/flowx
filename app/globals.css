@@ -18,27 +18,41 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f9fb;
+  --foreground: #111827;
 
-  /* Bloomberg Terminal Design System */
-  --bg-base:       #080b10;
-  --bg-panel:      #0a0f18;
-  --bg-row:        #0d1420;
-  --border:        #1a2535;
-  --border-bright: #253548;
+  /* FLOWX Light Design System */
+  --bg-base:       #f8f9fb;
+  --bg-panel:      #ffffff;
+  --bg-row:        #f3f4f6;
+  --border:        #e2e5ea;
+  --border-bright: #d1d5db;
 
-  --green:         #00ff88;
-  --green-dim:     #00cc6a;
-  --red:           #ff3b5c;
-  --red-dim:       #cc2f4a;
-  --blue:          #0ea5e9;
-  --yellow:        #f59e0b;
-  --purple:        #a855f7;
+  --green:         #16a34a;
+  --green-dim:     #22c55e;
+  --red:           #dc2626;
+  --red-dim:       #ef4444;
+  --blue:          #2563eb;
+  --yellow:        #d97706;
+  --purple:        #7c3aed;
 
-  --text-primary:  #e2e8f0;
-  --text-dim:      #64748b;
-  --text-muted:    #334155;
+  --text-primary:  #111827;
+  --text-dim:      #6b7280;
+  --text-muted:    #9ca3af;
+
+  /* 한국 관례: 상승=빨강, 하락=파랑 */
+  --up:            #dc2626;
+  --down:          #2563eb;
+  --up-bg:         #fef2f2;
+  --down-bg:       #eff6ff;
+
+  /* 투자자 색상 */
+  --investor-foreign:     #64748b;
+  --investor-foreign-bg:  #f1f5f9;
+  --investor-inst:        #ec4899;
+  --investor-inst-bg:     #fce7f3;
+  --investor-individual:  #eab308;
+  --investor-individual-bg: #fef9c3;
 
   --font-terminal: var(--font-jetbrains), 'Fira Code', monospace;
 }
@@ -56,14 +70,7 @@
   font-family: var(--font-display), 'Georgia', serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--bg-base, #080b10);
-  color: #d1d4dc;
+  background: var(--bg-base);
+  color: var(--text-primary);
 }

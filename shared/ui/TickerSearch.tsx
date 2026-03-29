@@ -12,10 +12,10 @@ export function TickerSearch() {
       <button
         onClick={() => setOpen(true)}
         aria-label="종목 검색 열기"
-        className="flex items-center bg-[#0d1420] border border-[#1a2535] rounded-lg px-3 py-1.5 gap-2 w-64 hover:border-[#253548] hover:bg-[#131722] transition-colors"
+        className="flex items-center bg-gray-50 border border-[var(--border)] rounded-lg px-3 py-1.5 gap-2 w-64 hover:border-[var(--border-bright)] hover:bg-white transition-colors"
       >
-        <Search size={14} className="text-white" />
-        <span className="text-sm text-gray-300 font-bold">종목명 또는 코드...</span>
+        <Search size={14} className="text-gray-500" />
+        <span className="text-sm text-gray-400 font-bold">종목명 또는 코드...</span>
       </button>
       <StockSearchModal open={open} onClose={() => setOpen(false)} />
     </>

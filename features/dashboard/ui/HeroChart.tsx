@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react'
 import { createChart, AreaSeries, type IChartApi, type ISeriesApi, type AreaSeriesPartialOptions, type UTCTimestamp } from 'lightweight-charts'
 
 // 한국 주식 컬러: 상승=빨강, 하락=파랑
-const KR_UP = '#ff3b5c'
-const KR_DOWN = '#0ea5e9'
+const KR_UP = '#dc2626'
+const KR_DOWN = '#2563eb'
 
 interface HeroChartProps {
   data: { time: number; value: number }[]
@@ -30,23 +30,23 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     const chart = createChart(el, {
       layout: {
         background: { color: 'transparent' },
-        textColor: '#94a3b8',
+        textColor: '#6b7280',
         fontFamily: 'var(--font-terminal), monospace',
       },
       grid: {
-        vertLines: { color: '#1a2535' },
-        horzLines: { color: '#1a2535' },
+        vertLines: { color: '#f3f4f6' },
+        horzLines: { color: '#f3f4f6' },
       },
       crosshair: {
-        vertLine: { color: '#2a2e39', labelBackgroundColor: '#1c2030' },
-        horzLine: { color: '#2a2e39', labelBackgroundColor: '#1c2030' },
+        vertLine: { color: '#d1d5db', labelBackgroundColor: '#f9fafb' },
+        horzLine: { color: '#d1d5db', labelBackgroundColor: '#f9fafb' },
       },
       rightPriceScale: {
-        borderColor: '#1a2535',
+        borderColor: '#e5e7eb',
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
       timeScale: {
-        borderColor: '#1a2535',
+        borderColor: '#e5e7eb',
         timeVisible: true,
         secondsVisible: false,
         fixLeftEdge: true,
@@ -60,7 +60,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
-      crosshairMarkerBorderColor: '#131722',
+      crosshairMarkerBorderColor: '#ffffff',
       crosshairMarkerRadius: 4,
     })
 
@@ -95,8 +95,8 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
 
     const styleOpts: AreaSeriesPartialOptions = {
       lineColor,
-      topColor: isPositive ? 'rgba(255,59,92,0.15)' : 'rgba(14,165,233,0.15)',
-      bottomColor: isPositive ? 'rgba(255,59,92,0.0)' : 'rgba(14,165,233,0.0)',
+      topColor: isPositive ? 'rgba(220,38,38,0.12)' : 'rgba(37,99,235,0.12)',
+      bottomColor: isPositive ? 'rgba(220,38,38,0.0)' : 'rgba(37,99,235,0.0)',
       crosshairMarkerBackgroundColor: lineColor,
     }
     series.applyOptions(styleOpts)
@@ -113,13 +113,13 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
   const priceColor = changePercent >= 0 ? KR_UP : KR_DOWN
 
   return (
-    <div className="relative border-b" style={{ background: '#0d1117', borderColor: '#1a2535' }}>
+    <div className="relative border-b border-[var(--border)] bg-white">
       {/* 왼쪽 상단 오버레이 — KOSPI 현재가 */}
       <div className="absolute top-4 left-5 z-10 flex items-baseline gap-3">
-        <span className="text-sm font-mono font-bold" style={{ color: '#94a3b8' }}>
+        <span className="text-sm font-mono font-bold text-[var(--text-dim)]">
           {label}
         </span>
-        <span className="text-4xl font-bold font-mono" style={{ color: '#d1d4dc' }}>
+        <span className="text-4xl font-bold font-mono text-[var(--text-primary)]">
           {currentPrice ? currentPrice.toLocaleString() : '---'}
         </span>
         {currentPrice > 0 && (
@@ -141,23 +141,23 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       <div className="absolute top-4 right-5 z-10 flex items-center gap-2">
         {marketOpen ? (
           <>
-            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#00ff88' }} />
-            <span className="text-xs font-mono" style={{ color: '#00ff88' }}>LIVE</span>
+            <div className="w-1.5 h-1.5 rounded-full animate-pulse bg-[var(--green)]" />
+            <span className="text-xs font-mono text-[var(--green)]">LIVE</span>
           </>
         ) : (
           <>
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#f59e0b' }} />
-            <span className="text-xs font-mono" style={{ color: '#f59e0b' }}>CLOSED</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--yellow)]" />
+            <span className="text-xs font-mono text-[var(--yellow)]">CLOSED</span>
           </>
         )}
-        <span className="text-sm font-mono font-bold ml-2" style={{ color: '#94a3b8' }}>
+        <span className="text-sm font-mono font-bold ml-2 text-[var(--text-dim)]">
           {mode === 'daily' && lastDate ? `${lastDate} 종가 기준` : '09:00 — 15:30 KST'}
         </span>
       </div>
 
       {/* 데이터 없을 때 */}
       {data.length === 0 && (
-        <div className="flex items-center justify-center h-[220px] text-sm font-mono" style={{ color: '#434651' }}>
+        <div className="flex items-center justify-center h-[220px] text-sm font-mono text-[var(--text-muted)]">
           데이터 로딩 중...
         </div>
       )}
