@@ -52,8 +52,8 @@ function getChangeColor(pct: number): string {
   const clamped = Math.max(-7, Math.min(7, pct))
   const t = (clamped + 7) / 14 // 0 = max down, 1 = max up
   if (t < 0.35) return lerpColor('#0055aa', '#5599cc', t / 0.35)
-  if (t < 0.5) return lerpColor('#5599cc', '#333842', (t - 0.35) / 0.15)
-  if (t < 0.65) return lerpColor('#333842', '#cc6655', (t - 0.5) / 0.15)
+  if (t < 0.5) return lerpColor('#5599cc', '#9ca3af', (t - 0.35) / 0.15)
+  if (t < 0.65) return lerpColor('#9ca3af', '#cc6655', (t - 0.5) / 0.15)
   return lerpColor('#cc6655', '#cc2222', (t - 0.65) / 0.35)
 }
 
@@ -335,7 +335,7 @@ export function StockTreemap({
 
     // 1. Sector backgrounds
     for (const sec of currLayout.sectorRects) {
-      ctx.fillStyle = '#0d1117'
+      ctx.fillStyle = '#e2e5ea'
       ctx.fillRect(sec.x0, sec.y0, sec.x1 - sec.x0, sec.y1 - sec.y0)
     }
 
@@ -366,13 +366,13 @@ export function StockTreemap({
       const isHovered = hoveredRef.current === leaf.data.ticker
       const isSelected = selectedTicker === leaf.data.ticker
       if (isSelected) {
-        ctx.strokeStyle = '#fbbf24'
+        ctx.strokeStyle = '#f59e0b'
         ctx.lineWidth = 2.5 / cam.zoom
       } else if (isHovered) {
-        ctx.strokeStyle = '#e2e8f0'
+        ctx.strokeStyle = '#374151'
         ctx.lineWidth = 1.5 / cam.zoom
       } else {
-        ctx.strokeStyle = '#080b10'
+        ctx.strokeStyle = 'rgba(255,255,255,0.6)'
         ctx.lineWidth = 1 / cam.zoom
       }
       ctx.strokeRect(rx, ry, rw, rh)
@@ -388,7 +388,7 @@ export function StockTreemap({
       ctx.font = `900 ${fs}px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
       ctx.textBaseline = 'top'
-      ctx.fillStyle = '#fbbf24'
+      ctx.fillStyle = '#111827'
       ctx.fillText(sec.name, sec.x0 + 4 / cam.zoom, sec.y0 + 3 / cam.zoom)
     }
 
@@ -620,7 +620,7 @@ export function StockTreemap({
   /* ── Render ── */
   if (!sectors.length) {
     return (
-      <div className="flex items-center justify-center h-full text-[#334155] text-sm">
+      <div className="flex items-center justify-center h-full text-[var(--text-muted)] text-sm">
         데이터 로딩중...
       </div>
     )
@@ -649,33 +649,34 @@ export function StockTreemap({
           style={{
             left: Math.min(tooltip.screenX, (containerRef.current?.offsetWidth ?? 800) - 220),
             top: Math.max(tooltip.screenY - 110, 8),
-            background: 'rgba(13, 17, 23, 0.95)',
-            border: '1px solid #334155',
+            background: 'rgba(255, 255, 255, 0.97)',
+            border: '1px solid #e2e5ea',
             borderRadius: 8,
             padding: '10px 14px',
             minWidth: 200,
-            color: '#e2e8f0',
+            color: '#111827',
             lineHeight: 1.6,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
         >
-          <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', fontFamily: CANVAS_FONT }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: '#111827', fontFamily: CANVAS_FONT }}>
             {tooltip.stock.name}
-            <span style={{ color: '#64748b', fontWeight: 400, marginLeft: 6, fontSize: 12 }}>
+            <span style={{ color: '#6b7280', fontWeight: 400, marginLeft: 6, fontSize: 12 }}>
               {tooltip.stock.ticker}
             </span>
           </div>
-          <div style={{ color: '#fbbf24', fontSize: 12, fontFamily: CANVAS_FONT }}>
+          <div style={{ color: '#d97706', fontSize: 12, fontFamily: CANVAS_FONT }}>
             {tooltip.stock.sector}
           </div>
           <div style={{ marginTop: 4, fontFamily: CANVAS_FONT }}>
             <span style={{
-              color: getTextColor(tooltip.stock.changePercent),
+              color: tooltip.stock.changePercent >= 0 ? '#dc2626' : '#2563eb',
               fontWeight: 700, fontSize: 16,
             }}>
               {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
             </span>
           </div>
-          <div style={{ color: '#64748b', fontSize: 11, fontFamily: CANVAS_FONT }}>
+          <div style={{ color: '#6b7280', fontSize: 11, fontFamily: CANVAS_FONT }}>
             시총 {formatMarketCap(tooltip.stock.marketCap)} · 거래대금 {formatTradingValue(tooltip.stock.tradingValue)}
           </div>
         </div>

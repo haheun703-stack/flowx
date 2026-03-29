@@ -16,7 +16,7 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
   if (!stock) return null
 
   const isPositive = stock.changePercent >= 0
-  const color = isPositive ? 'text-[#ff3b5c]' : 'text-[#0ea5e9]'
+  const color = isPositive ? 'text-[var(--up)]' : 'text-[var(--down)]'
   const sign = isPositive ? '+' : ''
 
   const mcapText = stock.marketCap >= 10000
@@ -28,14 +28,14 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
 
   return (
     <div
-      className="w-[260px] shrink-0 border-l border-[#1a2535] bg-[#0a0f18] flex flex-col"
+      className="w-[260px] shrink-0 border-l border-[var(--border)] bg-white flex flex-col"
       style={{ fontFamily: FONT }}
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]">
-        <span className="text-white font-bold text-sm">{stock.name}</span>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+        <span className="text-[var(--text-primary)] font-bold text-sm">{stock.name}</span>
         <button
           onClick={onClose}
-          className="text-[#64748b] hover:text-white text-lg leading-none"
+          className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg leading-none"
         >
           x
         </button>
@@ -43,16 +43,16 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
 
       <div className="flex flex-col gap-4 p-4">
         <div>
-          <div className="text-[#94a3b8] text-xs mb-1">종목코드</div>
-          <div className="text-white font-bold text-sm">{stock.ticker}</div>
+          <div className="text-[var(--text-muted)] text-xs mb-1">종목코드</div>
+          <div className="text-[var(--text-primary)] font-bold text-sm">{stock.ticker}</div>
         </div>
         <div>
-          <div className="text-[#94a3b8] text-xs mb-1">섹터</div>
-          <div className="text-[#fbbf24] font-bold text-sm">{stock.sector}</div>
+          <div className="text-[var(--text-muted)] text-xs mb-1">섹터</div>
+          <div className="text-[var(--yellow)] font-bold text-sm">{stock.sector}</div>
         </div>
 
-        <div className="border-t border-[#1a2535] pt-4">
-          <div className="text-[#94a3b8] text-xs mb-1">등락률</div>
+        <div className="border-t border-[var(--border)] pt-4">
+          <div className="text-[var(--text-muted)] text-xs mb-1">등락률</div>
           <div className={`text-2xl font-black ${color}`}>
             {sign}{stock.changePercent.toFixed(2)}%
           </div>
@@ -60,12 +60,12 @@ function DetailPanel({ stock, onClose }: { stock: LeafNode | null; onClose: () =
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <div className="text-[#94a3b8] text-xs mb-1">시총</div>
-            <div className="text-white font-bold text-sm">{mcapText}</div>
+            <div className="text-[var(--text-muted)] text-xs mb-1">시총</div>
+            <div className="text-[var(--text-primary)] font-bold text-sm">{mcapText}</div>
           </div>
           <div>
-            <div className="text-[#94a3b8] text-xs mb-1">거래대금</div>
-            <div className="text-white font-bold text-sm">{tvText}</div>
+            <div className="text-[var(--text-muted)] text-xs mb-1">거래대금</div>
+            <div className="text-[var(--text-primary)] font-bold text-sm">{tvText}</div>
           </div>
         </div>
       </div>
@@ -83,18 +83,18 @@ export default function TreemapPage() {
   const totalStocks = sectors?.reduce((sum, s) => sum + s.stocks.length, 0) ?? 0
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-88px)]" style={{ background: '#131722' }}>
+    <div className="flex flex-col min-h-[calc(100vh-88px)] bg-[var(--bg-base)]">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-3 border-b border-[#1a2535]"
+        className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-white"
         style={{ fontFamily: FONT }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#00ff88]" />
-          <span className="text-base font-black tracking-widest uppercase text-white">
+          <div className="w-2.5 h-2.5 rounded-full bg-[var(--green)]" />
+          <span className="text-base font-black tracking-widest uppercase text-[var(--text-primary)]">
             시가총액 트리맵
           </span>
-          <span className="text-sm font-black text-[#94a3b8]">
+          <span className="text-sm font-black text-[var(--text-muted)]">
             {drilledSector
               ? `KOSPI · KOSDAQ — ${drilledSector}`
               : `KOSPI · KOSDAQ 상위 ${totalStocks}종목`
@@ -103,7 +103,7 @@ export default function TreemapPage() {
           {drilledSector && (
             <button
               onClick={() => setDrilledSector(null)}
-              className="ml-2 px-2 py-1 text-xs font-bold text-[#fbbf24] border border-[#fbbf24]/30 rounded hover:bg-[#fbbf24]/10 transition-colors"
+              className="ml-2 px-2 py-1 text-xs font-bold text-[var(--blue)] border border-[var(--blue)]/30 rounded hover:bg-[var(--blue)]/10 transition-colors"
             >
               ← 전체 보기
             </button>
@@ -118,8 +118,8 @@ export default function TreemapPage() {
               onClick={() => setSizeBy(f.key)}
               className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${
                 sizeBy === f.key
-                  ? 'bg-[#1a2535] text-[#00ff88] border border-[#00ff88]/30'
-                  : 'text-[#64748b] hover:text-[#94a3b8] border border-transparent'
+                  ? 'bg-blue-50 text-[var(--blue)] border border-[var(--blue)]/30'
+                  : 'text-[var(--text-dim)] hover:text-[var(--text-primary)] border border-transparent'
               }`}
             >
               {f.label}
@@ -130,13 +130,13 @@ export default function TreemapPage() {
 
       {/* Filter description + controls */}
       <div
-        className="flex items-center justify-between px-4 py-1.5 border-b border-[#1a2535]/50"
+        className="flex items-center justify-between px-4 py-1.5 border-b border-[var(--border)] bg-white"
         style={{ fontFamily: FONT }}
       >
-        <span className="text-xs text-[#64748b]">
+        <span className="text-xs text-[var(--text-dim)]">
           {currentFilter.desc} · 색상 = 등락률 · 스크롤 = 줌 · 드래그 = 이동 · 섹터 클릭 = 확대
         </span>
-        <span className="text-xs text-[#334155]">
+        <span className="text-xs text-[var(--text-muted)]">
           더블클릭 = 전체보기
         </span>
       </div>
@@ -146,7 +146,7 @@ export default function TreemapPage() {
         <div className="flex-1 p-2">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-[#334155] text-sm" style={{ fontFamily: FONT }}>
+              <div className="text-[var(--text-muted)] text-sm" style={{ fontFamily: FONT }}>
                 데이터 로딩중...
               </div>
             </div>
