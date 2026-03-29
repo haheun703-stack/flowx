@@ -428,13 +428,13 @@ function formatBil(n: number) {
 const TAB_ITEMS = [
   { key: "killer-picks", label: "\uD0AC\uB7EC\uD53D", icon: "\uD83C\uDFAF" },
   { key: "recommend", label: "\uC624\uB298\uC758 \uCD94\uCC9C", icon: "\uD83D\uDCCA" },
+  { key: "etf-signals", label: "ETF\uC2DC\uADF8\uB110", icon: "\uD83D\uDCB0" },
+  { key: "relay", label: "\uB9B4\uB808\uC774", icon: "\uD83D\uDD04" },
+  { key: "sniper", label: "\uC2A4\uB098\uC774\uD37C", icon: "\u26A1" },
   { key: "sectors", label: "\uC5C5\uC885 \uBD84\uC11D", icon: "\uD83D\uDCCA" },
   { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
   { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
   { key: "fundamentals", label: "\uD39C\uB354\uBA58\uD138", icon: "\uD83D\uDCCB" },
-  { key: "etf-signals", label: "ETF\uC2DC\uADF8\uB110", icon: "\uD83D\uDCB0" },
-  { key: "relay", label: "\uB9B4\uB808\uC774", icon: "\uD83D\uDD04" },
-  { key: "sniper", label: "\uC2A4\uB098\uC774\uD37C", icon: "\u26A1" },
 ];
 
 /* ─── 메인 컴포넌트 ─── */
@@ -951,7 +951,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-200 text-lg font-bold">
+        <h2 className="text-gray-900 text-lg font-bold">
           {ICO.CHART_DOWN} 업종 모멘텀 TOP 10
         </h2>
         {sectors.date && (
@@ -1047,7 +1047,7 @@ function SignalsTab({
               const pct = total > 0 ? (item.value / total) * 100 : 0;
               return (
                 <div key={item.label} className="flex-1 flex flex-col items-center gap-1">
-                  <span className="text-gray-200 text-sm font-bold">{item.value}</span>
+                  <span className="text-gray-900 text-sm font-bold">{item.value}</span>
                   <div className="w-full flex justify-center" style={{ height: "80px" }}>
                     <div
                       className={`${item.color} rounded-t w-full max-w-[48px]`}
@@ -1620,7 +1620,7 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-200 text-lg font-bold">ETF 자금흐름 시그널</h2>
+        <h2 className="text-gray-900 text-lg font-bold">ETF 자금흐름 시그널</h2>
         {date && <span className="text-gray-500 text-xs">{date}</span>}
       </div>
 
@@ -1696,7 +1696,7 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-200 text-lg font-bold">섹터 릴레이 (Lead-Lag)</h2>
+        <h2 className="text-gray-900 text-lg font-bold">섹터 릴레이 (Lead-Lag)</h2>
         {date && <span className="text-gray-500 text-xs">{date}</span>}
       </div>
 
@@ -1776,7 +1776,7 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-200 text-lg font-bold">스나이퍼워치</h2>
+        <h2 className="text-gray-900 text-lg font-bold">스나이퍼워치</h2>
         {date && <span className="text-gray-500 text-xs">{date}</span>}
       </div>
 
