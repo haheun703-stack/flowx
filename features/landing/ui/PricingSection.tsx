@@ -79,7 +79,7 @@ export function PricingSection() {
   return (
     <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-6xl mx-auto" id="pricing">
       <div className="text-center mb-10 sm:mb-16">
-        <div className="text-3xl sm:text-4xl text-[var(--blue)] font-mono tracking-widest uppercase mb-4">
+        <div className="text-3xl sm:text-4xl text-[#00ff88] font-mono tracking-widest uppercase mb-4">
           플랜 & 가격
         </div>
         <h2 className="text-2xl sm:text-4xl font-bold mb-4 font-display">
@@ -139,7 +139,7 @@ export function PricingSection() {
                 <Link
                   href={plan.href ?? '/dashboard'}
                   className="w-full text-center py-3 rounded-xl text-sm transition-all font-mono
-                             bg-[var(--blue)] text-white font-bold hover:bg-[var(--blue)]/90"
+                             bg-[#00ff88] text-black font-bold hover:bg-[#00ff88]/90"
                 >
                   {plan.cta}
                 </Link>

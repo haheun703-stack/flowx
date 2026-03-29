@@ -33,23 +33,23 @@ export function HeroSection() {
         className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(#2563eb15 1px, transparent 1px),
-            linear-gradient(90deg, #2563eb15 1px, transparent 1px)
+            linear-gradient(#00ff8815 1px, transparent 1px),
+            linear-gradient(90deg, #00ff8815 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
         }}
       />
 
       {/* 배경 글로우 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[var(--blue)] opacity-[0.03] blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#00ff88] opacity-[0.03] blur-[100px] pointer-events-none" />
 
       {/* 대형 로고 */}
       <FlowxLogo variant="hero" showTagline={true} className="relative mb-12" />
 
       {/* 배지 */}
-      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[var(--blue)]/30 rounded-full bg-[var(--blue)]/5">
-        <span className="w-4 h-4 rounded-full bg-[var(--blue)] animate-pulse" />
-        <span className="text-2xl sm:text-3xl text-[var(--blue)] font-mono tracking-widest uppercase">
+      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[#00ff88]/30 rounded-full bg-[#00ff88]/5">
+        <span className="w-4 h-4 rounded-full bg-[#00ff88] animate-pulse" />
+        <span className="text-2xl sm:text-3xl text-[#00ff88] font-mono tracking-widest uppercase">
           BETA — 무료 공개 중
         </span>
       </div>
@@ -59,7 +59,7 @@ export function HeroSection() {
         <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
           한국주식 실시간의
         </span>
-        <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[var(--blue)]">
+        <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[#00ff88]">
           모든것을
         </span>
         <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
@@ -77,7 +77,7 @@ export function HeroSection() {
       <div className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-20 w-full sm:w-auto px-4 sm:px-0">
         <Link
           href="/dashboard"
-          className="px-12 py-6 bg-[var(--blue)] text-white font-bold text-xl rounded-xl hover:bg-[var(--blue)]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
+          className="px-12 py-6 bg-[#00ff88] text-black font-bold text-xl rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
         >
           대시보드 바로가기 →
         </Link>
@@ -99,7 +99,7 @@ export function HeroSection() {
           <div key={stat.label} className="text-center">
             <div className="text-xl sm:text-3xl md:text-4xl font-bold font-mono text-[var(--text-primary)]">
               {stat.value}
-              <span className="text-[var(--blue)] text-base sm:text-xl">{stat.unit}</span>
+              <span className="text-[#00ff88] text-base sm:text-xl">{stat.unit}</span>
             </div>
             <div className="text-[10px] sm:text-xs text-[var(--text-muted)] mt-1 font-mono">{stat.label}</div>
           </div>

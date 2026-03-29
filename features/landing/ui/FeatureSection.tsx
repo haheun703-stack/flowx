@@ -29,7 +29,7 @@ export function FeatureSection() {
   return (
     <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-6xl mx-auto">
       <div className="text-center mb-10 sm:mb-16">
-        <div className="text-3xl sm:text-4xl text-[var(--blue)] font-mono tracking-widest uppercase mb-4">
+        <div className="text-3xl sm:text-4xl text-[#00ff88] font-mono tracking-widest uppercase mb-4">
           핵심 기능
         </div>
         <h2 className="text-4xl sm:text-6xl font-bold font-display">
@@ -43,7 +43,7 @@ export function FeatureSection() {
             key={f.title}
             className="relative p-6 rounded-2xl border border-[var(--border)] bg-white hover:border-[var(--border-bright)] transition-all group shadow-sm"
           >
-            <div className="absolute inset-0 rounded-2xl bg-[var(--blue)] opacity-0 group-hover:opacity-[0.02] transition-opacity" />
+            <div className="absolute inset-0 rounded-2xl bg-[#00ff88] opacity-0 group-hover:opacity-[0.02] transition-opacity" />
 
             <div className="text-3xl mb-4">{f.icon}</div>
             <div className="flex items-center gap-2 mb-2">
@@ -52,7 +52,7 @@ export function FeatureSection() {
                 {f.tag}
               </span>
             </div>
-            <div className="text-xs text-[var(--blue)] font-mono mb-3">{f.subtitle}</div>
+            <div className="text-xs text-[#00ff88] font-mono mb-3">{f.subtitle}</div>
             <p className="text-sm text-[var(--text-dim)] leading-relaxed">{f.desc}</p>
           </div>
         ))}
