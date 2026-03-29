@@ -46,17 +46,17 @@ function SemiCircleGauge({ value, size = 220 }: { value: number; size?: number }
       </defs>
 
       {/* 배경 호 (회색) */}
-      <path d={bgArc} fill="none" stroke="#1e293b" strokeWidth="16" strokeLinecap="round" />
+      <path d={bgArc} fill="none" stroke="#e5e7eb" strokeWidth="16" strokeLinecap="round" />
 
       {/* 값 호 (그라데이션) */}
       <path d={valArc} fill="none" stroke={`url(#${gradId})`} strokeWidth="16" strokeLinecap="round" />
 
       {/* 바늘 */}
-      <circle cx={needleX} cy={needleY} r="6" fill={label.color} stroke="#080b10" strokeWidth="2" />
+      <circle cx={needleX} cy={needleY} r="6" fill={label.color} stroke="white" strokeWidth="2" />
       <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke={label.color} strokeWidth="2" opacity="0.6" />
 
       {/* 중앙 원 */}
-      <circle cx={cx} cy={cy} r="8" fill="#131722" stroke="#334155" strokeWidth="2" />
+      <circle cx={cx} cy={cy} r="8" fill="white" stroke="#d1d5db" strokeWidth="2" />
 
       {/* 라벨: 0, 50, 100 */}
       <text x={20} y={cy + 20} fill="#64748b" fontSize="11" textAnchor="middle">0</text>
@@ -90,12 +90,12 @@ export function FearGreedGauge() {
   const vixItem = sentimentItems?.find(i => i.symbol === 'VIX') ?? data?.items?.find(i => i.symbol === 'VIX')
 
   if (isLoading) {
-    return <div className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
+    return <div className="h-48 bg-white border border-[var(--border)] rounded-lg animate-pulse" />
   }
 
   if (isError) {
     return (
-      <div className="bg-gray-900 rounded-xl p-6 min-h-[200px] flex items-center justify-center text-red-400/70 text-sm">
+      <div className="bg-white rounded-xl p-6 min-h-[200px] flex items-center justify-center text-[var(--up)]/70 text-sm">
         데이터 로드 실패
       </div>
     )
@@ -106,19 +106,19 @@ export function FearGreedGauge() {
   const vixAlert = vixValue >= 25
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6 min-h-[200px]">
+    <div className="bg-white rounded-xl p-6 min-h-[200px]">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">😱</span>
-        <span className="text-base font-bold text-white">공포 & 탐욕 지수</span>
+        <span className="text-base font-bold text-[var(--text-primary)]">공포 & 탐욕 지수</span>
         {fgItem && (
-          <span className="text-xs text-gray-500 ml-auto">{data?.date}</span>
+          <span className="text-xs text-[var(--text-muted)] ml-auto">{data?.date}</span>
         )}
       </div>
 
       {fgItem ? (
         <SemiCircleGauge value={fgValue} />
       ) : (
-        <div className="flex items-center justify-center h-32 text-[#334155] text-sm">
+        <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-sm">
           F&G 데이터 없음
         </div>
       )}
@@ -126,13 +126,13 @@ export function FearGreedGauge() {
       {/* VIX 경고 */}
       {vixItem && (
         <div className={`mt-2 flex items-center justify-between px-3 py-2 rounded ${
-          vixAlert ? 'bg-red-500/10 border border-red-500/30' : 'bg-[#131722]'
+          vixAlert ? 'bg-red-50 border border-red-200' : 'bg-[var(--bg-base)]'
         }`}>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-[#e2e8f0]">VIX</span>
-            {vixAlert && <span className="text-xs text-red-400 font-bold animate-pulse">경고</span>}
+            <span className="text-sm font-bold text-[var(--text-primary)]">VIX</span>
+            {vixAlert && <span className="text-xs text-[var(--up)] font-bold animate-pulse">경고</span>}
           </div>
-          <span className={`text-lg font-black tabular-nums ${vixAlert ? 'text-red-400' : 'text-[#e2e8f0]'}`}>
+          <span className={`text-lg font-black tabular-nums ${vixAlert ? 'text-[var(--up)]' : 'text-[var(--text-primary)]'}`}>
             {vixValue.toFixed(1)}
           </span>
         </div>

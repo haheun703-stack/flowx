@@ -353,12 +353,12 @@ export function SectorNetwork({
       const n = tierFirstNode.get(tier)!
       ctx.font = `bold 14px ${CANVAS_FONT}`
       ctx.textAlign = 'center'
-      ctx.fillStyle = '#e2e8f0'
+      ctx.fillStyle = '#111827'
       ctx.fillText(NETWORK_TIER_LABELS[tier] ?? `Tier ${tier}`, n.x + n.w / 2, 30)
     }
     // Tier 간 화살표
     ctx.font = `16px ${CANVAS_FONT}`
-    ctx.fillStyle = '#475569'
+    ctx.fillStyle = '#9ca3af'
     ctx.textAlign = 'center'
     for (let i = 0; i < drawnTiers.length - 1; i++) {
       const n1 = tierFirstNode.get(drawnTiers[i])
@@ -396,7 +396,7 @@ export function SectorNetwork({
         ctx.strokeStyle = grad
         ctx.globalAlpha = 0.9
       } else if (isDim || isThemeDim) {
-        ctx.strokeStyle = '#1e293b'
+        ctx.strokeStyle = '#e2e5ea'
         ctx.globalAlpha = 0.1
       } else {
         const grad = ctx.createLinearGradient(x0, 0, x1, 0)
@@ -432,7 +432,7 @@ export function SectorNetwork({
       // 헤더: sub_category
       ctx.font = `bold 13px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = '#111827'
       const headerText = n.subCategory.length > 10
         ? n.subCategory.slice(0, 9) + '…' : n.subCategory
       ctx.fillText(headerText, n.x + 8, n.y + 17)
@@ -440,14 +440,14 @@ export function SectorNetwork({
       // 종목 수
       ctx.font = `bold 11px ${CANVAS_FONT}`
       ctx.textAlign = 'right'
-      ctx.fillStyle = '#94a3b8'
+      ctx.fillStyle = '#6b7280'
       ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 8, n.y + 17)
 
       // 구분선
       ctx.beginPath()
       ctx.moveTo(n.x + 6, n.y + HEADER_H - 2)
       ctx.lineTo(n.x + n.w - 6, n.y + HEADER_H - 2)
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)'
+      ctx.strokeStyle = 'rgba(0,0,0,0.08)'
       ctx.lineWidth = 1
       ctx.stroke()
 
@@ -466,7 +466,7 @@ export function SectorNetwork({
         // 종목명 (캐시된 truncation)
         ctx.font = `12px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
-        ctx.fillStyle = '#e2e8f0'
+        ctx.fillStyle = '#111827'
         const cacheKey = `${name}|${maxNameW}`
         let displayN = truncCache.current.get(cacheKey)
         if (displayN === undefined) {
@@ -482,7 +482,7 @@ export function SectorNetwork({
         // 등락률 (오른쪽 정렬)
         ctx.font = `bold 11px ${CANVAS_FONT}`
         ctx.textAlign = 'right'
-        ctx.fillStyle = pct >= 0 ? '#ff3b5c' : '#38bdf8'
+        ctx.fillStyle = pct >= 0 ? '#dc2626' : '#2563eb'
         ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 8, cy)
       }
 
@@ -491,7 +491,7 @@ export function SectorNetwork({
         const cy = n.y + HEADER_H + 4 + visible.length * LINE_H + 12
         ctx.font = `11px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
-        ctx.fillStyle = '#64748b'
+        ctx.fillStyle = '#9ca3af'
         ctx.fillText(`+${n.stockNames.length - visible.length}개`, n.x + 8, cy)
       }
 
@@ -515,7 +515,7 @@ export function SectorNetwork({
         const tw = ctx.measureText(label).width + 12
         const th = 20
 
-        ctx.fillStyle = 'rgba(0,0,0,0.9)'
+        ctx.fillStyle = 'rgba(255,255,255,0.95)'
         ctx.beginPath()
         ctx.roundRect(mx - tw / 2, my - th / 2, tw, th, 4)
         ctx.fill()
@@ -692,8 +692,8 @@ export function SectorNetwork({
             left: Math.min(tooltip.x, (containerRef.current?.offsetWidth ?? 700) - 260),
             top: Math.max(40, tooltip.y),
             transform: 'translate(-50%, -100%)',
-            background: 'rgba(15,23,42,0.95)',
-            color: '#e2e8f0',
+            background: 'rgba(255,255,255,0.97)',
+            color: '#111827',
             fontSize: 12,
             border: '1px solid #7F77DD',
             borderRadius: 8,
@@ -702,16 +702,16 @@ export function SectorNetwork({
             maxWidth: 260,
           }}
         >
-          <div style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>{tooltip.name}</div>
-          <div style={{ color: '#94a3b8', fontSize: 11 }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: '#111827' }}>{tooltip.name}</div>
+          <div style={{ color: '#6b7280', fontSize: 11 }}>
             {tooltip.stockList.slice(0, 5).join(', ')}
             {tooltip.stockList.length > 5 ? ` 외 ${tooltip.stockList.length - 5}개` : ''}
           </div>
           <div style={{ marginTop: 4 }}>
-            <span style={{ color: tooltip.changePct >= 0 ? '#ff3b5c' : '#38bdf8', fontWeight: 700 }}>
+            <span style={{ color: tooltip.changePct >= 0 ? '#dc2626' : '#2563eb', fontWeight: 700 }}>
               평균 {tooltip.changePct >= 0 ? '+' : ''}{tooltip.changePct.toFixed(1)}%
             </span>
-            <span style={{ color: '#94a3b8', marginLeft: 8 }}>
+            <span style={{ color: '#6b7280', marginLeft: 8 }}>
               외인 {formatForeign(tooltip.foreignNet)}
             </span>
           </div>

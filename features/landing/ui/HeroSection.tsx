@@ -33,57 +33,57 @@ export function HeroSection() {
         className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(#00ff8815 1px, transparent 1px),
-            linear-gradient(90deg, #00ff8815 1px, transparent 1px)
+            linear-gradient(#2563eb15 1px, transparent 1px),
+            linear-gradient(90deg, #2563eb15 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
         }}
       />
 
-      {/* 배경 레이더 글로우 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#00ff88] opacity-[0.03] blur-[100px] pointer-events-none" />
+      {/* 배경 글로우 */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[var(--blue)] opacity-[0.03] blur-[100px] pointer-events-none" />
 
       {/* 대형 로고 */}
       <FlowxLogo variant="hero" showTagline={true} className="relative mb-12" />
 
       {/* 배지 */}
-      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[#00ff88]/30 rounded-full bg-[#00ff88]/5">
-        <span className="w-4 h-4 rounded-full bg-[#00ff88] animate-pulse" />
-        <span className="text-2xl sm:text-3xl text-[#00ff88] font-mono tracking-widest uppercase">
+      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[var(--blue)]/30 rounded-full bg-[var(--blue)]/5">
+        <span className="w-4 h-4 rounded-full bg-[var(--blue)] animate-pulse" />
+        <span className="text-2xl sm:text-3xl text-[var(--blue)] font-mono tracking-widest uppercase">
           BETA — 무료 공개 중
         </span>
       </div>
 
       {/* 메인 헤드라인 */}
       <h1 className="relative text-center max-w-4xl mb-6 font-display">
-        <span className="block text-3xl sm:text-5xl md:text-7xl text-white leading-tight">
+        <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
           한국주식 실시간의
         </span>
-        <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[#00ff88]">
+        <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[var(--blue)]">
           모든것을
         </span>
-        <span className="block text-3xl sm:text-5xl md:text-7xl text-white leading-tight">
+        <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
           한 화면에
         </span>
       </h1>
 
       {/* 서브 카피 */}
-      <p className="relative text-center text-gray-400 text-sm sm:text-lg max-w-2xl mb-8 sm:mb-12 leading-relaxed font-mono px-2">
+      <p className="relative text-center text-[var(--text-dim)] text-sm sm:text-lg max-w-2xl mb-8 sm:mb-12 leading-relaxed font-mono px-2">
         외국인·기관 수급 X-Ray &middot; AI 종목추천 &middot; 세력 포착<br />
-        Bloomberg 터미널 스타일 실시간 대시보드
+        실시간 대시보드로 시장을 한 화면에
       </p>
 
       {/* CTA 버튼 */}
       <div className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-20 w-full sm:w-auto px-4 sm:px-0">
         <Link
           href="/dashboard"
-          className="px-12 py-6 bg-[#00ff88] text-black font-bold text-xl rounded-xl hover:bg-[#00ff88]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
+          className="px-12 py-6 bg-[var(--blue)] text-white font-bold text-xl rounded-xl hover:bg-[var(--blue)]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
         >
           대시보드 바로가기 →
         </Link>
         <Link
           href="/market"
-          className="px-12 py-6 border border-gray-700 text-gray-300 text-xl rounded-xl hover:border-gray-500 hover:text-white transition-all font-mono tracking-wider text-center"
+          className="px-12 py-6 border border-[var(--border-bright)] text-[var(--text-dim)] text-xl rounded-xl hover:border-[var(--text-dim)] hover:text-[var(--text-primary)] transition-all font-mono tracking-wider text-center"
         >
           시장 현황 보기
         </Link>
@@ -97,11 +97,11 @@ export function HeroSection() {
           { value: indexCount,                  label: '글로벌 지수 추적', unit: '개' },
         ].map((stat) => (
           <div key={stat.label} className="text-center">
-            <div className="text-xl sm:text-3xl md:text-4xl font-bold font-mono text-white">
+            <div className="text-xl sm:text-3xl md:text-4xl font-bold font-mono text-[var(--text-primary)]">
               {stat.value}
-              <span className="text-[#00ff88] text-base sm:text-xl">{stat.unit}</span>
+              <span className="text-[var(--blue)] text-base sm:text-xl">{stat.unit}</span>
             </div>
-            <div className="text-[10px] sm:text-xs text-gray-500 mt-1 font-mono">{stat.label}</div>
+            <div className="text-[10px] sm:text-xs text-[var(--text-muted)] mt-1 font-mono">{stat.label}</div>
           </div>
         ))}
       </div>

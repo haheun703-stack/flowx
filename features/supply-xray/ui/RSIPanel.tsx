@@ -45,22 +45,22 @@ export function RSIPanel({ data }: { data: CandleData[] }) {
 
     const chart = createChart(containerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#0f1117' },
+        background: { type: ColorType.Solid, color: '#ffffff' },
         textColor: '#6b7280',
       },
       grid: {
-        vertLines: { color: '#1f2937' },
-        horzLines: { color: '#1f2937' },
+        vertLines: { color: '#f3f4f6' },
+        horzLines: { color: '#f3f4f6' },
       },
       width: containerRef.current.clientWidth,
       height: 140,
       rightPriceScale: {
-        borderColor: '#374151',
+        borderColor: '#e5e7eb',
         // RSI는 0~100 고정 스케일
         autoScale: false,
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
-      timeScale: { borderColor: '#374151', visible: false },
+      timeScale: { borderColor: '#e5e7eb', visible: false },
     })
 
     const rsiData = calcRSI(data, 14)
@@ -97,7 +97,7 @@ export function RSIPanel({ data }: { data: CandleData[] }) {
     // 중간선 (50)
     rsiSeries.createPriceLine({
       price: 50,
-      color: '#37415150',
+      color: '#e5e7eb50',
       lineWidth: 1,
       lineStyle: 0,
       axisLabelVisible: false,
@@ -118,30 +118,30 @@ export function RSIPanel({ data }: { data: CandleData[] }) {
   // 현재 RSI 값 표시
   const rsiData = calcRSI(data, 14)
   const currentRSI = rsiData[rsiData.length - 1]?.value ?? null
-  const rsiColor = currentRSI === null ? 'text-gray-500'
-    : currentRSI >= 70 ? 'text-red-400'
-    : currentRSI <= 30 ? 'text-blue-400'
-    : 'text-purple-400'
+  const rsiColor = currentRSI === null ? 'text-[var(--text-muted)]'
+    : currentRSI >= 70 ? 'text-[var(--up)]'
+    : currentRSI <= 30 ? 'text-[var(--down)]'
+    : 'text-purple-600'
 
   return (
     <div>
-      <div className="flex items-center gap-2 px-3 pt-2 pb-1 bg-[#0f1117]">
-        <span className="text-xs text-purple-400/70">RSI(14)</span>
+      <div className="flex items-center gap-2 px-3 pt-2 pb-1 bg-white">
+        <span className="text-xs text-purple-600/70">RSI(14)</span>
         {currentRSI !== null && (
           <>
             <span className={`text-xs font-mono font-bold ${rsiColor}`}>
               {currentRSI.toFixed(1)}
             </span>
             {currentRSI >= 70 && (
-              <span className="text-xs text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded">과매수</span>
+              <span className="text-xs text-[var(--up)] bg-red-50 px-1.5 py-0.5 rounded">과매수</span>
             )}
             {currentRSI <= 30 && (
-              <span className="text-xs text-blue-400 bg-blue-400/10 px-1.5 py-0.5 rounded">과매도</span>
+              <span className="text-xs text-[var(--down)] bg-blue-50 px-1.5 py-0.5 rounded">과매도</span>
             )}
           </>
         )}
       </div>
-      <div ref={containerRef} className="bg-[#0f1117]" />
+      <div ref={containerRef} className="bg-white" />
     </div>
   )
 }

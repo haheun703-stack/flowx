@@ -40,11 +40,11 @@ export default function ScenarioDashboardView() {
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-20 bg-gray-800 rounded-lg" />
+            <div key={i} className="h-20 bg-gray-200 rounded-lg" />
           ))}
         </div>
-        <div className="h-48 bg-gray-800 rounded-lg" />
-        <div className="h-32 bg-gray-800 rounded-lg" />
+        <div className="h-48 bg-gray-200 rounded-lg" />
+        <div className="h-32 bg-gray-200 rounded-lg" />
       </div>
     )
   }
@@ -52,8 +52,8 @@ export default function ScenarioDashboardView() {
   if (!data) {
     return (
       <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
-        <p className="text-gray-500">시나리오 데이터가 아직 없습니다.</p>
-        <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
+        <p className="text-[var(--text-muted)]">시나리오 데이터가 아직 없습니다.</p>
+        <p className="text-[var(--text-muted)] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
     )
   }
@@ -65,31 +65,31 @@ export default function ScenarioDashboardView() {
       </section>
 
       <section>
-        <h2 className="text-white text-xl font-bold mb-4">활성 시나리오</h2>
+        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">활성 시나리오</h2>
         <ScenarioCard scenarios={data.active_scenarios} conflicts={data.conflicts} />
       </section>
 
       <section>
-        <h2 className="text-white text-xl font-bold mb-4">원자재 원가갭 분석</h2>
+        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">원자재 원가갭 분석</h2>
         <CommodityTable commodities={data.commodities} />
       </section>
 
       {(data.scenario_stocks?.length ?? 0) > 0 && (
         <section>
-          <h2 className="text-white text-xl font-bold mb-4">시나리오 연동 종목</h2>
+          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">시나리오 연동 종목</h2>
           <ScenarioStockCard stocks={data.scenario_stocks} />
         </section>
       )}
 
       {(data.etf_map?.length ?? 0) > 0 && (
         <section>
-          <h2 className="text-white text-xl font-bold mb-4">시나리오별 ETF 매핑</h2>
+          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">시나리오별 ETF 매핑</h2>
           <ScenarioETFMap etfMap={data.etf_map} />
         </section>
       )}
 
       <section>
-        <h2 className="text-white text-xl font-bold mb-4">초보자 가이드</h2>
+        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">초보자 가이드</h2>
         <ScenarioGuide />
       </section>
     </div>

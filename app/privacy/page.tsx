@@ -2,16 +2,16 @@ import Link from 'next/link'
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[#080b10] text-gray-300 px-4 py-16">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] px-4 py-16">
       <div className="max-w-2xl mx-auto">
-        <Link href="/" className="text-[#00ff88] text-sm hover:underline">
+        <Link href="/" className="text-[#16a34a] text-sm hover:underline">
           ← FlowX 홈으로
         </Link>
-        <h1 className="text-2xl font-bold text-white mt-6 mb-8">개인정보 처리방침</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] mt-6 mb-8">개인정보 처리방침</h1>
 
         <div className="space-y-6 text-sm leading-relaxed">
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">1. 수집하는 개인정보</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">1. 수집하는 개인정보</h2>
             <p>
               FlowX는 서비스 제공을 위해 다음 정보를 수집합니다:<br />
               - 필수: 이메일, 이름, 비밀번호 (암호화 저장)<br />
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">2. 개인정보의 이용 목적</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">2. 개인정보의 이용 목적</h2>
             <p>
               - 회원 관리 및 서비스 제공<br />
               - 유료 결제 처리 및 구독 관리<br />
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">3. 개인정보 보유 기간</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">3. 개인정보 보유 기간</h2>
             <p>
               - 회원 탈퇴 시 즉시 파기<br />
               - 단, 관련 법령에 따라 일정 기간 보관이 필요한 경우 해당 기간 동안 보관<br />
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">4. 개인정보의 제3자 제공</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">4. 개인정보의 제3자 제공</h2>
             <p>
               FlowX는 이용자의 동의 없이 개인정보를 제3자에게 제공하지 않습니다.
               단, 법령에 의한 요청이 있는 경우는 예외입니다.
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">5. 개인정보 처리 위탁</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">5. 개인정보 처리 위탁</h2>
             <p>
               - 결제 처리: Toss Payments (토스페이먼츠)<br />
               - 데이터 저장: Supabase (클라우드 데이터베이스)<br />
@@ -57,14 +57,14 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-2">6. 이용자의 권리</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2">6. 이용자의 권리</h2>
             <p>
               이용자는 언제든지 자신의 개인정보를 조회, 수정, 삭제할 수 있으며,
               회원 탈퇴를 통해 개인정보 처리를 중단할 수 있습니다.
             </p>
           </section>
 
-          <p className="text-gray-500 pt-6 border-t border-[#1a2535]">
+          <p className="text-[var(--text-muted)] pt-6 border-t border-[var(--border)]">
             시행일: 2026년 3월 22일
           </p>
         </div>

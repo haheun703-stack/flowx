@@ -33,14 +33,14 @@ const fmt = (v: number) => {
 }
 
 const signColor = (v: number) =>
-  v > 0 ? "text-[#00ff88]" : v < 0 ? "text-[#ff3b5c]" : "text-gray-500"
+  v > 0 ? "text-[#16a34a]" : v < 0 ? "text-[#dc2626]" : "text-[var(--text-muted)]"
 
 const agreementBadge = (a: string) => {
   switch (a) {
-    case "합의매수": return "bg-[#00ff88]/20 text-[#00ff88] border-[#00ff88]/40"
-    case "합의매도": return "bg-[#ff3b5c]/20 text-[#ff3b5c] border-[#ff3b5c]/40"
-    case "의견분열": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
-    default: return "bg-gray-700/50 text-gray-400 border-gray-600"
+    case "합의매수": return "bg-[#16a34a]/20 text-[#16a34a] border-[#16a34a]/40"
+    case "합의매도": return "bg-[#dc2626]/20 text-[#dc2626] border-[#dc2626]/40"
+    case "의견분열": return "bg-yellow-500/20 text-[var(--yellow)] border-yellow-500/40"
+    default: return "bg-gray-200 text-[var(--text-dim)] border-[var(--border)]"
   }
 }
 
@@ -63,41 +63,41 @@ export function SectorFlowView() {
     return () => ac.abort()
   }, [])
 
-  if (loading) return <div className="text-gray-500 text-center py-20">로딩 중...</div>
-  if (!data) return <div className="text-gray-500 text-center py-20">데이터 없음</div>
+  if (loading) return <div className="text-[var(--text-muted)] text-center py-20">로딩 중...</div>
+  if (!data) return <div className="text-[var(--text-muted)] text-center py-20">데이터 없음</div>
 
   const sectors = data.sectors ?? []
 
   return (
     <div className="space-y-6">
       {/* 시그널 헤더 */}
-      <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
+      <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-400">{data.date} · {data.total_sectors}개 섹터</span>
+          <span className="text-sm text-[var(--text-dim)]">{data.date} · {data.total_sectors}개 섹터</span>
         </div>
-        <p className="text-lg font-bold text-[#00ff88]">{data.signal}</p>
+        <p className="text-lg font-bold text-[#16a34a]">{data.signal}</p>
         <div className="flex gap-4 mt-3 text-xs">
           <div>
-            <span className="text-gray-500 mr-1">매수집중</span>
+            <span className="text-[var(--text-muted)] mr-1">매수집중</span>
             {(data.top_inflow ?? []).map((s, i) => (
-              <span key={i} className="text-[#00ff88] mr-1">#{s}</span>
+              <span key={i} className="text-[#16a34a] mr-1">#{s}</span>
             ))}
           </div>
           <div>
-            <span className="text-gray-500 mr-1">이탈</span>
+            <span className="text-[var(--text-muted)] mr-1">이탈</span>
             {(data.top_outflow ?? []).map((s, i) => (
-              <span key={i} className="text-[#ff3b5c] mr-1">#{s}</span>
+              <span key={i} className="text-[#dc2626] mr-1">#{s}</span>
             ))}
           </div>
         </div>
       </div>
 
       {/* 섹터 테이블 */}
-      <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800">
+      <div className="bg-white rounded-xl overflow-hidden border border-[var(--border)]">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-gray-800 text-gray-500">
+              <tr className="border-b border-[var(--border)] text-[var(--text-muted)]">
                 <th className="text-left py-3 px-4">섹터</th>
                 <th className="text-right px-3">기관(당일)</th>
                 <th className="text-right px-3">기관(3일)</th>
@@ -111,8 +111,8 @@ export function SectorFlowView() {
             </thead>
             <tbody>
               {sectors.map((s, i) => (
-                <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30">
-                  <td className="py-2.5 px-4 font-medium text-white">{s.alias || s.sector}</td>
+                <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                  <td className="py-2.5 px-4 font-medium text-[var(--text-primary)]">{s.alias || s.sector}</td>
                   <td className={`text-right px-3 ${signColor(s.inst_1d)}`}>{fmt(s.inst_1d)}</td>
                   <td className={`text-right px-3 ${signColor(s.inst_3d)}`}>{fmt(s.inst_3d)}</td>
                   <td className={`text-right px-3 ${signColor(s.inst_consecutive)}`}>{consecutive(s.inst_consecutive)}</td>

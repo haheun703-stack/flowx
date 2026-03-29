@@ -5,7 +5,7 @@ import { useMacroDaily, type MacroItem } from '../api/useMacroDashboard'
 const CATEGORY_META: Record<string, { title: string; icon: string; accentColor: string }> = {
   commodity: { title: '원자재', icon: '🛢️', accentColor: '#f59e0b' },
   grain:     { title: '곡물',   icon: '🌾', accentColor: '#84cc16' },
-  forex:     { title: '환율',   icon: '💱', accentColor: '#0ea5e9' },
+  forex:     { title: '환율',   icon: '💱', accentColor: '#2563eb' },
   rate:      { title: '금리',   icon: '📊', accentColor: '#8b5cf6' },
   sentiment: { title: '센티먼트', icon: '🧠', accentColor: '#ef4444' },
   index:     { title: '지수',   icon: '📈', accentColor: '#10b981' },
@@ -37,19 +37,19 @@ function MacroItemRow({ item }: { item: MacroItem }) {
   const isAlert = isAlertTriggered(item)
   const isUp = item.change_pct >= 0
   const isHighlight = Math.abs(item.change_pct) >= 3
-  const changeColor = item.change_pct === 0 ? '#64748b' : isUp ? '#ff3b5c' : '#0ea5e9'
+  const changeColor = item.change_pct === 0 ? '#64748b' : isUp ? '#dc2626' : '#2563eb'
 
   return (
     <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
-      isAlert ? 'bg-red-500/10 border border-red-500/30' :
-      isHighlight ? 'bg-[#1a2535]' : 'hover:bg-[#0d1420]/30'
+      isAlert ? 'bg-red-50 border border-red-200' :
+      isHighlight ? 'bg-gray-100' : 'hover:bg-gray-50'
     }`}>
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-sm text-[#e2e8f0] font-medium truncate">{item.name_ko}</span>
-        {isAlert && <span className="text-xs text-red-400 font-bold animate-pulse">!</span>}
+        <span className="text-sm text-[var(--text-primary)] font-medium truncate">{item.name_ko}</span>
+        {isAlert && <span className="text-xs text-[var(--up)] font-bold animate-pulse">!</span>}
       </div>
       <div className="flex items-center gap-2.5 shrink-0">
-        <span className="text-base text-[#e2e8f0] font-bold tabular-nums">{fmtValue(item)}</span>
+        <span className="text-base text-[var(--text-primary)] font-bold tabular-nums">{fmtValue(item)}</span>
         <span className={`text-sm font-bold tabular-nums w-16 text-right ${
           isHighlight ? 'animate-pulse' : ''
         }`} style={{ color: changeColor }}>
@@ -64,11 +64,11 @@ function CategoryCard({ category, items }: { category: string; items: MacroItem[
   const meta = CATEGORY_META[category] ?? { title: category, icon: '📦', accentColor: '#64748b' }
 
   return (
-    <div className="bg-gray-900 rounded-xl overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800/50">
+    <div className="bg-white rounded-xl overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--border)]/50">
         <span className="text-lg">{meta.icon}</span>
         <span className="text-lg font-bold" style={{ color: meta.accentColor }}>{meta.title}</span>
-        <span className="text-xs text-[#555]">{items.length}개</span>
+        <span className="text-xs text-[var(--text-muted)]">{items.length}개</span>
       </div>
       <div className="p-3 space-y-0.5">
         {items.map(item => <MacroItemRow key={item.symbol} item={item} />)}
@@ -84,7 +84,7 @@ export function MacroRadarPanel() {
     return (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
+          <div key={i} className="h-48 bg-white border border-[var(--border)] rounded-lg animate-pulse" />
         ))}
       </div>
     )
@@ -92,7 +92,7 @@ export function MacroRadarPanel() {
 
   if (isError) {
     return (
-      <div className="bg-gray-900 rounded-xl p-8 text-center text-red-400/70 text-sm">
+      <div className="bg-white rounded-xl p-8 text-center text-[var(--up)]/70 text-sm">
         매크로 데이터 로드 실패 — 잠시 후 다시 시도해주세요
       </div>
     )
@@ -109,7 +109,7 @@ export function MacroRadarPanel() {
 
   if (Object.keys(categories).length === 0) {
     return (
-      <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-600">
+      <div className="bg-white rounded-xl p-8 text-center text-[var(--text-muted)]">
         매크로 데이터 없음 — Supabase macro_dashboard 테이블에 데이터 업로드 필요
       </div>
     )
@@ -119,9 +119,9 @@ export function MacroRadarPanel() {
     <div>
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">📡</span>
-        <span className="text-base font-bold text-[#e2e8f0] tracking-wider">매크로 레이더</span>
-        <span className="text-xs text-[#8a8a8a]">{data?.date}</span>
-        <span className="text-xs text-[#555] ml-auto">3% 이상 변동은 하이라이트</span>
+        <span className="text-base font-bold text-[var(--text-primary)] tracking-wider">매크로 레이더</span>
+        <span className="text-xs text-[var(--text-dim)]">{data?.date}</span>
+        <span className="text-xs text-[var(--text-muted)] ml-auto">3% 이상 변동은 하이라이트</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {quadrants.map((cats, qi) => (

@@ -34,16 +34,16 @@ function useNationality(code: string) {
 }
 
 const C = {
-  bg: '#0a0c10', bg2: '#0f1218', bg3: '#161b24',
-  border: '#1e2736',
-  text: '#e2e8f0', muted: '#5a6a82',
-  green: '#00e59b', red: '#ff4d6d',
-  blue: '#38bdf8', amber: '#f5a623',
+  bg: '#f8f9fb', bg2: '#ffffff', bg3: '#f3f4f6',
+  border: '#e2e5ea',
+  text: '#111827', muted: '#6b7280',
+  green: '#16a34a', red: '#dc2626',
+  blue: '#2563eb', amber: '#d97706',
 } as const
 
 const MONO = "'Space Mono', monospace"
-const BUY = '#ff4d6d'
-const SELL = '#38bdf8'
+const BUY = '#dc2626'
+const SELL = '#2563eb'
 const MAX_ICONS = 10
 
 function PersonIcon({ color, size = 18 }: { color: string; size?: number }) {

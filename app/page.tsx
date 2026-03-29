@@ -6,7 +6,7 @@ import { Footer }         from '@/features/landing/ui/Footer'
 
 export default function LandingPage() {
   return (
-    <main className="bg-[#080b10] text-white overflow-x-hidden">
+    <main className="bg-[var(--bg-base)] text-[var(--text-primary)] overflow-x-hidden">
       <HeroSection />
       <FeatureSection />
       <PricingSection />

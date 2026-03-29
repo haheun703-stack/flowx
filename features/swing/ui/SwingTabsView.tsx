@@ -25,9 +25,9 @@ export function SwingTabsView() {
   const [tab, setTab] = useState<TabKey>("dashboard")
 
   return (
-    <div className="min-h-screen bg-[#080b10] text-gray-200" style={{ zoom: 1.25 }}>
+    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]" style={{ zoom: 1.25 }}>
       {/* 탭 바 */}
-      <div className="flex gap-1 border-b border-gray-800 px-6 bg-[#080b10] sticky top-[52px] z-30">
+      <div className="flex gap-1 border-b border-[var(--border)] px-6 bg-[var(--bg-base)] sticky top-[52px] z-30">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -35,7 +35,7 @@ export function SwingTabsView() {
             className={`px-4 py-2.5 text-xs font-medium transition-colors border-b-2 ${
               tab === t.key
                 ? "text-[#a855f7] border-[#a855f7]"
-                : "text-gray-500 border-transparent hover:text-gray-300"
+                : "text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)]"
             }`}
           >
             {t.label}

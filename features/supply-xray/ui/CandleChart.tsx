@@ -49,17 +49,17 @@ export function CandleChart({ data, options, onCrosshairMove }: Props) {
 
     const chart = createChart(containerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#0f1117' },
+        background: { type: ColorType.Solid, color: '#ffffff' },
         textColor: '#9ca3af',
       },
       grid: {
-        vertLines: { color: '#1f2937' },
-        horzLines: { color: '#1f2937' },
+        vertLines: { color: '#f3f4f6' },
+        horzLines: { color: '#f3f4f6' },
       },
       width: containerRef.current.clientWidth,
       height: 420,
-      rightPriceScale: { borderColor: '#374151' },
-      timeScale: { borderColor: '#374151', timeVisible: true },
+      rightPriceScale: { borderColor: '#e5e7eb' },
+      timeScale: { borderColor: '#e5e7eb', timeVisible: true },
       crosshair: { mode: 1 },
     })
 

@@ -4,10 +4,10 @@ import { createChart, ColorType, HistogramSeries } from 'lightweight-charts'
 import { SupplyData } from '@/entities/stock/types'
 
 const makeChartOptions = (height: number = 170) => ({
-  layout: { background: { type: ColorType.Solid, color: '#0f1117' }, textColor: '#6b7280' },
-  grid: { vertLines: { color: '#1f2937' }, horzLines: { color: '#1f2937' } },
+  layout: { background: { type: ColorType.Solid, color: '#ffffff' }, textColor: '#6b7280' },
+  grid: { vertLines: { color: '#f3f4f6' }, horzLines: { color: '#f3f4f6' } },
   height,
-  rightPriceScale: { borderColor: '#374151' },
+  rightPriceScale: { borderColor: '#e5e7eb' },
   timeScale: { visible: false },
 })
 
@@ -48,13 +48,13 @@ export function SupplyOverlay({ data }: { data: SupplyData[] }) {
   }, [data])
 
   return (
-    <div className="grid grid-cols-2 gap-px bg-gray-800">
-      <div className="bg-[#0f1117]">
-        <div className="text-xs text-blue-400 px-3 pt-2 pb-1">외국인 순매수</div>
+    <div className="grid grid-cols-2 gap-px bg-gray-100">
+      <div className="bg-white">
+        <div className="text-xs text-[var(--down)] px-3 pt-2 pb-1">외국인 순매수</div>
         <div ref={foreignRef} />
       </div>
-      <div className="bg-[#0f1117]">
-        <div className="text-xs text-green-400 px-3 pt-2 pb-1">기관 순매수</div>
+      <div className="bg-white">
+        <div className="text-xs text-[var(--green)] px-3 pt-2 pb-1">기관 순매수</div>
         <div ref={institutionRef} />
       </div>
     </div>

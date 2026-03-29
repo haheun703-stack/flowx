@@ -16,14 +16,14 @@ export default function ScenarioGuide() {
   return (
     <div className="space-y-2">
       {FAQ.map((item, i) => (
-        <div key={i} className="border border-gray-700/50 rounded-lg overflow-hidden">
-          <button className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-800/30 transition-colors" onClick={() => setOpen((p) => ({ ...p, [i]: !p[i] }))}>
-            <span className="text-sm text-gray-200">{item.q}</span>
-            <span className="text-gray-500 text-sm ml-2">{open[i] ? '\u2212' : '+'}</span>
+        <div key={i} className="border border-[var(--border)] rounded-lg overflow-hidden">
+          <button className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors" onClick={() => setOpen((p) => ({ ...p, [i]: !p[i] }))}>
+            <span className="text-sm text-[var(--text-primary)]">{item.q}</span>
+            <span className="text-[var(--text-muted)] text-sm ml-2">{open[i] ? '\u2212' : '+'}</span>
           </button>
           {open[i] && (
             <div className="px-4 pb-3">
-              <p className="text-sm text-gray-400 leading-relaxed">{item.a}</p>
+              <p className="text-sm text-[var(--text-dim)] leading-relaxed">{item.a}</p>
             </div>
           )}
         </div>

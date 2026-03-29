@@ -7,7 +7,7 @@ import { getSupabaseBrowser } from '@/lib/supabase-browser'
 import { FlowxLogo } from '@/shared/ui/logo'
 
 const INPUT_CLASS =
-  'w-full px-4 py-3 bg-[#0a0f18] border border-[#1a2535] rounded-lg text-white text-sm focus:outline-none focus:border-[#00ff88]/50 transition-colors'
+  'w-full px-4 py-3 bg-white border border-[var(--border)] rounded-lg text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#16a34a]/50 transition-colors'
 
 function formatPhone(value: string): string {
   const nums = value.replace(/\D/g, '').slice(0, 11)
@@ -19,7 +19,7 @@ function formatPhone(value: string): string {
 function ValidationIcon({ valid }: { valid: boolean | null }) {
   if (valid === null) return null
   return (
-    <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${valid ? 'text-[#00ff88]' : 'text-[#ff3b5c]'}`}>
+    <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${valid ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
       {valid ? '✓' : '✕'}
     </span>
   )
@@ -115,19 +115,19 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#080b10] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4">
         <div className="max-w-sm w-full text-center">
           <Link href="/">
             <FlowxLogo variant="small" />
           </Link>
-          <h1 className="text-xl font-bold text-white mt-6 mb-4">회원가입 완료!</h1>
-          <p className="text-sm text-gray-400 mb-6">
-            <span className="text-[#00ff88] font-bold">{name}</span>님, 환영합니다.
+          <h1 className="text-xl font-bold text-[var(--text-primary)] mt-6 mb-4">회원가입 완료!</h1>
+          <p className="text-sm text-[var(--text-dim)] mb-6">
+            <span className="text-[#16a34a] font-bold">{name}</span>님, 환영합니다.
             <br />로그인하여 서비스를 이용해주세요.
           </p>
           <Link
             href="/auth/login"
-            className="inline-block px-6 py-3 bg-[#00ff88] text-black font-bold text-sm rounded-lg hover:bg-[#00ff88]/90 transition-all font-mono"
+            className="inline-block px-6 py-3 bg-[#16a34a] text-black font-bold text-sm rounded-lg hover:bg-[#16a34a]/90 transition-all font-mono"
           >
             로그인하기
           </Link>
@@ -137,20 +137,20 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080b10] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4 py-12">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
           <Link href="/">
             <FlowxLogo variant="small" />
           </Link>
-          <h1 className="text-xl font-bold text-white mt-6 mb-2">회원가입</h1>
-          <p className="text-sm text-gray-500">무료로 시작하세요</p>
+          <h1 className="text-xl font-bold text-[var(--text-primary)] mt-6 mb-2">회원가입</h1>
+          <p className="text-sm text-[var(--text-muted)]">무료로 시작하세요</p>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-4">
           {/* 이름 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">이름 <span className="text-[#ff3b5c]">*</span></label>
+            <label className="text-xs text-[var(--text-dim)] block mb-1">이름 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="text"
@@ -166,7 +166,7 @@ export default function SignupPage() {
 
           {/* 이메일 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">이메일 <span className="text-[#ff3b5c]">*</span></label>
+            <label className="text-xs text-[var(--text-dim)] block mb-1">이메일 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="email"
@@ -182,7 +182,7 @@ export default function SignupPage() {
 
           {/* 전화번호 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">전화번호</label>
+            <label className="text-xs text-[var(--text-dim)] block mb-1">전화번호</label>
             <div className="relative">
               <input
                 type="tel"
@@ -197,7 +197,7 @@ export default function SignupPage() {
 
           {/* 비밀번호 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">비밀번호 <span className="text-[#ff3b5c]">*</span></label>
+            <label className="text-xs text-[var(--text-dim)] block mb-1">비밀번호 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="password"
@@ -214,7 +214,7 @@ export default function SignupPage() {
 
           {/* 비밀번호 확인 */}
           <div>
-            <label className="text-xs text-gray-400 block mb-1">비밀번호 확인 <span className="text-[#ff3b5c]">*</span></label>
+            <label className="text-xs text-[var(--text-dim)] block mb-1">비밀번호 확인 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="password"
@@ -227,12 +227,12 @@ export default function SignupPage() {
               <ValidationIcon valid={confirmValid} />
             </div>
             {confirmValid === false && (
-              <p className="text-xs text-[#ff3b5c] mt-1">비밀번호가 일치하지 않습니다</p>
+              <p className="text-xs text-[#dc2626] mt-1">비밀번호가 일치하지 않습니다</p>
             )}
           </div>
 
           {/* 약관 동의 */}
-          <div className="space-y-3 pt-2 border-t border-[#1a2535]">
+          <div className="space-y-3 pt-2 border-t border-[var(--border)]">
             {/* 전체 동의 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -244,9 +244,9 @@ export default function SignupPage() {
                   setAgreePrivacy(v)
                   setAgreeMarketing(v)
                 }}
-                className="w-4 h-4 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                className="w-4 h-4 rounded border-[var(--border)] bg-white accent-[#16a34a]"
               />
-              <span className="text-sm text-white font-bold">전체 동의</span>
+              <span className="text-sm text-[var(--text-primary)] font-bold">전체 동의</span>
             </label>
 
             <div className="ml-6 space-y-2">
@@ -255,11 +255,11 @@ export default function SignupPage() {
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
                 />
-                <span className="text-xs text-gray-400">
-                  <span className="text-[#ff3b5c]">[필수]</span>{' '}
-                  <Link href="/terms" className="underline hover:text-white" target="_blank">
+                <span className="text-xs text-[var(--text-dim)]">
+                  <span className="text-[#dc2626]">[필수]</span>{' '}
+                  <Link href="/terms" className="underline hover:text-[var(--text-primary)]" target="_blank">
                     이용약관
                   </Link>
                   에 동의합니다
@@ -271,11 +271,11 @@ export default function SignupPage() {
                   type="checkbox"
                   checked={agreePrivacy}
                   onChange={(e) => setAgreePrivacy(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
                 />
-                <span className="text-xs text-gray-400">
-                  <span className="text-[#ff3b5c]">[필수]</span>{' '}
-                  <Link href="/privacy" className="underline hover:text-white" target="_blank">
+                <span className="text-xs text-[var(--text-dim)]">
+                  <span className="text-[#dc2626]">[필수]</span>{' '}
+                  <Link href="/privacy" className="underline hover:text-[var(--text-primary)]" target="_blank">
                     개인정보 처리방침
                   </Link>
                   에 동의합니다
@@ -287,9 +287,9 @@ export default function SignupPage() {
                   type="checkbox"
                   checked={agreeMarketing}
                   onChange={(e) => setAgreeMarketing(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[#1a2535] bg-[#0a0f18] accent-[#00ff88]"
+                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
                 />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--text-dim)]">
                   [선택] 마케팅 수신에 동의합니다
                 </span>
               </label>
@@ -297,7 +297,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div className="text-xs text-[#ff3b5c] bg-[#ff3b5c]/10 border border-[#ff3b5c]/20 rounded-lg px-3 py-2">
+            <div className="text-xs text-[#dc2626] bg-[#dc2626]/10 border border-[#dc2626]/20 rounded-lg px-3 py-2">
               {error}
             </div>
           )}
@@ -305,16 +305,16 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full py-3 bg-[#00ff88] text-black font-bold text-sm rounded-lg
-                       hover:bg-[#00ff88]/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-mono"
+            className="w-full py-3 bg-[#16a34a] text-black font-bold text-sm rounded-lg
+                       hover:bg-[#16a34a]/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-mono"
           >
             {loading ? '가입 중...' : '무료로 시작하기'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-gray-500 mt-6">
+        <p className="text-center text-xs text-[var(--text-muted)] mt-6">
           이미 계정이 있으신가요?{' '}
-          <Link href="/auth/login" className="text-[#00ff88] hover:underline">
+          <Link href="/auth/login" className="text-[#16a34a] hover:underline">
             로그인
           </Link>
         </p>

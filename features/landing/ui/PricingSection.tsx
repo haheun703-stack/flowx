@@ -7,14 +7,14 @@ const PLANS = [
     name: 'FREE',
     price: 0,
     desc: '지금 바로 사용 가능',
-    color: 'border-[#00ff88]/50',
-    accent: '#00ff88',
+    color: 'border-[var(--green)]/50',
+    accent: 'var(--green)',
     badge: '현재 무료',
     cta: '대시보드 시작하기',
     href: '/dashboard',
     features: [
       '수급 X-Ray 차트',
-      'Bloomberg 대시보드 기본',
+      '실시간 대시보드 기본',
       'AI 종목 추천 (Claude + Perplexity)',
       'KOSPI 30일 종가 차트',
       '글로벌 지수 6개 실시간',
@@ -24,8 +24,8 @@ const PLANS = [
     name: 'SIGNAL',
     price: 9900,
     desc: '정보봇 데이터',
-    color: 'border-[#0ea5e9]/50',
-    accent: '#0ea5e9',
+    color: 'border-[var(--blue)]/50',
+    accent: 'var(--blue)',
     cta: '구독하기',
     features: [
       'FREE 전체 포함',
@@ -40,8 +40,8 @@ const PLANS = [
     name: 'PRO',
     price: 25000,
     desc: '퀀트봇 데이터',
-    color: 'border-[#f59e0b]/50',
-    accent: '#f59e0b',
+    color: 'border-[var(--yellow)]/50',
+    accent: 'var(--yellow)',
     cta: '구독하기',
     features: [
       'SIGNAL 전체 포함',
@@ -56,8 +56,8 @@ const PLANS = [
     name: 'VIP',
     price: 50000,
     desc: '단타봇 데이터',
-    color: 'border-[#a855f7]/50',
-    accent: '#a855f7',
+    color: 'border-[var(--purple)]/50',
+    accent: 'var(--purple)',
     cta: '구독하기',
     features: [
       'PRO 전체 포함',
@@ -79,13 +79,13 @@ export function PricingSection() {
   return (
     <section className="px-4 sm:px-6 py-16 sm:py-24 max-w-6xl mx-auto" id="pricing">
       <div className="text-center mb-10 sm:mb-16">
-        <div className="text-3xl sm:text-4xl text-[#00ff88] font-mono tracking-widest uppercase mb-4">
+        <div className="text-3xl sm:text-4xl text-[var(--blue)] font-mono tracking-widest uppercase mb-4">
           플랜 & 가격
         </div>
         <h2 className="text-2xl sm:text-4xl font-bold mb-4 font-display">
           {PAYMENTS_READY ? '나에게 맞는 플랜 선택' : '베타 기간 전체 무료'}
         </h2>
-        <p className="text-gray-500 text-sm font-mono">
+        <p className="text-[var(--text-muted)] text-sm font-mono">
           {PAYMENTS_READY
             ? '언제든 해지 가능. 첫 달 무료 체험.'
             : '지금은 모든 기능을 무료로 체험하세요. 유료 플랜은 준비 중입니다.'}
@@ -100,14 +100,14 @@ export function PricingSection() {
           return (
             <div
               key={plan.name}
-              className={`relative p-6 rounded-2xl border bg-gray-900/30 flex flex-col ${plan.color} ${
-                isFree ? 'shadow-2xl shadow-[#00ff88]/10' : ''
+              className={`relative p-6 rounded-2xl border bg-white flex flex-col shadow-sm ${plan.color} ${
+                isFree ? 'shadow-lg shadow-[var(--green)]/10' : ''
               }`}
             >
               {plan.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span
-                    className="text-xs px-3 py-1 rounded-full font-bold font-mono text-black"
+                    className="text-xs px-3 py-1 rounded-full font-bold font-mono text-white"
                     style={{ backgroundColor: plan.accent }}
                   >
                     {plan.badge}
@@ -118,15 +118,15 @@ export function PricingSection() {
               <div className="font-mono text-xs tracking-widest mb-1" style={{ color: plan.accent }}>
                 {plan.name}
               </div>
-              <div className="text-2xl font-bold text-white mb-1">
+              <div className="text-2xl font-bold text-[var(--text-primary)] mb-1">
                 {isFree ? '무료' : `₩${plan.price.toLocaleString()}`}
-                {!isFree && <span className="text-sm text-gray-500 font-normal">/월</span>}
+                {!isFree && <span className="text-sm text-[var(--text-muted)] font-normal">/월</span>}
               </div>
-              <div className="text-xs text-gray-500 mb-6 font-mono">{plan.desc}</div>
+              <div className="text-xs text-[var(--text-muted)] mb-6 font-mono">{plan.desc}</div>
 
               <ul className="space-y-2 flex-1 mb-6">
                 {plan.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm text-gray-300">
+                  <li key={j} className="flex items-start gap-2 text-sm text-[var(--text-primary)]">
                     <span className="mt-0.5 shrink-0" style={{ color: plan.accent }}>
                       ✓
                     </span>
@@ -139,20 +139,20 @@ export function PricingSection() {
                 <Link
                   href={plan.href ?? '/dashboard'}
                   className="w-full text-center py-3 rounded-xl text-sm transition-all font-mono
-                             bg-[#00ff88] text-black font-bold hover:bg-[#00ff88]/90"
+                             bg-[var(--blue)] text-white font-bold hover:bg-[var(--blue)]/90"
                 >
                   {plan.cta}
                 </Link>
               ) : canSubscribe ? (
                 <Link
                   href={user ? `/pricing/checkout?tier=${plan.name}` : '/auth/signup'}
-                  className="w-full text-center py-3 rounded-xl text-sm transition-all font-mono font-bold"
-                  style={{ backgroundColor: plan.accent, color: '#000' }}
+                  className="w-full text-center py-3 rounded-xl text-sm transition-all font-mono font-bold text-white"
+                  style={{ backgroundColor: plan.accent }}
                 >
                   {user ? plan.cta : '회원가입 후 구독'}
                 </Link>
               ) : (
-                <div className="w-full text-center py-3 rounded-xl text-sm font-mono border border-gray-700 text-gray-400">
+                <div className="w-full text-center py-3 rounded-xl text-sm font-mono border border-[var(--border)] text-[var(--text-dim)]">
                   준비 중
                 </div>
               )}

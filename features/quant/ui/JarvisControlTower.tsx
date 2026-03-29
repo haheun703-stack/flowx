@@ -260,50 +260,50 @@ const GRADE_COLORS: Record<string, string> = {
   "\uB9E4\uC218": "bg-green-600 text-white",
   "\uAD00\uC2EC\uB9E4\uC218": "bg-blue-600 text-white",
   "\uAD00\uCC30": "bg-yellow-600 text-white",
-  "\uBCF4\uB958": "bg-gray-700 text-gray-400",
+  "\uBCF4\uB958": "bg-gray-300 text-[var(--text-dim)]",
 };
 
 const REGIME_DISPLAY: Record<string, { icon: string; label: string; color: string; bg: string }> = {
-  BULL: { icon: "\uD83D\uDFE2", label: "\uC0C1\uC2B9\uC7A5", color: "text-green-400", bg: "border-green-800/50" },
-  BEAR: { icon: "\uD83D\uDD34", label: "\uD558\uB77D\uC7A5", color: "text-red-400", bg: "border-red-800/50" },
-  CAUTION: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-yellow-400", bg: "border-yellow-800/50" },
-  NEUTRAL: { icon: "\u26AA", label: "\uBCF4\uD569", color: "text-gray-400", bg: "border-gray-800" },
-  CRISIS: { icon: "\uD83D\uDD34", label: "\uC704\uAE30", color: "text-red-500", bg: "border-red-900/50" },
+  BULL: { icon: "\uD83D\uDFE2", label: "\uC0C1\uC2B9\uC7A5", color: "text-[var(--green)]", bg: "border-green-200" },
+  BEAR: { icon: "\uD83D\uDD34", label: "\uD558\uB77D\uC7A5", color: "text-[var(--up)]", bg: "border-red-200" },
+  CAUTION: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-[var(--yellow)]", bg: "border-yellow-200" },
+  NEUTRAL: { icon: "\u26AA", label: "\uBCF4\uD569", color: "text-[var(--text-dim)]", bg: "border-[var(--border)]" },
+  CRISIS: { icon: "\uD83D\uDD34", label: "\uC704\uAE30", color: "text-red-500", bg: "border-red-200" },
 };
 
 const SHIELD_DISPLAY: Record<string, { icon: string; label: string; color: string }> = {
-  GREEN: { icon: "\uD83D\uDFE2", label: "\uC548\uC804", color: "text-green-400" },
-  YELLOW: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-yellow-400" },
-  RED: { icon: "\uD83D\uDD34", label: "\uC704\uD5D8", color: "text-red-400" },
+  GREEN: { icon: "\uD83D\uDFE2", label: "\uC548\uC804", color: "text-[var(--green)]" },
+  YELLOW: { icon: "\uD83D\uDFE1", label: "\uC8FC\uC758", color: "text-[var(--yellow)]" },
+  RED: { icon: "\uD83D\uDD34", label: "\uC704\uD5D8", color: "text-[var(--up)]" },
 };
 
 const ETF_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
-  "\uB300\uB7C9 \uC790\uAE08\uC720\uC785": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
-  "\uC790\uAE08\uC720\uC785": { color: "text-red-300", bg: "bg-red-900/20 border-red-800/30" },
-  "\uAC15\uC138 \uAE09\uB4F1": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
-  "\uAC15\uC138": { color: "text-orange-300", bg: "bg-orange-900/20 border-orange-800/30" },
-  "\uB300\uB7C9 \uC790\uAE08\uC720\uCD9C": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
-  "\uC790\uAE08\uC720\uCD9C": { color: "text-blue-300", bg: "bg-blue-900/20 border-blue-800/30" },
-  "\uC57D\uC138 \uAE09\uB77D": { color: "text-cyan-400", bg: "bg-cyan-900/30 border-cyan-800/50" },
-  "\uC57D\uC138": { color: "text-cyan-300", bg: "bg-cyan-900/20 border-cyan-800/30" },
-  "\uBCF4\uD569": { color: "text-gray-400", bg: "bg-gray-800/30 border-gray-700/50" },
+  "\uB300\uB7C9 \uC790\uAE08\uC720\uC785": { color: "text-[var(--up)]", bg: "bg-red-50 border-red-200" },
+  "\uC790\uAE08\uC720\uC785": { color: "text-[var(--up)]", bg: "bg-red-50 border-red-200" },
+  "\uAC15\uC138 \uAE09\uB4F1": { color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
+  "\uAC15\uC138": { color: "text-orange-500", bg: "bg-orange-50 border-orange-200" },
+  "\uB300\uB7C9 \uC790\uAE08\uC720\uCD9C": { color: "text-[var(--down)]", bg: "bg-blue-50 border-blue-200" },
+  "\uC790\uAE08\uC720\uCD9C": { color: "text-[var(--down)]", bg: "bg-blue-50 border-blue-200" },
+  "\uC57D\uC138 \uAE09\uB77D": { color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-200" },
+  "\uC57D\uC138": { color: "text-cyan-500", bg: "bg-cyan-50 border-cyan-800/30" },
+  "\uBCF4\uD569": { color: "text-[var(--text-dim)]", bg: "bg-gray-50 border-[var(--border)]" },
 };
 
 const RELAY_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
-  "\uAC15\uD55C \uB9E4\uC218 \uAE30\uD68C": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
-  "\uB9E4\uC218 \uAE30\uD68C": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
-  "\uAD00\uC2EC \uAD6C\uAC04": { color: "text-yellow-400", bg: "bg-yellow-900/30 border-yellow-800/50" },
-  "\uCD94\uACA9 \uC9C4\uD589\uC911": { color: "text-green-400", bg: "bg-green-900/30 border-green-800/50" },
-  "\uC120\uD589 \uD558\uB77D": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
-  "\uB300\uAE30": { color: "text-gray-400", bg: "bg-gray-800/30 border-gray-700/50" },
+  "\uAC15\uD55C \uB9E4\uC218 \uAE30\uD68C": { color: "text-[var(--up)]", bg: "bg-red-50 border-red-200" },
+  "\uB9E4\uC218 \uAE30\uD68C": { color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
+  "\uAD00\uC2EC \uAD6C\uAC04": { color: "text-[var(--yellow)]", bg: "bg-yellow-50 border-yellow-200" },
+  "\uCD94\uACA9 \uC9C4\uD589\uC911": { color: "text-[var(--green)]", bg: "bg-green-50 border-green-200" },
+  "\uC120\uD589 \uD558\uB77D": { color: "text-[var(--down)]", bg: "bg-blue-50 border-blue-200" },
+  "\uB300\uAE30": { color: "text-[var(--text-dim)]", bg: "bg-gray-50 border-[var(--border)]" },
 };
 
 const SNIPER_SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
-  "\uACE8\uB4E0\uD06C\uB85C\uC2A4": { color: "text-red-400", bg: "bg-red-900/30 border-red-800/50" },
-  "\uACFC\uB9E4\uB3C4 \uBC18\uB4F1": { color: "text-orange-400", bg: "bg-orange-900/30 border-orange-800/50" },
-  "\uC218\uAE09 \uBC18\uC804": { color: "text-green-400", bg: "bg-green-900/30 border-green-800/50" },
-  "\uBCFC\uBC34 \uD558\uB2E8": { color: "text-blue-400", bg: "bg-blue-900/30 border-blue-800/50" },
-  "\uCD94\uC138 \uC2DC\uC791": { color: "text-purple-400", bg: "bg-purple-900/30 border-purple-800/50" },
+  "\uACE8\uB4E0\uD06C\uB85C\uC2A4": { color: "text-[var(--up)]", bg: "bg-red-50 border-red-200" },
+  "\uACFC\uB9E4\uB3C4 \uBC18\uB4F1": { color: "text-orange-600", bg: "bg-orange-50 border-orange-200" },
+  "\uC218\uAE09 \uBC18\uC804": { color: "text-[var(--green)]", bg: "bg-green-50 border-green-200" },
+  "\uBCFC\uBC34 \uD558\uB2E8": { color: "text-[var(--down)]", bg: "bg-blue-50 border-blue-200" },
+  "\uCD94\uC138 \uC2DC\uC791": { color: "text-purple-600", bg: "bg-purple-50 border-purple-200" },
 };
 
 function formatBil(n: number) {
@@ -382,13 +382,13 @@ export default function JarvisControlTower() {
   if (loading) {
     return (
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
-        <div className="h-20 bg-gray-800 rounded-lg" />
+        <div className="h-20 bg-gray-200 rounded-lg" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 bg-gray-800 rounded-lg" />
+            <div key={i} className="h-24 bg-gray-200 rounded-lg" />
           ))}
         </div>
-        <div className="h-64 bg-gray-800 rounded-lg" />
+        <div className="h-64 bg-gray-200 rounded-lg" />
       </div>
     );
   }
@@ -396,7 +396,7 @@ export default function JarvisControlTower() {
   if (!data || !data.picks) {
     return (
       <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
-        <p className="text-gray-500">퀀트 데이터가 아직 없습니다.</p>
+        <p className="text-[var(--text-muted)]">퀀트 데이터가 아직 없습니다.</p>
         <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
     );
@@ -434,13 +434,13 @@ export default function JarvisControlTower() {
         <StatusCard label="위험 방어" value={shieldInfo.label} icon={shieldInfo.icon} color={shieldInfo.color}
           sub={shield?.max_drawdown ? `최대낙폭 ${shield.max_drawdown.toFixed(1)}%` : undefined} />
         <StatusCard label="현금 비중" value={brain?.cash_ratio ? `${brain.cash_ratio}%` : "-"}
-          icon="💰" color="text-blue-400" />
+          icon="💰" color="text-[var(--down)]" />
         <StatusCard label="추천 대상일" value={picks?.target_date_label ?? "-"}
-          icon="📅" color="text-gray-300" sub={picks?.mode_label} />
+          icon="📅" color="text-[var(--text-primary)]" sub={picks?.mode_label} />
       </section>
 
       {/* 탭 네비게이션 */}
-      <nav className="flex gap-1 bg-gray-900 rounded-lg p-1 border border-gray-800 overflow-x-auto">
+      <nav className="flex gap-1 bg-gray-100 rounded-lg p-1 border border-[var(--border)] overflow-x-auto">
         {TAB_ITEMS.map((tab) => (
           <button
             key={tab.key}
@@ -448,7 +448,7 @@ export default function JarvisControlTower() {
             className={`shrink-0 py-2 px-3 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
               activeTab === tab.key
                 ? "bg-blue-600 text-white"
-                : "text-gray-400 hover:text-white hover:bg-gray-800"
+                : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
             }`}
           >
             {tab.icon} {tab.label}
@@ -462,7 +462,7 @@ export default function JarvisControlTower() {
           {etf_picks && <ETFSection etf={etf_picks} />}
 
           <section>
-            <h2 className="text-white text-lg font-bold mb-3">
+            <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">
               {buyable.length > 0
                 ? `개별종목 추천 (${buyable.length}건)`
                 : "전체 관망 — 조건 강화 대기"}
@@ -472,8 +472,8 @@ export default function JarvisControlTower() {
                 {buyable.map((p) => <PickRow key={p.ticker} pick={p} />)}
               </div>
             ) : (
-              <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 text-center">
-                <p className="text-gray-400 text-sm">현재 교차검증 통과 종목이 없습니다</p>
+              <div className="bg-white rounded-lg p-6 border border-[var(--border)] text-center">
+                <p className="text-[var(--text-dim)] text-sm">현재 교차검증 통과 종목이 없습니다</p>
                 <p className="text-gray-600 text-xs mt-1">
                   2개 이상 시그널 + 거래량 2배 이상 조건 충족 시 표시됩니다
                 </p>
@@ -482,33 +482,33 @@ export default function JarvisControlTower() {
           </section>
 
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-              <h3 className="text-gray-400 text-xs mb-3">등급 분포 ({picks?.total_candidates ?? 0}종목)</h3>
+            <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
+              <h3 className="text-[var(--text-dim)] text-xs mb-3">등급 분포 ({picks?.total_candidates ?? 0}종목)</h3>
               <div className="space-y-2">
                 {Object.entries(stats).map(([grade, count]) => (
                   <div key={grade} className="flex items-center justify-between">
-                    <span className={`text-xs px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-700 text-gray-400"}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-700 text-[var(--text-dim)]"}`}>
                       {grade}
                     </span>
-                    <div className="flex-1 mx-3 bg-gray-800 rounded-full h-2">
+                    <div className="flex-1 mx-3 bg-gray-200 rounded-full h-2">
                       <div className="bg-blue-600 rounded-full h-2"
                         style={{ width: `${Math.min(((count as number) / (picks?.total_candidates ?? 1)) * 100, 100)}%` }} />
                     </div>
-                    <span className="text-gray-400 text-xs w-12 text-right">{count as number}건</span>
+                    <span className="text-[var(--text-dim)] text-xs w-12 text-right">{count as number}건</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-              <h3 className="text-gray-400 text-xs mb-3">매매 신호 감지 현황</h3>
+            <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
+              <h3 className="text-[var(--text-dim)] text-xs mb-3">매매 신호 감지 현황</h3>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(sourceCounts)
                   .sort(([, a], [, b]) => b - a)
                   .slice(0, 10)
                   .map(([source, count]) => (
-                    <div key={source} className="flex items-center justify-between bg-gray-800 rounded px-2 py-1">
-                      <span className="text-gray-300 text-xs">{source}</span>
+                    <div key={source} className="flex items-center justify-between bg-gray-100 rounded px-2 py-1">
+                      <span className="text-[var(--text-primary)] text-xs">{source}</span>
                       <span className="text-blue-400 text-xs font-bold">{count}</span>
                     </div>
                   ))}
@@ -518,7 +518,7 @@ export default function JarvisControlTower() {
 
           {accuracy && (
             <section>
-              <h2 className="text-white text-lg font-bold mb-3">매매 신호 적중률</h2>
+              <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">매매 신호 적중률</h2>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {Object.entries(accuracy)
                   .filter(([, v]) => typeof v === "object" && v !== null && ((v as Record<string, number>).total ?? 0) > 0)
@@ -526,9 +526,9 @@ export default function JarvisControlTower() {
                   .map(([name, detail]) => {
                     const d = detail as Record<string, number>;
                     const rate = d.hit_rate ?? 0;
-                    const color = rate >= 60 ? "text-green-400" : rate >= 45 ? "text-yellow-400" : "text-red-400";
+                    const color = rate >= 60 ? "text-[var(--green)]" : rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
                     return (
-                      <div key={name} className="bg-gray-900 rounded-lg p-3 border border-gray-800 text-center">
+                      <div key={name} className="bg-white rounded-lg p-3 border border-[var(--border)] text-center">
                         <p className="text-gray-500 text-xs">{name}</p>
                         <p className={`${color} text-xl font-bold`}>{rate}%</p>
                         <p className="text-gray-600 text-xs">{d.total ?? 0}건</p>
@@ -593,15 +593,15 @@ function MarketGuideBanner({
   const stale = guide.stale;
 
   const bannerStyle = dangerMode === "PANIC"
-    ? "bg-red-950 rounded-xl p-5 ring-2 ring-red-500/50"
+    ? "bg-red-50 rounded-xl p-5 ring-2 ring-red-400"
     : dangerMode === "DANGER"
-      ? "bg-red-950/60 rounded-xl p-5 ring-1 ring-red-800/50"
-      : `bg-gray-900 rounded-xl p-5 ${regimeInfo.bg ? `border ${regimeInfo.bg}` : ""}`;
+      ? "bg-orange-50 rounded-xl p-5 ring-1 ring-orange-300"
+      : `bg-white rounded-xl p-5 shadow-sm ${regimeInfo.bg ? `border ${regimeInfo.bg}` : ""}`;
 
   const summaryColor = dangerMode === "PANIC"
-    ? "text-red-400"
+    ? "text-[var(--up)]"
     : dangerMode === "DANGER"
-      ? "text-orange-400"
+      ? "text-orange-600"
       : regimeInfo.color;
 
   const summaryIcon = dangerMode === "PANIC"
@@ -613,7 +613,7 @@ function MarketGuideBanner({
   return (
     <div className={bannerStyle}>
       {stale && (
-        <div className="bg-yellow-900/30 text-yellow-400 text-xs px-3 py-2 rounded-lg mb-3">
+        <div className="bg-yellow-50 text-yellow-400 text-xs px-3 py-2 rounded-lg mb-3">
           {ICO.WARN} {stale.message}
         </div>
       )}
@@ -624,25 +624,25 @@ function MarketGuideBanner({
             {summaryIcon} {guide.summary}
           </p>
           {guide.strategy && (
-            <p className="text-gray-400 text-xs mt-1">{guide.strategy}</p>
+            <p className="text-[var(--text-dim)] text-xs mt-1">{guide.strategy}</p>
           )}
         </div>
         <div className="flex gap-2">
           {guide.vix != null && guide.vix > 0 && (
             <span className={`text-xs px-2 py-1 rounded ${
-              guide.vix >= 40 ? "bg-red-900/80 text-red-300 font-bold animate-pulse" :
-              guide.vix >= 30 ? "bg-red-900/50 text-red-400" :
-              guide.vix >= 20 ? "bg-yellow-900/50 text-yellow-400" :
-              "bg-green-900/50 text-green-400"
+              guide.vix >= 40 ? "bg-red-100 text-[var(--up)] font-bold animate-pulse" :
+              guide.vix >= 30 ? "bg-red-50 text-[var(--up)]" :
+              guide.vix >= 20 ? "bg-yellow-50 text-[var(--yellow)]" :
+              "bg-green-50 text-[var(--green)]"
             }`}>
               {ICO.CHART_DOWN} {guide.vix}
             </span>
           )}
           {dangerMode !== "NORMAL" && (
             <span className={`text-xs px-2 py-1 rounded font-bold ${
-              dangerMode === "PANIC" ? "bg-red-600 text-gray-200 animate-pulse" :
-              dangerMode === "DANGER" ? "bg-orange-900/50 text-orange-400" :
-              "bg-yellow-900/50 text-yellow-400"
+              dangerMode === "PANIC" ? "bg-red-600 text-white animate-pulse" :
+              dangerMode === "DANGER" ? "bg-orange-50 text-orange-600" :
+              "bg-yellow-50 text-[var(--yellow)]"
             }`}>
               {dangerMode === "PANIC" ? `${ICO.STOP} PANIC` :
                dangerMode === "DANGER" ? `${ICO.WARN} DANGER` :
@@ -653,7 +653,7 @@ function MarketGuideBanner({
       </div>
 
       {dangerMode === "PANIC" && (
-        <div className="bg-red-900/30 text-red-300 text-xs px-3 py-2 rounded-lg mb-3">
+        <div className="bg-red-50 text-red-300 text-xs px-3 py-2 rounded-lg mb-3">
           {ICO.SHIELD} <strong>ETF(금/채권) 95%</strong> + 개별주 5% 이하 | 현금 55% 이상 유지 권장
         </div>
       )}
@@ -661,12 +661,12 @@ function MarketGuideBanner({
       {(hot.length > 0 || cold.length > 0) && (
         <div className="flex flex-wrap gap-2 text-xs">
           {hot.map((s) => (
-            <span key={s.sector} className="bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full">
+            <span key={s.sector} className="bg-red-50 text-red-400 px-2 py-0.5 rounded-full">
               {ICO.FIRE} {s.sector} {s.ret_5 > 0 ? `+${s.ret_5.toFixed(1)}%` : `${s.ret_5.toFixed(1)}%`}
             </span>
           ))}
           {cold.map((s) => (
-            <span key={s.sector} className="bg-blue-900/20 text-blue-300/60 px-2 py-0.5 rounded-full">
+            <span key={s.sector} className="bg-blue-50 text-blue-300/60 px-2 py-0.5 rounded-full">
               {ICO.ICE} {s.sector} {s.ret_5.toFixed(1)}%
             </span>
           ))}
@@ -695,8 +695,8 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
   };
 
   return (
-    <section className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-      <h3 className="text-white text-sm font-bold mb-3">자산 배분 현황</h3>
+    <section className="bg-white rounded-lg p-4 border border-[var(--border)]">
+      <h3 className="text-[var(--text-primary)] text-sm font-bold mb-3">자산 배분 현황</h3>
 
       {activeAlloc.length > 0 && (
         <div className="mb-3">
@@ -712,7 +712,7 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
           </div>
           <div className="flex flex-wrap gap-3 mt-2 text-xs">
             {activeAlloc.map(([key, val]) => (
-              <span key={key} className="text-gray-400">
+              <span key={key} className="text-[var(--text-dim)]">
                 <span className={`inline-block w-2 h-2 rounded-full mr-1 ${ALLOC_COLORS[key] || "bg-gray-500"}`} />
                 {ALLOC_LABELS[key] || key} {val}%
               </span>
@@ -726,7 +726,7 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
           <p className="text-gray-500 text-xs mb-2">급부상 업종 (순위 급상승)</p>
           <div className="flex flex-wrap gap-2">
             {accel.map((a) => (
-              <span key={a.sector} className="bg-orange-900/30 text-orange-400 text-xs px-2 py-1 rounded border border-orange-800/30">
+              <span key={a.sector} className="bg-orange-50 text-orange-400 text-xs px-2 py-1 rounded border border-orange-200">
                 🚀 {a.sector}
                 <span className="text-orange-300 ml-1">+{a.rank_change}↑</span>
                 <span className="text-gray-500 ml-1">({a.ret_5d > 0 ? "+" : ""}{a.ret_5d.toFixed(1)}%)</span>
@@ -743,7 +743,7 @@ function StatusCard({ label, value, icon, color, sub }: {
   label: string; value: string; icon: string; color: string; sub?: string;
 }) {
   return (
-    <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
+    <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
       <p className="text-gray-500 text-xs">{label}</p>
       <p className={`${color} text-lg font-bold mt-1`}>{icon} {value}</p>
       {sub && <p className="text-gray-600 text-xs mt-1">{sub}</p>}
@@ -759,13 +759,13 @@ function PickRow({ pick }: { pick: PickItem }) {
   );
 
   return (
-    <div className="bg-gray-900 rounded-lg p-4 border border-gray-800">
+    <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <span className={`text-xs px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-700 text-gray-400"}`}>
+          <span className={`text-xs px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-700 text-[var(--text-dim)]"}`}>
             {pick.grade}
           </span>
-          <span className="text-white font-medium">{pick.name}</span>
+          <span className="text-[var(--text-primary)] font-medium">{pick.name}</span>
           <span className="text-gray-500 text-xs">{pick.ticker}</span>
         </div>
         <span className="text-blue-400 font-bold">{pick.total_score}점</span>
@@ -773,7 +773,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 
       <div className="flex flex-wrap gap-1 mb-2">
         {(pick.sources ?? []).map((s) => (
-          <span key={s} className="bg-blue-900/30 text-blue-400 text-xs px-2 py-0.5 rounded-full border border-blue-800/50">
+          <span key={s} className="bg-blue-50 text-blue-400 text-xs px-2 py-0.5 rounded-full border border-blue-200">
             {s}
           </span>
         ))}
@@ -781,40 +781,40 @@ function PickRow({ pick }: { pick: PickItem }) {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
         <div>
-          <span className="text-gray-500">외국인 5일</span>{" "}
-          <span className={f5 >= 0 ? "text-red-400" : "text-blue-400"}>
+          <span className="text-[var(--text-muted)]">외국인 5일</span>{" "}
+          <span className={f5 >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}>
             {f5 >= 0 ? "+" : ""}{f5.toFixed(0)}억
           </span>
         </div>
         <div>
-          <span className="text-gray-500">기관 5일</span>{" "}
-          <span className={i5 >= 0 ? "text-red-400" : "text-blue-400"}>
+          <span className="text-[var(--text-muted)]">기관 5일</span>{" "}
+          <span className={i5 >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}>
             {i5 >= 0 ? "+" : ""}{i5.toFixed(0)}억
           </span>
         </div>
         <div>
-          <span className="text-gray-500">과열도</span>{" "}
-          <span className="text-gray-300">{pick.rsi?.toFixed(0) ?? "-"}</span>
+          <span className="text-[var(--text-muted)]">과열도</span>{" "}
+          <span className="text-[var(--text-primary)]">{pick.rsi?.toFixed(0) ?? "-"}</span>
         </div>
         <div>
-          <span className="text-gray-500">반등력</span>{" "}
-          <span className="text-gray-300">{pick.stoch_k?.toFixed(0) ?? "-"}</span>
+          <span className="text-[var(--text-muted)]">반등력</span>{" "}
+          <span className="text-[var(--text-primary)]">{pick.stoch_k?.toFixed(0) ?? "-"}</span>
         </div>
       </div>
 
       {entry && entry.entry > 0 && (
-        <div className="mt-2 grid grid-cols-3 gap-2 text-xs bg-gray-800 rounded p-2">
+        <div className="mt-2 grid grid-cols-3 gap-2 text-xs bg-gray-100 rounded p-2">
           <div>
-            <span className="text-gray-500">진입</span>{" "}
-            <span className="text-white">{entry.entry.toLocaleString()}</span>
+            <span className="text-[var(--text-muted)]">진입</span>{" "}
+            <span className="text-[var(--text-primary)]">{entry.entry.toLocaleString()}</span>
           </div>
           <div>
-            <span className="text-gray-500">손절</span>{" "}
-            <span className="text-red-400">{entry.stop.toLocaleString()}</span>
+            <span className="text-[var(--text-muted)]">손절</span>{" "}
+            <span className="text-[var(--up)]">{entry.stop.toLocaleString()}</span>
           </div>
           <div>
-            <span className="text-gray-500">목표</span>{" "}
-            <span className="text-green-400">{entry.target.toLocaleString()}</span>
+            <span className="text-[var(--text-muted)]">목표</span>{" "}
+            <span className="text-[var(--green)]">{entry.target.toLocaleString()}</span>
           </div>
         </div>
       )}
@@ -846,12 +846,12 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
         <div className="space-y-2">
           {top.map((s) => {
             const isAccel = s.acceleration;
-            const ret5Color = s.ret_5 >= 0 ? "text-red-400" : "text-blue-400";
-            const ret20Color = s.ret_20 >= 0 ? "text-red-400" : "text-blue-400";
-            const rankColor = s.rank_change > 0 ? "text-green-400" : s.rank_change < 0 ? "text-red-400" : "text-gray-500";
+            const ret5Color = s.ret_5 >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
+            const ret20Color = s.ret_20 >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
+            const rankColor = s.rank_change > 0 ? "text-[var(--green)]" : s.rank_change < 0 ? "text-[var(--up)]" : "text-[var(--text-muted)]";
 
             return (
-              <div key={s.sector} className={`bg-gray-900 rounded-xl p-4 ${isAccel ? "ring-1 ring-orange-800/40" : ""}`}>
+              <div key={s.sector} className={`bg-white rounded-xl p-4 ${isAccel ? "ring-1 ring-orange-200" : ""}`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-gray-500 text-sm font-mono w-6">{s.rank}</span>
@@ -869,20 +869,20 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
 
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div>
-                    <span className="text-gray-500">5일 수익</span>{" "}
+                    <span className="text-[var(--text-muted)]">5일 수익</span>{" "}
                     <span className={ret5Color}>
                       {s.ret_5 >= 0 ? "+" : ""}{s.ret_5.toFixed(1)}%
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">20일 수익</span>{" "}
+                    <span className="text-[var(--text-muted)]">20일 수익</span>{" "}
                     <span className={ret20Color}>
                       {s.ret_20 >= 0 ? "+" : ""}{s.ret_20.toFixed(1)}%
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">과열도</span>{" "}
-                    <span className={`${s.rsi >= 70 ? "text-red-400" : s.rsi <= 30 ? "text-green-400" : "text-gray-300"}`}>
+                    <span className="text-[var(--text-muted)]">과열도</span>{" "}
+                    <span className={`${s.rsi >= 70 ? "text-[var(--up)]" : s.rsi <= 30 ? "text-[var(--green)]" : "text-[var(--text-primary)]"}`}>
                       {s.rsi.toFixed(0)}
                     </span>
                   </div>
@@ -892,8 +892,8 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
           })}
         </div>
       ) : (
-        <div className="bg-gray-900 rounded-xl p-6 text-center">
-          <p className="text-gray-400 text-sm">업종 데이터가 아직 없습니다</p>
+        <div className="bg-white rounded-xl p-6 text-center">
+          <p className="text-[var(--text-dim)] text-sm">업종 데이터가 아직 없습니다</p>
         </div>
       )}
     </div>
@@ -918,8 +918,8 @@ function SignalsTab({
   return (
     <div className="space-y-6">
       {cv && (
-        <div className="bg-gray-900 rounded-xl p-4">
-          <h3 className="text-gray-400 text-xs mb-3">교차검증 필터링</h3>
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-[var(--text-dim)] text-xs mb-3">교차검증 필터링</h3>
           <div className="flex items-end justify-between gap-2 h-24">
             {[
               { label: "전체 감지", value: total, color: "bg-gray-600" },
@@ -948,23 +948,23 @@ function SignalsTab({
         </div>
       )}
 
-      <div className="bg-gray-900 rounded-xl p-4">
-        <h3 className="text-gray-400 text-xs mb-3">시그널 소스 활성도</h3>
+      <div className="bg-white rounded-xl p-4">
+        <h3 className="text-[var(--text-dim)] text-xs mb-3">시그널 소스 활성도</h3>
         <div className="space-y-2">
           {sources.map((s) => {
             const barPct = (s.count / maxCount) * 100;
             const hasAccuracy = s.total_tested > 0;
-            const accColor = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
+            const accColor = s.hit_rate >= 60 ? "text-[var(--green)]" : s.hit_rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
             return (
               <div key={s.source} className="flex items-center gap-3">
-                <span className="text-gray-300 text-xs w-16 shrink-0 truncate">{s.source}</span>
-                <div className="flex-1 bg-gray-800 rounded-full h-3 relative">
+                <span className="text-[var(--text-primary)] text-xs w-16 shrink-0 truncate">{s.source}</span>
+                <div className="flex-1 bg-gray-200 rounded-full h-3 relative">
                   <div
                     className="bg-blue-600 rounded-full h-3 transition-all"
                     style={{ width: `${barPct}%` }}
                   />
                 </div>
-                <span className="text-gray-400 text-xs w-8 text-right">{s.count}</span>
+                <span className="text-[var(--text-dim)] text-xs w-8 text-right">{s.count}</span>
                 {hasAccuracy ? (
                   <span className={`${accColor} text-xs w-12 text-right font-medium`}>
                     {s.hit_rate}%
@@ -983,19 +983,19 @@ function SignalsTab({
       </div>
 
       {combos.length > 0 && (
-        <div className="bg-gray-900 rounded-xl p-4">
-          <h3 className="text-gray-400 text-xs mb-3">자주 나타나는 시그널 조합</h3>
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-[var(--text-dim)] text-xs mb-3">자주 나타나는 시그널 조합</h3>
           <div className="space-y-2">
             {combos.map((c) => (
-              <div key={c.combo} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
+              <div key={c.combo} className="flex items-center justify-between bg-gray-200 rounded-lg px-3 py-2">
                 <div className="flex flex-wrap gap-1">
                   {c.combo.split("+").map((src) => (
-                    <span key={src} className="bg-blue-900/50 text-blue-300 text-xs px-2 py-0.5 rounded">
+                    <span key={src} className="bg-blue-50 text-blue-300 text-xs px-2 py-0.5 rounded">
                       {src}
                     </span>
                   ))}
                 </div>
-                <span className="text-gray-300 text-sm font-medium ml-3">{c.count}건</span>
+                <span className="text-[var(--text-primary)] text-sm font-medium ml-3">{c.count}건</span>
               </div>
             ))}
           </div>
@@ -1003,8 +1003,8 @@ function SignalsTab({
       )}
 
       {accuracy && Object.keys(accuracy).length > 0 && (
-        <div className="bg-gray-900 rounded-xl p-4">
-          <h3 className="text-gray-400 text-xs mb-3">시그널 적중률 상세</h3>
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-[var(--text-dim)] text-xs mb-3">시그널 적중률 상세</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {Object.entries(accuracy)
               .filter(([, v]) => typeof v === "object" && v !== null && ((v as Record<string, number>).total ?? 0) > 0)
@@ -1012,9 +1012,9 @@ function SignalsTab({
               .map(([name, detail]) => {
                 const d = detail as Record<string, number>;
                 const rate = d.hit_rate ?? 0;
-                const color = rate >= 60 ? "text-green-400" : rate >= 45 ? "text-yellow-400" : "text-red-400";
+                const color = rate >= 60 ? "text-[var(--green)]" : rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
                 return (
-                  <div key={name} className="bg-gray-800 rounded-lg p-3 text-center">
+                  <div key={name} className="bg-gray-200 rounded-lg p-3 text-center">
                     <p className="text-gray-500 text-[10px] truncate">{name}</p>
                     <p className={`${color} text-xl font-bold`}>{rate}%</p>
                     <p className="text-gray-600 text-[10px]">{d.total ?? 0}건 검증</p>
@@ -1042,8 +1042,8 @@ function PerformanceTab({ performance, cfo, cto }: {
 
   if (trend.length === 0 && !hasCfoOrCto) {
     return (
-      <div className="bg-gray-900 rounded-xl p-6 text-center">
-        <p className="text-gray-400 text-sm">성과 데이터가 아직 없습니다</p>
+      <div className="bg-white rounded-xl p-6 text-center">
+        <p className="text-[var(--text-dim)] text-sm">성과 데이터가 아직 없습니다</p>
       </div>
     );
   }
@@ -1051,21 +1051,21 @@ function PerformanceTab({ performance, cfo, cto }: {
   const maxHit = Math.max(...trend.map((d) => d.avg_hit_rate), 1);
 
   const DRAWDOWN_STYLE: Record<string, { color: string; label: string }> = {
-    "\uC720\uC9C0": { color: "text-green-400", label: "\uC720\uC9C0" },
-    "\uCD95\uC18C": { color: "text-yellow-400", label: "\uCD95\uC18C" },
-    "\uC911\uB2E8": { color: "text-red-400", label: "\uC911\uB2E8" },
-    "\uAE34\uAE09": { color: "text-red-500 animate-pulse", label: "\uAE34\uAE09" },
+    "\uC720\uC9C0": { color: "text-[var(--green)]", label: "\uC720\uC9C0" },
+    "\uCD95\uC18C": { color: "text-[var(--yellow)]", label: "\uCD95\uC18C" },
+    "\uC911\uB2E8": { color: "text-[var(--up)]", label: "\uC911\uB2E8" },
+    "\uAE34\uAE09": { color: "text-[var(--up)] animate-pulse", label: "\uAE34\uAE09" },
   };
 
   return (
     <div className="space-y-6">
       {/* CFO 포트폴리오 건강 */}
       {cfo && (
-        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+        <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white text-sm font-bold">CFO 포트폴리오 건강</h3>
+            <h3 className="text-[var(--text-primary)] text-sm font-bold">CFO 포트폴리오 건강</h3>
             <span className={`text-xs font-bold ${
-              DRAWDOWN_STYLE[cfo.drawdown_action]?.color ?? "text-gray-400"
+              DRAWDOWN_STYLE[cfo.drawdown_action]?.color ?? "text-[var(--text-dim)]"
             }`}>
               {DRAWDOWN_STYLE[cfo.drawdown_action]?.label ?? cfo.drawdown_action}
             </span>
@@ -1078,21 +1078,21 @@ function PerformanceTab({ performance, cfo, cto }: {
                 cfo.health_score >= 70 ? "border-green-500" : cfo.health_score >= 40 ? "border-yellow-500" : "border-red-500"
               }`}>
                 <span className={`text-xl font-bold ${
-                  cfo.health_score >= 70 ? "text-green-400" : cfo.health_score >= 40 ? "text-yellow-400" : "text-red-400"
+                  cfo.health_score >= 70 ? "text-[var(--green)]" : cfo.health_score >= 40 ? "text-[var(--yellow)]" : "text-[var(--up)]"
                 }`}>{Math.round(cfo.health_score)}</span>
               </div>
               <p className="text-gray-500 text-[10px] mt-1">\uAC74\uAC15\uC810\uC218</p>
             </div>
 
             <div className="text-center">
-              <p className={`text-2xl font-bold font-mono ${cfo.cash_ratio < 10 ? "text-red-400" : cfo.cash_ratio < 20 ? "text-yellow-400" : "text-green-400"}`}>
+              <p className={`text-2xl font-bold font-mono ${cfo.cash_ratio < 10 ? "text-[var(--up)]" : cfo.cash_ratio < 20 ? "text-[var(--yellow)]" : "text-[var(--green)]"}`}>
                 {cfo.cash_ratio.toFixed(1)}%
               </p>
               <p className="text-gray-500 text-[10px]">\uD604\uAE08\uBE44\uC728</p>
             </div>
 
             <div className="text-center">
-              <p className={`text-2xl font-bold font-mono ${cfo.max_sector_pct > 50 ? "text-red-400" : "text-gray-300"}`}>
+              <p className={`text-2xl font-bold font-mono ${cfo.max_sector_pct > 50 ? "text-[var(--up)]" : "text-[var(--text-primary)]"}`}>
                 {cfo.max_sector_pct.toFixed(0)}%
               </p>
               <p className="text-gray-500 text-[10px]">{cfo.max_sector_name} \uC9D1\uC911</p>
@@ -1110,7 +1110,7 @@ function PerformanceTab({ performance, cfo, cto }: {
           {cfo.warnings.length > 0 && (
             <div className="space-y-1">
               {cfo.warnings.map((w, i) => (
-                <div key={i} className="text-xs bg-red-900/20 text-red-400 px-3 py-1.5 rounded border border-red-800/30">
+                <div key={i} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded border border-red-200">
                   {w}
                 </div>
               ))}
@@ -1121,12 +1121,12 @@ function PerformanceTab({ performance, cfo, cto }: {
 
       {/* CTO 시스템 성과 */}
       {cto && (
-        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+        <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white text-sm font-bold">CTO \uC2DC\uC2A4\uD15C \uC131\uACFC</h3>
+            <h3 className="text-[var(--text-primary)] text-sm font-bold">CTO \uC2DC\uC2A4\uD15C \uC131\uACFC</h3>
             <div className="flex items-center gap-2">
               <span className={`text-xs font-mono ${
-                cto.data_health_score >= 90 ? "text-green-400" : cto.data_health_score >= 70 ? "text-yellow-400" : "text-red-400"
+                cto.data_health_score >= 90 ? "text-[var(--green)]" : cto.data_health_score >= 70 ? "text-[var(--yellow)]" : "text-[var(--up)]"
               }`}>
                 \uB370\uC774\uD130 {cto.data_health_score.toFixed(0)}\uC810
               </span>
@@ -1141,18 +1141,18 @@ function PerformanceTab({ performance, cfo, cto }: {
                 .sort((a, b) => b.win_rate - a.win_rate)
                 .map((s) => {
                   const barColor = s.decay ? "bg-red-500" : s.win_rate >= 50 ? "bg-green-500" : s.win_rate >= 35 ? "bg-yellow-500" : "bg-red-500";
-                  const retColor = s.avg_return >= 0 ? "text-green-400" : "text-red-400";
+                  const retColor = s.avg_return >= 0 ? "text-[var(--green)]" : "text-[var(--up)]";
                   return (
                     <div key={s.source} className="flex items-center gap-2">
-                      <span className="text-gray-300 text-xs w-16 shrink-0 truncate">
+                      <span className="text-[var(--text-primary)] text-xs w-16 shrink-0 truncate">
                         {s.decay && "\uD83D\uDD34 "}{s.source}
                       </span>
-                      <div className="flex-1 bg-gray-800 rounded-full h-3">
+                      <div className="flex-1 bg-gray-200 rounded-full h-3">
                         <div className={`${barColor} rounded-full h-3 transition-all`}
                           style={{ width: `${Math.min(s.win_rate, 100)}%` }} />
                       </div>
                       <span className={`text-xs w-10 text-right font-mono ${
-                        s.win_rate >= 50 ? "text-green-400" : s.win_rate >= 35 ? "text-yellow-400" : "text-red-400"
+                        s.win_rate >= 50 ? "text-[var(--green)]" : s.win_rate >= 35 ? "text-[var(--yellow)]" : "text-[var(--up)]"
                       }`}>{s.win_rate.toFixed(0)}%</span>
                       <span className={`text-xs w-14 text-right font-mono ${retColor}`}>
                         {s.avg_return >= 0 ? "+" : ""}{s.avg_return.toFixed(1)}%
@@ -1174,9 +1174,9 @@ function PerformanceTab({ performance, cfo, cto }: {
             <div className="space-y-1">
               {cto.suggestions.map((s, i) => (
                 <div key={i} className={`text-xs px-3 py-1.5 rounded border ${
-                  s.priority === "HIGH" ? "bg-red-900/20 text-red-400 border-red-800/30" :
+                  s.priority === "HIGH" ? "bg-red-50 text-red-400 border-red-200" :
                   s.priority === "MEDIUM" ? "bg-yellow-900/20 text-yellow-400 border-yellow-800/30" :
-                  "bg-gray-800/50 text-gray-400 border-gray-700"
+                  "bg-gray-100 text-[var(--text-dim)] border-[var(--border)]"
                 }`}>
                   {s.detail}
                 </div>
@@ -1188,8 +1188,8 @@ function PerformanceTab({ performance, cfo, cto }: {
 
       {trend.length > 0 && (
         <>
-          <div className="bg-gray-900 rounded-xl p-4">
-            <h3 className="text-gray-400 text-xs mb-3">일별 시그널 적중률 추이</h3>
+          <div className="bg-white rounded-xl p-4">
+            <h3 className="text-[var(--text-dim)] text-xs mb-3">일별 시그널 적중률 추이</h3>
             <div className="flex items-end gap-2 h-32">
               {trend.map((d) => {
                 const pct = (d.avg_hit_rate / maxHit) * 100;
@@ -1210,22 +1210,22 @@ function PerformanceTab({ performance, cfo, cto }: {
             </div>
           </div>
 
-          <div className="bg-gray-900 rounded-xl p-4">
-            <h3 className="text-gray-400 text-xs mb-3">일별 시장 현황</h3>
+          <div className="bg-white rounded-xl p-4">
+            <h3 className="text-[var(--text-dim)] text-xs mb-3">일별 시장 현황</h3>
             <div className="space-y-2">
               {trend.map((d) => {
-                const retColor = d.market_avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+                const retColor = d.market_avg_ret >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
                 return (
-                  <div key={d.date} className="flex items-center justify-between bg-gray-800 rounded-lg px-3 py-2">
-                    <span className="text-gray-300 text-xs">{d.date.slice(5)}</span>
+                  <div key={d.date} className="flex items-center justify-between bg-gray-200 rounded-lg px-3 py-2">
+                    <span className="text-[var(--text-primary)] text-xs">{d.date.slice(5)}</span>
                     <div className="flex gap-4 text-xs">
-                      <span className="text-gray-400">
-                        상승 <span className="text-red-400">{d.up_ratio}%</span>
+                      <span className="text-[var(--text-dim)]">
+                        상승 <span className="text-[var(--up)]">{d.up_ratio}%</span>
                       </span>
                       <span className={retColor}>
                         평균 {d.market_avg_ret >= 0 ? "+" : ""}{d.market_avg_ret}%
                       </span>
-                      <span className={`${d.avg_hit_rate >= 50 ? "text-green-400" : "text-yellow-400"}`}>
+                      <span className={`${d.avg_hit_rate >= 50 ? "text-[var(--green)]" : "text-[var(--yellow)]"}`}>
                         적중 {d.avg_hit_rate}%
                       </span>
                     </div>
@@ -1236,19 +1236,19 @@ function PerformanceTab({ performance, cfo, cto }: {
           </div>
 
           {latest?.sources && Object.keys(latest.sources).length > 0 && (
-            <div className="bg-gray-900 rounded-xl p-4">
-              <h3 className="text-gray-400 text-xs mb-3">
+            <div className="bg-white rounded-xl p-4">
+              <h3 className="text-[var(--text-dim)] text-xs mb-3">
                 {latest.date ? `${latest.date} ` : ""}소스별 적중률
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {Object.entries(latest.sources)
                   .sort(([, a], [, b]) => b.hit_rate - a.hit_rate)
                   .map(([name, s]) => {
-                    const color = s.hit_rate >= 60 ? "text-green-400" : s.hit_rate >= 45 ? "text-yellow-400" : "text-red-400";
-                    const retColor = s.avg_ret >= 0 ? "text-red-400" : "text-blue-400";
+                    const color = s.hit_rate >= 60 ? "text-[var(--green)]" : s.hit_rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
+                    const retColor = s.avg_ret >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
                     return (
-                      <div key={name} className="bg-gray-800 rounded-lg p-3">
-                        <p className="text-gray-400 text-[10px] truncate mb-1">{name}</p>
+                      <div key={name} className="bg-gray-200 rounded-lg p-3">
+                        <p className="text-[var(--text-dim)] text-[10px] truncate mb-1">{name}</p>
                         <div className="flex items-baseline justify-between">
                           <span className={`${color} text-lg font-bold`}>{s.hit_rate}%</span>
                           <span className={`${retColor} text-xs`}>
@@ -1274,7 +1274,7 @@ function TabLoadingSkeleton() {
   return (
     <div className="animate-pulse space-y-3">
       {[1, 2, 3, 4, 5].map((i) => (
-        <div key={i} className="h-12 bg-gray-800 rounded-lg" />
+        <div key={i} className="h-12 bg-gray-200 rounded-lg" />
       ))}
     </div>
   );
@@ -1282,8 +1282,8 @@ function TabLoadingSkeleton() {
 
 function TabEmpty({ label }: { label: string }) {
   return (
-    <div className="bg-gray-900 rounded-xl p-6 text-center">
-      <p className="text-gray-400 text-sm">{label} 데이터가 아직 없습니다</p>
+    <div className="bg-white rounded-xl p-6 text-center">
+      <p className="text-[var(--text-dim)] text-sm">{label} 데이터가 아직 없습니다</p>
       <p className="text-gray-600 text-xs mt-1">매일 장마감 후 업데이트됩니다</p>
     </div>
   );
@@ -1296,7 +1296,7 @@ const STATUS_STYLE: Record<string, { color: string; label: string }> = {
   TURNAROUND_EARLY: { color: "bg-amber-600 text-white", label: "초기 전환" },
   ACCELERATING: { color: "bg-blue-600 text-white", label: "성장 가속" },
   DECELERATING: { color: "bg-orange-600 text-white", label: "성장 둔화" },
-  DETERIORATING: { color: "bg-gray-600 text-gray-300", label: "악화" },
+  DETERIORATING: { color: "bg-gray-400 text-white", label: "악화" },
 };
 
 function fmtBil(v: number) {
@@ -1327,8 +1327,8 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
     <div className="space-y-6">
       {/* 실적 상태 분포 */}
       {totalAnalyzed > 0 && (
-        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
-          <h3 className="text-white text-sm font-bold mb-3">
+        <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
+          <h3 className="text-[var(--text-primary)] text-sm font-bold mb-3">
             실적 상태 분포 ({totalAnalyzed}종목)
           </h3>
           {/* 바 차트 */}
@@ -1348,7 +1348,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               const count = counts[key] ?? 0;
               if (count === 0) return null;
               return (
-                <span key={key} className="text-gray-400 flex items-center gap-1">
+                <span key={key} className="text-[var(--text-dim)] flex items-center gap-1">
                   <span className={`inline-block w-2 h-2 rounded-full ${STATUS_COLORS[key]}`} />
                   {STATUS_STYLE[key]?.label} {count}
                 </span>
@@ -1360,15 +1360,15 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
 
       {/* 턴어라운드 — Strong */}
       {turnaround?.strong && turnaround.strong.length > 0 && (
-        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-            <span className="text-sm font-bold text-white">적자→흑자 전환 (STRONG)</span>
+        <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+            <span className="text-sm font-bold text-[var(--text-primary)]">적자→흑자 전환 (STRONG)</span>
             <span className="text-xs text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1379,18 +1379,18 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               </thead>
               <tbody>
                 {turnaround.strong.map((s) => (
-                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
-                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-[var(--text-primary)]">{s.name}</span>
                       <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-emerald-400">{s.score}</td>
                     <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
                     <td className="text-right px-2 font-mono text-green-400">{fmtBil(s.op_income_latest)}</td>
-                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-red-400" : "text-gray-300"}`}>
+                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-[var(--up)]" : "text-[var(--text-primary)]"}`}>
                       {s.debt_ratio.toFixed(0)}%
                     </td>
-                    <td className="text-center px-2 text-gray-400">{s.est_turnaround}</td>
+                    <td className="text-center px-2 text-[var(--text-dim)]">{s.est_turnaround}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1401,15 +1401,15 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
 
       {/* 턴어라운드 — Early */}
       {turnaround?.early && turnaround.early.length > 0 && (
-        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-800">
-            <span className="text-sm font-bold text-white">적자 축소 중 (EARLY)</span>
+        <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <span className="text-sm font-bold text-[var(--text-primary)]">적자 축소 중 (EARLY)</span>
             <span className="text-xs text-gray-500 ml-2">{turnaround.early.length}건</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1420,18 +1420,18 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               </thead>
               <tbody>
                 {turnaround.early.map((s) => (
-                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
-                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-[var(--text-primary)]">{s.name}</span>
                       <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-amber-400">{s.score}</td>
                     <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
                     <td className="text-right px-2 font-mono text-yellow-400">{fmtBil(s.op_income_latest)}</td>
-                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-red-400" : "text-gray-300"}`}>
+                    <td className={`text-right px-2 font-mono ${s.debt_ratio > 100 ? "text-[var(--up)]" : "text-[var(--text-primary)]"}`}>
                       {s.debt_ratio.toFixed(0)}%
                     </td>
-                    <td className="text-center px-2 text-gray-400">{s.est_turnaround}</td>
+                    <td className="text-center px-2 text-[var(--text-dim)]">{s.est_turnaround}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1442,15 +1442,15 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
 
       {/* 실적 가속 (Accelerating) */}
       {earnings?.accelerating && earnings.accelerating.length > 0 && (
-        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-800">
-            <span className="text-sm font-bold text-white">실적 가속 종목</span>
+        <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <span className="text-sm font-bold text-[var(--text-primary)]">실적 가속 종목</span>
             <span className="text-xs text-gray-500 ml-2">{earnings.accelerating.length}건</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1461,20 +1461,20 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               </thead>
               <tbody>
                 {earnings.accelerating.slice(0, 30).map((s) => (
-                  <tr key={s.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                  <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
-                      <span className="text-gray-200">{s.name}</span>
+                      <span className="text-[var(--text-primary)]">{s.name}</span>
                       <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-blue-400">{s.score}</td>
-                    <td className="text-right px-2 font-mono text-gray-400">{fmtBil(s.prev_op_income)}</td>
-                    <td className={`text-right px-2 font-mono ${s.latest_op_income >= 0 ? "text-green-400" : "text-red-400"}`}>
+                    <td className="text-right px-2 font-mono text-[var(--text-dim)]">{fmtBil(s.prev_op_income)}</td>
+                    <td className={`text-right px-2 font-mono ${s.latest_op_income >= 0 ? "text-[var(--green)]" : "text-[var(--up)]"}`}>
                       {fmtBil(s.latest_op_income)}
                     </td>
-                    <td className={`text-right px-2 font-mono ${s.qoq_change >= 0 ? "text-green-400" : "text-red-400"}`}>
+                    <td className={`text-right px-2 font-mono ${s.qoq_change >= 0 ? "text-[var(--green)]" : "text-[var(--up)]"}`}>
                       {s.qoq_change >= 0 ? "+" : ""}{(s.qoq_change * 100).toFixed(0)}%
                     </td>
-                    <td className={`text-right px-2 font-mono font-bold ${s.acceleration > 0 ? "text-blue-400" : "text-gray-500"}`}>
+                    <td className={`text-right px-2 font-mono font-bold ${s.acceleration > 0 ? "text-[var(--down)]" : "text-[var(--text-muted)]"}`}>
                       {s.acceleration.toFixed(1)}
                     </td>
                   </tr>
@@ -1508,24 +1508,24 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">유입/강세</p>
           <p className="text-red-400 text-xl font-bold">{inflow.length}</p>
         </div>
-        <div className="bg-blue-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-blue-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">유출/약세</p>
           <p className="text-blue-400 text-xl font-bold">{outflow.length}</p>
         </div>
-        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">전체</p>
-          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+          <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
-      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+      <div className="bg-white rounded-xl overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">ETF</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1537,27 +1537,27 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
           </thead>
           <tbody>
             {items.map((item) => {
-              const sig = ETF_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              const sig = ETF_SIGNAL_STYLE[item.signal_type] ?? { color: "text-[var(--text-dim)]", bg: "bg-gray-100 border-[var(--border)]" };
               return (
-                <tr key={item.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                   <td className="py-2 px-2">
-                    <span className="text-gray-200">{item.name}</span>
+                    <span className="text-[var(--text-primary)]">{item.name}</span>
                     <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
                   </td>
                   <td className="text-center py-2 px-2">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
-                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-red-400" : item.score >= 40 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-[var(--up)]" : item.score >= 40 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
                   </td>
-                  <td className="text-right py-2 px-2 text-gray-300 font-mono">{item.close.toLocaleString()}</td>
-                  <td className={`text-right py-2 px-2 font-mono ${item.change_pct >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className="text-right py-2 px-2 text-[var(--text-primary)] font-mono">{item.close.toLocaleString()}</td>
+                  <td className={`text-right py-2 px-2 font-mono ${item.change_pct >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {item.change_pct >= 0 ? "+" : ""}{Number(item.change_pct).toFixed(2)}%
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${item.aum_change >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${item.aum_change >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {formatBil(item.aum_change)}
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.aum_change_pct) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.aum_change_pct) >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {Number(item.aum_change_pct) >= 0 ? "+" : ""}{Number(item.aum_change_pct).toFixed(1)}%
                   </td>
                 </tr>
@@ -1584,24 +1584,24 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">매수 기회</p>
           <p className="text-red-400 text-xl font-bold">{buySignals.length}</p>
         </div>
-        <div className="bg-blue-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-blue-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">기타</p>
           <p className="text-blue-400 text-xl font-bold">{items.length - buySignals.length}</p>
         </div>
-        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">전체 쌍</p>
-          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+          <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
-      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+      <div className="bg-white rounded-xl overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">선행 → 후행</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1613,31 +1613,31 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
           </thead>
           <tbody>
             {items.map((item) => {
-              const sig = RELAY_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              const sig = RELAY_SIGNAL_STYLE[item.signal_type] ?? { color: "text-[var(--text-dim)]", bg: "bg-gray-100 border-[var(--border)]" };
               const gapNum = Number(item.gap);
               return (
-                <tr key={`${item.lead_sector}-${item.lag_sector}`} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                <tr key={`${item.lead_sector}-${item.lag_sector}`} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                   <td className="py-2 px-2">
-                    <span className="text-gray-200">{item.lead_sector}</span>
+                    <span className="text-[var(--text-primary)]">{item.lead_sector}</span>
                     <span className="text-gray-600 mx-1">→</span>
-                    <span className="text-gray-300">{item.lag_sector}</span>
+                    <span className="text-[var(--text-primary)]">{item.lag_sector}</span>
                   </td>
                   <td className="text-center py-2 px-2">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
-                    <span className={`font-bold font-mono ${item.score >= 50 ? "text-red-400" : item.score >= 30 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                    <span className={`font-bold font-mono ${item.score >= 50 ? "text-[var(--up)]" : item.score >= 30 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono font-bold ${gapNum >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono font-bold ${gapNum >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {gapNum >= 0 ? "+" : ""}{gapNum.toFixed(1)}%p
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lead_return_5d) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lead_return_5d) >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {Number(item.lead_return_5d) >= 0 ? "+" : ""}{Number(item.lead_return_5d).toFixed(2)}%
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lag_return_5d) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.lag_return_5d) >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {Number(item.lag_return_5d) >= 0 ? "+" : ""}{Number(item.lag_return_5d).toFixed(2)}%
                   </td>
-                  <td className="text-right py-2 px-2 font-mono text-gray-400">
+                  <td className="text-right py-2 px-2 font-mono text-[var(--text-dim)]">
                     {Number(item.lead_breadth).toFixed(0)}%
                   </td>
                 </tr>
@@ -1664,24 +1664,24 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-red-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">고점수 (70+)</p>
           <p className="text-red-400 text-xl font-bold">{highScore.length}</p>
         </div>
-        <div className="bg-yellow-900/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-yellow-900/20 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">관심 (40-69)</p>
           <p className="text-yellow-400 text-xl font-bold">{items.filter((i) => i.score >= 40 && i.score < 70).length}</p>
         </div>
-        <div className="bg-gray-800/20 rounded-lg p-3 border border-gray-800 text-center">
+        <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
           <p className="text-gray-500 text-[10px]">전체</p>
-          <p className="text-gray-300 text-xl font-bold">{items.length}</p>
+          <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
-      <div className="bg-gray-900 rounded-xl overflow-x-auto">
+      <div className="bg-white rounded-xl overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-gray-800">
+            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">종목</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1696,36 +1696,36 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
           </thead>
           <tbody>
             {items.map((item) => {
-              const sig = SNIPER_SIGNAL_STYLE[item.signal_type] ?? { color: "text-gray-400", bg: "bg-gray-800 border-gray-700" };
+              const sig = SNIPER_SIGNAL_STYLE[item.signal_type] ?? { color: "text-[var(--text-dim)]", bg: "bg-gray-100 border-[var(--border)]" };
               return (
-                <tr key={item.ticker} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                   <td className="py-2 px-2">
-                    <span className="text-gray-200">{item.name}</span>
+                    <span className="text-[var(--text-primary)]">{item.name}</span>
                     <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
                   </td>
                   <td className="text-center py-2 px-2">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
-                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-red-400" : item.score >= 40 ? "text-yellow-400" : "text-gray-400"}`}>{item.score}</span>
+                    <span className={`font-bold font-mono ${item.score >= 70 ? "text-[var(--up)]" : item.score >= 40 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
                   </td>
-                  <td className="text-right py-2 px-2 text-gray-300 font-mono">{item.close.toLocaleString()}</td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.change_pct) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className="text-right py-2 px-2 text-[var(--text-primary)] font-mono">{item.close.toLocaleString()}</td>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.change_pct) >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {Number(item.change_pct) >= 0 ? "+" : ""}{Number(item.change_pct).toFixed(2)}%
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.rsi) <= 30 ? "text-green-400" : Number(item.rsi) >= 70 ? "text-red-400" : "text-gray-300"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.rsi) <= 30 ? "text-[var(--green)]" : Number(item.rsi) >= 70 ? "text-[var(--up)]" : "text-[var(--text-primary)]"}`}>
                     {Number(item.rsi).toFixed(0)}
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.ma20_gap) >= 0 ? "text-red-400" : "text-blue-400"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.ma20_gap) >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                     {Number(item.ma20_gap) >= 0 ? "+" : ""}{Number(item.ma20_gap).toFixed(1)}%
                   </td>
                   <td className="text-right py-2 px-2">
-                    {item.foreign_days > 0 ? <span className="text-green-400 font-mono">{item.foreign_days}일</span> : <span className="text-gray-700">-</span>}
+                    {item.foreign_days > 0 ? <span className="text-green-400 font-mono">{item.foreign_days}일</span> : <span className="text-[var(--text-muted)]">-</span>}
                   </td>
                   <td className="text-right py-2 px-2">
-                    {item.inst_days > 0 ? <span className="text-blue-400 font-mono">{item.inst_days}일</span> : <span className="text-gray-700">-</span>}
+                    {item.inst_days > 0 ? <span className="text-blue-400 font-mono">{item.inst_days}일</span> : <span className="text-[var(--text-muted)]">-</span>}
                   </td>
-                  <td className={`text-right py-2 px-2 font-mono ${Number(item.vol_ratio) >= 2 ? "text-yellow-400" : "text-gray-500"}`}>
+                  <td className={`text-right py-2 px-2 font-mono ${Number(item.vol_ratio) >= 2 ? "text-[var(--yellow)]" : "text-[var(--text-muted)]"}`}>
                     {Number(item.vol_ratio).toFixed(1)}x
                   </td>
                 </tr>

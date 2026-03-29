@@ -32,17 +32,17 @@ function useSectorOverview() {
 
 function SectorCard({ sector }: { sector: SectorSummary }) {
   const meta = SECTOR_LIST.find((s) => s.key === sector.key)
-  const changeColor = sector.avgChange > 0 ? '#ff3b5c' : sector.avgChange < 0 ? '#0ea5e9' : '#888'
+  const changeColor = sector.avgChange > 0 ? '#dc2626' : sector.avgChange < 0 ? '#2563eb' : '#888'
   const changeSign = sector.avgChange > 0 ? '+' : ''
 
   return (
     <Link
       href={`/sectors/${sector.key}`}
-      className="group block bg-gray-900 rounded-xl p-5 min-h-[200px] border border-transparent hover:border-[#534AB7] transition-all hover:bg-gray-800/30"
+      className="group block bg-white rounded-xl p-5 min-h-[200px] border border-transparent hover:border-[#534AB7] transition-all hover:bg-gray-50"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-black text-[#e2e8f0] group-hover:text-white">
+        <h3 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
           {meta?.name ?? sector.name}
         </h3>
         <span
@@ -74,10 +74,10 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
       {/* Top movers */}
       <div className="space-y-1.5 mb-4">
         {sector.topMovers.map((m) => {
-          const c = m.change > 0 ? '#ff3b5c' : m.change < 0 ? '#0ea5e9' : '#888'
+          const c = m.change > 0 ? '#dc2626' : m.change < 0 ? '#2563eb' : '#888'
           return (
             <div key={m.name} className="flex items-center justify-between" style={{ fontSize: 13 }}>
-              <span className="text-[#94a3b8] truncate mr-3">{getDisplayName(m.name)}</span>
+              <span className="text-[var(--text-dim)] truncate mr-3">{getDisplayName(m.name)}</span>
               <span className="font-mono font-bold shrink-0" style={{ color: c }}>
                 {m.change > 0 ? '+' : ''}{m.change}%
               </span>
@@ -87,7 +87,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
       </div>
 
       {/* Footer stats */}
-      <div className="flex items-center gap-4 text-xs text-[#64748b]">
+      <div className="flex items-center gap-4 text-xs text-[var(--text-muted)]">
         <span>{sector.stockCount}종목</span>
         <span>{sector.linkCount}연결</span>
       </div>
@@ -97,18 +97,18 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
 
 function SectorCardSkeleton() {
   return (
-    <div className="bg-gray-900 rounded-xl p-5 min-h-[200px] animate-pulse">
+    <div className="bg-white rounded-xl p-5 min-h-[200px] animate-pulse">
       <div className="flex justify-between mb-4">
-        <div className="h-5 w-20 bg-[#1a2535] rounded" />
-        <div className="h-5 w-14 bg-[#1a2535] rounded" />
+        <div className="h-5 w-20 bg-gray-200 rounded" />
+        <div className="h-5 w-14 bg-gray-200 rounded" />
       </div>
-      <div className="h-2.5 bg-[#1a2535] rounded mb-4" />
+      <div className="h-2.5 bg-gray-200 rounded mb-4" />
       <div className="space-y-1.5 mb-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-4 bg-[#1a2535] rounded" />
+          <div key={i} className="h-4 bg-gray-200 rounded" />
         ))}
       </div>
-      <div className="h-3 w-28 bg-[#1a2535] rounded" />
+      <div className="h-3 w-28 bg-gray-200 rounded" />
     </div>
   )
 }
@@ -130,20 +130,20 @@ export function SectorGrid() {
   }), [data?.sectors])
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)] bg-[#080b10]" style={{ fontFamily: FONT }}>
+    <div className="flex flex-col min-h-[calc(100vh/1.25-88px)] bg-[var(--bg-base)]" style={{ fontFamily: FONT }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
         <div className="flex items-center gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-[#534AB7]" />
-          <span className="text-2xl font-black tracking-widest uppercase text-white">
+          <span className="text-2xl font-black tracking-widest uppercase text-[var(--text-primary)]">
             섹터맵
           </span>
-          <span className="text-sm font-black text-gray-400">13개 섹터 · 공급망 분석</span>
+          <span className="text-sm font-black text-[var(--text-dim)]">13개 섹터 · 공급망 분석</span>
         </div>
       </div>
 
       {/* 설명 */}
-      <div className="px-6 py-2 text-xs text-gray-500 border-b border-gray-800/50">
+      <div className="px-6 py-2 text-xs text-gray-500 border-b border-[var(--border)]/50">
         섹터 클릭 → 5티어 플로우차트 + 공급망 연결 확인 · 색상 = 티어 분포
       </div>
 

@@ -50,17 +50,17 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
   const warn = pct >= 80 ? 'high' : pct <= 15 ? 'low' : null
 
   return (
-    <div className="bg-gray-900 rounded-xl p-5 min-h-[200px] flex flex-col items-center gap-1">
+    <div className="bg-white rounded-xl p-5 min-h-[200px] flex flex-col items-center gap-1">
       {/* Header */}
       <div className="flex items-center gap-1.5">
-        <span className="text-sm font-bold text-white">{name}</span>
-        {item.unit && <span className="text-[10px] text-gray-500">{item.unit}</span>}
+        <span className="text-sm font-bold text-[var(--text-primary)]">{name}</span>
+        {item.unit && <span className="text-[10px] text-[var(--text-muted)]">{item.unit}</span>}
       </div>
 
       {/* SVG Gauge */}
       <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
         {/* Background arc */}
-        <path d={arcD(180, 0.1)} fill="none" stroke="#1a2535" strokeWidth={SW + 2} strokeLinecap="round" />
+        <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
         {/* Colored segments */}
         {ARCS.map((a, i) => (
           <path key={i} d={arcD(a.from, a.to)} fill="none" stroke={a.color} strokeWidth={SW} opacity={0.8} />
@@ -69,9 +69,9 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         <line x1={CX} y1={CY} x2={nx} y2={ny} stroke={color} strokeWidth={2.5} strokeLinecap="round" />
         {/* Center dot */}
         <circle cx={CX} cy={CY} r={5} fill={color} />
-        <circle cx={CX} cy={CY} r={2.5} fill="#0d1420" />
+        <circle cx={CX} cy={CY} r={2.5} fill="white" />
         {/* Current price */}
-        <text x={CX} y={CY - 24} textAnchor="middle" fill="#e2e8f0" fontSize="15" fontWeight="bold"
+        <text x={CX} y={CY - 24} textAnchor="middle" fill="#111827" fontSize="15" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.current_price?.toLocaleString('ko-KR') ?? '—'}
         </text>
@@ -80,18 +80,18 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
           {pct.toFixed(0)}%
         </text>
         {/* Floor label (left) */}
-        <text x={CX - R} y={CY + 15} textAnchor="start" fill="#555" fontSize="9">
+        <text x={CX - R} y={CY + 15} textAnchor="start" fill="#9ca3af" fontSize="9">
           {item.floor_name ?? '바닥'}
         </text>
-        <text x={CX - R} y={CY + 27} textAnchor="start" fill="#666" fontSize="10" fontWeight="bold"
+        <text x={CX - R} y={CY + 27} textAnchor="start" fill="#6b7280" fontSize="10" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.floor_price.toLocaleString('ko-KR')}
         </text>
         {/* Ceiling label (right) */}
-        <text x={CX + R} y={CY + 15} textAnchor="end" fill="#555" fontSize="9">
+        <text x={CX + R} y={CY + 15} textAnchor="end" fill="#9ca3af" fontSize="9">
           {item.ceiling_name ?? '천장'}
         </text>
-        <text x={CX + R} y={CY + 27} textAnchor="end" fill="#666" fontSize="10" fontWeight="bold"
+        <text x={CX + R} y={CY + 27} textAnchor="end" fill="#6b7280" fontSize="10" fontWeight="bold"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.ceiling_price.toLocaleString('ko-KR')}
         </text>
@@ -99,12 +99,12 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
 
       {/* Warning badge */}
       {warn === 'high' && (
-        <span className="text-[10px] font-bold text-red-400 bg-red-500/15 px-2 py-0.5 rounded-full animate-pulse">
+        <span className="text-[10px] font-bold text-[var(--up)] bg-red-50 px-2 py-0.5 rounded-full animate-pulse">
           천장 근접
         </span>
       )}
       {warn === 'low' && (
-        <span className="text-[10px] font-bold text-green-400 bg-green-500/15 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-bold text-[var(--green)] bg-green-50 px-2 py-0.5 rounded-full">
           바닥 근접
         </span>
       )}
@@ -120,7 +120,7 @@ export function CostFloorGauge() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {Array.from({ length: 9 }).map((_, i) => (
-          <div key={i} className="h-48 bg-[#0a0f18] border border-[#2a2a3a] rounded-lg animate-pulse" />
+          <div key={i} className="h-48 bg-white border border-[var(--border)] rounded-lg animate-pulse" />
         ))}
       </div>
     )
@@ -128,7 +128,7 @@ export function CostFloorGauge() {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center h-32 text-red-400/70 text-sm">
+      <div className="flex items-center justify-center h-32 text-[var(--up)]/70 text-sm">
         원가 데이터 로드 실패
       </div>
     )
@@ -138,12 +138,12 @@ export function CostFloorGauge() {
     <div>
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">⏱️</span>
-        <span className="text-base font-bold text-[#e2e8f0]">원가 바닥 / 천장 게이지</span>
-        <span className="text-xs text-[#555] ml-auto">🟢바닥(매수기회) → 🔴천장(과열)</span>
+        <span className="text-base font-bold text-[var(--text-primary)]">원가 바닥 / 천장 게이지</span>
+        <span className="text-xs text-[var(--text-muted)] ml-auto">🟢바닥(매수기회) → 🔴천장(과열)</span>
       </div>
 
       {items.length === 0 ? (
-        <div className="flex items-center justify-center h-32 text-[#334155] text-sm">
+        <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-sm">
           원가 데이터 없음
         </div>
       ) : (

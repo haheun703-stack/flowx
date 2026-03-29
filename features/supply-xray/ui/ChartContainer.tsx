@@ -29,36 +29,36 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
     : null
 
   if (isLoading) return (
-    <div className="flex items-center justify-center h-[640px] bg-[#0f1117] rounded-xl border border-gray-800">
+    <div className="flex items-center justify-center h-[640px] bg-white rounded-xl border border-[var(--border)]">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-        <div className="text-gray-500 text-sm">데이터 로딩 중...</div>
+        <div className="text-[var(--text-muted)] text-sm">데이터 로딩 중...</div>
       </div>
     </div>
   )
 
   if (isError) return (
-    <div className="flex items-center justify-center h-[640px] bg-[#0f1117] rounded-xl border border-red-900/50">
-      <div className="text-red-400 text-sm">데이터를 불러오지 못했습니다.</div>
+    <div className="flex items-center justify-center h-[640px] bg-white rounded-xl border border-red-200">
+      <div className="text-[var(--up)] text-sm">데이터를 불러오지 못했습니다.</div>
     </div>
   )
 
   return (
     <div>
-      <div className="bg-[#0f1117] rounded-xl overflow-hidden border border-gray-800">
+      <div className="bg-white rounded-xl overflow-hidden border border-[var(--border)]">
 
         {/* 시뮬레이션 경고 */}
         {isSimulated && (
-          <div className="px-4 py-2 bg-yellow-900/30 border-b border-yellow-700/40 text-yellow-400 text-xs">
+          <div className="px-4 py-2 bg-yellow-50 border-b border-yellow-200 text-[var(--yellow)] text-xs">
             수급 데이터는 시뮬레이션 값입니다 (KIS API 미응답)
           </div>
         )}
 
         {/* 헤더 */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
           <div className="flex items-center gap-2">
-            <span className="text-white font-bold text-lg">{companyName}</span>
-            <span className="text-gray-600 text-sm font-mono">{ticker}</span>
+            <span className="text-[var(--text-primary)] font-bold text-lg">{companyName}</span>
+            <span className="text-[var(--text-muted)] text-sm font-mono">{ticker}</span>
           </div>
           {activeSupply && (
             <div className="flex gap-2">
@@ -84,7 +84,7 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
         {/* 거래량 패널 */}
         {ohlcv && (
           <>
-            <div className="border-t-2 border-gray-700 mt-2" />
+            <div className="border-t-2 border-[var(--border)] mt-2" />
             <VolumePanel data={ohlcv} />
           </>
         )}
@@ -92,7 +92,7 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
         {/* RSI 패널 */}
         {ohlcv && (
           <>
-            <div className="border-t-2 border-gray-700 mt-2" />
+            <div className="border-t-2 border-[var(--border)] mt-2" />
             <RSIPanel data={ohlcv} />
           </>
         )}
@@ -100,7 +100,7 @@ export function ChartContainer({ ticker, companyName }: { ticker: string; compan
         {/* 수급 패널 */}
         {supply && (
           <>
-            <div className="border-t-2 border-gray-700 mt-2" />
+            <div className="border-t-2 border-[var(--border)] mt-2" />
             <SupplyOverlay data={supply} />
           </>
         )}

@@ -80,27 +80,27 @@ export function StockSearchModal({ open, onClose }: Props) {
       onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-lg bg-[#0a0f18] border border-[#1a2535] rounded-xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-lg bg-white border border-[var(--border)] rounded-xl shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* 검색 입력 */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-[#1a2535]">
-          <Search size={18} className="text-[#64748b] shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)]">
+          <Search size={18} className="text-[var(--text-dim)] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="종목명 또는 코드 검색..."
-            className="flex-1 bg-transparent text-sm text-[#e2e8f0] placeholder-[#334155] outline-none"
+            className="flex-1 bg-transparent text-sm text-[var(--text-primary)] placeholder-[#334155] outline-none"
           />
           <div className="flex items-center gap-2 shrink-0">
             {stocks.length > 0 && (
-              <span className="text-[10px] text-[#64748b]">
+              <span className="text-[10px] text-[var(--text-dim)]">
                 전체 {stocks.length.toLocaleString()}개
               </span>
             )}
-            <button onClick={onClose} className="text-[#64748b] hover:text-[#e2e8f0] transition-colors">
+            <button onClick={onClose} className="text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors">
               <X size={16} />
             </button>
           </div>
@@ -109,17 +109,17 @@ export function StockSearchModal({ open, onClose }: Props) {
         {/* 결과 리스트 */}
         <div className="max-h-[50vh] overflow-y-auto">
           {isLoading ? (
-            <div className="px-4 py-8 text-center text-sm text-[#334155]">
+            <div className="px-4 py-8 text-center text-sm text-[var(--text-muted)]">
               종목 데이터 로딩 중...
             </div>
           ) : filtered.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm text-[#334155]">
+            <div className="px-4 py-8 text-center text-sm text-[var(--text-muted)]">
               검색 결과 없음
             </div>
           ) : (
             <>
               {!query.trim() && (
-                <div className="px-4 pt-3 pb-1 text-[10px] text-[#334155] tracking-widest uppercase">
+                <div className="px-4 pt-3 pb-1 text-[10px] text-[var(--text-muted)] tracking-widest uppercase">
                   인기 종목
                 </div>
               )}
@@ -127,21 +127,21 @@ export function StockSearchModal({ open, onClose }: Props) {
                 <button
                   key={`${s.market}-${s.code}`}
                   onClick={() => handleSelect(s.code)}
-                  className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#0d1420] transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-gray-50 transition-colors group"
                 >
                   <div className="flex items-center gap-2">
                     <span className={`text-[9px] px-1.5 py-0.5 rounded-sm border font-bold ${
                       s.market === 'KOSPI'
-                        ? 'text-[#0ea5e9] border-[#0ea5e9]/20'
+                        ? 'text-[#2563eb] border-[#2563eb]/20'
                         : 'text-[#a855f7] border-[#a855f7]/20'
                     }`}>
                       {s.market}
                     </span>
-                    <span className="text-sm text-[#e2e8f0] font-medium group-hover:text-white">
+                    <span className="text-sm text-[var(--text-primary)] font-medium group-hover:text-[var(--text-primary)]">
                       {s.name}
                     </span>
                   </div>
-                  <span className="text-xs text-[#334155] font-mono tabular-nums">
+                  <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
                     {s.code}
                   </span>
                 </button>
@@ -151,9 +151,9 @@ export function StockSearchModal({ open, onClose }: Props) {
         </div>
 
         {/* 하단 힌트 */}
-        <div className="px-4 py-2 border-t border-[#1a2535] flex items-center gap-3 text-[10px] text-[#334155]">
-          <span><kbd className="px-1 py-0.5 rounded bg-[#1a2535] text-[#64748b]">ESC</kbd> 닫기</span>
-          <span><kbd className="px-1 py-0.5 rounded bg-[#1a2535] text-[#64748b]">Enter</kbd> 선택</span>
+        <div className="px-4 py-2 border-t border-[var(--border)] flex items-center gap-3 text-[10px] text-[var(--text-muted)]">
+          <span><kbd className="px-1 py-0.5 rounded bg-gray-100 text-[var(--text-dim)]">ESC</kbd> 닫기</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-gray-100 text-[var(--text-dim)]">Enter</kbd> 선택</span>
         </div>
       </div>
     </div>

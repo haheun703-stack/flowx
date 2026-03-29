@@ -4,11 +4,11 @@ import { runWhyNowEngine } from '@/features/why-now-engine/model/scoreEngine'
 import { SignalGrade } from '@/features/why-now-engine/types'
 
 const GRADE_CONFIG: Record<SignalGrade, { label: string; color: string; bg: string; border: string }> = {
-  STRONG_BUY: { label: '매수 강신호',   color: 'text-emerald-400', bg: 'bg-gray-900/80', border: 'border-emerald-500/40' },
-  BUY:        { label: '매수 관심',      color: 'text-green-400',   bg: 'bg-gray-900/80', border: 'border-green-500/40' },
-  NEUTRAL:    { label: '중립',           color: 'text-yellow-400',  bg: 'bg-gray-900/80', border: 'border-yellow-500/40' },
-  CAUTION:    { label: '주의',           color: 'text-orange-400',  bg: 'bg-gray-900/80', border: 'border-orange-500/40' },
-  AVOID:      { label: '회피',           color: 'text-red-400',     bg: 'bg-gray-900/80', border: 'border-red-500/40' },
+  STRONG_BUY: { label: '매수 강신호',   color: 'text-emerald-600', bg: 'bg-white', border: 'border-emerald-500/40' },
+  BUY:        { label: '매수 관심',      color: 'text-[var(--green)]',   bg: 'bg-white', border: 'border-green-500/40' },
+  NEUTRAL:    { label: '중립',           color: 'text-[var(--yellow)]',  bg: 'bg-white', border: 'border-yellow-500/40' },
+  CAUTION:    { label: '주의',           color: 'text-orange-600',  bg: 'bg-white', border: 'border-orange-500/40' },
+  AVOID:      { label: '회피',           color: 'text-[var(--up)]',     bg: 'bg-white', border: 'border-red-500/40' },
 }
 
 export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
@@ -23,7 +23,7 @@ export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
       {/* 헤더: 등급 + 점수 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-300 uppercase tracking-widest font-bold">
+          <span className="text-sm text-[var(--text-primary)] uppercase tracking-widest font-bold">
             Why Now Engine
           </span>
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.color} border ${cfg.border}`}>
@@ -32,7 +32,7 @@ export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
         </div>
         {/* 점수 게이지 */}
         <div className="flex items-center gap-2">
-          <div className="w-24 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+          <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ${
                 result.totalScore >= 80 ? 'bg-emerald-400' :
@@ -56,9 +56,9 @@ export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
             <div key={item.id} className="flex items-start justify-between gap-2 text-sm">
               <div className="flex items-start gap-2">
                 <span className="text-base leading-tight">{item.icon}</span>
-                <span className="text-gray-300 leading-snug">{item.text}</span>
+                <span className="text-[var(--text-primary)] leading-snug">{item.text}</span>
               </div>
-              <span className={`text-xs font-mono whitespace-nowrap ${item.score > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              <span className={`text-xs font-mono whitespace-nowrap ${item.score > 0 ? 'text-emerald-600' : 'text-[var(--up)]'}`}>
                 {item.score > 0 ? `+${item.score}` : item.score}pt
               </span>
             </div>
@@ -67,9 +67,9 @@ export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
       )}
 
       {/* 구분선 */}
-      <div className="border-t border-gray-700/50 pt-3">
+      <div className="border-t border-[var(--border)] pt-3">
         {/* 한 줄 요약 */}
-        <p className="text-sm text-gray-300 leading-relaxed mb-1">
+        <p className="text-sm text-[var(--text-primary)] leading-relaxed mb-1">
           {result.summary}
         </p>
         {/* 진입 코멘트 */}

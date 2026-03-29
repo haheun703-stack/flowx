@@ -24,7 +24,6 @@ function toEok(v: number): number {
 
 // ════════════════════════════════════════════════════════
 // 1. 그림 백분율 차트 (Pictorial Fraction Chart)
-//    큰 사람 1명, clipPath로 아래서부터 비율만큼 채움
 // ════════════════════════════════════════════════════════
 
 function SupplyPictogram({
@@ -33,22 +32,21 @@ function SupplyPictogram({
   label: string; amount: number; ratio: number; streak: number
 }) {
   const isSell = amount < 0
-  const fillColor = isSell ? '#378ADD' : '#E24B4A'  // 한국식: 매도=파랑, 매수=빨강
+  const fillColor = isSell ? '#2563eb' : '#dc2626'  // 한국식: 매도=파랑, 매수=빨강
   const fillPct = Math.min(Math.max(Math.abs(ratio), 5), 100)
   const uid = useId()
   const clipId = `fill-${uid}`
-  // clipPath y: 전체 높이 200 중 아래서 비율만큼
   const bodyH = 170
   const clipY = 200 - (fillPct / 100 * bodyH)
   const clipH = fillPct / 100 * bodyH + 30
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <span className="text-sm text-[#94a3b8] font-bold">{label}</span>
+      <span className="text-sm text-[var(--text-dim)] font-bold">{label}</span>
 
       {streak !== 0 && (
         <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-          streak > 0 ? 'bg-[#E24B4A]/10 text-[#E24B4A]' : 'bg-[#378ADD]/10 text-[#378ADD]'
+          streak > 0 ? 'bg-[var(--up-bg)] text-[var(--up)]' : 'bg-[var(--down-bg)] text-[var(--down)]'
         }`}>
           {streak > 0 ? '매수' : '매도'} {Math.abs(streak)}일째
         </span>
@@ -62,12 +60,12 @@ function SupplyPictogram({
         </defs>
 
         {/* 회색 배경 사람 */}
-        <circle cx="55" cy="24" r="16" fill="#333" />
-        <path d="M25,50 L36,50 L36,110 L25,110 Z" fill="#333" />
-        <path d="M74,50 L85,50 L85,110 L74,110 Z" fill="#333" />
-        <path d="M36,46 L74,46 L74,125 L36,125 Z" fill="#333" />
-        <path d="M36,125 L50,125 L50,192 L36,192 Z" fill="#333" />
-        <path d="M60,125 L74,125 L74,192 L60,192 Z" fill="#333" />
+        <circle cx="55" cy="24" r="16" fill="#d1d5db" />
+        <path d="M25,50 L36,50 L36,110 L25,110 Z" fill="#d1d5db" />
+        <path d="M74,50 L85,50 L85,110 L74,110 Z" fill="#d1d5db" />
+        <path d="M36,46 L74,46 L74,125 L36,125 Z" fill="#d1d5db" />
+        <path d="M36,125 L50,125 L50,192 L36,192 Z" fill="#d1d5db" />
+        <path d="M60,125 L74,125 L74,192 L60,192 Z" fill="#d1d5db" />
 
         {/* 색칠된 사람 (아래서부터 채움) */}
         <g clipPath={`url(#${clipId})`}>
@@ -79,19 +77,19 @@ function SupplyPictogram({
           <path d="M60,125 L74,125 L74,192 L60,192 Z" fill={fillColor} />
         </g>
 
-        {/* 비율 경계선 (흰 점선) */}
+        {/* 비율 경계선 */}
         <line
           x1="15" y1={clipY} x2="95" y2={clipY}
-          stroke="#fff" strokeWidth="1" strokeDasharray="4 3" opacity="0.5"
+          stroke="#9ca3af" strokeWidth="1" strokeDasharray="4 3" opacity="0.5"
         />
       </svg>
 
       {/* 금액 */}
-      <div className={`text-xl font-black tabular-nums ${isSell ? 'text-[#378ADD]' : 'text-[#E24B4A]'}`}>
+      <div className={`text-xl font-black tabular-nums ${isSell ? 'text-[var(--down)]' : 'text-[var(--up)]'}`}>
         {formatKrNumber(amount)}
       </div>
-      {/* 비율 — "매도 강도 50%" 형식 */}
-      <div className="text-xs text-[#8a8a8a]">
+      {/* 비율 */}
+      <div className="text-xs text-[var(--text-dim)]">
         {isSell ? '매도' : '매수'} 강도 {fillPct.toFixed(0)}%
       </div>
     </div>
@@ -127,23 +125,23 @@ function SupplyWaterfall({
   ]
 
   const colors = data.map(d =>
-    d.isTotal ? '#666' : d.value >= 0 ? '#E24B4A' : '#378ADD'
+    d.isTotal ? '#9ca3af' : d.value >= 0 ? '#dc2626' : '#2563eb'
   )
 
   return (
     <div>
-      <div className="text-sm text-[#94a3b8] font-bold mb-3">수급 누적 흐름 (억원)</div>
+      <div className="text-sm text-[var(--text-dim)] font-bold mb-3">수급 누적 흐름 (억원)</div>
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={data} barCategoryGap="20%" margin={{ top: 30, right: 10, bottom: 5, left: 10 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e5ea" vertical={false} />
           <XAxis
             dataKey="name"
-            tick={{ fill: '#94a3b8', fontSize: 13, fontWeight: 600 }}
-            axisLine={{ stroke: '#334155' }}
+            tick={{ fill: '#6b7280', fontSize: 13, fontWeight: 600 }}
+            axisLine={{ stroke: '#d1d5db' }}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: '#64748b', fontSize: 12 }}
+            tick={{ fill: '#9ca3af', fontSize: 12 }}
             tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}`}
             axisLine={false}
             tickLine={false}
@@ -152,7 +150,7 @@ function SupplyWaterfall({
               (max: number) => Math.ceil(max * 1.3),
             ] as const}
           />
-          <ReferenceLine y={0} stroke="#555" strokeWidth={1} />
+          <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1} />
 
           {/* 투명 스택 (누적 시작점) */}
           <Bar dataKey="invisible" stackId="stack" fill="transparent" />
@@ -166,7 +164,7 @@ function SupplyWaterfall({
               dataKey="value"
               position="top"
               formatter={(v) => { const n = Number(v); return `${n >= 0 ? '+' : ''}${n.toLocaleString()}` }}
-              style={{ fill: '#fff', fontSize: 14, fontWeight: 700 }}
+              style={{ fill: '#111827', fontSize: 14, fontWeight: 700 }}
             />
           </Bar>
         </BarChart>
@@ -201,32 +199,32 @@ export function SupplyDemandPanel() {
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/50">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <span className="text-lg">🌡️</span>
-          <span className="text-base font-bold text-white tracking-wider">수급 흐름</span>
+          <span className="text-base font-bold text-[var(--text-primary)] tracking-wider">수급 흐름</span>
         </div>
         <div className="flex items-center gap-2">
-          {rel && <span className={`text-xs font-bold ${rel.daysAgo === 0 ? 'text-[#00ff88]' : 'text-gray-500'}`}>{rel.label}</span>}
-          <span className="text-xs text-gray-500">{dateStr}</span>
+          {rel && <span className={`text-xs font-bold ${rel.daysAgo === 0 ? 'text-[var(--green)]' : 'text-[var(--text-muted)]'}`}>{rel.label}</span>}
+          <span className="text-xs text-[var(--text-muted)]">{dateStr}</span>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
         {isLoading ? (
           <div className="space-y-3">
-            <div className="h-[180px] bg-[#1a2535] animate-pulse rounded" />
-            <div className="h-[200px] bg-[#1a2535] animate-pulse rounded" />
+            <div className="h-[180px] bg-gray-200 animate-pulse rounded" />
+            <div className="h-[200px] bg-gray-200 animate-pulse rounded" />
           </div>
         ) : !data ? (
-          <div className="flex items-center justify-center h-full text-[#334155]">데이터 없음</div>
+          <div className="flex items-center justify-center h-full text-[var(--text-muted)]">데이터 없음</div>
         ) : (
           <>
             {/* 그림 백분율 차트: 3명 가로 배치 */}
             <PictogramSection data={data} />
 
             {/* 구분선 */}
-            <div className="border-t border-[#2a2a3a]" />
+            <div className="border-t border-[var(--border)]" />
 
             {/* 폭포 차트: 누적 흐름 */}
             <SupplyWaterfall
@@ -237,9 +235,9 @@ export function SupplyDemandPanel() {
 
             {/* AI 요약 */}
             {data.summary && (
-              <div className="p-3 bg-[#0d1420] rounded-lg border border-[#2a2a3a]">
-                <div className="text-xs text-[#8a8a8a] font-bold mb-1">AI 한 줄 요약</div>
-                <div className="text-sm text-[#e2e8f0] leading-relaxed">{data.summary}</div>
+              <div className="p-3 bg-gray-50 rounded-lg border border-[var(--border)]">
+                <div className="text-xs text-[var(--text-dim)] font-bold mb-1">AI 한 줄 요약</div>
+                <div className="text-sm text-[var(--text-primary)] leading-relaxed">{data.summary}</div>
               </div>
             )}
           </>

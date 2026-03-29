@@ -21,17 +21,17 @@ export function VolumePanel({ data }: { data: CandleData[] }) {
 
     const chart = createChart(containerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#0f1117' },
+        background: { type: ColorType.Solid, color: '#ffffff' },
         textColor: '#6b7280',
       },
       grid: {
-        vertLines: { color: '#1f2937' },
-        horzLines: { color: '#1f2937' },
+        vertLines: { color: '#f3f4f6' },
+        horzLines: { color: '#f3f4f6' },
       },
       width: containerRef.current.clientWidth,
       height: 140,
-      rightPriceScale: { borderColor: '#374151' },
-      timeScale: { borderColor: '#374151', visible: false },
+      rightPriceScale: { borderColor: '#e5e7eb' },
+      timeScale: { borderColor: '#e5e7eb', visible: false },
     })
 
     // 거래량 히스토그램
@@ -49,11 +49,11 @@ export function VolumePanel({ data }: { data: CandleData[] }) {
 
       let color: string
       if (isExplosion) {
-        color = isUp ? 'rgba(255,59,92,1)' : 'rgba(14,165,233,1)'
+        color = isUp ? 'rgba(220,38,38,1)' : 'rgba(37,99,235,1)'
       } else if (isUp) {
-        color = 'rgba(255,59,92,0.35)'
+        color = 'rgba(220,38,38,0.35)'
       } else {
-        color = 'rgba(14,165,233,0.35)'
+        color = 'rgba(37,99,235,0.35)'
       }
 
       return { time: d.time, value: d.volume, color }
@@ -82,10 +82,10 @@ export function VolumePanel({ data }: { data: CandleData[] }) {
 
   return (
     <div>
-      <div className="text-xs text-amber-400/70 px-3 pt-2 pb-1 bg-[#0f1117]">
-        거래량 <span className="text-[#ff3b5c] ml-1">빨강=상승</span> <span className="text-[#0ea5e9]">파랑=하락</span> <span className="text-gray-500 ml-1">찐한색 = 평균 2배 이상 폭발</span>
+      <div className="text-xs text-amber-400/70 px-3 pt-2 pb-1 bg-white">
+        거래량 <span className="text-[#dc2626] ml-1">빨강=상승</span> <span className="text-[#2563eb]">파랑=하락</span> <span className="text-[var(--text-muted)] ml-1">찐한색 = 평균 2배 이상 폭발</span>
       </div>
-      <div ref={containerRef} className="bg-[#0f1117]" />
+      <div ref={containerRef} className="bg-white" />
     </div>
   )
 }
