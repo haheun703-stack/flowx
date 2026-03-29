@@ -28,6 +28,10 @@ export function Navbar() {
             섹터맵
             <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
           </Link>
+          <Link href="/sectors/leaders" className="text-xs text-gray-600 hover:text-[var(--blue)] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
+            대장주
+            <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
           <Link href="/information" className="text-xs text-gray-600 hover:text-[var(--green)] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
             인포메이션
             <span className="text-[8px] px-1 py-px rounded border border-green-300 text-green-600 font-bold leading-tight">SIGNAL</span>
