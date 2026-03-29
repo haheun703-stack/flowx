@@ -35,6 +35,117 @@ interface SectorItem {
   rank_change: number;
 }
 
+/* ─── 킬러픽 타입 ─── */
+
+interface KillerPicksMarketEnv {
+  regime?: string;
+  vix?: number;
+  shield?: string;
+  mdd_pct?: number;
+  cash_pct?: number;
+  us_mood?: string;
+  geopolitical_risk?: number;
+  summary?: string;
+}
+
+interface KillerPicksSignalValidation {
+  best_signal?: string;
+  best_hit_rate?: number;
+  best_avg_ret?: number;
+  signal_summary?: Record<string, { hit_rate: number; avg_ret: number; total: number }>;
+  daily_trend?: { date: string; accum_hr: number; accum_ret: number; picks_hr: number; picks_ret: number }[];
+  insight?: string;
+}
+
+interface KillerPicksInstitutional {
+  ticker: string;
+  name: string;
+  sector?: string;
+  inst_consecutive: number;
+  inst_5d_bil?: number;
+  inst_20d_bil?: number;
+  foreign_5d_bil?: number;
+  dual_buying?: boolean;
+  grade?: string;
+  consensus?: { target?: number; upside?: number; per?: number; pbr?: number; dividend?: number; grade?: string };
+  sector_rank?: number;
+  verdict?: string;
+}
+
+interface KillerPicksRetail {
+  ticker: string;
+  name: string;
+  retail_net_5d_bil?: number;
+  retail_net_20d_bil?: number;
+  retail_consecutive?: number;
+  absorb_rate?: number;
+  pattern?: string;
+  verdict?: string;
+}
+
+interface KillerPicksCrossValidated {
+  rank: number;
+  ticker: string;
+  name: string;
+  signals_matched: number;
+  matched_from?: string[];
+  consensus?: { target?: number; upside?: number; per?: number; pbr?: number; dividend?: number };
+  inst_consecutive?: number;
+  inst_20d_bil?: number;
+  entry_price?: number;
+  stop_loss?: number;
+  target_price?: number;
+  conviction?: string;
+  action?: string;
+}
+
+interface KillerPicksEtf {
+  rank: number;
+  ticker: string;
+  name: string;
+  category?: string;
+  signal?: string;
+  action?: string;
+  sizing?: string;
+  reason?: string;
+}
+
+interface KillerPicksDeepDive {
+  ticker: string;
+  name: string;
+  sector?: string;
+  question?: string;
+  bull_case?: string;
+  bear_case?: string;
+  verdict?: string;
+  entry_condition?: string;
+  target?: string;
+}
+
+interface KillerPicksData {
+  date?: string;
+  target_label?: string;
+  generated_at?: string;
+  market_environment?: KillerPicksMarketEnv;
+  signal_validation?: KillerPicksSignalValidation;
+  institutional_picks?: KillerPicksInstitutional[];
+  retail_support?: KillerPicksRetail[];
+  cross_validated_top5?: KillerPicksCrossValidated[];
+  etf_top5?: KillerPicksEtf[];
+  portfolio_suggestion?: {
+    defense_pct?: number;
+    offense_pct?: number;
+    defense?: { name: string; ticker: string; pct: number }[];
+    offense?: { name: string; ticker: string; pct: number }[];
+  };
+  sector_analysis?: {
+    top_sectors?: { sector: string; score: number; regime?: string; inst_5d?: number; foreign_5d?: number; ret_5d?: number }[];
+    avoid_sectors?: string[];
+    money_flow?: string;
+  };
+  individual_deep_dive?: KillerPicksDeepDive[];
+}
+
 interface JarvisData {
   picks: {
     target_date_label?: string;
@@ -169,6 +280,7 @@ interface JarvisData {
       early: TurnaroundStock[];
     };
   } | null;
+  killer_picks?: KillerPicksData | null;
   updated_at?: string | null;
   date?: string | null;
 }
@@ -314,7 +426,8 @@ function formatBil(n: number) {
 }
 
 const TAB_ITEMS = [
-  { key: "recommend", label: "\uC624\uB298\uC758 \uCD94\uCC9C", icon: "\uD83C\uDFAF" },
+  { key: "killer-picks", label: "\uD0AC\uB7EC\uD53D", icon: "\uD83C\uDFAF" },
+  { key: "recommend", label: "\uC624\uB298\uC758 \uCD94\uCC9C", icon: "\uD83D\uDCCA" },
   { key: "sectors", label: "\uC5C5\uC885 \uBD84\uC11D", icon: "\uD83D\uDCCA" },
   { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
   { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
@@ -329,7 +442,7 @@ const TAB_ITEMS = [
 export default function JarvisControlTower() {
   const [data, setData] = useState<JarvisData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("recommend");
+  const [activeTab, setActiveTab] = useState("killer-picks");
   const [etfData, setEtfData] = useState<{ items: EtfSignalItem[]; date: string | null } | null>(null);
   const [relayData, setRelayData] = useState<{ items: RelayItem[]; date: string | null } | null>(null);
   const [sniperData, setSniperData] = useState<{ items: SniperItem[]; date: string | null } | null>(null);
@@ -457,6 +570,10 @@ export default function JarvisControlTower() {
       </nav>
 
       {/* 탭 콘텐츠 */}
+      {activeTab === "killer-picks" && (
+        <KillerPicksTab kp={data.killer_picks} />
+      )}
+
       {activeTab === "recommend" && (
         <div className="space-y-6">
           {etf_picks && <ETFSection etf={etf_picks} />}
@@ -1734,6 +1851,437 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+/* ─── 킬러픽 탭 ─── */
+
+const SIGNAL_NAME_MAP: Record<string, string> = {
+  tomorrow_picks: "종합추천",
+  pullback_scan: "눌림목",
+  accumulation_tracker: "매집추적",
+  whale_detect: "세력감지",
+  dart_event: "공시이벤트",
+  volume_spike: "거래량폭발",
+  overnight_signal: "야간신호",
+};
+
+const CONVICTION_STYLE: Record<string, string> = {
+  HIGH: "bg-green-50 text-green-700 border-green-200",
+  MEDIUM: "bg-blue-50 text-blue-700 border-blue-200",
+  LOW: "bg-gray-100 text-gray-600 border-gray-200",
+};
+
+const ACTION_STYLE: Record<string, string> = {
+  "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
+  "\uAD00\uC2EC\uB9E4\uC218": "bg-amber-50 text-amber-700 border-amber-200",
+  "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
+  BUY: "bg-red-50 text-[var(--up)] border-red-200",
+  "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
+};
+
+const INST_GRADE_STYLE: Record<string, string> = {
+  STRONG: "bg-green-50 text-green-700 border-green-200",
+  MODERATE: "bg-blue-50 text-blue-700 border-blue-200",
+  NOTABLE: "bg-amber-50 text-amber-700 border-amber-200",
+  WATCH: "bg-gray-100 text-gray-600 border-gray-200",
+};
+
+function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
+  const [openDive, setOpenDive] = useState<string | null>(null);
+
+  if (!kp) {
+    return (
+      <div className="bg-white rounded-lg p-8 border border-[var(--border)] text-center">
+        <p className="text-[var(--text-muted)]">킬러픽 데이터가 아직 없습니다.</p>
+        <p className="text-gray-500 text-xs mt-1">매일 장마감 후 생성됩니다.</p>
+      </div>
+    );
+  }
+
+  const env = kp.market_environment;
+  const sv = kp.signal_validation;
+  const cross = kp.cross_validated_top5 ?? [];
+  const instPicks = kp.institutional_picks ?? [];
+  const retailPicks = kp.retail_support ?? [];
+  const etfs = kp.etf_top5 ?? [];
+  const portfolio = kp.portfolio_suggestion;
+  const sectorA = kp.sector_analysis;
+  const dives = kp.individual_deep_dive ?? [];
+
+  const regimeColor = env?.regime === "NORMAL" ? "text-green-600 bg-green-50 border-green-200"
+    : env?.regime === "CAUTION" ? "text-amber-600 bg-amber-50 border-amber-200"
+    : env?.regime === "BEAR" || env?.regime === "CRISIS" ? "text-red-600 bg-red-50 border-red-200"
+    : "text-gray-600 bg-gray-50 border-gray-200";
+
+  const shieldColor = env?.shield === "GREEN" ? "text-green-600 bg-green-50 border-green-200"
+    : env?.shield === "YELLOW" ? "text-amber-600 bg-amber-50 border-amber-200"
+    : env?.shield === "RED" ? "text-red-600 bg-red-50 border-red-200"
+    : "text-gray-600 bg-gray-50 border-gray-200";
+
+  return (
+    <div className="space-y-6">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-black text-[var(--text-primary)]">
+            킬러픽 — {kp.target_label ?? kp.date ?? ""}
+          </h2>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+            12개 데이터소스 교차검증 · 생성 {kp.generated_at ?? ""}
+          </p>
+        </div>
+      </div>
+
+      {/* 섹션 1: 시장 환경 */}
+      {env && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">시장 환경</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+            <div className={`rounded-lg p-3 border ${regimeColor}`}>
+              <p className="text-[10px] opacity-70">레짐</p>
+              <p className="text-lg font-black">{env.regime ?? "-"}</p>
+            </div>
+            <div className={`rounded-lg p-3 border ${
+              (env.vix ?? 0) < 20 ? "text-green-600 bg-green-50 border-green-200"
+              : (env.vix ?? 0) <= 25 ? "text-amber-600 bg-amber-50 border-amber-200"
+              : "text-red-600 bg-red-50 border-red-200"
+            }`}>
+              <p className="text-[10px] opacity-70">VIX</p>
+              <p className="text-lg font-black">{env.vix ?? "-"}</p>
+            </div>
+            <div className={`rounded-lg p-3 border ${shieldColor}`}>
+              <p className="text-[10px] opacity-70">SHIELD</p>
+              <p className="text-lg font-black">{env.shield ?? "-"}</p>
+            </div>
+            <div className="rounded-lg p-3 border border-[var(--border)] bg-white">
+              <p className="text-[10px] text-[var(--text-muted)]">현금비중</p>
+              <p className="text-lg font-black text-[var(--text-primary)]">{env.cash_pct ?? "-"}%</p>
+            </div>
+          </div>
+          {env.summary && (
+            <div className={`rounded-lg px-4 py-2.5 text-sm border ${regimeColor}`}>
+              {env.summary}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* 섹션 2: 시그널 검증 */}
+      {sv && sv.signal_summary && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">시그널 검증</h3>
+          <div className="bg-white rounded-lg border border-[var(--border)] p-4">
+            <div className="space-y-2 mb-4">
+              {Object.entries(sv.signal_summary)
+                .sort(([, a], [, b]) => b.hit_rate - a.hit_rate)
+                .map(([key, val]) => {
+                  const pct = val.hit_rate;
+                  return (
+                    <div key={key} className="flex items-center gap-3">
+                      <span className="text-xs text-[var(--text-dim)] w-20 shrink-0 text-right">
+                        {SIGNAL_NAME_MAP[key] ?? key}
+                      </span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                        <div
+                          className={`h-3 rounded-full ${pct > 55 ? "bg-green-500" : pct > 45 ? "bg-amber-400" : "bg-gray-400"}`}
+                          style={{ width: `${Math.min(pct, 100)}%` }}
+                        />
+                      </div>
+                      <span className={`text-xs font-bold w-12 text-right ${pct > 55 ? "text-green-600" : pct > 45 ? "text-amber-600" : "text-gray-500"}`}>
+                        {pct.toFixed(1)}%
+                      </span>
+                      <span className="text-[10px] text-[var(--text-muted)] w-12 text-right">{val.total}건</span>
+                    </div>
+                  );
+                })}
+            </div>
+            {sv.insight && (
+              <div className="bg-blue-50 text-blue-700 text-xs px-3 py-2 rounded-lg border border-blue-200">
+                {sv.insight}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 3: 교차검증 TOP */}
+      {cross.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+            교차검증 TOP {cross.length}
+          </h3>
+          <div className="space-y-3">
+            {cross.map((c) => (
+              <div key={c.ticker} className="bg-white rounded-xl border border-[var(--border)] p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[var(--text-muted)] font-mono">#{c.rank}</span>
+                    <span className="text-sm font-black text-[var(--text-primary)]">{c.name}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{c.ticker}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {c.conviction && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${CONVICTION_STYLE[c.conviction] ?? CONVICTION_STYLE.LOW}`}>
+                        {c.conviction}
+                      </span>
+                    )}
+                    {c.action && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[c.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
+                        {c.action}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {c.matched_from && c.matched_from.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {c.matched_from.map((tag) => (
+                      <span key={tag} className="text-[10px] bg-gray-100 text-[var(--text-dim)] px-1.5 py-0.5 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-dim)]">
+                  {c.signals_matched > 0 && <span>{c.signals_matched}개 시그널 교차</span>}
+                  {c.inst_consecutive != null && c.inst_consecutive > 0 && <span>기관 {c.inst_consecutive}일 연속</span>}
+                  {c.inst_20d_bil != null && <span>20일 {c.inst_20d_bil > 0 ? "+" : ""}{c.inst_20d_bil.toFixed(0)}억</span>}
+                  {c.consensus?.upside != null && (
+                    <span className="text-[var(--up)]">목표 +{c.consensus.upside.toFixed(1)}%</span>
+                  )}
+                  {c.consensus?.per != null && <span>PER {c.consensus.per.toFixed(1)}</span>}
+                  {c.consensus?.dividend != null && c.consensus.dividend > 0 && <span>배당 {c.consensus.dividend.toFixed(1)}%</span>}
+                </div>
+                {(c.entry_price || c.stop_loss || c.target_price) && (
+                  <div className="flex gap-4 mt-2 text-xs font-mono">
+                    {c.entry_price != null && <span className="text-[var(--text-primary)]">진입 {c.entry_price.toLocaleString()}</span>}
+                    {c.stop_loss != null && <span className="text-[var(--down)]">손절 {c.stop_loss.toLocaleString()}</span>}
+                    {c.target_price != null && <span className="text-[var(--up)]">목표 {c.target_price.toLocaleString()}</span>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 4: ETF 추천 */}
+      {etfs.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">ETF 추천</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {etfs.map((e) => (
+              <div key={e.ticker} className="bg-white rounded-lg border border-[var(--border)] p-3 flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-[var(--text-primary)]">{e.name}</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">{e.ticker}</span>
+                    {e.category && (
+                      <span className="text-[10px] bg-gray-100 text-[var(--text-dim)] px-1 py-px rounded">{e.category}</span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[var(--text-dim)] mt-0.5">{e.signal ?? e.reason ?? ""}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  {e.sizing && <span className="text-[10px] text-[var(--text-muted)]">{e.sizing}</span>}
+                  {e.action && (
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[e.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
+                      {e.action}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 5: 포트폴리오 제안 */}
+      {portfolio && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">포트폴리오 제안</h3>
+          <div className="bg-white rounded-lg border border-[var(--border)] p-4">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                <span className="text-xs text-[var(--text-primary)] font-bold">방어 {portfolio.defense_pct ?? 0}%</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <span className="text-xs text-[var(--text-primary)] font-bold">공격 {portfolio.offense_pct ?? 0}%</span>
+              </div>
+              <div className="flex-1 h-3 rounded-full overflow-hidden flex">
+                <div className="bg-blue-500 h-full" style={{ width: `${portfolio.defense_pct ?? 50}%` }} />
+                <div className="bg-red-500 h-full" style={{ width: `${portfolio.offense_pct ?? 50}%` }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-[10px] text-blue-600 font-bold mb-1 uppercase">방어</p>
+                {(portfolio.defense ?? []).map((d) => (
+                  <div key={d.ticker} className="flex items-center justify-between py-1 text-xs">
+                    <span className="text-[var(--text-primary)]">{d.name}</span>
+                    <span className="text-[var(--text-dim)] font-mono">{d.pct}%</span>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-[10px] text-red-600 font-bold mb-1 uppercase">공격</p>
+                {(portfolio.offense ?? []).map((d) => (
+                  <div key={d.ticker} className="flex items-center justify-between py-1 text-xs">
+                    <span className="text-[var(--text-primary)]">{d.name}</span>
+                    <span className="text-[var(--text-dim)] font-mono">{d.pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 6: 기관 매집 */}
+      {instPicks.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+            기관 매집 ({instPicks.length}종목)
+          </h3>
+          <div className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
+            <div className="divide-y divide-[var(--border)]/50">
+              {instPicks.map((p) => (
+                <div key={p.ticker} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
+                  <div className="min-w-[100px]">
+                    <span className="text-xs font-bold text-[var(--text-primary)]">{p.name}</span>
+                    {p.dual_buying && <span className="ml-1 text-amber-500 text-[10px]" title="외인+기관 동반매수">★</span>}
+                  </div>
+                  {p.grade && (
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${INST_GRADE_STYLE[p.grade] ?? INST_GRADE_STYLE.WATCH}`}>
+                      {p.grade}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <div className="bg-blue-500 rounded-sm h-2.5" style={{ width: Math.min(p.inst_consecutive * 12, 80) }} />
+                    <span className="text-[10px] text-blue-600 font-bold">{p.inst_consecutive}일</span>
+                  </div>
+                  <span className="text-[10px] text-[var(--text-dim)] flex-1 truncate">{p.verdict ?? ""}</span>
+                  {p.inst_20d_bil != null && (
+                    <span className={`text-[10px] font-mono shrink-0 ${p.inst_20d_bil >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
+                      {p.inst_20d_bil >= 0 ? "+" : ""}{p.inst_20d_bil.toFixed(0)}억
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 7: 개인 지지 */}
+      {retailPicks.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+            개인 지지 ({retailPicks.length}종목)
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {retailPicks.map((r) => (
+              <div key={r.ticker} className="bg-white rounded-lg border border-[var(--border)] p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold text-[var(--text-primary)]">{r.name}</span>
+                  {r.absorb_rate != null && (
+                    <span className={`text-xs font-bold ${r.absorb_rate >= 100 ? "text-green-600" : "text-amber-600"}`}>
+                      흡수 {r.absorb_rate}%
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-[var(--text-dim)]">
+                  {r.retail_consecutive != null && <span>{r.retail_consecutive}일 연속</span>}
+                  {r.retail_net_5d_bil != null && <span>5일 {r.retail_net_5d_bil > 0 ? "+" : ""}{r.retail_net_5d_bil.toFixed(0)}억</span>}
+                </div>
+                {r.verdict && <p className="text-[11px] text-[var(--text-dim)] mt-1">{r.verdict}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 섹션: 섹터 분석 */}
+      {sectorA && sectorA.top_sectors && sectorA.top_sectors.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">섹터 분석</h3>
+          <div className="bg-white rounded-lg border border-[var(--border)] p-4">
+            <div className="space-y-2 mb-3">
+              {sectorA.top_sectors.map((s) => (
+                <div key={s.sector} className="flex items-center gap-3">
+                  <span className="text-xs text-[var(--text-primary)] font-bold w-16 shrink-0">{s.sector}</span>
+                  <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <div className="bg-blue-500 h-3 rounded-full" style={{ width: `${Math.min(s.score, 100)}%` }} />
+                  </div>
+                  <span className="text-xs text-[var(--text-dim)] font-mono w-10 text-right">{s.score.toFixed(0)}</span>
+                  {s.ret_5d != null && (
+                    <span className={`text-[10px] font-mono w-14 text-right ${s.ret_5d >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
+                      {s.ret_5d >= 0 ? "+" : ""}{s.ret_5d.toFixed(1)}%
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {sectorA.money_flow && (
+              <p className="text-xs text-[var(--text-dim)] border-t border-[var(--border)] pt-2">{sectorA.money_flow}</p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 섹션 8: 딥다이브 */}
+      {dives.length > 0 && (
+        <section>
+          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">종목 딥다이브</h3>
+          <div className="space-y-2">
+            {dives.map((d) => {
+              const isOpen = openDive === d.ticker;
+              return (
+                <div key={d.ticker} className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
+                  <button
+                    onClick={() => setOpenDive(isOpen ? null : d.ticker)}
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{d.question ?? d.name}</span>
+                    <span className="text-[var(--text-muted)] text-xs">{isOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-4 pb-4 space-y-2 border-t border-[var(--border)]">
+                      {d.bull_case && (
+                        <div className="flex gap-2 pt-2">
+                          <span className="text-green-600 text-xs font-bold shrink-0 w-10">강점</span>
+                          <span className="text-xs text-[var(--text-dim)]">{d.bull_case}</span>
+                        </div>
+                      )}
+                      {d.bear_case && (
+                        <div className="flex gap-2">
+                          <span className="text-red-600 text-xs font-bold shrink-0 w-10">약점</span>
+                          <span className="text-xs text-[var(--text-dim)]">{d.bear_case}</span>
+                        </div>
+                      )}
+                      {d.verdict && (
+                        <div className="flex gap-2">
+                          <span className="text-blue-600 text-xs font-bold shrink-0 w-10">판단</span>
+                          <span className="text-xs text-[var(--text-primary)] font-bold">{d.verdict}</span>
+                        </div>
+                      )}
+                      {d.entry_condition && (
+                        <div className="flex gap-2">
+                          <span className="text-[var(--text-muted)] text-xs shrink-0 w-10">진입</span>
+                          <span className="text-xs text-[var(--text-dim)]">{d.entry_condition}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
