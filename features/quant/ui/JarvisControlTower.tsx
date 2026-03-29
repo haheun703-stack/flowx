@@ -1891,7 +1891,6 @@ const ACTION_STYLE: Record<string, string> = {
   "\uAD00\uC2EC\uB9E4\uC218": "bg-amber-50 text-amber-700 border-amber-200",
   "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
   BUY: "bg-red-50 text-[var(--up)] border-red-200",
-  "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
   "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
 };
 

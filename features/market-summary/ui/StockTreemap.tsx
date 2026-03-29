@@ -11,10 +11,14 @@ export type SizeBy = 'marketCap' | 'tradingValue' | 'changeAbs'
 export interface LeafNode {
   ticker: string
   name: string
+  market: string
   sector: string
   marketCap: number
   changePercent: number
   tradingValue: number
+  price: number
+  foreignNet: number
+  instNet: number
 }
 
 interface Rect { x0: number; y0: number; x1: number; y1: number }
@@ -676,9 +680,24 @@ export function StockTreemap({
               {tooltip.stock.changePercent >= 0 ? '+' : ''}{tooltip.stock.changePercent.toFixed(2)}%
             </span>
           </div>
+          {tooltip.stock.price > 0 && (
+            <div style={{ color: '#111827', fontSize: 13, fontWeight: 600, fontFamily: CANVAS_FONT }}>
+              {tooltip.stock.price.toLocaleString()}원
+            </div>
+          )}
           <div style={{ color: '#6b7280', fontSize: 11, fontFamily: CANVAS_FONT }}>
             시총 {formatMarketCap(tooltip.stock.marketCap)} · 거래대금 {formatTradingValue(tooltip.stock.tradingValue)}
           </div>
+          {(tooltip.stock.foreignNet !== 0 || tooltip.stock.instNet !== 0) && (
+            <div style={{ fontSize: 11, fontFamily: CANVAS_FONT, display: 'flex', gap: 8 }}>
+              <span style={{ color: tooltip.stock.foreignNet >= 0 ? '#dc2626' : '#2563eb' }}>
+                외인 {tooltip.stock.foreignNet >= 0 ? '+' : ''}{formatTradingValue(tooltip.stock.foreignNet)}
+              </span>
+              <span style={{ color: tooltip.stock.instNet >= 0 ? '#dc2626' : '#2563eb' }}>
+                기관 {tooltip.stock.instNet >= 0 ? '+' : ''}{formatTradingValue(tooltip.stock.instNet)}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>

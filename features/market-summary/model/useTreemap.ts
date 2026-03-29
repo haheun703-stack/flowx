@@ -7,14 +7,20 @@ import { isMarketOpen } from '@/shared/lib/marketUtils'
 export interface TreemapStock {
   ticker: string
   name: string
+  market: string
   marketCap: number
   changePercent: number
   tradingValue: number
+  price: number
+  foreignNet: number
+  instNet: number
 }
 
 export interface TreemapSector {
   name: string
   marketCap: number
+  tradingValue: number
+  avgChange: number
   stocks: TreemapStock[]
 }
 
