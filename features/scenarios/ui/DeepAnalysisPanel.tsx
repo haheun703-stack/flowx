@@ -166,9 +166,12 @@ function ChartViewer({ charts }: { charts: Record<string, string> }) {
               </span>
             </button>
             {open === name && (
-              <div
-                className="p-4 overflow-x-auto bg-white"
-                dangerouslySetInnerHTML={{ __html: html }}
+              <iframe
+                srcDoc={html}
+                title={CHART_LABEL[name] ?? name}
+                className="w-full border-none bg-white"
+                style={{ minHeight: 480 }}
+                sandbox="allow-scripts"
               />
             )}
           </div>
