@@ -12,12 +12,13 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
-import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow } from '../api/useDashboard'
+import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvestorFlowKosdaq } from '../api/useDashboard'
 
 export function BloombergDashboard() {
   const { data: intraday } = useDashboardDaily()
   const { data: kosdaq } = useDashboardDailyKosdaq()
   const { data: investorFlow } = useInvestorFlow()
+  const { data: investorFlowKosdaq } = useInvestorFlowKosdaq()
 
   return (
     <div className="flex flex-col h-[calc(100vh/1.25-88px)] bg-[var(--bg-base)]">
@@ -54,6 +55,7 @@ export function BloombergDashboard() {
           marketOpen={kosdaq?.marketOpen ?? false}
           mode={(kosdaq?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
           lastDate={kosdaq?.lastDate}
+          investorFlow={investorFlowKosdaq}
           indexLabel="KOSDAQ"
         />
 

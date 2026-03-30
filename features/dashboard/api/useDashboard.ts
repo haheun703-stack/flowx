@@ -339,6 +339,15 @@ export function useInvestorFlow() {
   })
 }
 
+export function useInvestorFlowKosdaq() {
+  return useQuery<InvestorFlowPoint[]>({
+    queryKey: ['investor-flow-kosdaq'],
+    queryFn: () => fetchJson('/api/market/investor-flow-kosdaq'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 30,
+  })
+}
+
 // ============================================
 // Supabase-backed APIs (Phase A)
 // ============================================
