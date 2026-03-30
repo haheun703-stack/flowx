@@ -148,6 +148,18 @@ function ChartViewer({ charts }: { charts: Record<string, string> }) {
     war_stop_condition_analysis: '멈출 조건 분석',
   }
 
+  // CSS 변수 폴백 (iframe 내부에서는 부모 CSS 변수 접근 불가)
+  const cssVarFallback = `<style>
+:root {
+  --color-background-secondary: #f8fafc;
+  --color-text-secondary: #64748b;
+  --color-text-danger: #dc2626;
+  --color-text-success: #16a34a;
+  --border-radius-md: 8px;
+}
+body { margin: 0; padding: 8px; font-family: 'Noto Sans KR', sans-serif; background: #fff; }
+</style>`
+
   return (
     <div>
       <h4 className="text-sm font-bold text-[var(--text-primary)] mb-2">인터랙티브 도표</h4>
@@ -167,11 +179,11 @@ function ChartViewer({ charts }: { charts: Record<string, string> }) {
             </button>
             {open === name && (
               <iframe
-                srcDoc={html}
+                srcDoc={cssVarFallback + html}
                 title={CHART_LABEL[name] ?? name}
                 className="w-full border-none bg-white"
                 style={{ minHeight: 480 }}
-                sandbox="allow-scripts"
+                sandbox="allow-scripts allow-same-origin"
               />
             )}
           </div>
