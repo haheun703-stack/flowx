@@ -1,7 +1,10 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { fetchJson } from '@/shared/lib/fetchJson'
+import type { DeepAnalysis } from '@/features/scenarios/types'
+import DeepAnalysisPanel from '@/features/scenarios/ui/DeepAnalysisPanel'
 
 interface ScenarioObj {
   name: string
@@ -172,8 +175,32 @@ function Section({ label, color, children }: { label: string; color: string; chi
   )
 }
 
+function useDeepAnalyses() {
+  const [analyses, setAnalyses] = useState<DeepAnalysis[]>([])
+  useEffect(() => {
+    const ctrl = new AbortController()
+    fetch('/api/scenarios', { signal: ctrl.signal })
+      .then(r => r.ok ? r.json() : null)
+      .then(json => {
+        if (!json?.deep_analyses?.length) return
+        const enriched = json.deep_analyses.map((da: Partial<DeepAnalysis>) => ({
+          ...da,
+          scenario_id: da.scenario_id ?? json.scenario_id ?? da.title ?? '',
+          key_numbers: da.key_numbers ?? json.key_numbers ?? {},
+          beneficiaries: da.beneficiaries ?? json.beneficiaries ?? [],
+          oil_scenarios: da.oil_scenarios ?? json.oil_scenarios ?? [],
+        }))
+        setAnalyses(enriched)
+      })
+      .catch(() => {})
+    return () => ctrl.abort()
+  }, [])
+  return analyses
+}
+
 export default function ScenarioPage() {
   const { data, isLoading } = useScenario()
+  const deepAnalyses = useDeepAnalyses()
   return (
     <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Noto Sans KR', sans-serif", color: C.text }}>
       {/* 헤더 */}
@@ -192,6 +219,14 @@ export default function ScenarioPage() {
         <Skeleton />
       ) : (
         <ScenarioContent data={data} />
+      )}
+
+      {/* 심층 분석 */}
+      {deepAnalyses.length > 0 && (
+        <div style={{ borderTop: `1px solid ${C.border}`, padding: '32px 24px' }}>
+          <h2 style={{ fontFamily: MONO, fontSize: 15, color: C.green, letterSpacing: '0.1em', marginBottom: 16 }}>심층 분석</h2>
+          <DeepAnalysisPanel analyses={deepAnalyses} />
+        </div>
       )}
     </div>
   )
