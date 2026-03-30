@@ -40,11 +40,11 @@ function useScenario() {
 }
 
 const C = {
-  bg: '#0a0c10', bg2: '#0f1218', bg3: '#161b24',
-  border: '#1e2736',
-  text: '#e2e8f0', muted: '#5a6a82',
-  green: '#00e59b', amber: '#f5a623', red: '#ff4d6d',
-  blue: '#38bdf8', purple: '#a78bfa',
+  bg: '#ffffff', bg2: '#f8fafc', bg3: '#f1f5f9',
+  border: '#e2e8f0',
+  text: '#1e293b', muted: '#64748b',
+  green: '#16a34a', amber: '#d97706', red: '#dc2626',
+  blue: '#0ea5e9', purple: '#7c3aed',
 } as const
 
 const MONO = "'Space Mono', monospace"
