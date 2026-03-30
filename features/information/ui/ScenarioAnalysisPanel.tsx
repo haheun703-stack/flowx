@@ -27,9 +27,32 @@ const TOPIC_TYPE_KR: Record<string, string> = {
   default: '시장 전반',
 }
 
-/** 영어 괄호 제거: "긴장 완화 (De-escalation)" → "긴장 완화" */
-function cleanScenarioName(name: string): string {
-  return name.replace(/\s*\(.*?\)\s*/g, '').trim()
+/** 텍스트 내 영어/전문용어 → 한국어 치환 */
+const TEXT_REPLACE: [RegExp, string][] = [
+  // 영어 regime 코드 → 한국어
+  [/\bRECOVERY\b/g, '회복'],
+  [/\bWAR_INFLATION\b/g, '전쟁 물가상승'],
+  [/\bSTAGFLATION\b/g, '저성장 물가상승'],
+  [/\bCAPITULATION\b/g, '투매'],
+  [/\bGOLDILOCKS\b/g, '골디락스'],
+  [/\bRISK_ON\b/g, '위험선호'],
+  [/\bRISK_OFF\b/g, '위험회피'],
+  [/\bEUPHORIA\b/g, '과열'],
+  [/\bNEUTRAL\b/g, '중립'],
+  [/\bRECESSION\b/g, '침체'],
+  // 전문용어 → 쉬운 한국어
+  [/레짐/g, '시장국면'],
+  [/확신도/g, '확신도'],
+  // 영어 괄호 제거: "긴장 완화 (De-escalation)" → "긴장 완화"
+  [/\s*\([A-Za-z\s\-]+\)\s*/g, ' '],
+]
+
+function localizeText(text: string): string {
+  let result = text
+  for (const [pattern, replacement] of TEXT_REPLACE) {
+    result = result.replace(pattern, replacement)
+  }
+  return result.trim()
 }
 
 /** KOSPI 영향 방향 색상 */
@@ -80,7 +103,7 @@ function HorizontalScenarioCard({ sc, totalScenarios }: { sc: ScenarioOption; to
       <div className="px-3 py-3 flex flex-col h-full">
         {/* 시나리오 이름 */}
         <div className="text-sm font-bold text-[var(--text-primary)] leading-snug mb-1">
-          {cleanScenarioName(sc.name)}
+          {localizeText(sc.name)}
         </div>
 
         {/* 확률 (크게) */}
@@ -172,7 +195,7 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
             )}
           </div>
           <div className="text-sm text-[var(--text-primary)] font-bold leading-snug">
-            ❓ {item.question}
+            ❓ {localizeText(item.question)}
           </div>
         </div>
       </div>
