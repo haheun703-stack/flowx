@@ -51,7 +51,8 @@ const riskColor = (r: string) => {
   }
 }
 
-const macroColor = (d: string) => {
+const macroColor = (d: string | undefined) => {
+  if (!d) return "text-[var(--yellow)]"
   if (d.includes("BULL")) return "text-[#16a34a]"
   if (d.includes("BEAR")) return "text-[#dc2626]"
   return "text-[var(--yellow)]"
@@ -79,7 +80,7 @@ export function MarketBrainView() {
   }, [])
 
   if (loading) return <div className="text-[var(--text-muted)] text-center py-20">로딩 중...</div>
-  if (!data) return <div className="text-[var(--text-muted)] text-center py-20">데이터 준비 중 — 퀀트봇이 업로드하면 자동 표시됩니다</div>
+  if (!data || !data.overall_verdict) return <div className="text-[var(--text-muted)] text-center py-20">데이터 준비 중 — 퀀트봇이 업로드하면 자동 표시됩니다</div>
 
   return (
     <div className="space-y-6">

@@ -31,7 +31,8 @@ const rankArrow = (change: number) => {
   return <span className="text-[var(--text-muted)]">-</span>
 }
 
-const signalBadge = (s: string) => {
+const signalBadge = (s: string | undefined) => {
+  if (!s) return "bg-gray-200 text-[var(--text-dim)] border-[var(--border)]"
   if (s.includes("매수") || s === "BUY") return "bg-[#16a34a]/20 text-[#16a34a] border-[#16a34a]/30"
   if (s.includes("매도") || s === "SELL") return "bg-[#dc2626]/20 text-[#dc2626] border-[#dc2626]/30"
   if (s.includes("주의") || s === "CAUTION") return "bg-yellow-500/20 text-[var(--yellow)] border-yellow-500/30"
