@@ -18,8 +18,8 @@ const KR_DOWN = '#2563eb'
 
 // 투자자 색상
 const FOREIGN_COLOR = '#111827'  // 외국인 = 검정
-const INST_COLOR = '#ec4899'     // 기관 = 핑크
-const INDIV_COLOR = '#eab308'    // 개인 = 노랑
+const INST_COLOR = '#eab308'     // 기관 = 노랑
+const INDIV_COLOR = '#00ff88'    // 개인 = FlowX 형광초록
 
 export interface InvestorFlowPoint {
   date: string
