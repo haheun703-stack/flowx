@@ -37,9 +37,10 @@ interface HeroChartProps {
   mode?: 'intraday' | 'daily' | 'empty'
   lastDate?: string
   investorFlow?: InvestorFlowPoint[]
+  indexLabel?: string
 }
 
-export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate, investorFlow }: HeroChartProps) {
+export function HeroChart({ data, currentPrice, change, changePercent, marketOpen = false, mode = 'empty', lastDate, investorFlow, indexLabel = 'KOSPI' }: HeroChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
@@ -193,7 +194,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     indivLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.indiv_net) })))
   }, [investorFlow])
 
-  const label = mode === 'daily' ? 'KOSPI 30일 추이' : 'KOSPI 종합지수'
+  const label = mode === 'daily' ? `${indexLabel} 30일 추이` : `${indexLabel} 종합지수`
   const priceColor = changePercent >= 0 ? KR_UP : KR_DOWN
   const hasFlow = investorFlow && investorFlow.length > 0
 

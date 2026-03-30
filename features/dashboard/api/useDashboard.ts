@@ -312,6 +312,16 @@ export function useDashboardDaily() {
   })
 }
 
+// --- KOSDAQ Daily (마감 기준 30일 종가 차트) ---
+export function useDashboardDailyKosdaq() {
+  return useQuery<IntradayData>({
+    queryKey: ['kosdaq-daily'],
+    queryFn: () => fetchJson('/api/market/daily-kosdaq'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 30,
+  })
+}
+
 // --- KOSPI 투자자별 일별 순매수 (30일) ---
 export interface InvestorFlowPoint {
   date: string

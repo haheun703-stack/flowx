@@ -12,10 +12,11 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
-import { useDashboardDaily, useInvestorFlow } from '../api/useDashboard'
+import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow } from '../api/useDashboard'
 
 export function BloombergDashboard() {
   const { data: intraday } = useDashboardDaily()
+  const { data: kosdaq } = useDashboardDailyKosdaq()
   const { data: investorFlow } = useInvestorFlow()
 
   return (
@@ -41,6 +42,19 @@ export function BloombergDashboard() {
           mode={(intraday?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
           lastDate={intraday?.lastDate}
           investorFlow={investorFlow}
+          indexLabel="KOSPI"
+        />
+
+        {/* KOSDAQ 히어로 차트 — 풀 width */}
+        <HeroChart
+          data={kosdaq?.points ?? []}
+          currentPrice={kosdaq?.currentPrice ?? 0}
+          change={kosdaq?.change ?? 0}
+          changePercent={kosdaq?.changePercent ?? 0}
+          marketOpen={kosdaq?.marketOpen ?? false}
+          mode={(kosdaq?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
+          lastDate={kosdaq?.lastDate}
+          indexLabel="KOSDAQ"
         />
 
         {/* 메인 그리드 */}
