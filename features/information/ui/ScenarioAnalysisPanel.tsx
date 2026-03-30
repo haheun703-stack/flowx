@@ -6,15 +6,24 @@ import { useInformationScenarios, type ScenarioItem, type ScenarioOption } from 
 // ─── 시장체제 한국어 매핑 ───
 const REGIME_KR: Record<string, string> = {
   RISK_ON: '위험선호', RISK_OFF: '위험회피', EUPHORIA: '과열',
-  NEUTRAL: '중립', CAPITULATION: '항복', RECOVERY: '회복',
-  RECESSION: '침체', GOLDILOCKS: '적정', WAR_INFLATION: '전쟁인플레',
-  STAGFLATION: '스태그플레이션',
+  NEUTRAL: '중립', CAPITULATION: '투매', RECOVERY: '회복',
+  RECESSION: '침체', GOLDILOCKS: '골디락스', WAR_INFLATION: '전쟁 물가상승',
+  STAGFLATION: '저성장 물가상승',
+}
+
+// ─── tier 한국어 매핑 ───
+const TIER_KR: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  FREE:   { label: '무료', color: '#16a34a', bg: 'rgba(22,163,74,0.06)', border: 'rgba(22,163,74,0.2)' },
+  SIGNAL: { label: '시그널', color: '#7c3aed', bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.2)' },
+  VIP:    { label: '프리미엄', color: '#d97706', bg: 'rgba(217,119,6,0.06)', border: 'rgba(217,119,6,0.2)' },
 }
 
 // ─── topic_type 한국어 매핑 ───
 const TOPIC_TYPE_KR: Record<string, string> = {
   geopolitical: '지정학', policy_us: '미국 정책', chain_fire: '체인 발화',
   policy_kr: '한국 정책', macro_shift: '매크로 전환', earnings: '실적 시즌',
+  trade_war: '무역전쟁', tariff: '관세', monetary: '통화정책',
+  fiscal: '재정정책', energy: '에너지', tech: '기술',
   default: '시장 전반',
 }
 
@@ -132,13 +141,20 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
   const scenarios = item.scenarios ?? []
   const regimeKr = item.regime ? (REGIME_KR[item.regime] ?? item.regime) : null
   const topicKr = TOPIC_TYPE_KR[item.topic_type] ?? TOPIC_TYPE_KR.default
+  const tierStyle = TIER_KR[item.tier] ?? TIER_KR.FREE
 
   return (
     <div className="space-y-3">
-      {/* 헤더: 질문 + regime + topic + 적중 배지 */}
+      {/* 헤더: 질문 + regime + topic + tier + 적중 배지 */}
       <div className="flex items-start gap-2 px-1">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span
+              className="text-[10px] px-1.5 py-0.5 rounded font-bold"
+              style={{ color: tierStyle.color, backgroundColor: tierStyle.bg, border: `1px solid ${tierStyle.border}` }}
+            >
+              {tierStyle.label}
+            </span>
             {regimeKr && (
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">
                 시장체제: {regimeKr}
