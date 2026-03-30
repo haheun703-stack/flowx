@@ -2,8 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { fetchJson } from '@/shared/lib/fetchJson'
-import { useUserProfile } from '@/shared/lib/useUserProfile'
-import { PaywallBlur } from '@/shared/ui/PaywallBlur'
 
 interface ScenarioObj {
   name: string
@@ -176,9 +174,6 @@ function Section({ label, color, children }: { label: string; color: string; chi
 
 export default function ScenarioPage() {
   const { data, isLoading } = useScenario()
-  const { data: profile } = useUserProfile()
-  const userTier = profile?.tier ?? 'FREE'
-
   return (
     <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Noto Sans KR', sans-serif", color: C.text }}>
       {/* 헤더 */}
@@ -196,9 +191,7 @@ export default function ScenarioPage() {
       {isLoading || !data ? (
         <Skeleton />
       ) : (
-        <PaywallBlur requiredTier="SIGNAL" userTier={userTier} className="min-h-[80vh]">
-          <ScenarioContent data={data} />
-        </PaywallBlur>
+        <ScenarioContent data={data} />
       )}
     </div>
   )
