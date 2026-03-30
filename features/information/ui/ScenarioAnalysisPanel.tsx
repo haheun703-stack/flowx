@@ -241,14 +241,14 @@ export function ScenarioAnalysisPanel() {
             </span>
           )}
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
           {([undefined, 'AM', 'PM'] as const).map(f => (
             <button key={f ?? 'ALL'}
               onClick={() => setSessionFilter(f)}
-              className={`text-xs px-2.5 py-1 rounded-md font-bold transition-colors ${
+              className={`text-xs px-2.5 py-1 rounded-md font-medium transition-colors ${
                 sessionFilter === f
-                  ? 'text-[var(--text-primary)] bg-purple-50 border border-purple-200'
-                  : 'text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--text-dim)]'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50'
               }`}>
               {f ?? '전체'}
             </button>

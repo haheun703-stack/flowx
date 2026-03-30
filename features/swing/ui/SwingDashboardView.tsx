@@ -114,10 +114,12 @@ export default function SwingDashboardView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-4">
-        <div className="h-32 bg-gray-100 rounded-lg" />
-        <div className="grid grid-cols-6 gap-2">{[1,2,3,4,5,6].map(i => <div key={i} className="h-20 bg-gray-100 rounded-lg" />)}</div>
-        <div className="h-48 bg-gray-100 rounded-lg" />
+      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
+        <div className="h-20 bg-gray-200 rounded-lg" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[1,2,3,4].map(i => <div key={i} className="h-24 bg-gray-200 rounded-lg" />)}
+        </div>
+        <div className="h-64 bg-gray-200 rounded-lg" />
       </div>
     )
   }
@@ -126,7 +128,7 @@ export default function SwingDashboardView() {
     return (
       <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
         <p className="text-[var(--text-muted)]">스윙시스템 데이터가 아직 없습니다.</p>
-        <p className="text-[var(--text-muted)] text-sm mt-1">매일 16:40 업데이트됩니다.</p>
+        <p className="text-gray-600 text-sm mt-1">매일 16:40 업데이트됩니다.</p>
       </div>
     )
   }
@@ -140,34 +142,38 @@ export default function SwingDashboardView() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[var(--text-primary)] text-2xl font-bold">스윙시스템 대시보드</h1>
-          <p className="text-[var(--text-muted)] text-sm mt-1">BRAIN AI 판단 + 자산배분 + 추천종목</p>
+      {/* ★ BRAIN 판단 배너 — /quant MarketGuideBanner 스타일 */}
+      <div className={`bg-white rounded-xl p-5 shadow-sm border ${verdict.bg}`}>
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <p className={`${verdict.color} text-sm font-bold`}>
+              BRAIN AI 판단 — {data.brain_verdict} ({data.brain_pct}%)
+            </p>
+            {data.brain_reason && (
+              <p className="text-[var(--text-dim)] text-xs mt-1">{data.brain_reason}</p>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <span className={`text-xs px-2 py-1 rounded font-bold ${REGIME_STYLE[data.regime] ?? 'text-[var(--text-dim)]'} bg-gray-50 border border-[var(--border)]`}>
+              레짐 {data.regime} ({data.regime_severity}/5)
+            </span>
+            <span className="text-xs px-2 py-1 rounded text-[var(--text-muted)] bg-gray-50 border border-[var(--border)]">
+              {data.date}
+            </span>
+          </div>
         </div>
-        <span className="text-[var(--text-muted)] text-sm">{data.date}</span>
+        {data.regime_desc && (
+          <p className="text-[var(--text-dim)] text-xs">{data.regime_desc}</p>
+        )}
       </div>
 
-      {/* ── BRAIN 판단 + 레짐 ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className={`rounded-lg border p-5 ${verdict.bg}`}>
-          <p className="text-[var(--text-muted)] text-xs mb-1">BRAIN 판단</p>
-          <div className="flex items-baseline gap-3">
-            <span className={`text-3xl font-bold ${verdict.color}`}>{data.brain_verdict}</span>
-            <span className={`text-xl font-mono ${verdict.color}`}>{data.brain_pct}%</span>
-          </div>
-          {data.brain_reason && <p className="text-[var(--text-dim)] text-sm mt-2">{data.brain_reason}</p>}
-        </div>
-        <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-5">
-          <p className="text-[var(--text-muted)] text-xs mb-1">시장 레짐</p>
-          <div className="flex items-baseline gap-3">
-            <span className={`text-2xl font-bold ${REGIME_STYLE[data.regime] ?? 'text-[var(--text-dim)]'}`}>{data.regime}</span>
-            <span className="text-[var(--text-muted)] text-sm">심각도 {data.regime_severity}/5</span>
-          </div>
-          {data.regime_desc && <p className="text-[var(--text-dim)] text-sm mt-2">{data.regime_desc}</p>}
-        </div>
-      </div>
+      {/* 상태판 — /quant StatusCard 스타일 */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatusCard label="BRAIN 판단" value={data.brain_verdict} sub={`비중 ${data.brain_pct}%`} color={verdict.color} />
+        <StatusCard label="시장 레짐" value={data.regime} sub={`심각도 ${data.regime_severity}/5`} color={REGIME_STYLE[data.regime] ?? 'text-[var(--text-dim)]'} />
+        <StatusCard label="스마트머니" value={data.smart_money_score.toFixed(1)} sub={data.smart_money_signal} color={data.smart_money_signal === 'RISK_ON' ? 'text-[var(--up)]' : data.smart_money_signal === 'RISK_OFF' ? 'text-[var(--down)]' : 'text-[var(--text-dim)]'} />
+        <StatusCard label="스트레스" value={data.stress_index.toFixed(1)} sub={data.stress_level} color={data.stress_level === 'HIGH' ? 'text-[var(--up)]' : data.stress_level === 'ELEVATED' ? 'text-[var(--yellow)]' : 'text-[var(--green)]'} />
+      </section>
 
       {/* ── 자산 배분 ── */}
       <section>
@@ -199,14 +205,9 @@ export default function SwingDashboardView() {
       <section>
         <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">센서</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <SensorCard label="스마트머니" value={data.smart_money_score.toFixed(1)} sub={data.smart_money_signal} color={data.smart_money_signal === 'RISK_ON' ? 'text-[var(--up)]' : data.smart_money_signal === 'RISK_OFF' ? 'text-[var(--down)]' : 'text-[var(--text-dim)]'} />
-          <SensorCard label="스트레스" value={data.stress_index.toFixed(1)} sub={data.stress_level} color={data.stress_level === 'HIGH' ? 'text-[var(--up)]' : data.stress_level === 'ELEVATED' ? 'text-[var(--yellow)]' : 'text-[var(--green)]'} />
-          <SensorCard label="유동성" value={data.liquidity_score.toFixed(1)} sub="" color={data.liquidity_score >= 0 ? 'text-[var(--green)]' : 'text-[var(--up)]'} />
+          <StatusCard label="유동성" value={data.liquidity_score.toFixed(1)} color={data.liquidity_score >= 0 ? 'text-[var(--green)]' : 'text-[var(--up)]'} />
           {data.rotation_signal && (
-            <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-4">
-              <p className="text-[var(--text-muted)] text-xs">섹터 로테이션</p>
-              <p className="text-[var(--yellow)] text-sm font-medium mt-1">{data.rotation_signal}</p>
-            </div>
+            <StatusCard label="섹터 로테이션" value={data.rotation_signal} color="text-[var(--yellow)]" />
           )}
         </div>
       </section>
@@ -269,7 +270,7 @@ export default function SwingDashboardView() {
           <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">워치리스트</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {data.watchlist.map((w) => (
-              <div key={w.code} className="rounded-lg border border-[var(--border)] bg-gray-50 p-4">
+              <div key={w.code} className="bg-white rounded-lg border border-[var(--border)] p-4">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[var(--text-primary)] font-medium">{w.name} <span className="text-[var(--text-muted)] text-xs">{w.code}</span></span>
                   <span className={`text-xs px-2 py-0.5 rounded border ${gradeStyle(w.grade)}`}>{w.grade}</span>
@@ -286,7 +287,7 @@ export default function SwingDashboardView() {
       {!hasCategory && data.nxt_signal_text && (
         <section>
           <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">NXT 야간매매</h2>
-          <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-5">
+          <div className="bg-white rounded-lg border border-[var(--border)] p-5">
             <div className="flex items-center gap-4 mb-3">
               <span className="text-2xl">{data.nxt_signal}</span>
               <span className="text-[var(--text-primary)] text-lg font-bold">{data.nxt_signal_text}</span>
@@ -298,7 +299,7 @@ export default function SwingDashboardView() {
             {data.nxt_targets?.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                 {data.nxt_targets.map((t) => (
-                  <div key={t.code} className="rounded border border-[var(--border)] bg-gray-50 p-2.5">
+                  <div key={t.code} className="bg-white rounded border border-[var(--border)] p-2.5">
                     <p className="text-[var(--text-primary)] text-sm font-medium">{t.name}</p>
                     <p className="text-[var(--text-muted)] text-xs">{t.sector} · {t.tier}</p>
                   </div>
@@ -315,7 +316,7 @@ export default function SwingDashboardView() {
           <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">분석 보고서</h2>
           <div className="space-y-3">
             {Object.entries(data.analysis).map(([key, value]) => (
-              <div key={key} className="rounded-lg border border-[var(--border)] bg-gray-50 p-4">
+              <div key={key} className="bg-white rounded-lg border border-[var(--border)] p-4">
                 <p className="text-[var(--text-dim)] text-xs font-bold mb-1">{formatAnalysisKey(key)}</p>
                 <p className="text-[var(--text-primary)] text-sm whitespace-pre-wrap">{value}</p>
               </div>
@@ -327,8 +328,8 @@ export default function SwingDashboardView() {
       {/* ── 마켓 코멘트 ── */}
       {data.market_comment && (
         <section className="pb-8">
-          <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-5">
-            <p className="text-[var(--text-dim)] text-xs mb-2">마켓 코멘트</p>
+          <div className="bg-white rounded-lg border border-[var(--border)] p-5">
+            <p className="text-[var(--text-dim)] text-xs font-bold mb-2">마켓 코멘트</p>
             <p className="text-[var(--text-primary)] text-sm whitespace-pre-wrap">{data.market_comment}</p>
           </div>
         </section>
@@ -434,10 +435,22 @@ function PicksTable({ title, picks }: { title: string; picks: Pick[] }) {
 }
 
 /* ── 헬퍼 컴포넌트 ── */
+
+/** /quant StatusCard 통일 스타일 */
+function StatusCard({ label, value, color, sub }: { label: string; value: string; color: string; sub?: string }) {
+  return (
+    <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
+      <p className="text-gray-500 text-xs">{label}</p>
+      <p className={`${color} text-lg font-bold mt-1`}>{value}</p>
+      {sub && <p className="text-gray-600 text-xs mt-1">{sub}</p>}
+    </div>
+  )
+}
+
 function AllocCard({ label, pct, color }: { label: string; pct: number; color: string }) {
   return (
-    <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-3 text-center">
-      <p className="text-[var(--text-muted)] text-xs">{label}</p>
+    <div className="bg-white rounded-lg border border-[var(--border)] p-3 text-center">
+      <p className="text-gray-500 text-xs">{label}</p>
       <p className={`${color} text-xl font-bold font-mono mt-1`}>{pct}%</p>
     </div>
   )
@@ -445,19 +458,9 @@ function AllocCard({ label, pct, color }: { label: string; pct: number; color: s
 
 function MetricCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-3 text-center">
-      <p className="text-[var(--text-muted)] text-xs">{label}</p>
+    <div className="bg-white rounded-lg border border-[var(--border)] p-3 text-center">
+      <p className="text-gray-500 text-xs">{label}</p>
       <p className={`${color} text-lg font-bold font-mono mt-1`}>{value}</p>
-    </div>
-  )
-}
-
-function SensorCard({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
-  return (
-    <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-4">
-      <p className="text-[var(--text-muted)] text-xs">{label}</p>
-      <p className={`${color} text-xl font-bold font-mono mt-1`}>{value}</p>
-      {sub && <p className={`${color} text-xs mt-0.5`}>{sub}</p>}
     </div>
   )
 }

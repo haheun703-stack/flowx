@@ -25,22 +25,24 @@ export function SwingTabsView() {
   const [tab, setTab] = useState<TabKey>("dashboard")
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]" style={{ zoom: 1.25 }}>
-      {/* 탭 바 */}
-      <div className="flex gap-1 border-b border-[var(--border)] px-6 bg-[var(--bg-base)] sticky top-[52px] z-30">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`px-4 py-2.5 text-xs font-medium transition-colors border-b-2 ${
-              tab === t.key
-                ? "text-[#a855f7] border-[#a855f7]"
-                : "text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)]"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
+      {/* 탭 바 — /quant pill 스타일 */}
+      <div className="max-w-[1400px] mx-auto px-6 pt-6">
+        <nav className="flex gap-1 bg-gray-100 rounded-lg p-1 border border-[var(--border)] overflow-x-auto">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`shrink-0 py-2 px-3 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+                tab === t.key
+                  ? "bg-blue-600 text-white"
+                  : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* 탭 콘텐츠 */}
