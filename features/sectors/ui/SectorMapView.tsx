@@ -152,7 +152,7 @@ export function SectorMapView({
           }`}
           disabled={!canNetwork}
         >
-          네트워크 뷰{' '}<span className="text-xs opacity-50">PRO</span>
+          산키 다이어그램{' '}<span className="text-xs opacity-50">PRO</span>
         </button>
       </div>
 

@@ -107,7 +107,7 @@ function SubCategoryGroup({
       <div className="px-2 py-1" style={{ fontSize: 11, color: '#666', fontWeight: 600 }}>
         {subCategory} ({stocks.length})
       </div>
-      <div className="flex flex-wrap gap-2 px-1">
+      <div className="flex flex-wrap gap-2 px-1 items-start">
         {stocks.map((stock) => {
           const name = stock.stock_name
           const isSelected = selectedStock === name
@@ -178,7 +178,7 @@ function TierLane({
     >
       {/* Lane Label */}
       <div
-        className="shrink-0 flex flex-col items-center justify-center py-4"
+        className="shrink-0 flex flex-col items-center pt-4"
         style={{ width: 130, borderRight: `1px solid ${colors.border}40` }}
       >
         <div style={{ fontSize: 14, fontWeight: 700, color: colors.light }}>

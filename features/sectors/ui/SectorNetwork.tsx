@@ -187,7 +187,7 @@ function buildSankey(
       totalH = colNodes.reduce((s, n) => s + n.h, 0) + (colNodes.length - 1) * NODE_GAP
     }
 
-    let curY = MARGIN_Y + Math.max(0, (availH - totalH) / 2)
+    let curY = MARGIN_Y
     for (const n of colNodes) {
       n.x = x
       n.y = curY
