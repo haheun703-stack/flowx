@@ -90,9 +90,9 @@ interface SankeyLink {
 const MARGIN_X = 16
 const MARGIN_Y = 50
 const NODE_GAP = 8
-const LINE_H = 18        // 종목 1줄 높이
-const HEADER_H = 26       // 그룹 헤더 높이
-const MIN_NODE_H = 44
+const LINE_H = 26        // 종목 1줄 높이 (x1.5)
+const HEADER_H = 38       // 그룹 헤더 높이 (x1.5)
+const MIN_NODE_H = 56
 const LINK_SCALE = 1.2    // strength → px
 
 function buildSankey(
@@ -158,7 +158,7 @@ function buildSankey(
   // 노드 폭: 캔버스를 column 수로 균등 분할 (간격 포함)
   const gapBetweenCols = 40
   const totalGaps = (colCount - 1) * gapBetweenCols
-  const nodeW = Math.max(130, Math.floor((width - MARGIN_X * 2 - totalGaps) / colCount))
+  const nodeW = Math.max(170, Math.floor((width - MARGIN_X * 2 - totalGaps) / colCount))
 
   // 4. column별 Y 배치 — 높이는 종목 수 기반
   for (let ci = 0; ci < colCount; ci++) {
@@ -351,19 +351,19 @@ export function SectorNetwork({
     const drawnTiers = Array.from(tierFirstNode.keys()).sort((a, b) => b - a)
     for (const tier of drawnTiers) {
       const n = tierFirstNode.get(tier)!
-      ctx.font = `bold 14px ${CANVAS_FONT}`
+      ctx.font = `bold 22px ${CANVAS_FONT}`
       ctx.textAlign = 'center'
       ctx.fillStyle = '#111827'
-      ctx.fillText(NETWORK_TIER_LABELS[tier] ?? `Tier ${tier}`, n.x + n.w / 2, 30)
+      ctx.fillText(NETWORK_TIER_LABELS[tier] ?? `Tier ${tier}`, n.x + n.w / 2, 34)
     }
     // Tier 간 화살표
-    ctx.font = `16px ${CANVAS_FONT}`
+    ctx.font = `22px ${CANVAS_FONT}`
     ctx.fillStyle = '#9ca3af'
     ctx.textAlign = 'center'
     for (let i = 0; i < drawnTiers.length - 1; i++) {
       const n1 = tierFirstNode.get(drawnTiers[i])
       const n2 = tierFirstNode.get(drawnTiers[i + 1])
-      if (n1 && n2) ctx.fillText('→', (n1.x + n1.w + n2.x) / 2, 30)
+      if (n1 && n2) ctx.fillText('→', (n1.x + n1.w + n2.x) / 2, 34)
     }
 
     // ── 링크 ──
@@ -429,24 +429,24 @@ export function SectorNetwork({
       ctx.lineWidth = isActive ? 2 : 1
       ctx.stroke()
 
-      // 헤더: sub_category
-      ctx.font = `bold 13px ${CANVAS_FONT}`
+      // 헤더: sub_category (x2)
+      ctx.font = `bold 26px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
       ctx.fillStyle = '#111827'
       const headerText = n.subCategory.length > 10
         ? n.subCategory.slice(0, 9) + '…' : n.subCategory
-      ctx.fillText(headerText, n.x + 8, n.y + 17)
+      ctx.fillText(headerText, n.x + 8, n.y + 26)
 
-      // 종목 수
-      ctx.font = `bold 11px ${CANVAS_FONT}`
+      // 종목 수 (x2)
+      ctx.font = `bold 22px ${CANVAS_FONT}`
       ctx.textAlign = 'right'
       ctx.fillStyle = '#6b7280'
-      ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 8, n.y + 17)
+      ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 8, n.y + 26)
 
       // 구분선
       ctx.beginPath()
-      ctx.moveTo(n.x + 6, n.y + HEADER_H - 2)
-      ctx.lineTo(n.x + n.w - 6, n.y + HEADER_H - 2)
+      ctx.moveTo(n.x + 6, n.y + HEADER_H - 4)
+      ctx.lineTo(n.x + n.w - 6, n.y + HEADER_H - 4)
       ctx.strokeStyle = 'rgba(0,0,0,0.08)'
       ctx.lineWidth = 1
       ctx.stroke()
@@ -455,16 +455,16 @@ export function SectorNetwork({
       const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
       const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
 
-      ctx.font = `12px ${CANVAS_FONT}`
-      const maxNameW = n.w - 60
+      ctx.font = `18px ${CANVAS_FONT}`
+      const maxNameW = n.w - 90
 
       for (let si = 0; si < visible.length; si++) {
-        const cy = n.y + HEADER_H + 4 + si * LINE_H + 12
+        const cy = n.y + HEADER_H + 6 + si * LINE_H + 18
         const name = getDisplayName(visible[si])
         const pct = n.changePcts[si] ?? 0
 
-        // 종목명 (캐시된 truncation)
-        ctx.font = `12px ${CANVAS_FONT}`
+        // 종목명 (캐시된 truncation, x1.5)
+        ctx.font = `18px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
         ctx.fillStyle = '#111827'
         const cacheKey = `${name}|${maxNameW}`
@@ -479,17 +479,17 @@ export function SectorNetwork({
         }
         ctx.fillText(displayN, n.x + 8, cy)
 
-        // 등락률 (오른쪽 정렬)
-        ctx.font = `bold 11px ${CANVAS_FONT}`
+        // 등락률 (오른쪽 정렬, x1.5)
+        ctx.font = `bold 17px ${CANVAS_FONT}`
         ctx.textAlign = 'right'
         ctx.fillStyle = pct >= 0 ? '#dc2626' : '#2563eb'
         ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 8, cy)
       }
 
-      // +N개 더
+      // +N개 더 (x1.5)
       if (n.stockNames.length > visible.length) {
-        const cy = n.y + HEADER_H + 4 + visible.length * LINE_H + 12
-        ctx.font = `11px ${CANVAS_FONT}`
+        const cy = n.y + HEADER_H + 6 + visible.length * LINE_H + 18
+        ctx.font = `17px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
         ctx.fillStyle = '#9ca3af'
         ctx.fillText(`+${n.stockNames.length - visible.length}개`, n.x + 8, cy)
@@ -500,7 +500,7 @@ export function SectorNetwork({
 
     // ── 선택 시 관계 라벨 ──
     if (selected) {
-      ctx.font = `bold 11px ${CANVAS_FONT}`
+      ctx.font = `bold 16px ${CANVAS_FONT}`
       let labelIdx = 0
       for (const l of sLinks) {
         if (l.sourceId !== selected && l.targetId !== selected) continue
@@ -509,11 +509,11 @@ export function SectorNetwork({
         if (!sn || !tn) continue
 
         const mx = (sn.x + sn.w + tn.x) / 2
-        const my = (l.sourceY + l.targetY) / 2 + (labelIdx % 2 === 0 ? -14 : 14)
+        const my = (l.sourceY + l.targetY) / 2 + (labelIdx % 2 === 0 ? -18 : 18)
 
         const label = l.relations.map(r => RELATION_KO[r] ?? r).join(', ')
-        const tw = ctx.measureText(label).width + 12
-        const th = 20
+        const tw = ctx.measureText(label).width + 16
+        const th = 26
 
         ctx.fillStyle = 'rgba(255,255,255,0.95)'
         ctx.beginPath()
