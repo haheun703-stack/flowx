@@ -93,7 +93,7 @@ const NODE_GAP = 8
 const LINE_H = 18        // 종목 1줄 높이
 const HEADER_H = 26       // 그룹 헤더 높이
 const MIN_NODE_H = 44
-const LINK_SCALE = 2.5    // strength → px
+const LINK_SCALE = 1.2    // strength → px
 
 function buildSankey(
   stocks: StockNode[],
@@ -376,7 +376,7 @@ export function SectorNetwork({
       const isDim = activeId && !isHL
       const isThemeDim = hasTheme && !activeId && !nodeHasTheme(sn) && !nodeHasTheme(tn)
 
-      const lineW = Math.max(2, l.strength * LINK_SCALE)
+      const lineW = Math.max(1, l.strength * LINK_SCALE)
       const x0 = sn.x + sn.w
       const y0 = Math.max(sn.y + 10, Math.min(sn.y + sn.h - 10, l.sourceY))
       const x1 = tn.x
@@ -394,16 +394,16 @@ export function SectorNetwork({
         grad.addColorStop(0, TIER_COLORS[sn.tier]?.badge ?? '#7F77DD')
         grad.addColorStop(1, TIER_COLORS[tn.tier]?.badge ?? '#7F77DD')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.9
+        ctx.globalAlpha = 0.7
       } else if (isDim || isThemeDim) {
         ctx.strokeStyle = '#e2e5ea'
-        ctx.globalAlpha = 0.1
+        ctx.globalAlpha = 0.06
       } else {
         const grad = ctx.createLinearGradient(x0, 0, x1, 0)
         grad.addColorStop(0, TIER_COLORS[sn.tier]?.light ?? '#9DC8F5')
         grad.addColorStop(1, TIER_COLORS[tn.tier]?.light ?? '#9DC8F5')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.25
+        ctx.globalAlpha = 0.12
       }
       ctx.stroke()
       ctx.globalAlpha = 1
