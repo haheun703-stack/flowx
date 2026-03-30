@@ -163,8 +163,9 @@ function HorizontalScenarioCard({ sc, totalScenarios }: { sc: ScenarioOption; to
 function ScenarioGroup({ item }: { item: ScenarioItem }) {
   const scenarios = item.scenarios ?? []
   const regimeKr = item.regime ? (REGIME_KR[item.regime] ?? item.regime) : null
-  const topicKr = TOPIC_TYPE_KR[item.topic_type] ?? TOPIC_TYPE_KR.default
+  const topicKr = item.topic_type_kr ?? TOPIC_TYPE_KR[item.topic_type] ?? TOPIC_TYPE_KR.default
   const tierStyle = TIER_KR[item.tier] ?? TIER_KR.FREE
+  const tierLabel = item.tier_kr ?? tierStyle.label
 
   return (
     <div className="space-y-3">
@@ -176,7 +177,7 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
               className="text-[10px] px-1.5 py-0.5 rounded font-bold"
               style={{ color: tierStyle.color, backgroundColor: tierStyle.bg, border: `1px solid ${tierStyle.border}` }}
             >
-              {tierStyle.label}
+              {tierLabel}
             </span>
             {regimeKr && (
               <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">

@@ -64,6 +64,8 @@ export interface ScenarioItem {
   hit: boolean | null
   outcome_tagged: boolean
   tier: 'FREE' | 'SIGNAL' | 'VIP'
+  tier_kr?: string
+  topic_type_kr?: string
   created_at: string
   updated_at: string
 }
