@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { ScenarioDashboard } from '../types'
+import type { ScenarioDashboard, DeepAnalysis } from '../types'
 import MarketStatusBar from './MarketStatusBar'
 import ScenarioCard from './ScenarioCard'
 import CommodityTable from './CommodityTable'
@@ -24,6 +24,17 @@ export default function ScenarioDashboardView() {
         if (!json || !json.market_status) {
           setData(null)
         } else {
+          // 퀀트봇이 key_numbers/beneficiaries/oil_scenarios/scenario_id를
+          // deep_analyses 안이 아닌 최상위에 넣는 경우 병합
+          if (json.deep_analyses?.length) {
+            json.deep_analyses = json.deep_analyses.map((da: Partial<DeepAnalysis>) => ({
+              ...da,
+              scenario_id: da.scenario_id ?? json.scenario_id ?? da.title ?? '',
+              key_numbers: da.key_numbers ?? json.key_numbers ?? {},
+              beneficiaries: da.beneficiaries ?? json.beneficiaries ?? [],
+              oil_scenarios: da.oil_scenarios ?? json.oil_scenarios ?? [],
+            }))
+          }
           setData(json)
         }
       } catch (err) {
