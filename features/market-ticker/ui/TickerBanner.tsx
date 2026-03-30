@@ -18,10 +18,12 @@ export function TickerBanner() {
     )
   }
 
+  const usdkrw = worldIndices.find(i => i.symbol === 'USDKRW')
+
   return (
     <div className="bg-white sticky top-[53px] z-30">
       <WorldIndexRow indices={worldIndices} />
-      <KoreanTickerRow tickers={koreanTickers} />
+      <KoreanTickerRow tickers={koreanTickers} usdkrw={usdkrw} />
     </div>
   )
 }

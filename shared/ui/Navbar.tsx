@@ -21,6 +21,10 @@ export function Navbar() {
           <Link href="/market" className="text-xs text-gray-600 hover:text-[var(--blue)] transition-colors ml-1 sm:ml-2">
             시장
           </Link>
+          <Link href="/macro" className="text-xs text-gray-600 hover:text-[var(--yellow)] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
+            매크로
+            <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
+          </Link>
           <Link href="/market/treemap" className="text-xs text-gray-600 hover:text-[var(--blue)] transition-colors ml-1 sm:ml-2">
             트리맵
           </Link>
@@ -29,7 +33,7 @@ export function Navbar() {
             <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
           </Link>
           <Link href="/sectors/leaders" className="text-xs text-gray-600 hover:text-[var(--blue)] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
-            대장주
+            글로벌대장주
             <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
           </Link>
           <Link href="/information" className="text-xs text-gray-600 hover:text-[var(--green)] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
@@ -38,10 +42,6 @@ export function Navbar() {
           </Link>
           <Link href="/scenario" className="text-xs text-gray-600 hover:text-[var(--blue)] transition-colors ml-1 sm:ml-2 flex items-center gap-1 font-bold">
             시나리오
-            <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
-          </Link>
-          <Link href="/macro" className="text-xs text-gray-600 hover:text-[var(--yellow)] transition-colors ml-1 sm:ml-2 flex items-center gap-1">
-            매크로
             <span className="text-[8px] px-1 py-px rounded bg-red-500 text-white font-bold leading-tight animate-pulse">NEW</span>
           </Link>
           <Link href="/quant" className="text-xs text-gray-600 hover:text-[var(--yellow)] transition-colors ml-1 sm:ml-2 flex items-center gap-1">

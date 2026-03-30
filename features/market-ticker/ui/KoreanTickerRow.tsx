@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { KoreanTicker } from '../types'
+import { KoreanTicker, WorldIndex } from '../types'
 import { isMarketOpen } from '@/shared/lib/marketUtils'
 
 function TickerChip({ ticker, onClick }: { ticker: KoreanTicker; onClick?: () => void }) {
@@ -30,7 +30,7 @@ function TickerChip({ ticker, onClick }: { ticker: KoreanTicker; onClick?: () =>
   )
 }
 
-export function KoreanTickerRow({ tickers }: { tickers: KoreanTicker[] }) {
+export function KoreanTickerRow({ tickers, usdkrw }: { tickers: KoreanTicker[]; usdkrw?: WorldIndex }) {
   const router = useRouter()
   if (!tickers.length) return null
 
@@ -53,9 +53,18 @@ export function KoreanTickerRow({ tickers }: { tickers: KoreanTicker[] }) {
         </span>
       </div>
 
-      {/* KOSPI / KOSDAQ 고정 */}
+      {/* KOSPI / KOSDAQ / 환율 고정 */}
       <div className="flex border-r border-[var(--border)] shrink-0">
         {indices.map(t => <TickerChip key={t.code} ticker={t} />)}
+        {usdkrw && (
+          <div className="flex items-center gap-2 px-4 h-11 border-r border-[var(--border)]/40 whitespace-nowrap cursor-default shrink-0">
+            <span className="text-sm font-medium text-[var(--text-dim)]">환율</span>
+            <span className="text-[var(--text-primary)] text-sm font-mono font-bold">{usdkrw.price.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span className={`text-sm font-mono font-bold ${usdkrw.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
+              {usdkrw.changePercent >= 0 ? '+' : ''}{usdkrw.changePercent.toFixed(2)}%
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 구분선 */}
