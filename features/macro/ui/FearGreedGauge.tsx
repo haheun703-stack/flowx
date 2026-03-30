@@ -106,37 +106,43 @@ export function FearGreedGauge() {
   const vixAlert = vixValue >= 25
 
   return (
-    <div className="bg-white rounded-xl p-6 min-h-[200px]">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="bg-white rounded-xl overflow-hidden">
+      {/* CategoryCard 동일 헤더 스타일 */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--border)]/50">
         <span className="text-lg">😱</span>
-        <span className="text-base font-bold text-[var(--text-primary)]">공포 & 탐욕 지수</span>
-        {fgItem && (
-          <span className="text-xs text-[var(--text-muted)] ml-auto">{data?.date}</span>
-        )}
+        <span className="text-lg font-bold" style={{ color: '#ef4444' }}>공포 & 탐욕</span>
       </div>
 
-      {fgItem ? (
-        <SemiCircleGauge value={fgValue} />
-      ) : (
-        <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-sm">
-          F&G 데이터 없음
-        </div>
-      )}
-
-      {/* VIX 경고 */}
-      {vixItem && (
-        <div className={`mt-2 flex items-center justify-between px-3 py-2 rounded ${
-          vixAlert ? 'bg-red-50 border border-red-200' : 'bg-[var(--bg-base)]'
-        }`}>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-[var(--text-primary)]">VIX</span>
-            {vixAlert && <span className="text-xs text-[var(--up)] font-bold animate-pulse">경고</span>}
+      <div className="p-3">
+        {fgItem ? (
+          <SemiCircleGauge value={fgValue} size={200} />
+        ) : (
+          <div className="flex items-center justify-center h-24 text-[var(--text-muted)] text-sm">
+            F&G 데이터 없음
           </div>
-          <span className={`text-lg font-black tabular-nums ${vixAlert ? 'text-[var(--up)]' : 'text-[var(--text-primary)]'}`}>
-            {vixValue.toFixed(1)}
-          </span>
-        </div>
-      )}
+        )}
+
+        {/* VIX */}
+        {vixItem && (
+          <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
+            vixAlert ? 'bg-red-50 border border-red-200' : 'hover:bg-gray-50'
+          }`}>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-[var(--text-primary)] font-medium">VIX</span>
+              {vixAlert && <span className="text-xs text-[var(--up)] font-bold animate-pulse">!</span>}
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className="text-base text-[var(--text-primary)] font-bold tabular-nums">{vixValue.toFixed(1)}</span>
+              {vixItem.change_pct != null && (
+                <span className={`text-sm font-bold tabular-nums w-16 text-right`}
+                  style={{ color: vixItem.change_pct >= 0 ? '#dc2626' : '#2563eb' }}>
+                  {vixItem.change_pct >= 0 ? '+' : ''}{vixItem.change_pct.toFixed(2)}%
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

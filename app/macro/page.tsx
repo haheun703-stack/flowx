@@ -2,7 +2,6 @@
 
 import { CONTAINER, PAGE, PAGE_HEADER } from '@/shared/lib/card-styles'
 import { MacroRadarPanel } from '@/features/macro/ui/MacroRadarPanel'
-import { FearGreedGauge } from '@/features/macro/ui/FearGreedGauge'
 import { CostFloorGauge } from '@/features/macro/ui/CostFloorGauge'
 
 export default function MacroDashboardPage() {
@@ -23,15 +22,8 @@ export default function MacroDashboardPage() {
         {/* 1. 매크로 레이더 4분할 (M카드들 자체 포함) */}
         <MacroRadarPanel />
 
-        {/* 2. 공포탐욕 게이지 (1) + 원가 바닥/천장 (2) — 1:2 비율 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-1">
-            <FearGreedGauge />
-          </div>
-          <div className="lg:col-span-2">
-            <CostFloorGauge />
-          </div>
-        </div>
+        {/* 2. 원가 바닥/천장 게이지 (전체 너비) */}
+        <CostFloorGauge />
       </div>
     </div>
   )

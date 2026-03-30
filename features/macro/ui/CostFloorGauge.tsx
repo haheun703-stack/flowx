@@ -118,7 +118,7 @@ export function CostFloorGauge() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className="h-48 bg-white border border-[var(--border)] rounded-lg animate-pulse" />
         ))}
@@ -147,7 +147,7 @@ export function CostFloorGauge() {
           원가 데이터 없음
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {items.map(item => <GaugeCard key={item.symbol} item={item} />)}
         </div>
       )}

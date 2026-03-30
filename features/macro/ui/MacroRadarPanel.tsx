@@ -1,6 +1,7 @@
 'use client'
 
 import { useMacroDaily, type MacroItem } from '../api/useMacroDashboard'
+import { FearGreedGauge } from './FearGreedGauge'
 
 const CATEGORY_META: Record<string, { title: string; icon: string; accentColor: string }> = {
   commodity: { title: '원자재', icon: '🛢️', accentColor: '#f59e0b' },
@@ -131,6 +132,8 @@ export function MacroRadarPanel() {
               if (!items?.length) return null
               return <CategoryCard key={cat} category={cat} items={items} />
             })}
+            {/* 첫 번째 컬럼(원자재) 아래에 공포&탐욕 배치 */}
+            {qi === 0 && <FearGreedGauge />}
           </div>
         ))}
       </div>
