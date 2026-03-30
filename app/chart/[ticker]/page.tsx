@@ -17,7 +17,7 @@ export default async function ChartPage({ params }: { params: Promise<{ ticker: 
   return (
     <main>
       <div className="px-4 pt-4 pb-2">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-[var(--text-primary)]">
           수급 X-Ray
           <span className="ml-2 text-sm text-blue-400 font-normal">외인 · 기관 · 개인 순매수 분석</span>
         </h1>

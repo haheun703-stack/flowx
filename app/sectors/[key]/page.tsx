@@ -14,7 +14,7 @@ export default async function SectorPage({
   }
 
   return (
-    <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden mx-4 mt-4 mb-8" style={{ minHeight: '80vh' }}>
+    <div className="bg-[var(--bg-panel)] rounded-xl border border-[var(--border)] overflow-hidden mx-4 mt-4 mb-8" style={{ minHeight: '80vh' }}>
       <SectorMapView initialSector={key} userTier="free" />
     </div>
   )

@@ -25,10 +25,10 @@ export default function InformationPage() {
       {/* 4. 글로벌 + 국내 핫이슈 (M카드 2열) */}
       <div className={GRID.col2}>
         <div className={CARD_INNER.M}>
-          <HotIssuesPanel scope="GLOBAL" title="글로벌 핫이슈" accentColor="#0ea5e9" />
+          <HotIssuesPanel scope="GLOBAL" title="글로벌 핫이슈" accentColor="var(--blue)" />
         </div>
         <div className={CARD_INNER.M}>
-          <HotIssuesPanel scope="DOMESTIC" title="국내 핫이슈" accentColor="#ff3b5c" />
+          <HotIssuesPanel scope="DOMESTIC" title="국내 핫이슈" accentColor="var(--red)" />
         </div>
       </div>
     </div>

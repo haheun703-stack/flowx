@@ -604,7 +604,7 @@ export default function JarvisControlTower() {
               <div className="space-y-2">
                 {Object.entries(stats).map(([grade, count]) => (
                   <div key={grade} className="flex items-center justify-between">
-                    <span className={`text-xs px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-700 text-[var(--text-dim)]"}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
                       {grade}
                     </span>
                     <div className="flex-1 mx-3 bg-gray-200 rounded-full h-2">
@@ -879,7 +879,7 @@ function PickRow({ pick }: { pick: PickItem }) {
     <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <span className={`text-xs px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-700 text-[var(--text-dim)]"}`}>
+          <span className={`text-xs px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
             {pick.grade}
           </span>
           <span className="text-[var(--text-primary)] font-medium">{pick.name}</span>
@@ -1313,7 +1313,7 @@ function PerformanceTab({ performance, cfo, cto }: {
                 const color = d.avg_hit_rate >= 60 ? "bg-green-500" : d.avg_hit_rate >= 40 ? "bg-yellow-500" : "bg-red-500";
                 return (
                   <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                    <span className="text-gray-200 text-xs font-bold">{d.avg_hit_rate}%</span>
+                    <span className="text-[var(--text-primary)] text-xs font-bold">{d.avg_hit_rate}%</span>
                     <div className="w-full flex justify-center" style={{ height: "80px" }}>
                       <div
                         className={`${color} rounded-t w-full max-w-[40px] transition-all`}

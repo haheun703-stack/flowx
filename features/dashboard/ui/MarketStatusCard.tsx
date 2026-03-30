@@ -20,8 +20,8 @@ export function MarketStatusCard() {
 
   if (isLoading || !data) return <CardSkeleton />
 
-  const stanceColor = STANCE_COLORS[data.market_stance] ?? 'text-gray-400'
-  const regimeColor = REGIME_COLORS[data.kospi_regime] ?? 'text-gray-400'
+  const stanceColor = STANCE_COLORS[data.market_stance] ?? 'text-[var(--text-dim)]'
+  const regimeColor = REGIME_COLORS[data.kospi_regime] ?? 'text-[var(--text-dim)]'
 
   return (
     <DashboardCard title="장세 판단" icon="📊" updatedAt={data.generated_at}>
@@ -35,23 +35,23 @@ export function MarketStatusCard() {
 
         {/* 지표 그리드 */}
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-gray-900/50 rounded-lg p-2">
+          <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-gray-500">KOSPI</span>
             <p className={`font-semibold ${regimeColor}`}>{data.kospi_regime}</p>
           </div>
-          <div className="bg-gray-900/50 rounded-lg p-2">
+          <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-gray-500">US</span>
-            <p className={`font-semibold ${REGIME_COLORS[data.us_grade] ?? 'text-gray-400'}`}>
+            <p className={`font-semibold ${REGIME_COLORS[data.us_grade] ?? 'text-[var(--text-dim)]'}`}>
               {data.us_grade}
             </p>
           </div>
-          <div className="bg-gray-900/50 rounded-lg p-2">
+          <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-gray-500">매수 슬롯</span>
-            <p className="font-semibold text-white">{data.kospi_slots}개</p>
+            <p className="font-semibold text-[var(--text-primary)]">{data.kospi_slots}개</p>
           </div>
-          <div className="bg-gray-900/50 rounded-lg p-2">
+          <div className="bg-gray-50 rounded-lg p-2">
             <span className="text-gray-500">릴레이</span>
-            <p className="font-semibold text-white">
+            <p className="font-semibold text-[var(--text-primary)]">
               {data.relay_fired}/{data.relay_signals}
             </p>
           </div>

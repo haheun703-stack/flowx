@@ -17,8 +17,8 @@ export default async function StockDetailPage({
     <div className={PAGE} style={{ zoom: 1.25 }}>
       <div className={PAGE_HEADER}>
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-wider uppercase text-white">Stock Detail</h1>
-          <span className="text-sm font-mono text-[#0ea5e9]">{ticker}</span>
+          <h1 className="text-2xl font-bold tracking-wider uppercase text-[var(--text-primary)]">Stock Detail</h1>
+          <span className="text-sm font-mono text-[var(--blue)]">{ticker}</span>
         </div>
       </div>
       <div className={`${CONTAINER} pt-6`}>

@@ -11,7 +11,7 @@ export default function MacroDashboardPage() {
       {/* 페이지 헤더 */}
       <div className={PAGE_HEADER}>
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-wider uppercase text-white">Macro Dashboard</h1>
+          <h1 className="text-2xl font-bold tracking-wider uppercase text-[var(--text-primary)]">Macro Dashboard</h1>
           <span className="text-xs px-2 py-0.5 rounded border border-[#f59e0b]/40 text-[#f59e0b] font-bold">
             SIGNAL
           </span>

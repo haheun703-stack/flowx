@@ -7,7 +7,7 @@ export default function DartPage() {
   return (
     <div className={`${CONTAINER} pt-6`}>
       <div className={`${CARD_INNER.M} !min-h-[600px]`}>
-        <DisclosuresPanel source="DART" title="DART 공시" accentColor="#00ff88" />
+        <DisclosuresPanel source="DART" title="DART 공시" accentColor="var(--green)" />
       </div>
     </div>
   )
