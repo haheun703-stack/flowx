@@ -8,6 +8,7 @@ import CommodityTable from './CommodityTable'
 import ScenarioStockCard from './ScenarioStockCard'
 import ScenarioETFMap from './ScenarioETFMap'
 import ScenarioGuide from './ScenarioGuide'
+import DeepAnalysisPanel from './DeepAnalysisPanel'
 
 export default function ScenarioDashboardView() {
   const [data, setData] = useState<ScenarioDashboard | null>(null)
@@ -73,6 +74,13 @@ export default function ScenarioDashboardView() {
         <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">원자재 원가갭 분석</h2>
         <CommodityTable commodities={data.commodities} />
       </section>
+
+      {(data.deep_analyses?.length ?? 0) > 0 && (
+        <section>
+          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">심층 분석</h2>
+          <DeepAnalysisPanel analyses={data.deep_analyses!} />
+        </section>
+      )}
 
       {(data.scenario_stocks?.length ?? 0) > 0 && (
         <section>

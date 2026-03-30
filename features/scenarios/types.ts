@@ -7,6 +7,34 @@ export interface ScenarioDashboard {
   scenario_stocks: ScenarioStock[]
   etf_map: ScenarioETF[]
   conflicts: SupplyConflict[]
+  deep_analyses?: DeepAnalysis[]
+}
+
+export interface DeepAnalysis {
+  scenario_id: string
+  title: string
+  updated: string
+  summary: string
+  key_numbers: Record<string, number>
+  beneficiaries: Beneficiary[]
+  oil_scenarios: OilScenario[]
+  charts_html: Record<string, string>
+}
+
+export interface Beneficiary {
+  name: string
+  earned_bil: number
+  type: string
+  stop_condition: string
+  tickers_us?: string[]
+  tickers_kr?: string[]
+}
+
+export interface OilScenario {
+  name: string
+  wti_q2: number
+  wti_q4: number
+  probability: number
 }
 
 export interface MarketStatus {
