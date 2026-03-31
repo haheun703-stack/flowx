@@ -5,6 +5,7 @@ import {
   createChart,
   AreaSeries,
   LineSeries,
+  BaselineSeries,
   LineStyle,
   type IChartApi,
   type ISeriesApi,
@@ -17,7 +18,6 @@ const KR_UP = '#dc2626'
 const KR_DOWN = '#2563eb'
 
 // 투자자 색상
-const FOREIGN_COLOR = '#000000'  // 외국인 = 검정 (진하게)
 const INST_COLOR = '#ca8a04'     // 기관 = 진한 노랑
 const INDIV_COLOR = '#059669'    // 개인 = 진한 초록
 
@@ -44,7 +44,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const foreignRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const foreignRef = useRef<ISeriesApi<'Baseline'> | null>(null)
   const instRef = useRef<ISeriesApi<'Line'> | null>(null)
   const indivRef = useRef<ISeriesApi<'Line'> | null>(null)
 
@@ -95,20 +95,26 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       crosshairMarkerRadius: 4,
     })
 
-    // 투자자 라인 시리즈 (왼쪽 축)
-    const foreignLine = chart.addSeries(LineSeries, {
-      color: FOREIGN_COLOR,
+    // 외국인: BaselineSeries (0선 기준 영역 채우기)
+    const foreignLine = chart.addSeries(BaselineSeries, {
+      baseValue: { type: 'price', price: 0 },
+      topLineColor: 'rgba(220,38,38,0.8)',
+      topFillColor1: 'rgba(220,38,38,0.15)',
+      topFillColor2: 'rgba(220,38,38,0.02)',
+      bottomLineColor: 'rgba(37,99,235,0.8)',
+      bottomFillColor1: 'rgba(37,99,235,0.02)',
+      bottomFillColor2: 'rgba(37,99,235,0.15)',
       lineWidth: 2,
-      lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
       lastValueVisible: false,
       crosshairMarkerVisible: false,
     })
 
+    // 기관: 얇은 라인
     const instLine = chart.addSeries(LineSeries, {
       color: INST_COLOR,
-      lineWidth: 2,
+      lineWidth: 1,
       lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
@@ -116,9 +122,10 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
       crosshairMarkerVisible: false,
     })
 
+    // 개인: 얇은 라인
     const indivLine = chart.addSeries(LineSeries, {
       color: INDIV_COLOR,
-      lineWidth: 2,
+      lineWidth: 1,
       lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
@@ -189,9 +196,22 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     // 백만원 → 억원 변환
     const toEok = (v: number) => Math.round(v / 100)
 
-    foreignLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.foreign_net) })))
-    instLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.inst_net) })))
-    indivLine.setData(investorFlow.map(p => ({ time: toTime(p.date), value: toEok(p.indiv_net) })))
+    // 3일 이동평균 스무딩
+    function smooth(arr: number[], window = 3): number[] {
+      return arr.map((_, i) => {
+        const start = Math.max(0, i - window + 1)
+        const slice = arr.slice(start, i + 1)
+        return Math.round(slice.reduce((s, v) => s + v, 0) / slice.length)
+      })
+    }
+
+    const foreignVals = smooth(investorFlow.map(p => toEok(p.foreign_net)))
+    const instVals = smooth(investorFlow.map(p => toEok(p.inst_net)))
+    const indivVals = smooth(investorFlow.map(p => toEok(p.indiv_net)))
+
+    foreignLine.setData(investorFlow.map((p, i) => ({ time: toTime(p.date), value: foreignVals[i] })))
+    instLine.setData(investorFlow.map((p, i) => ({ time: toTime(p.date), value: instVals[i] })))
+    indivLine.setData(investorFlow.map((p, i) => ({ time: toTime(p.date), value: indivVals[i] })))
   }, [investorFlow])
 
   const label = mode === 'daily' ? `${indexLabel} 30일 추이` : `${indexLabel} 종합지수`
@@ -228,16 +248,16 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
         {hasFlow && (
           <div className="flex items-center gap-3 mr-4">
             <span className="flex items-center gap-1">
-              <span className="inline-block w-4 border-t-2" style={{ borderColor: FOREIGN_COLOR }} />
-              <span className="text-[10px] font-mono text-[var(--text-muted)]">외국인</span>
+              <span className="inline-block w-4 h-2.5 rounded-sm" style={{ background: 'linear-gradient(to bottom, rgba(220,38,38,0.3), rgba(37,99,235,0.3))' }} />
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">외국인 순매수</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="inline-block w-4 border-t-2" style={{ borderColor: INST_COLOR }} />
-              <span className="text-[10px] font-mono text-[var(--text-muted)]">기관</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">기관 순매수</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="inline-block w-4 border-t-2" style={{ borderColor: INDIV_COLOR }} />
-              <span className="text-[10px] font-mono text-[var(--text-muted)]">개인</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">개인 순매수</span>
             </span>
           </div>
         )}
