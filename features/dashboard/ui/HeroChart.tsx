@@ -17,9 +17,9 @@ const KR_UP = '#dc2626'
 const KR_DOWN = '#2563eb'
 
 // 투자자 색상
-const FOREIGN_COLOR = '#111827'  // 외국인 = 검정
-const INST_COLOR = '#eab308'     // 기관 = 노랑
-const INDIV_COLOR = '#00ff88'    // 개인 = FlowX 형광초록
+const FOREIGN_COLOR = '#000000'  // 외국인 = 검정 (진하게)
+const INST_COLOR = '#ca8a04'     // 기관 = 진한 노랑
+const INDIV_COLOR = '#059669'    // 개인 = 진한 초록
 
 export interface InvestorFlowPoint {
   date: string
@@ -99,7 +99,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     const foreignLine = chart.addSeries(LineSeries, {
       color: FOREIGN_COLOR,
       lineWidth: 2,
-      lineStyle: LineStyle.Dashed,
+      lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
       lastValueVisible: false,
@@ -109,7 +109,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     const instLine = chart.addSeries(LineSeries, {
       color: INST_COLOR,
       lineWidth: 2,
-      lineStyle: LineStyle.Dashed,
+      lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
       lastValueVisible: false,
@@ -119,7 +119,7 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
     const indivLine = chart.addSeries(LineSeries, {
       color: INDIV_COLOR,
       lineWidth: 2,
-      lineStyle: LineStyle.Dashed,
+      lineStyle: LineStyle.Solid,
       priceScaleId: 'left',
       priceLineVisible: false,
       lastValueVisible: false,
@@ -228,15 +228,15 @@ export function HeroChart({ data, currentPrice, change, changePercent, marketOpe
         {hasFlow && (
           <div className="flex items-center gap-3 mr-4">
             <span className="flex items-center gap-1">
-              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: FOREIGN_COLOR }} />
+              <span className="inline-block w-4 border-t-2" style={{ borderColor: FOREIGN_COLOR }} />
               <span className="text-[10px] font-mono text-[var(--text-muted)]">외국인</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: INST_COLOR }} />
+              <span className="inline-block w-4 border-t-2" style={{ borderColor: INST_COLOR }} />
               <span className="text-[10px] font-mono text-[var(--text-muted)]">기관</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="inline-block w-4 border-t-2 border-dashed" style={{ borderColor: INDIV_COLOR }} />
+              <span className="inline-block w-4 border-t-2" style={{ borderColor: INDIV_COLOR }} />
               <span className="text-[10px] font-mono text-[var(--text-muted)]">개인</span>
             </span>
           </div>
