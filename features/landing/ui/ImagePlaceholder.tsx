@@ -9,11 +9,11 @@ export function ImagePlaceholder({
 }) {
   return (
     <div
-      className={`relative rounded-2xl bg-[#FFF8E7] border border-[#E8E0D0] overflow-hidden shadow-xl ${className}`}
+      className={`relative rounded-2xl bg-[#EDFFF4] border border-[#B8E8CC] overflow-hidden shadow-xl ${className}`}
       style={{ aspectRatio }}
     >
       {/* 상단 브라우저 바 */}
-      <div className="absolute top-0 inset-x-0 h-8 bg-[#F5EED8] flex items-center gap-1.5 px-3 border-b border-[#E8E0D0]">
+      <div className="absolute top-0 inset-x-0 h-8 bg-[#D8F5E5] flex items-center gap-1.5 px-3 border-b border-[#B8E8CC]">
         <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
@@ -25,7 +25,7 @@ export function ImagePlaceholder({
         {/* 상단 지수 바 */}
         <div className="flex gap-2">
           {['KOSPI', 'KOSDAQ', 'S&P 500', 'NASDAQ'].map((idx) => (
-            <div key={idx} className="flex-1 bg-white rounded-lg px-3 py-2 border border-[#E8E0D0]">
+            <div key={idx} className="flex-1 bg-white rounded-lg px-3 py-2 border border-[#B8E8CC]">
               <div className="text-[9px] text-[#6B7280] font-mono">{idx}</div>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-[11px] text-[#1A1A2E] font-mono font-bold">
@@ -42,7 +42,7 @@ export function ImagePlaceholder({
         {/* 메인 콘텐츠 */}
         <div className="flex gap-3 flex-1 min-h-0">
           {/* 좌측: 히트맵 */}
-          <div className="flex-[2] bg-white rounded-lg border border-[#E8E0D0] p-3 flex flex-col">
+          <div className="flex-[2] bg-white rounded-lg border border-[#B8E8CC] p-3 flex flex-col">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] text-[#6B7280] font-mono font-bold">섹터 히트맵</span>
               <span className="text-[8px] text-[#16A34A] font-mono font-bold">LIVE</span>
@@ -70,7 +70,7 @@ export function ImagePlaceholder({
           </div>
 
           {/* 우측: 종목 리스트 */}
-          <div className="flex-1 bg-white rounded-lg border border-[#E8E0D0] p-3">
+          <div className="flex-1 bg-white rounded-lg border border-[#B8E8CC] p-3">
             <div className="text-[10px] text-[#6B7280] font-mono font-bold mb-2">AI 추천 TOP</div>
             <div className="space-y-1.5">
               {[
@@ -95,7 +95,7 @@ export function ImagePlaceholder({
       </div>
 
       {/* 하단 그래디언트 페이드 */}
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#FFF8E7] to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#EDFFF4] to-transparent pointer-events-none" />
     </div>
   )
 }
