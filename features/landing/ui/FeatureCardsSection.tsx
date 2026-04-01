@@ -52,7 +52,7 @@ export function FeatureCardsSection() {
           {CARDS.map((card, i) => (
             <div
               key={card.title}
-              className={`landing-card p-8 hover:shadow-lg transition-all duration-300 ${
+              className={`p-8 rounded-2xl bg-white border-2 border-[#00FF88]/40 hover:border-[#00FF88] hover:shadow-lg hover:shadow-[#00FF88]/10 transition-all duration-300 ${
                 visible ? 'landing-animate' : 'opacity-0'
               }`}
               style={{ animationDelay: `${i * 0.1}s` }}
