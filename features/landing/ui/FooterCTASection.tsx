@@ -16,7 +16,7 @@ export function FooterCTASection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/auth/signup"
-            className="px-8 py-3.5 bg-[var(--landing-accent)] text-white font-semibold rounded-xl hover:bg-[var(--landing-accent-hover)] transition-colors"
+            className="px-8 py-3.5 bg-[var(--landing-accent)] text-[#1A1A2E] font-semibold rounded-xl hover:bg-[var(--landing-accent-hover)] transition-colors"
           >
             무료로 시작하기 →
           </Link>

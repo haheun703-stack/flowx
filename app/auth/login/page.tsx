@@ -89,7 +89,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[var(--landing-accent)] text-white font-semibold text-sm rounded-lg
+            className="w-full py-3 bg-[var(--landing-accent)] text-[#1A1A2E] font-semibold text-sm rounded-lg
                        hover:bg-[var(--landing-accent-hover)] transition-all disabled:opacity-50"
           >
             {loading ? '로그인 중...' : '로그인'}

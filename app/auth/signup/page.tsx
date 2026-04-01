@@ -133,7 +133,7 @@ export default function SignupPage() {
           </p>
           <Link
             href="/auth/login"
-            className="inline-block px-6 py-3 bg-[var(--landing-accent)] text-white font-semibold text-sm rounded-lg hover:bg-[var(--landing-accent-hover)] transition-all"
+            className="inline-block px-6 py-3 bg-[var(--landing-accent)] text-[#1A1A2E] font-semibold text-sm rounded-lg hover:bg-[var(--landing-accent-hover)] transition-all"
           >
             로그인하기
           </Link>
@@ -345,7 +345,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full py-3 bg-[var(--landing-accent)] text-white font-semibold text-sm rounded-lg
+            className="w-full py-3 bg-[var(--landing-accent)] text-[#1A1A2E] font-semibold text-sm rounded-lg
                        hover:bg-[var(--landing-accent-hover)] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {loading ? '가입 중...' : '무료로 시작하기'}

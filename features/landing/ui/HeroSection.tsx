@@ -33,7 +33,7 @@ export function HeroSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
           <Link
             href="/dashboard"
-            className="px-8 py-3.5 bg-[var(--landing-accent)] text-white font-semibold text-base rounded-xl hover:bg-[var(--landing-accent-hover)] transition-all hover:shadow-lg hover:shadow-[var(--landing-accent)]/20"
+            className="px-8 py-3.5 bg-[var(--landing-accent)] text-[#1A1A2E] font-semibold text-base rounded-xl hover:bg-[var(--landing-accent-hover)] transition-all hover:shadow-lg hover:shadow-[var(--landing-accent)]/20"
           >
             대시보드 바로가기 →
           </Link>

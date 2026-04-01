@@ -83,7 +83,7 @@ export function LandingPricingSection() {
               }`}
             >
               {plan.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--landing-accent)] text-white text-xs font-semibold rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--landing-accent)] text-[#1A1A2E] text-xs font-semibold rounded-full">
                   인기
                 </div>
               )}
@@ -107,7 +107,7 @@ export function LandingPricingSection() {
                 href={plan.href}
                 className={`block text-center py-3 rounded-xl font-semibold text-sm transition-colors ${
                   plan.highlight
-                    ? 'bg-[var(--landing-accent)] text-white hover:bg-[var(--landing-accent-hover)]'
+                    ? 'bg-[var(--landing-accent)] text-[#1A1A2E] hover:bg-[var(--landing-accent-hover)]'
                     : 'border border-[var(--landing-border)] text-[var(--landing-text)] hover:border-[var(--landing-accent)] hover:text-[var(--landing-accent)]'
                 }`}
               >

@@ -51,7 +51,7 @@ export function LandingNavbar() {
           </Link>
           <Link
             href="/auth/signup"
-            className="px-5 py-2 bg-[var(--landing-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--landing-accent-hover)] transition-colors"
+            className="px-5 py-2 bg-[var(--landing-accent)] text-[#1A1A2E] text-sm font-semibold rounded-lg hover:bg-[var(--landing-accent-hover)] transition-colors"
           >
             무료 시작
           </Link>
@@ -92,7 +92,7 @@ export function LandingNavbar() {
             </Link>
             <Link
               href="/auth/signup"
-              className="px-5 py-2 bg-[var(--landing-accent)] text-white text-sm font-semibold rounded-lg"
+              className="px-5 py-2 bg-[var(--landing-accent)] text-[#1A1A2E] text-sm font-semibold rounded-lg"
             >
               무료 시작
             </Link>
