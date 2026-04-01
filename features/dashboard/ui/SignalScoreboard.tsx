@@ -60,7 +60,7 @@ export function SignalScoreboard() {
           <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center">
             <div className="text-[9px] text-[#9CA3AF] mb-1">평균 수익률</div>
             <div className={`text-[18px] font-bold tabular-nums ${
-              avgReturn > 0 ? 'text-[#16A34A]' : avgReturn < 0 ? 'text-[#EF4444]' : 'text-[#9CA3AF]'
+              avgReturn > 0 ? 'text-[var(--up)]' : avgReturn < 0 ? 'text-[var(--down)]' : 'text-[#9CA3AF]'
             }`}>
               {avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%
             </div>

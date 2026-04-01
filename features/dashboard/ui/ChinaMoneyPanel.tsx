@@ -52,7 +52,7 @@ export function ChinaMoneyPanel() {
                   {SIGNAL_KR[item.signal] ?? item.signal}
                 </span>
                 <span className={`text-[10px] font-bold tabular-nums ${
-                  item.pct_change_5d >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                  item.pct_change_5d >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {item.pct_change_5d >= 0 ? '+' : ''}{item.pct_change_5d.toFixed(1)}%
                 </span>

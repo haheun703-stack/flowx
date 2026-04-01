@@ -12,9 +12,10 @@ import {
   type UTCTimestamp,
 } from 'lightweight-charts'
 
-// 투자자 색상
-const INST_COLOR = '#ca8a04'
-const INDIV_COLOR = '#059669'
+// 투자자 색상: 외국인=검정, 기관=노랑, 개인=형광녹색
+const FOREIGN_COLOR = '#1A1A2E'
+const INST_COLOR = '#EAB308'
+const INDIV_COLOR = '#00FF88'
 
 // FlowX 차트 라인 색상 (녹색 아이덴티티)
 const CHART_LINE = '#00CC6A'
@@ -98,15 +99,15 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
       crosshairMarkerRadius: 4,
     })
 
-    // 외국인: BaselineSeries (상승=파랑, 하락=빨강)
+    // 외국인: BaselineSeries (검정색 — 매수=실선, 매도=점선 느낌)
     const foreignLine = chart.addSeries(BaselineSeries, {
       baseValue: { type: 'price', price: 0 },
-      topLineColor: 'rgba(37,99,235,0.8)',
-      topFillColor1: 'rgba(37,99,235,0.15)',
-      topFillColor2: 'rgba(37,99,235,0.02)',
-      bottomLineColor: 'rgba(239,68,68,0.8)',
-      bottomFillColor1: 'rgba(239,68,68,0.02)',
-      bottomFillColor2: 'rgba(239,68,68,0.15)',
+      topLineColor: 'rgba(26,26,46,0.85)',
+      topFillColor1: 'rgba(26,26,46,0.12)',
+      topFillColor2: 'rgba(26,26,46,0.02)',
+      bottomLineColor: 'rgba(26,26,46,0.5)',
+      bottomFillColor1: 'rgba(26,26,46,0.02)',
+      bottomFillColor2: 'rgba(26,26,46,0.08)',
       lineWidth: 2,
       priceScaleId: 'left',
       priceLineVisible: false,
@@ -206,7 +207,7 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
       {/* 투자자 범례 */}
       <div className="flex items-center gap-3 mt-1">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-4 h-2.5 rounded-sm" style={{ background: 'linear-gradient(to bottom, rgba(37,99,235,0.3), rgba(239,68,68,0.3))' }} />
+          <span className="inline-block w-4 h-2.5 rounded-sm" style={{ background: FOREIGN_COLOR }} />
           <span className="text-[9px] text-[#B0ADA6]">외국인</span>
         </span>
         <span className="flex items-center gap-1">

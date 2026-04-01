@@ -59,12 +59,12 @@ export function BloombergDashboard() {
                 {chartData && chartData.currentPrice > 0 && (
                   <>
                     <span className={`text-[14px] font-medium tabular-nums ${
-                      chartData.changePercent >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                      chartData.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                     }`}>
                       {chartData.changePercent >= 0 ? '+' : ''}{chartData.changePercent.toFixed(2)}%
                     </span>
                     <span className={`text-[11px] tabular-nums ${
-                      chartData.changePercent >= 0 ? 'text-[#2563EB]/70' : 'text-[#EF4444]/70'
+                      chartData.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                     }`}>
                       ({chartData.change >= 0 ? '+' : ''}{chartData.change.toFixed(2)})
                     </span>
@@ -90,9 +90,9 @@ export function BloombergDashboard() {
                 const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}억`
                 return (
                   <div className="mt-2 text-[9px] text-[#B0ADA6] flex gap-3">
-                    <span>외국인 <span className={toEok(latest.foreign_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.foreign_net))}</span></span>
-                    <span>기관 <span className={toEok(latest.inst_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.inst_net))}</span></span>
-                    <span>개인 <span className={toEok(latest.indiv_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.indiv_net))}</span></span>
+                    <span>외국인 <span className={toEok(latest.foreign_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(latest.foreign_net))}</span></span>
+                    <span>기관 <span className={toEok(latest.inst_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(latest.inst_net))}</span></span>
+                    <span>개인 <span className={toEok(latest.indiv_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(latest.indiv_net))}</span></span>
                   </div>
                 )
               })()}

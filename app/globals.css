@@ -40,19 +40,19 @@
   --text-dim:      #6b7280;
   --text-muted:    #9ca3af;
 
-  /* 한국 증권사 스타일: 상승=파랑, 하락=빨강 */
-  --up:            #2563EB;
-  --down:          #EF4444;
-  --up-bg:         #EFF6FF;
-  --down-bg:       #FEE2E2;
+  /* 한국 증권사 스타일: 상승=빨강, 하락=파랑 */
+  --up:            #dc2626;
+  --down:          #2563eb;
+  --up-bg:         #FEE2E2;
+  --down-bg:       #EFF6FF;
 
-  /* 투자자 색상 */
-  --investor-foreign:     #64748b;
-  --investor-foreign-bg:  #f1f5f9;
-  --investor-inst:        #ec4899;
-  --investor-inst-bg:     #fce7f3;
-  --investor-individual:  #eab308;
-  --investor-individual-bg: #fef9c3;
+  /* 투자자 색상: 외국인=검정, 기관=노랑, 개인=형광녹색 */
+  --investor-foreign:     #1A1A2E;
+  --investor-foreign-bg:  #F3F4F6;
+  --investor-inst:        #EAB308;
+  --investor-inst-bg:     #FEF9C3;
+  --investor-individual:  #00FF88;
+  --investor-individual-bg: #E8F5E9;
 
   --font-terminal: var(--font-jetbrains), 'Fira Code', monospace;
 }
@@ -147,10 +147,10 @@ body {
   --fx-border-ticker: #ECEAE4;
   --fx-border-separator: #D1D5DB;
 
-  --fx-up: #2563EB;
-  --fx-up-bg: #EFF6FF;
-  --fx-down: #EF4444;
-  --fx-down-bg: #FEE2E2;
+  --fx-up: #dc2626;
+  --fx-up-bg: #FEE2E2;
+  --fx-down: #2563eb;
+  --fx-down-bg: #EFF6FF;
 
   --fx-grade-high: #16A34A;
   --fx-grade-mid: #2563EB;

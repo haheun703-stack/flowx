@@ -42,7 +42,7 @@ export function SectorMomentumTable() {
               <span className="text-[11px] text-[#1A1A2E] font-medium truncate">{s.sector}</span>
               <span className={`text-right font-bold tabular-nums ${scoreColor(s.score)}`}>{s.score}</span>
               <span className={`text-right font-bold tabular-nums ${
-                s.change_5d >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                s.change_5d >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
               }`}>
                 {s.change_5d >= 0 ? '+' : ''}{s.change_5d.toFixed(1)}%
               </span>

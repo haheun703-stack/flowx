@@ -37,11 +37,11 @@ export function SupplyRankPanel({ stocks, type }: {
             <span className="text-[11px] text-[#1A1A2E] font-bold truncate">{s.name}</span>
             <span className="text-right text-[#1A1A2E] tabular-nums">{s.price.toLocaleString()}</span>
             <span className={`text-right font-bold tabular-nums ${
-              s.changePercent >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+              s.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
             }`}>
               {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
             </span>
-            <span className="text-right font-bold tabular-nums text-[#2563EB]">
+            <span className="text-right font-bold tabular-nums text-[var(--up)]">
               {(() => {
                 const val = type === '외인' ? s.foreignNet : s.instNet
                 return `${val >= 0 ? '+' : ''}${val.toLocaleString()}억`

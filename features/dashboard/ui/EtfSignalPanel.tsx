@@ -49,7 +49,7 @@ export function EtfSignalPanel() {
                   {item.grade}
                 </span>
                 <span className={`text-[10px] font-bold tabular-nums ${
-                  item.ret_5 >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                  item.ret_5 >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {item.ret_5 >= 0 ? '+' : ''}{item.ret_5.toFixed(1)}%
                 </span>

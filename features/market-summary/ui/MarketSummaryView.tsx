@@ -35,10 +35,10 @@ function formatBil(n: number) {
 }
 
 function tempLabel(pct: number) {
-  if (pct <= 20) return { text: '매우 차가움', color: '#EF4444' }
+  if (pct <= 20) return { text: '매우 차가움', color: '#2563eb' }
   if (pct <= 40) return { text: '차가움', color: '#D97706' }
   if (pct <= 60) return { text: '보통', color: '#9CA3AF' }
-  if (pct <= 80) return { text: '따뜻함', color: '#2563EB' }
+  if (pct <= 80) return { text: '따뜻함', color: '#dc2626' }
   return { text: '매우 뜨거움', color: '#16A34A' }
 }
 
@@ -124,12 +124,12 @@ export function MarketSummaryView() {
               {chartData && chartData.currentPrice > 0 && (
                 <>
                   <span className={`text-[14px] font-medium tabular-nums ${
-                    chartData.changePercent >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                    chartData.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                   }`}>
                     {chartData.changePercent >= 0 ? '+' : ''}{chartData.changePercent.toFixed(2)}%
                   </span>
                   <span className={`text-[11px] tabular-nums ${
-                    chartData.changePercent >= 0 ? 'text-[#2563EB]/70' : 'text-[#EF4444]/70'
+                    chartData.changePercent >= 0 ? 'text-[var(--up)]/70' : 'text-[var(--down)]/70'
                   }`}>
                     ({chartData.change >= 0 ? '+' : ''}{chartData.change.toFixed(2)})
                   </span>
@@ -155,9 +155,9 @@ export function MarketSummaryView() {
               const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}억`
               return (
                 <div className="mt-2 text-[9px] text-[#B0ADA6] flex gap-3">
-                  <span>외국인 <span className={toEok(l.foreign_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(l.foreign_net))}</span></span>
-                  <span>기관 <span className={toEok(l.inst_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(l.inst_net))}</span></span>
-                  <span>개인 <span className={toEok(l.indiv_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(l.indiv_net))}</span></span>
+                  <span>외국인 <span className={toEok(l.foreign_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.foreign_net))}</span></span>
+                  <span>기관 <span className={toEok(l.inst_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.inst_net))}</span></span>
+                  <span>개인 <span className={toEok(l.indiv_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.indiv_net))}</span></span>
                 </div>
               )
             })()}
@@ -172,7 +172,7 @@ export function MarketSummaryView() {
                   {idx.price > 0 ? idx.price.toLocaleString(undefined, { maximumFractionDigits: idx.price >= 100 ? 0 : 2 }) : '—'}
                 </div>
                 <div className={`text-[10px] font-bold tabular-nums ${
-                  idx.change >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                  idx.change >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {idx.change >= 0 ? '+' : ''}{Number(idx.change).toFixed(2)}%
                 </div>
@@ -202,9 +202,9 @@ export function MarketSummaryView() {
                   <div className="flex h-[10px] rounded-[5px] overflow-hidden mb-2">
                     {totalStocks > 0 && (
                       <>
-                        <div className="bg-[#EF4444]" style={{ width: `${(latest.stocks_down / totalStocks) * 100}%` }} />
+                        <div className="bg-[var(--down)]" style={{ width: `${(latest.stocks_down / totalStocks) * 100}%` }} />
                         <div className="bg-[#D1D5DB]" style={{ width: `${(latest.stocks_flat / totalStocks) * 100}%` }} />
-                        <div className="bg-[#2563EB]" style={{ width: `${(latest.stocks_up / totalStocks) * 100}%` }} />
+                        <div className="bg-[var(--up)]" style={{ width: `${(latest.stocks_up / totalStocks) * 100}%` }} />
                       </>
                     )}
                   </div>
@@ -229,8 +229,8 @@ export function MarketSummaryView() {
                 <>
                   {[
                     { name: '외국인', value: latest.foreign_net, dotColor: '#1A1A2E' },
-                    { name: '기관', value: latest.inst_net, dotColor: '#EF4444' },
-                    { name: '개인', value: latest.individual_net, dotColor: '#F59E0B' },
+                    { name: '기관', value: latest.inst_net, dotColor: '#EAB308' },
+                    { name: '개인', value: latest.individual_net, dotColor: '#00FF88' },
                   ].map((inv) => (
                     <div key={inv.name} className="flex items-center justify-between py-2.5 border-b border-[#F5F4F0] last:border-0">
                       <div className="flex items-center gap-2">
@@ -238,7 +238,7 @@ export function MarketSummaryView() {
                         <span className="text-[11px] text-[#1A1A2E]">{inv.name}</span>
                       </div>
                       <span className={`text-[14px] font-bold tabular-nums ${
-                        inv.value >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                        inv.value >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                       }`}>
                         {formatBil(inv.value)}
                       </span>
@@ -276,25 +276,25 @@ export function MarketSummaryView() {
                     {history.map(row => (
                       <tr key={row.date} className="border-b border-[#F5F4F0] h-[36px] hover:bg-[#F0EDE8] transition-colors">
                         <td className="py-2 px-2 text-[11px] font-bold text-[#1A1A2E]">{row.date.slice(5)}</td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.kospi_change_pct >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.kospi_change_pct >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {row.kospi_change_pct >= 0 ? '+' : ''}{row.kospi_change_pct.toFixed(2)}%
                         </td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.kosdaq_change_pct >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.kosdaq_change_pct >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {row.kosdaq_change_pct >= 0 ? '+' : ''}{row.kosdaq_change_pct.toFixed(2)}%
                         </td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.sp500_change_pct >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.sp500_change_pct >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {row.sp500_change_pct >= 0 ? '+' : ''}{row.sp500_change_pct.toFixed(2)}%
                         </td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.nasdaq_change_pct >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.nasdaq_change_pct >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {row.nasdaq_change_pct >= 0 ? '+' : ''}{row.nasdaq_change_pct.toFixed(2)}%
                         </td>
                         <td className="text-right py-2 px-2 tabular-nums text-[#6B7280]">
                           {(row.breadth * 100).toFixed(1)}%
                         </td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.foreign_net >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.foreign_net >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {formatBil(row.foreign_net)}
                         </td>
-                        <td className={`text-right py-2 px-2 tabular-nums ${row.inst_net >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}`}>
+                        <td className={`text-right py-2 px-2 tabular-nums ${row.inst_net >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
                           {formatBil(row.inst_net)}
                         </td>
                       </tr>

@@ -65,13 +65,13 @@ export function MorningNewsPanel() {
             </div>
 
             {/* US 요약 */}
-            <div className="border-l-2 border-[#2563EB]/30 pl-2">
+            <div className="border-l-2 border-[var(--up)]/30 pl-2">
               <div className="text-[12px] font-semibold text-[#1A1A2E] mb-0.5">{data.us_summary?.split('.')[0]}.</div>
               <div className="text-[10px] text-[#6B7280] leading-relaxed">{data.us_summary}</div>
             </div>
 
             {/* KR 요약 */}
-            <div className="border-l-2 border-[#EF4444]/30 pl-2">
+            <div className="border-l-2 border-[var(--down)]/30 pl-2">
               <div className="text-[10px] text-[#6B7280] leading-relaxed">{data.kr_summary}</div>
             </div>
 

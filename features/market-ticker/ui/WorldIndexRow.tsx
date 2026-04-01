@@ -22,10 +22,10 @@ function IndexChip({ index }: { index: WorldIndex }) {
     : new Intl.NumberFormat('ko-KR', { maximumFractionDigits: index.currency === 'JPY' ? 0 : 2 }).format(index.price)
 
   return (
-    <div className="flex items-center gap-1.5 px-3 h-10 border-r border-[#D1D5DB]/30 whitespace-nowrap hover:bg-[#F0EDE8] transition-colors cursor-default shrink-0">
-      <span className="text-[10px] text-[#6B7280]">{index.name}</span>
-      <span className="text-[10px] font-bold text-[#1A1A2E] tabular-nums">{fmtPrice}</span>
-      <span className={`text-[10px] font-bold tabular-nums ${color}`}>
+    <div className="flex items-center gap-2 px-3.5 h-11 border-r border-[#D1D5DB]/30 whitespace-nowrap hover:bg-[#F0EDE8] transition-colors cursor-default shrink-0">
+      <span className="text-[11px] text-[#6B7280]">{index.name}</span>
+      <span className="text-[12px] font-bold text-[#1A1A2E] tabular-nums">{fmtPrice}</span>
+      <span className={`text-[11px] font-bold tabular-nums ${color}`}>
         {sign}{index.changePercent.toFixed(2)}%
       </span>
     </div>
@@ -36,7 +36,7 @@ function CategorySeparator({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-1 px-1.5 shrink-0">
       <div className="w-px h-4 bg-[#D1D5DB]/40" />
-      <span className="text-[8px] text-[#9CA3AF] font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-[9px] text-[#9CA3AF] font-bold uppercase tracking-widest">{label}</span>
       <div className="w-px h-4 bg-[#D1D5DB]/40" />
     </div>
   )
@@ -62,12 +62,12 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   }
 
   return (
-    <div className="flex items-center h-10 border-b border-[#ECEAE4] leading-none">
+    <div className="flex items-center h-11 border-b border-[#ECEAE4] leading-none">
       {/* LIVE + 글로벌 */}
-      <div className="flex items-center gap-1.5 px-3 h-full border-r border-[#ECEAE4] shrink-0">
-        <span className="w-[5px] h-[5px] rounded-full bg-[#00FF88] animate-pulse shrink-0" />
-        <span className="text-[9px] font-bold text-[#00CC6A]">LIVE</span>
-        <span className="text-[9px] text-[#9CA3AF]">글로벌</span>
+      <div className="flex items-center gap-2 px-4 h-full border-r border-[#ECEAE4] shrink-0">
+        <span className="w-[6px] h-[6px] rounded-full bg-[#00FF88] animate-pulse shrink-0" />
+        <span className="text-[11px] font-black text-[#00CC6A] tracking-wide">LIVE</span>
+        <span className="text-[11px] font-semibold text-[#6B7280]">글로벌</span>
       </div>
 
       {/* 고정: S&P, NASDAQ, DOW */}

@@ -98,7 +98,7 @@ export function MarketJudgmentCard() {
                   {s.price.toLocaleString()}
                 </span>
                 <span className={`text-[10px] font-bold tabular-nums ${
-                  s.changePercent >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                  s.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
                 </span>

@@ -3,11 +3,11 @@
 import { SectorData } from '../types'
 
 function getHeatStyle(pct: number): { bg: string; text: string } {
-  if (pct >= 15)  return { bg: '#DBEAFE', text: '#1D4ED8' }
-  if (pct >= 5)   return { bg: '#EFF6FF', text: '#2563EB' }
+  if (pct >= 15)  return { bg: '#FEE2E2', text: '#991B1B' }
+  if (pct >= 5)   return { bg: '#FEF2F2', text: '#dc2626' }
   if (pct >= 0)   return { bg: '#FEF9C3', text: '#A16207' }
-  if (pct >= -5)  return { bg: '#FEF2F2', text: '#DC2626' }
-  return { bg: '#FEE2E2', text: '#991B1B' }
+  if (pct >= -5)  return { bg: '#EFF6FF', text: '#2563eb' }
+  return { bg: '#DBEAFE', text: '#1D4ED8' }
 }
 
 export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
@@ -45,7 +45,7 @@ export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
       </div>
 
       <div className="fx-card-tip">
-        파란색이 진할수록 많이 오른 섹터, 빨간색은 내린 섹터예요
+        빨간색이 진할수록 많이 오른 섹터, 파란색은 내린 섹터예요
       </div>
     </div>
   )
