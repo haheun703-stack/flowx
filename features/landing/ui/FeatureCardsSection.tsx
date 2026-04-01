@@ -42,7 +42,7 @@ export function FeatureCardsSection() {
     <section id="features" className="py-24 px-6">
       <div ref={ref} className="max-w-[1200px] mx-auto">
         <h2 className="text-center text-2xl sm:text-[32px] font-semibold text-[var(--landing-text)] mb-4">
-          왜 <span className="text-[var(--landing-accent)]">FlowX</span>인가?
+          왜 Flow<span className="text-[#00FF88]">X</span>인가?
         </h2>
         <p className="text-center text-[var(--landing-text-sub)] mb-16 max-w-xl mx-auto">
           트레이딩뷰에는 없는 한국 주식 특화 기능을 제공합니다

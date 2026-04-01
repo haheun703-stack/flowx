@@ -33,7 +33,7 @@ export function FeatureSection() {
           핵심 기능
         </div>
         <h2 className="text-4xl sm:text-6xl font-bold font-display">
-          FLOWX를 통해 볼수 있는 것
+          FLOW<span className="text-[#00FF88]">X</span>를 통해 볼수 있는 것
         </h2>
       </div>
 
