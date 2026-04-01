@@ -205,9 +205,9 @@ body {
 }
 
 @utility fx-card-title {
-  font-size: 16px;
-  color: var(--fx-text-primary);
-  font-weight: 700;
+  font-size: 18px;
+  color: #1A1A2E;
+  font-weight: 800;
   letter-spacing: 0.3px;
   margin-bottom: 12px;
 }

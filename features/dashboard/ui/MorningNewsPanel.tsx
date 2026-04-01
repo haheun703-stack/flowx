@@ -38,7 +38,7 @@ export function MorningNewsPanel() {
               {rel.label}
             </span>
           )}
-          <span className="text-[13px] font-semibold text-[#C4C1BA]">{data?.date ?? ''}</span>
+          <span className="text-[14px] font-extrabold text-[#6B7280]">{data?.date ?? ''}</span>
         </div>
       </div>
 

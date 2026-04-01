@@ -22,7 +22,7 @@ export function EtfSignalPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       <div className="flex items-center justify-between">
         <span className="fx-card-title">ETF 시그널 (상위 5개)</span>
-        <span className="text-[14px] font-bold text-[#9CA3AF]">{dateStr}</span>
+        <span className="text-[14px] font-extrabold text-[#6B7280]">{dateStr}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">

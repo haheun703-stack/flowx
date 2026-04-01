@@ -42,7 +42,7 @@ export function AIRecommendPanel() {
               {rel.label}
             </span>
           )}
-          <span className="text-[14px] font-semibold text-[#C4C1BA]">{dateStr}</span>
+          <span className="text-[14px] font-extrabold text-[#6B7280]">{dateStr}</span>
         </div>
       </div>
 
