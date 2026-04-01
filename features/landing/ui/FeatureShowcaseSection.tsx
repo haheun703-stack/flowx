@@ -71,15 +71,15 @@ function ShowcaseRow({
   )
 }
 
-/* ── 브라우저 프레임 ── */
+/* ── 브라우저 프레임 (라이트 그린) ── */
 function BrowserFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl bg-[#0F1117] border border-[#1E2030] overflow-hidden shadow-2xl" style={{ aspectRatio: '4/3' }}>
-      <div className="h-8 bg-[#0A0B10] flex items-center gap-1.5 px-3 border-b border-[#1E2030]">
+    <div className="rounded-2xl bg-[#EDFFF4] border border-[#B8E8CC] overflow-hidden shadow-xl" style={{ aspectRatio: '4/3' }}>
+      <div className="h-8 bg-[#D8F5E5] flex items-center gap-1.5 px-3 border-b border-[#B8E8CC]">
         <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
         <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-        <span className="ml-4 text-[10px] text-white/20 font-mono">flowx.kr/dashboard</span>
+        <span className="ml-4 text-[10px] text-[#1A1A2E]/30 font-mono">flowx.kr/dashboard</span>
       </div>
       <div className="p-4">{children}</div>
     </div>
@@ -92,7 +92,7 @@ function MockScreen({ variant }: { variant: 'investor' | 'ai-recommend' | 'heatm
   return <HeatmapMock />
 }
 
-/* 1) 수급 X-Ray: 차트 + 투자자별 바 */
+/* 1) 수급 X-Ray */
 function InvestorMock() {
   const bars = [
     { label: '삼성전자', f: 85, i: 40, p: -60 },
@@ -104,30 +104,30 @@ function InvestorMock() {
   return (
     <BrowserFrame>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[11px] text-white/60 font-mono font-bold">KOSPI 투자자 수급 흐름</span>
-        <span className="text-[8px] text-[#00FF88]/60 font-mono font-bold">LIVE</span>
+        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">KOSPI 투자자 수급 흐름</span>
+        <span className="text-[8px] text-[#16A34A] font-mono font-bold">LIVE</span>
       </div>
-      {/* 미니 차트 라인 */}
+      {/* 미니 차트 */}
       <div className="mb-3 flex items-end gap-[2px] h-16">
         {[30,35,33,38,36,42,40,45,48,44,50,52,48,55,53,58,60,56,62,65,60,58,63,68,70,65,72,75,78,80].map((v, i) => (
-          <div key={i} className="flex-1 rounded-t" style={{ height: `${v}%`, background: v > 50 ? 'rgba(220,38,38,0.5)' : 'rgba(37,99,235,0.5)' }} />
+          <div key={i} className="flex-1 rounded-t" style={{ height: `${v}%`, background: v > 50 ? 'rgba(220,38,38,0.4)' : 'rgba(37,99,235,0.4)' }} />
         ))}
       </div>
       {/* 범례 */}
-      <div className="flex gap-4 mb-3 text-[9px] font-mono">
+      <div className="flex gap-4 mb-3 text-[9px] font-mono text-[#1A1A2E]/60">
         <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-[#1A1A2E]" />외국인</span>
         <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-[#EAB308]" />기관</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-[#00FF88]" />개인</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-2 rounded-sm bg-[#16A34A]" />개인</span>
       </div>
       {/* 종목별 수급 */}
       <div className="space-y-2">
         {bars.map(b => (
           <div key={b.label} className="flex items-center gap-2">
-            <span className="text-[9px] text-white/50 font-mono w-16 shrink-0">{b.label}</span>
+            <span className="text-[9px] text-[#1A1A2E]/60 font-mono w-16 shrink-0">{b.label}</span>
             <div className="flex-1 flex items-center gap-[1px] h-4">
-              {b.f > 0 && <div className="h-3 rounded-r bg-[#1A1A2E]/80" style={{ width: `${Math.abs(b.f)}%` }} />}
-              {b.i > 0 && <div className="h-3 rounded-r bg-[#EAB308]/60" style={{ width: `${Math.abs(b.i) * 0.6}%` }} />}
-              {b.p < 0 && <div className="h-3 rounded-r bg-[#00FF88]/40" style={{ width: `${Math.abs(b.p) * 0.5}%` }} />}
+              {b.f > 0 && <div className="h-3 rounded-r bg-[#1A1A2E]/70" style={{ width: `${Math.abs(b.f)}%` }} />}
+              {b.i > 0 && <div className="h-3 rounded-r bg-[#EAB308]/70" style={{ width: `${Math.abs(b.i) * 0.6}%` }} />}
+              {b.p < 0 && <div className="h-3 rounded-r bg-[#16A34A]/50" style={{ width: `${Math.abs(b.p) * 0.5}%` }} />}
             </div>
           </div>
         ))}
@@ -136,7 +136,7 @@ function InvestorMock() {
   )
 }
 
-/* 2) AI 추천: 테이블 */
+/* 2) AI 추천 */
 function AIRecommendMock() {
   const stocks = [
     { rank: 1, name: '삼성전자', score: 87, signal: '적극매수', price: '72,400', target: '85,000' },
@@ -149,40 +149,40 @@ function AIRecommendMock() {
   return (
     <BrowserFrame>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] text-white/60 font-mono font-bold">AI 추천 종목 (매수 시그널)</span>
-        <span className="text-[9px] text-white/30 font-mono">2026-03-28</span>
+        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">AI 추천 종목 (매수 시그널)</span>
+        <span className="text-[9px] text-[#1A1A2E]/40 font-mono">2026-03-28</span>
       </div>
-      <div className="grid text-[8px] text-white/30 font-mono pb-1 border-b border-white/10 mb-1"
+      <div className="grid text-[8px] text-[#1A1A2E]/40 font-mono pb-1 border-b border-[#B8E8CC] mb-1"
         style={{ gridTemplateColumns: '20px 1fr 50px 50px 44px 36px' }}>
         <span>#</span><span>종목</span><span className="text-right">현재가</span>
         <span className="text-right">목표가</span><span className="text-right">등급</span><span className="text-right">점수</span>
       </div>
       {stocks.map(s => (
-        <div key={s.rank} className="grid items-center py-1.5 border-b border-white/5 text-[9px] font-mono"
+        <div key={s.rank} className="grid items-center py-1.5 border-b border-[#B8E8CC]/50 text-[9px] font-mono"
           style={{ gridTemplateColumns: '20px 1fr 50px 50px 44px 36px' }}>
-          <span className="text-white/30">{s.rank}</span>
-          <span className="text-white/70 font-bold truncate">{s.name}</span>
-          <span className="text-right text-white/50">{s.price}</span>
-          <span className="text-right text-white/50">{s.target}</span>
+          <span className="text-[#1A1A2E]/40">{s.rank}</span>
+          <span className="text-[#1A1A2E]/80 font-bold truncate">{s.name}</span>
+          <span className="text-right text-[#1A1A2E]/60">{s.price}</span>
+          <span className="text-right text-[#1A1A2E]/60">{s.target}</span>
           <span className="text-right">
             <span className={`px-1 py-0.5 rounded text-[7px] font-bold ${
-              s.signal === '적극매수' ? 'bg-green-500/20 text-green-400' :
-              s.signal === '매수' ? 'bg-blue-500/20 text-blue-400' :
-              'bg-yellow-500/20 text-yellow-400'
+              s.signal === '적극매수' ? 'bg-[#16A34A]/15 text-[#16A34A]' :
+              s.signal === '매수' ? 'bg-[#2563EB]/15 text-[#2563EB]' :
+              'bg-[#EAB308]/15 text-[#B45309]'
             }`}>{s.signal}</span>
           </span>
-          <span className={`text-right font-bold ${s.score >= 70 ? 'text-green-400' : s.score >= 60 ? 'text-blue-400' : 'text-yellow-400'}`}>{s.score}</span>
+          <span className={`text-right font-bold ${s.score >= 70 ? 'text-[#16A34A]' : s.score >= 60 ? 'text-[#2563EB]' : 'text-[#B45309]'}`}>{s.score}</span>
         </div>
       ))}
       {/* 하단 적중률 */}
-      <div className="flex gap-3 mt-3 pt-2 border-t border-white/10">
+      <div className="flex gap-3 mt-3 pt-2 border-t border-[#B8E8CC]">
         {[
-          { label: '적중률', value: '78%', color: 'text-green-400' },
-          { label: '평균 수익률', value: '+5.2%', color: 'text-red-400' },
-          { label: '활성 시그널', value: '12건', color: 'text-blue-400' },
+          { label: '적중률', value: '78%', color: 'text-[#16A34A]' },
+          { label: '평균 수익률', value: '+5.2%', color: 'text-[#dc2626]' },
+          { label: '활성 시그널', value: '12건', color: 'text-[#2563EB]' },
         ].map(m => (
-          <div key={m.label} className="flex-1 bg-white/5 rounded-lg p-2 text-center">
-            <div className="text-[7px] text-white/30 font-mono">{m.label}</div>
+          <div key={m.label} className="flex-1 bg-white rounded-lg p-2 text-center border border-[#B8E8CC]/50">
+            <div className="text-[7px] text-[#1A1A2E]/40 font-mono">{m.label}</div>
             <div className={`text-[14px] font-bold font-mono ${m.color}`}>{m.value}</div>
           </div>
         ))}
@@ -194,35 +194,35 @@ function AIRecommendMock() {
 /* 3) 섹터 히트맵 */
 function HeatmapMock() {
   const sectors = [
-    { name: '반도체', pct: '+3.2%', c: 'bg-red-500/50', tc: 'text-red-300' },
-    { name: '자동차', pct: '+2.1%', c: 'bg-red-400/40', tc: 'text-red-300' },
-    { name: '바이오', pct: '-1.5%', c: 'bg-blue-400/40', tc: 'text-blue-300' },
-    { name: '금융', pct: '+1.8%', c: 'bg-red-500/30', tc: 'text-red-300' },
-    { name: '철강', pct: '+0.5%', c: 'bg-red-400/20', tc: 'text-red-300' },
-    { name: '화학', pct: '-2.3%', c: 'bg-blue-500/40', tc: 'text-blue-300' },
-    { name: '전기전자', pct: '+2.8%', c: 'bg-red-500/40', tc: 'text-red-300' },
-    { name: '건설', pct: '-0.8%', c: 'bg-blue-400/25', tc: 'text-blue-300' },
-    { name: '유통', pct: '+0.3%', c: 'bg-red-400/15', tc: 'text-red-200' },
-    { name: '통신', pct: '-0.5%', c: 'bg-blue-500/20', tc: 'text-blue-300' },
-    { name: '운수', pct: '+1.4%', c: 'bg-red-400/30', tc: 'text-red-300' },
-    { name: 'IT', pct: '+3.8%', c: 'bg-red-500/55', tc: 'text-red-300' },
+    { name: '반도체', pct: '+3.2%', c: 'bg-red-200', tc: 'text-[#dc2626]' },
+    { name: '자동차', pct: '+2.1%', c: 'bg-red-100', tc: 'text-[#dc2626]' },
+    { name: '바이오', pct: '-1.5%', c: 'bg-blue-200', tc: 'text-[#2563EB]' },
+    { name: '금융', pct: '+1.8%', c: 'bg-red-100', tc: 'text-[#dc2626]' },
+    { name: '철강', pct: '+0.5%', c: 'bg-red-50', tc: 'text-[#dc2626]' },
+    { name: '화학', pct: '-2.3%', c: 'bg-blue-200', tc: 'text-[#2563EB]' },
+    { name: '전기전자', pct: '+2.8%', c: 'bg-red-200', tc: 'text-[#dc2626]' },
+    { name: '건설', pct: '-0.8%', c: 'bg-blue-100', tc: 'text-[#2563EB]' },
+    { name: '유통', pct: '+0.3%', c: 'bg-red-50', tc: 'text-[#dc2626]' },
+    { name: '통신', pct: '-0.5%', c: 'bg-blue-100', tc: 'text-[#2563EB]' },
+    { name: '운수', pct: '+1.4%', c: 'bg-red-100', tc: 'text-[#dc2626]' },
+    { name: 'IT', pct: '+3.8%', c: 'bg-red-300', tc: 'text-[#dc2626]' },
   ]
   return (
     <BrowserFrame>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] text-white/60 font-mono font-bold">섹터별 등락 히트맵 (5일)</span>
-        <span className="text-[8px] text-[#00FF88]/60 font-mono font-bold">LIVE</span>
+        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">섹터별 등락 히트맵 (5일)</span>
+        <span className="text-[8px] text-[#16A34A] font-mono font-bold">LIVE</span>
       </div>
       <div className="grid grid-cols-4 grid-rows-3 gap-1.5 mb-4">
         {sectors.map(s => (
           <div key={s.name} className={`${s.c} rounded-lg flex flex-col items-center justify-center py-3`}>
-            <span className="text-[9px] text-white/60 font-mono font-bold">{s.name}</span>
+            <span className="text-[9px] text-[#1A1A2E]/60 font-mono font-bold">{s.name}</span>
             <span className={`text-[11px] font-bold font-mono ${s.tc}`}>{s.pct}</span>
           </div>
         ))}
       </div>
-      <div className="border-t border-white/10 pt-2">
-        <div className="text-[9px] text-white/40 font-mono mb-1.5">돈의 흐름 — 섹터 순위</div>
+      <div className="border-t border-[#B8E8CC] pt-2">
+        <div className="text-[9px] text-[#1A1A2E]/50 font-mono mb-1.5">돈의 흐름 — 섹터 순위</div>
         <div className="space-y-1">
           {[
             { name: 'IT', score: 92, pct: '+3.8%' },
@@ -230,10 +230,10 @@ function HeatmapMock() {
             { name: '전기전자', score: 81, pct: '+2.8%' },
           ].map((s, i) => (
             <div key={s.name} className="flex items-center gap-2 text-[9px] font-mono">
-              <span className="text-white/30 w-3">{i + 1}</span>
-              <span className="text-white/60 font-bold flex-1">{s.name}</span>
-              <span className="text-[#00FF88]/70 font-bold">{s.score}</span>
-              <span className="text-red-400/70">{s.pct}</span>
+              <span className="text-[#1A1A2E]/30 w-3">{i + 1}</span>
+              <span className="text-[#1A1A2E]/70 font-bold flex-1">{s.name}</span>
+              <span className="text-[#16A34A] font-bold">{s.score}</span>
+              <span className="text-[#dc2626]">{s.pct}</span>
             </div>
           ))}
         </div>
