@@ -28,7 +28,7 @@ export function SniperWatchPanel() {
   const items = data?.slice(0, 15) ?? []
   const dateStr = items[0]?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
-  const isStale = rel ? rel.daysAgo >= 7 : false
+  const isStale = rel ? rel.daysAgo >= 30 : false
 
   return (
     <div className={`flex flex-col h-full text-xs bg-white ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>

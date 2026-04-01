@@ -22,7 +22,7 @@ export function ChinaMoneyPanel() {
   const items = data?.signals?.filter(s => s.signal !== 'NORMAL').slice(0, 10) ?? []
   const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
-  const isStale = rel ? rel.daysAgo >= 7 : false
+  const isStale = rel ? rel.daysAgo >= 30 : false
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>

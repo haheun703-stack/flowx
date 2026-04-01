@@ -14,7 +14,7 @@ export function MorningNewsPanel() {
   const { data, isLoading } = useBriefing()
 
   const rel = data ? getRelativeDate(data.date) : null
-  const isStale = rel ? rel.daysAgo >= 7 : false
+  const isStale = rel ? rel.daysAgo >= 30 : false
   const badge = DIR_BADGE[data?.direction ?? 'NEUTRAL'] ?? DIR_BADGE.NEUTRAL
 
   return (

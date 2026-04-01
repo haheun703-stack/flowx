@@ -16,7 +16,7 @@ export function EtfSignalPanel() {
   const items = data?.etfs?.slice(0, 5) ?? []
   const dateStr = data?.updated_at ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
-  const isStale = rel ? rel.daysAgo >= 7 : false
+  const isStale = rel ? rel.daysAgo >= 30 : false
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>

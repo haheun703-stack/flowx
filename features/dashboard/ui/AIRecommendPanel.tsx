@@ -29,7 +29,7 @@ export function AIRecommendPanel() {
   const stocks = data?.slice(0, 12) ?? []
   const dateStr = stocks[0]?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
-  const isStale = rel ? rel.daysAgo >= 7 : false
+  const isStale = rel ? rel.daysAgo >= 30 : false
 
   return (
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
