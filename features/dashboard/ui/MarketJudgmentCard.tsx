@@ -60,25 +60,25 @@ export function MarketJudgmentCard() {
       style={{ background: status.bg, borderColor: status.border }}
     >
       {/* 라벨 */}
-      <div className="text-[9px] font-medium mb-2" style={{ color: status.text }}>
+      <div className="text-[14px] font-bold mb-2" style={{ color: status.text }}>
         오늘의 시장 판단
       </div>
 
       {/* 상태값 */}
-      <div className="text-[20px] font-bold mb-1" style={{ color: status.text }}>
+      <div className="text-[36px] font-bold mb-1" style={{ color: status.text }}>
         {status.label}
       </div>
 
       {/* KOSPI/KOSDAQ 등락 */}
       {snap && (
-        <div className="text-[10px] text-[#6B7280] mb-3">
+        <div className="text-[15px] font-semibold text-[#6B7280] mb-3">
           KOSPI {snap.kospi_change >= 0 ? '+' : ''}{snap.kospi_change.toFixed(2)}% | KOSDAQ {snap.kosdaq_change >= 0 ? '+' : ''}{snap.kosdaq_change.toFixed(2)}%
         </div>
       )}
 
       {/* 조언 박스 */}
       <div
-        className="rounded-lg px-3 py-2 text-[9px] leading-relaxed mb-3"
+        className="rounded-lg px-3 py-2 text-[14px] font-semibold leading-relaxed mb-3"
         style={{ background: status.tipBg, color: status.text }}
       >
         {status.advice}
@@ -92,12 +92,12 @@ export function MarketJudgmentCard() {
               key={s.code}
               className="flex items-center justify-between py-1.5 border-b border-black/5 last:border-0"
             >
-              <span className="text-[10px] text-[#1A1A2E] truncate mr-2">{s.name}</span>
+              <span className="text-[15px] font-semibold text-[#1A1A2E] truncate mr-2">{s.name}</span>
               <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-[10px] text-[#1A1A2E] font-bold tabular-nums">
+                <span className="text-[15px] text-[#1A1A2E] font-bold tabular-nums">
                   {s.price.toLocaleString()}
                 </span>
-                <span className={`text-[10px] font-bold tabular-nums ${
+                <span className={`text-[15px] font-bold tabular-nums ${
                   s.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
@@ -109,7 +109,7 @@ export function MarketJudgmentCard() {
       )}
 
       {/* 슬롯 + 릴레이 요약 */}
-      <div className="mt-auto pt-2 border-t border-black/5 flex items-center gap-3 text-[9px] text-[#9CA3AF]">
+      <div className="mt-auto pt-2 border-t border-black/5 flex items-center gap-3 text-[14px] font-semibold text-[#9CA3AF]">
         <span>매수 슬롯 <span className="font-bold text-[#1A1A2E]">{data?.kospi_slots ?? 0}/5</span></span>
         <span>릴레이 <span className="font-bold text-[#2563EB]">{data?.relay_fired ?? 0}/{data?.relay_signals ?? 0}</span></span>
       </div>

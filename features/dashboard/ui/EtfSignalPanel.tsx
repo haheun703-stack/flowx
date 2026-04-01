@@ -22,16 +22,16 @@ export function EtfSignalPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       <div className="flex items-center justify-between">
         <span className="fx-card-title">ETF 시그널 (상위 5개)</span>
-        <span className="text-[8px] text-[#C4C1BA]">{dateStr}</span>
+        <span className="text-[13px] font-semibold text-[#C4C1BA]">{dateStr}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-[36px] border-b border-[#F5F4F0] animate-pulse bg-[#F5F4F0]/30" />
+            <div key={i} className="h-[44px] border-b border-[#F5F4F0] animate-pulse bg-[#F5F4F0]/30" />
           ))
         ) : items.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-[10px] text-[#C4C1BA]">
+          <div className="flex items-center justify-center h-full text-[15px] font-semibold text-[#C4C1BA]">
             ETF 시그널을 분석 중입니다.
           </div>
         ) : (
@@ -39,16 +39,16 @@ export function EtfSignalPanel() {
             <div key={item.etf_code}
               className="flex items-center justify-between px-1 py-2 border-b border-[#F5F4F0] hover:bg-[#F0EDE8] transition-colors">
               <div className="min-w-0 mr-2">
-                <div className="text-[10px] text-[#1A1A2E] font-bold truncate">{item.sector}</div>
-                <div className="text-[8px] text-[#B0ADA6] truncate">{item.etf_name}</div>
+                <div className="text-[15px] text-[#1A1A2E] font-bold truncate">{item.sector}</div>
+                <div className="text-[13px] font-semibold text-[#B0ADA6] truncate">{item.etf_name}</div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold ${
+                <span className={`text-[13px] px-1.5 py-0.5 rounded font-bold ${
                   GRADE_STYLE[item.grade] ?? 'text-[#9CA3AF] bg-[#F5F4F0]'
                 }`}>
                   {item.grade}
                 </span>
-                <span className={`text-[10px] font-bold tabular-nums ${
+                <span className={`text-[15px] font-bold tabular-nums ${
                   item.ret_5 >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {item.ret_5 >= 0 ? '+' : ''}{item.ret_5.toFixed(1)}%

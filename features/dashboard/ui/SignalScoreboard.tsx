@@ -23,7 +23,7 @@ export function SignalScoreboard() {
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors ${
+              className={`px-2 py-0.5 text-[15px] font-bold rounded transition-colors ${
                 period === p
                   ? 'text-[#1A1A2E] bg-[#F0EDE8]'
                   : 'text-[#B0ADA6] hover:text-[#6B7280]'
@@ -38,59 +38,59 @@ export function SignalScoreboard() {
       {isLoading ? (
         <div className="grid grid-cols-4 gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-[72px] bg-[#F5F4F0] animate-pulse rounded-lg" />
+            <div key={i} className="h-[90px] bg-[#F5F4F0] animate-pulse rounded-lg" />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-3">
           {/* 적중률 */}
-          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center">
-            <div className="text-[9px] text-[#9CA3AF] mb-1">적중률</div>
-            <div className={`text-[18px] font-bold tabular-nums ${
+          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center h-[90px] flex flex-col justify-center">
+            <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">적중률</div>
+            <div className={`text-[28px] font-bold tabular-nums ${
               winRate >= 70 ? 'text-[#16A34A]' : winRate >= 50 ? 'text-[#2563EB]' : 'text-[#9CA3AF]'
             }`}>
               {winRate.toFixed(0)}%
             </div>
-            <div className="text-[8px] text-[#B0ADA6]">
+            <div className="text-[13px] font-semibold text-[#B0ADA6]">
               성공 {data?.win_count ?? 0} / 실패 {data?.loss_count ?? 0}
             </div>
           </div>
 
           {/* 평균 수익률 */}
-          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center">
-            <div className="text-[9px] text-[#9CA3AF] mb-1">평균 수익률</div>
-            <div className={`text-[18px] font-bold tabular-nums ${
+          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center h-[90px] flex flex-col justify-center">
+            <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">평균 수익률</div>
+            <div className={`text-[28px] font-bold tabular-nums ${
               avgReturn > 0 ? 'text-[var(--up)]' : avgReturn < 0 ? 'text-[var(--down)]' : 'text-[#9CA3AF]'
             }`}>
               {avgReturn >= 0 ? '+' : ''}{avgReturn.toFixed(1)}%
             </div>
-            <div className="text-[8px] text-[#B0ADA6]">시그널 기준</div>
+            <div className="text-[13px] font-semibold text-[#B0ADA6]">시그널 기준</div>
           </div>
 
           {/* 최근 성과 TOP */}
-          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center">
-            <div className="text-[9px] text-[#9CA3AF] mb-1">최근 성과 TOP</div>
+          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center h-[90px] flex flex-col justify-center">
+            <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">최근 성과 TOP</div>
             {topStock ? (
               <>
-                <div className="text-[14px] font-bold text-[#16A34A] truncate">
+                <div className="text-[22px] font-bold text-[#16A34A] truncate">
                   {topStock.ticker_name}
                 </div>
-                <div className="text-[10px] font-bold text-[#16A34A] tabular-nums">
+                <div className="text-[16px] font-bold text-[#16A34A] tabular-nums">
                   +{topStock.return_pct}%
                 </div>
               </>
             ) : (
-              <div className="text-[14px] text-[#B0ADA6]">—</div>
+              <div className="text-[22px] font-bold text-[#B0ADA6]">—</div>
             )}
           </div>
 
           {/* 활성 시그널 */}
-          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center">
-            <div className="text-[9px] text-[#9CA3AF] mb-1">활성 시그널</div>
-            <div className="text-[18px] font-bold text-[#2563EB] tabular-nums">
+          <div className="bg-[#F5F4F0] rounded-lg p-[10px] text-center h-[90px] flex flex-col justify-center">
+            <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">활성 시그널</div>
+            <div className="text-[28px] font-bold text-[#2563EB] tabular-nums">
               {data?.total_signals ?? 0}건
             </div>
-            <div className="text-[8px] text-[#B0ADA6]">
+            <div className="text-[13px] font-semibold text-[#B0ADA6]">
               {PERIOD_LABELS[period]}
             </div>
           </div>

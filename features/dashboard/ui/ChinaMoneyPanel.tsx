@@ -28,30 +28,30 @@ export function ChinaMoneyPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       <div className="flex items-center justify-between">
         <span className="fx-card-title">외국인 자금 흐름</span>
-        <span className="text-[8px] text-[#C4C1BA]">{dateStr}</span>
+        <span className="text-[13px] font-semibold text-[#C4C1BA]">{dateStr}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-[32px] border-b border-[#F5F4F0] animate-pulse bg-[#F5F4F0]/30" />
+            <div key={i} className="h-[40px] border-b border-[#F5F4F0] animate-pulse bg-[#F5F4F0]/30" />
           ))
         ) : items.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-[10px] text-[#C4C1BA]">
+          <div className="flex items-center justify-center h-full text-[15px] font-semibold text-[#C4C1BA]">
             외국인 자금 데이터를 불러오는 중입니다.
           </div>
         ) : (
           items.map((item) => (
             <div key={item.ticker}
-              className="flex items-center justify-between px-1 h-[32px] border-b border-[#F5F4F0] hover:bg-[#F0EDE8] transition-colors">
-              <span className="text-[10px] text-[#1A1A2E] font-medium truncate mr-2">{item.name}</span>
+              className="flex items-center justify-between px-1 h-[40px] border-b border-[#F5F4F0] hover:bg-[#F0EDE8] transition-colors">
+              <span className="text-[15px] text-[#1A1A2E] font-bold truncate mr-2">{item.name}</span>
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold ${
+                <span className={`text-[13px] px-1.5 py-0.5 rounded font-bold ${
                   SIGNAL_STYLE[item.signal] ?? 'text-[#9CA3AF] bg-[#F5F4F0]'
                 }`}>
                   {SIGNAL_KR[item.signal] ?? item.signal}
                 </span>
-                <span className={`text-[10px] font-bold tabular-nums ${
+                <span className={`text-[15px] font-bold tabular-nums ${
                   item.pct_change_5d >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {item.pct_change_5d >= 0 ? '+' : ''}{item.pct_change_5d.toFixed(1)}%
