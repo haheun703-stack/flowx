@@ -1,109 +1,54 @@
 'use client'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { FlowxLogo } from '@/shared/ui/logo'
 
-function useCountUp(target: number, duration = 2000) {
-  const [count, setCount] = useState(0)
-  useEffect(() => {
-    setCount(0)
-    const start = performance.now()
-    let raf: number
-    const tick = () => {
-      const progress = Math.min((performance.now() - start) / duration, 1)
-      setCount(Math.round(progress * target))
-      if (progress < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [target, duration])
-  return count
-}
+import Link from 'next/link'
+import { ImagePlaceholder } from './ImagePlaceholder'
 
 export function HeroSection() {
-  const stockCount    = useCountUp(2100)
-  const panelCount    = useCountUp(8)
-  const indexCount    = useCountUp(6)
-
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-24">
+    <section className="relative pt-32 pb-20 px-6">
+      <div className="max-w-[1200px] mx-auto">
+        {/* 배지 */}
+        <div className="flex justify-center mb-8">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--landing-accent)]/5 border border-[var(--landing-accent)]/20 rounded-full text-[var(--landing-accent)] text-sm font-medium">
+            <span className="w-2 h-2 rounded-full bg-[var(--landing-accent)] animate-pulse" />
+            BETA — 무료 공개 중
+          </span>
+        </div>
 
-      {/* 배경 그리드 */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(22,163,74,0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(22,163,74,0.08) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-        }}
-      />
+        {/* 메인 헤드라인 */}
+        <h1 className="text-center text-[32px] sm:text-[40px] md:text-[48px] font-bold leading-tight text-[var(--landing-text)] mb-6">
+          트레이딩뷰가 못 하는 것,
+          <br />
+          <span className="text-[var(--landing-accent)]">FlowX</span>가 합니다
+        </h1>
 
-      {/* 배경 글로우 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[var(--green)] opacity-[0.03] blur-[100px] pointer-events-none" />
+        {/* 서브 카피 */}
+        <p className="text-center text-[var(--landing-text-sub)] text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          외국인·기관 수급 추적, AI 종목 추천, 세력 포착까지
+          <br className="hidden sm:block" />
+          한국 주식에 특화된 실시간 대시보드
+        </p>
 
-      {/* 대형 로고 */}
-      <FlowxLogo variant="hero" showTagline={true} className="relative mb-12" />
+        {/* CTA 버튼 */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
+          <Link
+            href="/dashboard"
+            className="px-8 py-3.5 bg-[var(--landing-accent)] text-white font-semibold text-base rounded-xl hover:bg-[var(--landing-accent-hover)] transition-all hover:shadow-lg hover:shadow-[var(--landing-accent)]/20"
+          >
+            대시보드 바로가기 →
+          </Link>
+          <Link
+            href="/auth/signup"
+            className="px-8 py-3.5 border border-[var(--landing-border)] text-[var(--landing-text-sub)] font-medium text-base rounded-xl hover:border-[var(--landing-accent)] hover:text-[var(--landing-accent)] transition-all"
+          >
+            무료로 시작하기
+          </Link>
+        </div>
 
-      {/* 배지 */}
-      <div className="relative flex items-center gap-3 mb-8 px-8 py-4 border border-[var(--green)]/30 rounded-full bg-[var(--green)]/5">
-        <span className="w-4 h-4 rounded-full bg-[var(--green)] animate-pulse" />
-        <span className="text-2xl sm:text-3xl text-[var(--green)] font-mono tracking-widest uppercase">
-          BETA — 무료 공개 중
-        </span>
-      </div>
-
-      {/* 메인 헤드라인 */}
-      <h1 className="relative text-center max-w-4xl mb-6 font-display">
-        <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
-          한국주식 실시간의
-        </span>
-        <span className="block text-3xl sm:text-5xl md:text-7xl leading-tight text-[var(--green)]">
-          모든것을
-        </span>
-        <span className="block text-3xl sm:text-5xl md:text-7xl text-[var(--text-primary)] leading-tight">
-          한 화면에
-        </span>
-      </h1>
-
-      {/* 서브 카피 */}
-      <p className="relative text-center text-[var(--text-dim)] text-sm sm:text-lg max-w-2xl mb-8 sm:mb-12 leading-relaxed font-mono px-2">
-        외국인·기관 수급 X-Ray &middot; AI 종목추천 &middot; 세력 포착<br />
-        실시간 대시보드로 시장을 한 화면에
-      </p>
-
-      {/* CTA 버튼 */}
-      <div className="relative flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-20 w-full sm:w-auto px-4 sm:px-0">
-        <Link
-          href="/dashboard"
-          className="px-12 py-6 bg-[var(--green)] text-black font-bold text-xl rounded-xl hover:bg-[var(--green)]/90 transition-all hover:scale-105 font-mono tracking-wider text-center"
-        >
-          대시보드 바로가기 →
-        </Link>
-        <Link
-          href="/market"
-          className="px-12 py-6 border border-[var(--border-bright)] text-[var(--text-dim)] text-xl rounded-xl hover:border-[var(--text-dim)] hover:text-[var(--text-primary)] transition-all font-mono tracking-wider text-center"
-        >
-          시장 현황 보기
-        </Link>
-      </div>
-
-      {/* 실시간 통계 */}
-      <div className="relative grid grid-cols-3 gap-4 sm:gap-8 md:gap-16">
-        {[
-          { value: stockCount.toLocaleString(), label: 'KOSPI·KOSDAQ 종목', unit: '+' },
-          { value: panelCount,                  label: '실시간 분석 패널', unit: '개' },
-          { value: indexCount,                  label: '글로벌 지수 추적', unit: '개' },
-        ].map((stat) => (
-          <div key={stat.label} className="text-center">
-            <div className="text-xl sm:text-3xl md:text-4xl font-bold font-mono text-[var(--text-primary)]">
-              {stat.value}
-              <span className="text-[var(--green)] text-base sm:text-xl">{stat.unit}</span>
-            </div>
-            <div className="text-[10px] sm:text-xs text-[var(--text-muted)] mt-1 font-mono">{stat.label}</div>
-          </div>
-        ))}
+        {/* 대시보드 프리뷰 */}
+        <div className="max-w-[960px] mx-auto">
+          <ImagePlaceholder label="FlowX 대시보드 프리뷰" aspectRatio="16/9" />
+        </div>
       </div>
     </section>
   )

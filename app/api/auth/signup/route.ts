@@ -8,7 +8,7 @@ import { getSupabaseAdmin } from '@/lib/supabase'
  */
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const { email, password, name, phone, marketingAgreed } = body
+  const { email, password, name, phone, marketingAgreed, investmentAgreed, ageVerified } = body
 
   if (!email || !password || !name) {
     return NextResponse.json({ error: '필수 항목을 입력해주세요' }, { status: 400 })
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     email,
     password,
     email_confirm: true,
-    user_metadata: { name },
+    user_metadata: { name, investmentAgreed: !!investmentAgreed, ageVerified: !!ageVerified },
   })
 
   if (authError) {

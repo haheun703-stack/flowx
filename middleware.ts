@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 const PUBLIC_PATHS = [
-  '/', '/pricing', '/auth', '/terms', '/privacy',
+  '/', '/pricing', '/auth', '/terms', '/privacy', '/policies',
   '/dashboard', '/market', '/sectors', '/information',
   '/scenario', '/scenarios', '/macro', '/quant', '/swing', '/chart',
   '/smart-money', '/etf-signals', '/relay', '/stock',

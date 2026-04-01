@@ -4,10 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
-import { FlowxLogo } from '@/shared/ui/logo'
 
 const INPUT_CLASS =
-  'w-full px-4 py-3 bg-white border border-[var(--border)] rounded-lg text-[var(--text-primary)] text-sm focus:outline-none focus:border-[#16a34a]/50 transition-colors'
+  'w-full px-4 py-3 bg-white border border-[var(--landing-border)] rounded-lg text-[var(--landing-text)] text-sm focus:outline-none focus:border-[var(--landing-accent)]/50 transition-colors'
 
 function formatPhone(value: string): string {
   const nums = value.replace(/\D/g, '').slice(0, 11)
@@ -19,7 +18,7 @@ function formatPhone(value: string): string {
 function ValidationIcon({ valid }: { valid: boolean | null }) {
   if (valid === null) return null
   return (
-    <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${valid ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
+    <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${valid ? 'text-[var(--landing-accent)]' : 'text-[#dc2626]'}`}>
       {valid ? '✓' : '✕'}
     </span>
   )
@@ -33,6 +32,8 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [agreePrivacy, setAgreePrivacy] = useState(false)
+  const [agreeInvestment, setAgreeInvestment] = useState(false)
+  const [agreeAge, setAgreeAge] = useState(false)
   const [agreeMarketing, setAgreeMarketing] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -46,13 +47,15 @@ export default function SignupPage() {
   const passwordValid = password.length >= 8 ? true : password.length > 0 ? false : null
   const confirmValid = confirmPassword.length > 0 ? (password === confirmPassword ? true : false) : null
 
+  const allRequired = agreeTerms && agreePrivacy && agreeInvestment && agreeAge
+  const allChecked = allRequired && agreeMarketing
+
   const canSubmit =
     nameValid === true &&
     emailValid === true &&
     passwordValid === true &&
     confirmValid === true &&
-    agreeTerms &&
-    agreePrivacy &&
+    allRequired &&
     !loading
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -69,7 +72,6 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      // 서버 API로 회원가입 (트리거 폴백 포함)
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -79,6 +81,8 @@ export default function SignupPage() {
           name,
           phone: phone.replace(/\D/g, '') || null,
           marketingAgreed: agreeMarketing,
+          investmentAgreed: agreeInvestment,
+          ageVerified: agreeAge,
         }),
       })
 
@@ -98,13 +102,11 @@ export default function SignupPage() {
       })
 
       if (loginError) {
-        // 로그인 실패해도 가입은 성공
         setSuccess(true)
         setLoading(false)
         return
       }
 
-      // 자동 로그인 성공 → 대시보드로 이동
       router.push('/dashboard')
       router.refresh()
     } catch {
@@ -115,19 +117,23 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4">
+      <div
+        className="min-h-screen bg-[var(--landing-bg)] flex items-center justify-center px-4"
+        style={{ fontFamily: 'var(--landing-font)' }}
+      >
         <div className="max-w-sm w-full text-center">
-          <Link href="/">
-            <FlowxLogo variant="small" />
+          <Link href="/" className="inline-block text-2xl font-bold">
+            <span className="text-[var(--landing-text)]">FLOW</span>
+            <span className="text-[var(--landing-accent)]">X</span>
           </Link>
-          <h1 className="text-xl font-bold text-[var(--text-primary)] mt-6 mb-4">회원가입 완료!</h1>
-          <p className="text-sm text-[var(--text-dim)] mb-6">
-            <span className="text-[#16a34a] font-bold">{name}</span>님, 환영합니다.
+          <h1 className="text-xl font-bold text-[var(--landing-text)] mt-6 mb-4">회원가입 완료!</h1>
+          <p className="text-sm text-[var(--landing-text-sub)] mb-6">
+            <span className="text-[var(--landing-accent)] font-bold">{name}</span>님, 환영합니다.
             <br />로그인하여 서비스를 이용해주세요.
           </p>
           <Link
             href="/auth/login"
-            className="inline-block px-6 py-3 bg-[#16a34a] text-black font-bold text-sm rounded-lg hover:bg-[#16a34a]/90 transition-all font-mono"
+            className="inline-block px-6 py-3 bg-[var(--landing-accent)] text-white font-semibold text-sm rounded-lg hover:bg-[var(--landing-accent-hover)] transition-all"
           >
             로그인하기
           </Link>
@@ -137,20 +143,24 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center px-4 py-12">
+    <div
+      className="min-h-screen bg-[var(--landing-bg)] flex items-center justify-center px-4 py-12"
+      style={{ fontFamily: 'var(--landing-font)' }}
+    >
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
-          <Link href="/">
-            <FlowxLogo variant="small" />
+          <Link href="/" className="inline-block text-2xl font-bold">
+            <span className="text-[var(--landing-text)]">FLOW</span>
+            <span className="text-[var(--landing-accent)]">X</span>
           </Link>
-          <h1 className="text-xl font-bold text-[var(--text-primary)] mt-6 mb-2">회원가입</h1>
-          <p className="text-sm text-[var(--text-muted)]">무료로 시작하세요</p>
+          <h1 className="text-xl font-bold text-[var(--landing-text)] mt-6 mb-2">회원가입</h1>
+          <p className="text-sm text-[var(--landing-text-dim)]">무료로 시작하세요</p>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-4">
           {/* 이름 */}
           <div>
-            <label className="text-xs text-[var(--text-dim)] block mb-1">이름 <span className="text-[#dc2626]">*</span></label>
+            <label className="text-xs text-[var(--landing-text-sub)] block mb-1">이름 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="text"
@@ -166,7 +176,7 @@ export default function SignupPage() {
 
           {/* 이메일 */}
           <div>
-            <label className="text-xs text-[var(--text-dim)] block mb-1">이메일 <span className="text-[#dc2626]">*</span></label>
+            <label className="text-xs text-[var(--landing-text-sub)] block mb-1">이메일 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="email"
@@ -182,7 +192,7 @@ export default function SignupPage() {
 
           {/* 전화번호 */}
           <div>
-            <label className="text-xs text-[var(--text-dim)] block mb-1">전화번호</label>
+            <label className="text-xs text-[var(--landing-text-sub)] block mb-1">전화번호</label>
             <div className="relative">
               <input
                 type="tel"
@@ -197,7 +207,7 @@ export default function SignupPage() {
 
           {/* 비밀번호 */}
           <div>
-            <label className="text-xs text-[var(--text-dim)] block mb-1">비밀번호 <span className="text-[#dc2626]">*</span></label>
+            <label className="text-xs text-[var(--landing-text-sub)] block mb-1">비밀번호 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="password"
@@ -214,7 +224,7 @@ export default function SignupPage() {
 
           {/* 비밀번호 확인 */}
           <div>
-            <label className="text-xs text-[var(--text-dim)] block mb-1">비밀번호 확인 <span className="text-[#dc2626]">*</span></label>
+            <label className="text-xs text-[var(--landing-text-sub)] block mb-1">비밀번호 확인 <span className="text-[#dc2626]">*</span></label>
             <div className="relative">
               <input
                 type="password"
@@ -232,21 +242,23 @@ export default function SignupPage() {
           </div>
 
           {/* 약관 동의 */}
-          <div className="space-y-3 pt-2 border-t border-[var(--border)]">
+          <div className="space-y-3 pt-2 border-t border-[var(--landing-border)]">
             {/* 전체 동의 */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={agreeTerms && agreePrivacy && agreeMarketing}
+                checked={allChecked}
                 onChange={(e) => {
                   const v = e.target.checked
                   setAgreeTerms(v)
                   setAgreePrivacy(v)
+                  setAgreeInvestment(v)
+                  setAgreeAge(v)
                   setAgreeMarketing(v)
                 }}
-                className="w-4 h-4 rounded border-[var(--border)] bg-white accent-[#16a34a]"
+                className="w-4 h-4 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
               />
-              <span className="text-sm text-[var(--text-primary)] font-bold">전체 동의</span>
+              <span className="text-sm text-[var(--landing-text)] font-bold">전체 동의</span>
             </label>
 
             <div className="ml-6 space-y-2">
@@ -255,11 +267,11 @@ export default function SignupPage() {
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
+                  className="w-3.5 h-3.5 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
                 />
-                <span className="text-xs text-[var(--text-dim)]">
+                <span className="text-xs text-[var(--landing-text-sub)]">
                   <span className="text-[#dc2626]">[필수]</span>{' '}
-                  <Link href="/terms" className="underline hover:text-[var(--text-primary)]" target="_blank">
+                  <Link href="/terms" className="underline hover:text-[var(--landing-text)]" target="_blank">
                     이용약관
                   </Link>
                   에 동의합니다
@@ -271,11 +283,11 @@ export default function SignupPage() {
                   type="checkbox"
                   checked={agreePrivacy}
                   onChange={(e) => setAgreePrivacy(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
+                  className="w-3.5 h-3.5 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
                 />
-                <span className="text-xs text-[var(--text-dim)]">
+                <span className="text-xs text-[var(--landing-text-sub)]">
                   <span className="text-[#dc2626]">[필수]</span>{' '}
-                  <Link href="/privacy" className="underline hover:text-[var(--text-primary)]" target="_blank">
+                  <Link href="/privacy" className="underline hover:text-[var(--landing-text)]" target="_blank">
                     개인정보 처리방침
                   </Link>
                   에 동의합니다
@@ -285,11 +297,39 @@ export default function SignupPage() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
+                  checked={agreeInvestment}
+                  onChange={(e) => setAgreeInvestment(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
+                />
+                <span className="text-xs text-[var(--landing-text-sub)]">
+                  <span className="text-[#dc2626]">[필수]</span>{' '}
+                  <Link href="/policies/investment" className="underline hover:text-[var(--landing-text)]" target="_blank">
+                    투자 유의사항
+                  </Link>
+                  에 동의합니다
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeAge}
+                  onChange={(e) => setAgreeAge(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
+                />
+                <span className="text-xs text-[var(--landing-text-sub)]">
+                  <span className="text-[#dc2626]">[필수]</span> 만 19세 이상임을 확인합니다
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
                   checked={agreeMarketing}
                   onChange={(e) => setAgreeMarketing(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded border-[var(--border)] bg-white accent-[#16a34a]"
+                  className="w-3.5 h-3.5 rounded border-[var(--landing-border)] bg-white accent-[var(--landing-accent)]"
                 />
-                <span className="text-xs text-[var(--text-dim)]">
+                <span className="text-xs text-[var(--landing-text-sub)]">
                   [선택] 마케팅 수신에 동의합니다
                 </span>
               </label>
@@ -305,16 +345,16 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full py-3 bg-[#16a34a] text-black font-bold text-sm rounded-lg
-                       hover:bg-[#16a34a]/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-mono"
+            className="w-full py-3 bg-[var(--landing-accent)] text-white font-semibold text-sm rounded-lg
+                       hover:bg-[var(--landing-accent-hover)] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {loading ? '가입 중...' : '무료로 시작하기'}
           </button>
         </form>
 
-        <p className="text-center text-xs text-[var(--text-muted)] mt-6">
+        <p className="text-center text-xs text-[var(--landing-text-dim)] mt-6">
           이미 계정이 있으신가요?{' '}
-          <Link href="/auth/login" className="text-[#16a34a] hover:underline">
+          <Link href="/auth/login" className="text-[var(--landing-accent)] hover:underline">
             로그인
           </Link>
         </p>

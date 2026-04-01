@@ -74,3 +74,50 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
 }
+
+/* ── Landing Page Design System ── */
+:root {
+  --landing-bg:           #FFFFFF;
+  --landing-bg-secondary: #F8F9FA;
+  --landing-text:         #1A1A2E;
+  --landing-text-sub:     #6B7280;
+  --landing-text-dim:     #9CA3AF;
+  --landing-accent:       #2563EB;
+  --landing-accent-hover: #1D4ED8;
+  --landing-border:       #E5E7EB;
+  --landing-card-shadow:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --landing-font:         'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+@utility landing-card {
+  background: #FFFFFF;
+  border: 1px solid var(--landing-border);
+  border-radius: 16px;
+  box-shadow: var(--landing-card-shadow);
+}
+
+/* 랜딩 섹션 등장 애니메이션 */
+@keyframes landing-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@utility landing-animate {
+  opacity: 0;
+  animation: landing-fade-up 0.6s ease-out forwards;
+}
+
+@utility landing-animate-delay-1 {
+  opacity: 0;
+  animation: landing-fade-up 0.6s ease-out 0.1s forwards;
+}
+
+@utility landing-animate-delay-2 {
+  opacity: 0;
+  animation: landing-fade-up 0.6s ease-out 0.2s forwards;
+}
+
+@utility landing-animate-delay-3 {
+  opacity: 0;
+  animation: landing-fade-up 0.6s ease-out 0.3s forwards;
+}
