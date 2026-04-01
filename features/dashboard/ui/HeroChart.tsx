@@ -17,10 +17,13 @@ const FOREIGN_COLOR = '#1A1A2E'
 const INST_COLOR = '#EAB308'
 const INDIV_COLOR = '#00FF88'
 
-// FlowX 차트 라인 색상 (녹색 아이덴티티)
-const CHART_LINE = '#00CC6A'
-const CHART_AREA_TOP = 'rgba(0, 255, 136, 0.06)'
-const CHART_AREA_BOTTOM = 'rgba(0, 255, 136, 0.0)'
+// 차트 라인 색상: 상승=빨강, 하락=파랑 (한국 주식 컨벤션)
+const UP_LINE = '#dc2626'
+const UP_AREA_TOP = 'rgba(220, 38, 38, 0.08)'
+const UP_AREA_BOTTOM = 'rgba(220, 38, 38, 0.0)'
+const DOWN_LINE = '#2563eb'
+const DOWN_AREA_TOP = 'rgba(37, 99, 235, 0.08)'
+const DOWN_AREA_BOTTOM = 'rgba(37, 99, 235, 0.0)'
 
 export interface InvestorFlowPoint {
   date: string
@@ -88,14 +91,14 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
     })
 
     const series = chart.addSeries(AreaSeries, {
-      lineColor: CHART_LINE,
-      topColor: CHART_AREA_TOP,
-      bottomColor: CHART_AREA_BOTTOM,
+      lineColor: UP_LINE,
+      topColor: UP_AREA_TOP,
+      bottomColor: UP_AREA_BOTTOM,
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
       crosshairMarkerBorderColor: '#ffffff',
-      crosshairMarkerBackgroundColor: CHART_LINE,
+      crosshairMarkerBackgroundColor: UP_LINE,
       crosshairMarkerRadius: 4,
     })
 
@@ -168,6 +171,18 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
 
     chart.applyOptions({
       timeScale: { timeVisible: mode === 'intraday' },
+    })
+
+    // 상승=빨강, 하락=파랑 동적 색상
+    const isUp = changePercent >= 0
+    const lineColor = isUp ? UP_LINE : DOWN_LINE
+    const areaTop = isUp ? UP_AREA_TOP : DOWN_AREA_TOP
+    const areaBottom = isUp ? UP_AREA_BOTTOM : DOWN_AREA_BOTTOM
+    series.applyOptions({
+      lineColor,
+      topColor: areaTop,
+      bottomColor: areaBottom,
+      crosshairMarkerBackgroundColor: lineColor,
     })
 
     series.setData(data.map(p => ({ time: p.time as UTCTimestamp, value: p.value })))
