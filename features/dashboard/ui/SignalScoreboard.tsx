@@ -72,15 +72,15 @@ export function SignalScoreboard() {
             <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">최근 성과 TOP</div>
             {topStock ? (
               <>
-                <div className="text-[22px] font-bold text-[#16A34A] truncate">
+                <div className="text-[16px] font-bold text-[#1A1A2E] truncate">
                   {topStock.ticker_name}
                 </div>
-                <div className="text-[16px] font-bold text-[#16A34A] tabular-nums">
+                <div className="text-[28px] font-extrabold text-[#16A34A] tabular-nums leading-tight">
                   +{topStock.return_pct}%
                 </div>
               </>
             ) : (
-              <div className="text-[22px] font-bold text-[#B0ADA6]">—</div>
+              <div className="text-[28px] font-bold text-[#B0ADA6]">—</div>
             )}
           </div>
 

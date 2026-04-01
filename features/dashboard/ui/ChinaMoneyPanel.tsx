@@ -28,7 +28,7 @@ export function ChinaMoneyPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       <div className="flex items-center justify-between">
         <span className="fx-card-title">외국인 자금 흐름</span>
-        <span className="text-[13px] font-semibold text-[#C4C1BA]">{dateStr}</span>
+        <span className="text-[14px] font-bold text-[#9CA3AF]">{dateStr}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
