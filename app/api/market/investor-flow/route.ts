@@ -7,14 +7,23 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
-      .from('kospi_investor_daily')
-      .select('date, foreign_net, inst_net, indiv_net')
+      .from('market_investor_trend')
+      .select('date, foreign_net, inst_net, individual_net')
+      .eq('market', 'KOSPI')
       .order('date', { ascending: true })
       .limit(30)
 
     if (error) throw error
 
-    return NextResponse.json(data ?? [])
+    // individual_net → indiv_net 매핑 (프론트엔드 호환)
+    const mapped = (data ?? []).map(row => ({
+      date: row.date,
+      foreign_net: row.foreign_net,
+      inst_net: row.inst_net,
+      indiv_net: row.individual_net,
+    }))
+
+    return NextResponse.json(mapped)
   } catch (e) {
     console.error('investor-flow error:', e)
     return NextResponse.json([], { status: 500 })
