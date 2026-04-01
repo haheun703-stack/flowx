@@ -16,8 +16,8 @@ export function SupplyRankPanel({ stocks, type }: {
       <span className="fx-card-title">{title}</span>
 
       {/* 테이블 헤더 */}
-      <div className="grid items-center px-1 py-1.5 text-[9px] text-[#9CA3AF] font-medium border-b border-[#F0EDE8]"
-        style={{ gridTemplateColumns: '1fr 64px 48px 60px' }}>
+      <div className="grid items-center px-1 py-1.5 text-[14px] text-[#9CA3AF] font-bold border-b border-[#F0EDE8]"
+        style={{ gridTemplateColumns: '1fr 72px 56px 68px' }}>
         <span>종목</span>
         <span className="text-right">현재가</span>
         <span className="text-right">등락</span>
@@ -25,23 +25,23 @@ export function SupplyRankPanel({ stocks, type }: {
       </div>
 
       {stocks.length === 0 ? (
-        <div className="text-[10px] text-[#C4C1BA] text-center py-6">데이터 없음</div>
+        <div className="text-[15px] font-semibold text-[#C4C1BA] text-center py-6">데이터 없음</div>
       ) : (
         stocks.slice(0, 5).map(s => (
           <Link
             key={s.code}
             href={`/chart/${s.code}`}
-            className="grid items-center px-1 h-[36px] border-b border-[#F5F4F0] hover:bg-[#F0EDE8] transition-colors text-[10px]"
-            style={{ gridTemplateColumns: '1fr 64px 48px 60px' }}
+            className="grid items-center px-1 h-[44px] border-b border-[#F5F4F0] hover:bg-[#F0EDE8] transition-colors text-[15px] font-semibold"
+            style={{ gridTemplateColumns: '1fr 72px 56px 68px' }}
           >
-            <span className="text-[11px] text-[#1A1A2E] font-bold truncate">{s.name}</span>
-            <span className="text-right text-[#1A1A2E] tabular-nums">{s.price.toLocaleString()}</span>
+            <span className="text-[16px] text-[#1A1A2E] font-bold truncate">{s.name}</span>
+            <span className="text-right text-[#1A1A2E] font-semibold tabular-nums">{s.price.toLocaleString()}</span>
             <span className={`text-right font-bold tabular-nums ${
               s.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
             }`}>
               {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
             </span>
-            <span className="text-right font-bold tabular-nums text-[var(--up)]">
+            <span className="text-right font-bold tabular-nums text-[var(--up)] text-[15px]">
               {(() => {
                 const val = type === '외인' ? s.foreignNet : s.instNet
                 return `${val >= 0 ? '+' : ''}${val.toLocaleString()}억`

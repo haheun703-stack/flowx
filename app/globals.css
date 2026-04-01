@@ -205,18 +205,19 @@ body {
 }
 
 @utility fx-card-title {
-  font-size: 10px;
-  color: var(--fx-text-muted);
-  font-weight: 500;
+  font-size: 16px;
+  color: var(--fx-text-primary);
+  font-weight: 700;
   letter-spacing: 0.3px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 @utility fx-card-tip {
-  font-size: 9px;
-  color: var(--fx-text-faint);
-  margin-top: 8px;
-  line-height: 1.3;
-  padding-top: 6px;
+  font-size: 13px;
+  color: var(--fx-text-dim);
+  font-weight: 500;
+  margin-top: 10px;
+  line-height: 1.4;
+  padding-top: 8px;
   border-top: 1px solid var(--fx-border-subtle);
 }

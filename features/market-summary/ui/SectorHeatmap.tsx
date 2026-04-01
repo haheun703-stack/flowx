@@ -15,7 +15,7 @@ export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
     return (
       <div>
         <span className="fx-card-title">섹터별 등락 한눈에 (5일 기준)</span>
-        <div className="text-[10px] text-[#C4C1BA] text-center py-6">데이터 로딩중...</div>
+        <div className="text-[15px] font-semibold text-[#C4C1BA] text-center py-6">데이터 로딩중...</div>
       </div>
     )
   }
@@ -33,10 +33,10 @@ export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
               className="rounded-md p-[10px] text-center transition-all hover:brightness-95"
               style={{ background: style.bg }}
             >
-              <div className="text-[10px] font-medium mb-0.5" style={{ color: style.text }}>
+              <div className="text-[15px] font-semibold mb-0.5" style={{ color: style.text }}>
                 {sector.name}
               </div>
-              <div className="text-[12px] font-bold tabular-nums" style={{ color: style.text }}>
+              <div className="text-[18px] font-bold tabular-nums" style={{ color: style.text }}>
                 {sector.changePercent >= 0 ? '+' : ''}{sector.changePercent.toFixed(1)}%
               </div>
             </div>

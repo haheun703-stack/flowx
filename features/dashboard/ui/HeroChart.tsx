@@ -205,18 +205,18 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
       <div ref={containerRef} className="w-full" />
 
       {/* 투자자 범례 */}
-      <div className="flex items-center gap-3 mt-1">
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-4 h-2.5 rounded-sm" style={{ background: FOREIGN_COLOR }} />
-          <span className="text-[9px] text-[#B0ADA6]">외국인</span>
+      <div className="flex items-center gap-4 mt-2">
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-5 h-3 rounded-sm" style={{ background: FOREIGN_COLOR }} />
+          <span className="text-[14px] font-semibold text-[#6B7280]">외국인</span>
         </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-4 border-t-2" style={{ borderColor: INST_COLOR }} />
-          <span className="text-[9px] text-[#B0ADA6]">기관</span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-5 border-t-[3px]" style={{ borderColor: INST_COLOR }} />
+          <span className="text-[14px] font-semibold text-[#6B7280]">기관</span>
         </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-4 border-t-2" style={{ borderColor: INDIV_COLOR }} />
-          <span className="text-[9px] text-[#B0ADA6]">개인</span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-5 border-t-[3px]" style={{ borderColor: INDIV_COLOR }} />
+          <span className="text-[14px] font-semibold text-[#6B7280]">개인</span>
         </span>
       </div>
 
