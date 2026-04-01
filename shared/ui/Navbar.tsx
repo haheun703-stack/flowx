@@ -59,15 +59,15 @@ export function Navbar() {
       <TickerBanner />
       <nav
         aria-label="메인 내비게이션"
-        className="flex items-center h-11 px-4 bg-[var(--bg-base,#FAFAF8)] border-b border-[#E8E6E0]"
+        className="flex items-center h-14 px-4 bg-[var(--bg-base,#FAFAF8)] border-b border-[#E8E6E0]"
       >
         {/* 로고 */}
         <Link href="/" className="flex items-center gap-2 mr-6 shrink-0" aria-label="FLOWX 홈">
-          <span className="text-[15px] font-bold leading-none">
+          <span className="text-[20px] font-extrabold leading-none">
             <span className="text-[#1A1A2E]">FLOW</span>
             <span className="text-[#00FF88]">X</span>
           </span>
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#E8F5E9] text-[#00CC6A]">BETA</span>
+          <span className="text-[11px] font-extrabold px-1.5 py-0.5 rounded bg-[#E8F5E9] text-[#00CC6A]">BETA</span>
         </Link>
 
         {/* 5개 탭 */}
@@ -78,25 +78,25 @@ export function Navbar() {
               <div key={tab.label} className="relative h-full flex items-center group">
                 <Link
                   href={tab.href}
-                  className={`text-[11px] h-full flex items-center px-3 transition-colors ${
+                  className={`text-[15px] h-full flex items-center px-4 transition-colors ${
                     active
-                      ? 'text-[#1A1A2E] font-semibold border-b-2 border-[#00FF88]'
-                      : 'text-[#9CA3AF] hover:text-[#1A1A2E]'
+                      ? 'text-[#1A1A2E] font-bold border-b-2 border-[#00FF88]'
+                      : 'text-[#6B7280] font-semibold hover:text-[#1A1A2E]'
                   }`}
                 >
                   {tab.label}
                 </Link>
                 {tab.sub && (
                   <div className="absolute top-full left-0 hidden group-hover:block pt-1 z-50">
-                    <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg py-1 min-w-[140px]">
+                    <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg py-1.5 min-w-[160px]">
                       {tab.sub.map((s) => (
                         <Link
                           key={s.href}
                           href={s.href}
-                          className={`block px-3 py-1.5 text-[11px] hover:bg-[#F0EDE8] transition-colors ${
+                          className={`block px-4 py-2 text-[14px] hover:bg-[#F0EDE8] transition-colors ${
                             pathname === s.href || pathname.startsWith(s.href + '/')
-                              ? 'text-[#1A1A2E] font-semibold'
-                              : 'text-[#6B7280]'
+                              ? 'text-[#1A1A2E] font-bold'
+                              : 'text-[#6B7280] font-semibold'
                           }`}
                         >
                           {s.label}
