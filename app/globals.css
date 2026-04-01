@@ -90,6 +90,18 @@ body {
   --flowx-green:          #00FF88;
 }
 
+/* TradingView 워터마크 숨기기 (lightweight-charts v5) */
+a[href*="tradingview.com"],
+a[href*="tradingview.com"] img,
+[class*="tv-attr"] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
 @utility landing-card {
   background: #FFFFFF;
   border: 1px solid var(--landing-border);
