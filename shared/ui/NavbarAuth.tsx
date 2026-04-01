@@ -4,13 +4,6 @@ import Link from 'next/link'
 import { useAuth } from '@/shared/lib/AuthProvider'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 
-const TIER_COLORS: Record<string, string> = {
-  FREE: '#6b7280',
-  SIGNAL: '#16a34a',
-  PRO: '#d97706',
-  VIP: '#7c3aed',
-}
-
 export function NavbarAuth() {
   const { user, isLoading, signOut } = useAuth()
   const { data: profile } = useUserProfile()
@@ -21,8 +14,8 @@ export function NavbarAuth() {
     return (
       <Link
         href="/auth/login"
-        className="px-3 py-1.5 text-xs font-bold rounded border border-[var(--blue)]/40 text-[var(--blue)]
-                   hover:bg-[var(--blue)]/10 transition-colors font-mono"
+        className="px-3 py-1 text-[9px] font-bold rounded border border-[#00FF88] text-[#00CC6A]
+                   hover:bg-[#E8F5E9] transition-colors"
       >
         로그인
       </Link>
@@ -34,20 +27,13 @@ export function NavbarAuth() {
 
   return (
     <div className="flex items-center gap-2">
-      <span
-        className="text-[9px] font-bold px-1.5 py-0.5 rounded border"
-        style={{
-          color: TIER_COLORS[tier],
-          borderColor: `${TIER_COLORS[tier]}40`,
-          backgroundColor: `${TIER_COLORS[tier]}10`,
-        }}
-      >
+      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#00FF88] text-[#00CC6A]">
         {tier}
       </span>
       <button
         onClick={() => signOut()}
-        className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center
-                   text-xs font-bold text-gray-700 hover:bg-gray-200 transition-colors"
+        className="w-[26px] h-[26px] rounded-full bg-[#E8E6E0] flex items-center justify-center
+                   text-[10px] font-bold text-[#1A1A2E] hover:bg-[#D1D5DB] transition-colors"
         title="로그아웃"
       >
         {initial}

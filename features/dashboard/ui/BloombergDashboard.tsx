@@ -1,111 +1,158 @@
 'use client'
 
+import { useState } from 'react'
 import { SignalScoreboard } from './SignalScoreboard'
-import { RecentClosedSignals } from './RecentClosedSignals'
-import { StatusBar } from './StatusBar'
-import { SidePanel } from './SidePanel'
 import { AIRecommendPanel } from './AIRecommendPanel'
-import { SmartMoneyPanel } from './SmartMoneyPanel'
 import { SectorMomentumTable } from './SectorMomentumTable'
 import { HeroChart } from './HeroChart'
 import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
-import { SniperWatchPanel } from './SniperWatchPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
+import { MarketJudgmentCard } from './MarketJudgmentCard'
 import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvestorFlowKosdaq } from '../api/useDashboard'
 
 export function BloombergDashboard() {
-  const { data: intraday } = useDashboardDaily()
-  const { data: kosdaq } = useDashboardDailyKosdaq()
+  const [activeIndex, setActiveIndex] = useState<'KOSPI' | 'KOSDAQ'>('KOSPI')
+  const { data: kospiData } = useDashboardDaily()
+  const { data: kosdaqData } = useDashboardDailyKosdaq()
   const { data: investorFlow } = useInvestorFlow()
   const { data: investorFlowKosdaq } = useInvestorFlowKosdaq()
 
+  const chartData = activeIndex === 'KOSPI' ? kospiData : kosdaqData
+  const flowData = activeIndex === 'KOSPI' ? investorFlow : investorFlowKosdaq
+
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
-    <div className="flex flex-col h-[calc(100vh/1.25-88px)] bg-[var(--bg-base)]">
-      {/* 상단 상태바 */}
-      <StatusBar />
+    <div className="flex relative">
+      <main className={`${sidebarOpen ? 'w-3/4' : 'w-full'} transition-[width] duration-300`}>
+        <div className="p-4 space-y-[14px] max-w-[1400px] mx-auto">
 
-      {/* 스크롤 가능 영역 */}
-      <div className="flex-1 overflow-y-auto">
-        {/* 시그널 성적표 배너 */}
-        <SignalScoreboard />
-
-        {/* 최근 청산 시그널 (가로 스크롤) */}
-        <RecentClosedSignals />
-
-        {/* KOSPI 히어로 차트 — 풀 width */}
-        <HeroChart
-          data={intraday?.points ?? []}
-          currentPrice={intraday?.currentPrice ?? 0}
-          change={intraday?.change ?? 0}
-          changePercent={intraday?.changePercent ?? 0}
-          marketOpen={intraday?.marketOpen ?? false}
-          mode={(intraday?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
-          lastDate={intraday?.lastDate}
-          investorFlow={investorFlow}
-          indexLabel="KOSPI"
-        />
-
-        {/* KOSDAQ 히어로 차트 — 풀 width */}
-        <HeroChart
-          data={kosdaq?.points ?? []}
-          currentPrice={kosdaq?.currentPrice ?? 0}
-          change={kosdaq?.change ?? 0}
-          changePercent={kosdaq?.changePercent ?? 0}
-          marketOpen={kosdaq?.marketOpen ?? false}
-          mode={(kosdaq?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
-          lastDate={kosdaq?.lastDate}
-          investorFlow={investorFlowKosdaq}
-          indexLabel="KOSDAQ"
-        />
-
-        {/* 메인 그리드 */}
-        <div className="flex min-h-[400px]">
-          {/* 좌측 사이드패널 */}
-          <SidePanel />
-
-          {/* 우측 컨텐츠 */}
-          <div className="flex-1 flex flex-col">
-            {/* 중간: AI 추천 + 세력 포착 (반반) */}
-            <div className="flex h-[360px] border-b border-[var(--border)]">
-              <div className="flex-1 overflow-hidden border-r border-[var(--border)]">
-                <AIRecommendPanel />
+          {/* ── 1행: 차트(70%) + 장세판단(30%) ── */}
+          <div className="flex gap-3">
+            <div className="w-[70%] fx-card-green">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex gap-1.5">
+                  {(['KOSPI', 'KOSDAQ'] as const).map(idx => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveIndex(idx)}
+                      className={`px-3 py-1 text-[11px] font-semibold rounded transition-colors ${
+                        activeIndex === idx
+                          ? 'bg-[#00FF88] text-[#0A3D23]'
+                          : 'bg-[#F0EDE8] text-[#9CA3AF] hover:text-[#6B7280]'
+                      }`}
+                    >
+                      {idx}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[9px] text-[#B0ADA6]">
+                  30일 차트 | {chartData?.lastDate ?? ''} 종가 기준
+                </span>
               </div>
-              <div className="flex-1 overflow-hidden">
-                  <SmartMoneyPanel />
+
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-[22px] font-bold text-[#1A1A2E] tabular-nums">
+                  {chartData?.currentPrice ? chartData.currentPrice.toLocaleString() : '---'}
+                </span>
+                {chartData && chartData.currentPrice > 0 && (
+                  <>
+                    <span className={`text-[14px] font-medium tabular-nums ${
+                      chartData.changePercent >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'
+                    }`}>
+                      {chartData.changePercent >= 0 ? '+' : ''}{chartData.changePercent.toFixed(2)}%
+                    </span>
+                    <span className={`text-[11px] tabular-nums ${
+                      chartData.changePercent >= 0 ? 'text-[#2563EB]/70' : 'text-[#EF4444]/70'
+                    }`}>
+                      ({chartData.change >= 0 ? '+' : ''}{chartData.change.toFixed(2)})
+                    </span>
+                  </>
+                )}
               </div>
+
+              <HeroChart
+                data={chartData?.points ?? []}
+                currentPrice={chartData?.currentPrice ?? 0}
+                change={chartData?.change ?? 0}
+                changePercent={chartData?.changePercent ?? 0}
+                marketOpen={chartData?.marketOpen ?? false}
+                mode={(chartData?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
+                lastDate={chartData?.lastDate}
+                investorFlow={flowData}
+                indexLabel={activeIndex}
+              />
+
+              {flowData && flowData.length > 0 && (() => {
+                const latest = flowData[flowData.length - 1]
+                const toEok = (v: number) => Math.round(v / 100)
+                const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}억`
+                return (
+                  <div className="mt-2 text-[9px] text-[#B0ADA6] flex gap-3">
+                    <span>외국인 <span className={toEok(latest.foreign_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.foreign_net))}</span></span>
+                    <span>기관 <span className={toEok(latest.inst_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.inst_net))}</span></span>
+                    <span>개인 <span className={toEok(latest.indiv_net) >= 0 ? 'text-[#2563EB]' : 'text-[#EF4444]'}>{fmt(toEok(latest.indiv_net))}</span></span>
+                  </div>
+                )
+              })()}
             </div>
 
-            {/* 섹터 모멘텀 */}
-            <div className="h-[280px] shrink-0">
-              <SectorMomentumTable />
+            <div className="w-[30%]">
+              <MarketJudgmentCard />
             </div>
           </div>
-        </div>
 
-        {/* ── 하단 확장 패널 ── */}
-        <div className="border-t border-[var(--border)]">
-          {/* 외국인 자본 흐름 + ETF 시그널 */}
-          <div className="flex h-[360px] border-b border-[var(--border)]">
-            <div className="flex-1 overflow-hidden border-r border-[var(--border)]">
+          {/* ── 2행: AI 시그널 성적표 (풀너비, 녹색 라인) ── */}
+          <div className="fx-card-green">
+            <SignalScoreboard />
+          </div>
+
+          {/* ── 3행: AI 추천(2/3) + 오늘의 브리핑(1/3) ── */}
+          <div className="flex gap-3">
+            <div className="w-2/3 fx-card-green min-h-[360px]">
+              <AIRecommendPanel />
+            </div>
+            <div className="w-1/3 fx-card min-h-[360px]">
+              <MorningNewsPanel />
+            </div>
+          </div>
+
+          {/* ── 4행: 섹터 + 외국인 + ETF (3등분, 기본 카드) ── */}
+          <div className="flex gap-3">
+            <div className="flex-1 fx-card min-h-[320px]">
+              <SectorMomentumTable />
+            </div>
+            <div className="flex-1 fx-card min-h-[320px]">
               <ChinaMoneyPanel />
             </div>
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 fx-card min-h-[320px]">
               <EtfSignalPanel />
             </div>
           </div>
 
-          {/* 스나이퍼 워치 + 모닝 브리핑 */}
-          <div className="flex h-[360px]">
-            <div className="flex-1 overflow-hidden border-r border-[var(--border)]">
-                <SniperWatchPanel />
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <MorningNewsPanel />
-            </div>
-          </div>
         </div>
-      </div>
+      </main>
+
+      {sidebarOpen && (
+        <aside className="w-1/4 border-l border-[#E8E6E0] bg-white p-4 overflow-y-auto">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-semibold text-[#1A1A2E]">관심 종목</span>
+            <button onClick={() => setSidebarOpen(false)} className="text-[10px] text-[#9CA3AF] hover:text-[#1A1A2E]">▶</button>
+          </div>
+          <div className="text-[10px] text-[#9CA3AF] text-center py-10">준비 중</div>
+        </aside>
+      )}
+
+      {!sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-r-0 border-[#E8E6E0] rounded-l-lg px-1.5 py-4 text-[9px] text-[#9CA3AF] hover:text-[#1A1A2E] hover:bg-[#F0EDE8] transition-colors shadow-sm"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          ◀ 관심종목
+        </button>
+      )}
     </div>
   )
 }

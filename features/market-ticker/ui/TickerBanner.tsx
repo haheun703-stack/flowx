@@ -8,12 +8,22 @@ export function TickerBanner() {
 
   if (isLoading) {
     return (
-      <div className="h-[52px] bg-white border-b border-[var(--border)] flex items-center px-4">
-        <div className="flex gap-4">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
-          ))}
+      <div className="bg-[#F5F4F0]">
+        <div className="h-10 flex items-center px-4">
+          <div className="flex gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-2.5 w-16 bg-[#E8E6E0] rounded animate-pulse" />
+            ))}
+          </div>
         </div>
+        <div className="h-10 border-t border-[#ECEAE4] flex items-center px-4">
+          <div className="flex gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-2.5 w-16 bg-[#E8E6E0] rounded animate-pulse" />
+            ))}
+          </div>
+        </div>
+        <div style={{ height: 2, background: 'linear-gradient(90deg, #00FF88, #00CC6A 30%, #00FF88 60%, #00CC6A)' }} />
       </div>
     )
   }
@@ -21,9 +31,11 @@ export function TickerBanner() {
   const usdkrw = worldIndices.find(i => i.symbol === 'USDKRW')
 
   return (
-    <div className="bg-white sticky top-[53px] z-30">
+    <div className="bg-[#F5F4F0]">
       <WorldIndexRow indices={worldIndices} />
       <KoreanTickerRow tickers={koreanTickers} usdkrw={usdkrw} />
+      {/* 하단 녹색 그래디언트 라인 */}
+      <div style={{ height: 2, background: 'linear-gradient(90deg, #00FF88, #00CC6A 30%, #00FF88 60%, #00CC6A)' }} />
     </div>
   )
 }

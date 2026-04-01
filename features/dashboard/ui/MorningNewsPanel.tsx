@@ -3,11 +3,11 @@
 import { useBriefing } from '../api/useDashboard'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
-const DIR_COLOR: Record<string, string> = {
-  BULL: 'text-[var(--up)] bg-[var(--up)]/10 border-[var(--up)]/30',
-  BEAR: 'text-[var(--down)] bg-[var(--down)]/10 border-[var(--down)]/30',
-  NEUTRAL: 'text-[var(--yellow)] bg-[var(--yellow)]/10 border-[var(--yellow)]/30',
-  CAUTION: 'text-orange-600 bg-orange-500/10 border-orange-500/30',
+const DIR_BADGE: Record<string, { bg: string; text: string; label: string }> = {
+  BULL:    { bg: '#E8F5E9', text: '#16A34A', label: '강세장' },
+  BEAR:    { bg: '#FEE2E2', text: '#DC2626', label: '약세장' },
+  NEUTRAL: { bg: '#F5F4F0', text: '#9CA3AF', label: '횡보장' },
+  CAUTION: { bg: '#FFFBEB', text: '#D97706', label: '관망' },
 }
 
 export function MorningNewsPanel() {
@@ -15,64 +15,73 @@ export function MorningNewsPanel() {
 
   const rel = data ? getRelativeDate(data.date) : null
   const isStale = rel ? rel.daysAgo >= 7 : false
+  const badge = DIR_BADGE[data?.direction ?? 'NEUTRAL'] ?? DIR_BADGE.NEUTRAL
 
   return (
-    <div className={`flex flex-col h-full text-xs bg-white ${isStale ? 'opacity-50' : ''}`} style={{ fontFamily: 'var(--font-terminal)' }}>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)]">
+    <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
+      {/* 헤더 */}
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-[var(--text-primary)] tracking-wider uppercase">모닝 브리핑</span>
+          <span className="fx-card-title mb-0">오늘의 브리핑</span>
           {data && (
-            <span className={`text-[10px] px-1 py-0.5 rounded-sm border font-bold ${DIR_COLOR[data.direction] ?? DIR_COLOR.NEUTRAL}`}>
-              {data.direction}
-            </span>
-          )}
-          {rel && rel.daysAgo === 0 && (
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--green)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--green)]" />
+            <span
+              className="text-[8px] px-1.5 py-0.5 rounded font-bold"
+              style={{ background: badge.bg, color: badge.text }}
+            >
+              {badge.label}
             </span>
           )}
         </div>
         <div className="flex items-center gap-2">
           {rel && (
-            <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[var(--green)]' : rel.daysAgo <= 1 ? 'text-[var(--text-dim)]' : 'text-[var(--text-muted)]'}`}>
+            <span className={`text-[9px] font-bold ${rel.daysAgo === 0 ? 'text-[#00CC6A]' : 'text-[#B0ADA6]'}`}>
               {rel.label}
             </span>
           )}
-          <span className="text-[11px] text-[var(--text-dim)] font-bold">{data?.date ?? ''}</span>
+          <span className="text-[8px] text-[#C4C1BA]">{data?.date ?? ''}</span>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto">
+
+      {/* 바디 */}
+      <div className="flex-1 overflow-y-auto min-h-0">
         {isLoading ? (
-          Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-[32px] mx-2 my-px bg-gray-100 animate-pulse rounded-sm" />
-          ))
+          <div className="space-y-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-[24px] bg-[#F5F4F0] animate-pulse rounded" />
+            ))}
+          </div>
         ) : !data ? (
-          <div className="flex items-center justify-center h-full text-[var(--text-muted)]">데이터 없음</div>
+          <div className="flex items-center justify-center h-full text-[10px] text-[#C4C1BA]">
+            오늘의 브리핑을 준비 중입니다. 매일 오전 8시에 업데이트됩니다.
+          </div>
         ) : (
-          <div className="px-3 py-2 space-y-2">
-            <div className="flex gap-4 text-xs">
-              <span className="text-[var(--text-dim)]">KOSPI</span>
-              <span className="text-[13px] text-[var(--text-primary)] font-bold tabular-nums">{data.kospi_close?.toLocaleString()}</span>
-              <span className="text-[var(--text-dim)]">시장</span>
-              <span className="text-[13px] text-[var(--yellow)] font-bold">{data.market_phase}</span>
+          <div className="space-y-3">
+            {/* KOSPI + 시장 */}
+            <div className="flex gap-4 text-[10px]">
+              <span className="text-[#9CA3AF]">KOSPI</span>
+              <span className="text-[#1A1A2E] font-bold tabular-nums">{data.kospi_close?.toLocaleString()}</span>
+              <span className="text-[#9CA3AF]">시장</span>
+              <span className="text-[#D97706] font-bold">{data.market_phase}</span>
             </div>
-            <div className="border-l-2 border-[var(--blue)]/30 pl-2">
-              <div className="text-[10px] text-[var(--blue)] font-bold mb-0.5">US</div>
-              <div className="text-[var(--text-primary)] text-xs leading-relaxed">{data.us_summary}</div>
+
+            {/* US 요약 */}
+            <div className="border-l-2 border-[#2563EB]/30 pl-2">
+              <div className="text-[12px] font-semibold text-[#1A1A2E] mb-0.5">{data.us_summary?.split('.')[0]}.</div>
+              <div className="text-[10px] text-[#6B7280] leading-relaxed">{data.us_summary}</div>
             </div>
-            <div className="border-l-2 border-[var(--up)]/30 pl-2">
-              <div className="text-[10px] text-[var(--up)] font-bold mb-0.5">KR</div>
-              <div className="text-[var(--text-primary)] text-xs leading-relaxed">{data.kr_summary}</div>
+
+            {/* KR 요약 */}
+            <div className="border-l-2 border-[#EF4444]/30 pl-2">
+              <div className="text-[10px] text-[#6B7280] leading-relaxed">{data.kr_summary}</div>
             </div>
+
+            {/* 관련 뉴스 */}
             {data.news_picks && data.news_picks.length > 0 && (
-              <div className="border-t border-[var(--border)] pt-2">
-                <div className="text-[10px] text-[var(--text-dim)] font-bold mb-1">NEWS PICKS</div>
-                {data.news_picks.map((pick: { code: string; name: string; reason: string }, i: number) => (
-                  <div key={pick.code} className={`flex items-center gap-2 py-1 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50/50' : ''}`}>
-                    <span className="text-[13px] text-[var(--text-primary)] font-medium shrink-0">{pick.name}</span>
-                    <span className="text-[10px] text-[var(--text-muted)] shrink-0">{pick.code}</span>
-                    <span className="text-[var(--text-dim)] text-xs truncate">{pick.reason}</span>
+              <div className="border-t border-[#F0EDE8] pt-2">
+                {data.news_picks.map((pick: { code: string; name: string; reason: string }) => (
+                  <div key={pick.code} className="flex items-start gap-1.5 py-1 border-b border-[#F5F4F0] last:border-0">
+                    <span className="text-[10px] text-[#2563EB] font-bold shrink-0">{pick.name}</span>
+                    <span className="text-[9px] text-[#6B7280] leading-relaxed">{pick.reason}</span>
                   </div>
                 ))}
               </div>
