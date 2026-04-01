@@ -19,7 +19,7 @@ export function HeroSection() {
         <h1 className="text-center text-[32px] sm:text-[40px] md:text-[48px] font-bold leading-tight text-[var(--landing-text)] mb-6">
           트레이딩뷰가 못 하는 것,
           <br />
-          <span className="text-[var(--landing-accent)]">FlowX</span>가 합니다
+          <span className="text-[var(--landing-text)]">Flow</span><span className="text-[var(--flowx-green)]">X</span>가 합니다
         </h1>
 
         {/* 서브 카피 */}

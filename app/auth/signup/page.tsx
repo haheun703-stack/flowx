@@ -124,7 +124,7 @@ export default function SignupPage() {
         <div className="max-w-sm w-full text-center">
           <Link href="/" className="inline-block text-2xl font-bold">
             <span className="text-[var(--landing-text)]">FLOW</span>
-            <span className="text-[var(--landing-accent)]">X</span>
+            <span className="text-[var(--flowx-green)]">X</span>
           </Link>
           <h1 className="text-xl font-bold text-[var(--landing-text)] mt-6 mb-4">회원가입 완료!</h1>
           <p className="text-sm text-[var(--landing-text-sub)] mb-6">
@@ -151,7 +151,7 @@ export default function SignupPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-2xl font-bold">
             <span className="text-[var(--landing-text)]">FLOW</span>
-            <span className="text-[var(--landing-accent)]">X</span>
+            <span className="text-[var(--flowx-green)]">X</span>
           </Link>
           <h1 className="text-xl font-bold text-[var(--landing-text)] mt-6 mb-2">회원가입</h1>
           <p className="text-sm text-[var(--landing-text-dim)]">무료로 시작하세요</p>

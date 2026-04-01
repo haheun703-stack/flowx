@@ -39,7 +39,7 @@ export function LandingFooter() {
           <div className="col-span-2 md:col-span-1">
             <div className="text-2xl font-bold mb-3">
               <span className="text-white">FLOW</span>
-              <span className="text-[var(--landing-accent)]">X</span>
+              <span className="text-[var(--flowx-green)]">X</span>
             </div>
             <p className="text-sm text-white/50 leading-relaxed">
               한국 주식에 특화된

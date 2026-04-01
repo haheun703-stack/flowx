@@ -48,7 +48,7 @@ function LoginForm() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block text-2xl font-bold">
             <span className="text-[var(--landing-text)]">FLOW</span>
-            <span className="text-[var(--landing-accent)]">X</span>
+            <span className="text-[var(--flowx-green)]">X</span>
           </Link>
           <h1 className="text-xl font-bold text-[var(--landing-text)] mt-6 mb-2">로그인</h1>
           <p className="text-sm text-[var(--landing-text-dim)]">계정에 로그인하세요</p>

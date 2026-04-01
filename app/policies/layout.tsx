@@ -9,7 +9,7 @@ export default function PoliciesLayout({ children }: { children: React.ReactNode
       <div className="max-w-3xl mx-auto px-6 py-16">
         <Link href="/" className="inline-block text-2xl font-bold mb-2">
           <span className="text-[var(--landing-text)]">FLOW</span>
-          <span className="text-[var(--landing-accent)]">X</span>
+          <span className="text-[var(--flowx-green)]">X</span>
         </Link>
         <nav className="flex gap-4 text-sm text-[var(--landing-text-dim)] mb-8">
           <Link href="/policies" className="hover:text-[var(--landing-accent)]">정책 허브</Link>

@@ -9,7 +9,7 @@ export default function TermsPage() {
       <div className="max-w-3xl mx-auto">
         <Link href="/" className="inline-block text-2xl font-bold mb-6">
           <span className="text-[var(--landing-text)]">FLOW</span>
-          <span className="text-[var(--landing-accent)]">X</span>
+          <span className="text-[var(--flowx-green)]">X</span>
         </Link>
         <h1 className="text-2xl font-bold mb-2">서비스 이용약관</h1>
         <p className="text-sm text-[var(--landing-text-dim)] mb-8">시행일: 2026년 4월 1일</p>
