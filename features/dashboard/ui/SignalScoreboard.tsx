@@ -75,7 +75,7 @@ export function SignalScoreboard() {
                 <div className="text-[28px] font-bold text-[#16A34A] tabular-nums">
                   +{topStock.return_pct}%
                 </div>
-                <div className="text-[13px] font-semibold text-[#B0ADA6] truncate">
+                <div className="text-[14px] font-bold text-[#6B7280] truncate">
                   {topStock.ticker_name}
                 </div>
               </>
