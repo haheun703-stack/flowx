@@ -10,38 +10,76 @@ function fmtBil(v: number) {
   return '$0'
 }
 
-function BeneficiaryTable({ beneficiaries }: { beneficiaries: DeepAnalysis['beneficiaries'] }) {
+// ─── 수혜자 수평 바 차트 (스펙 §4) ───
+
+function barColor(ratio: number) {
+  if (ratio >= 0.5) return '#EF4444'
+  if (ratio >= 0.2) return '#F59E0B'
+  return '#9CA3AF'
+}
+
+function BeneficiaryBarChart({ beneficiaries }: { beneficiaries: DeepAnalysis['beneficiaries'] }) {
   if (!beneficiaries?.length) return null
+
+  const maxEarned = Math.max(...beneficiaries.map(b => b.earned_bil), 0.01)
+  const sorted = [...beneficiaries].sort((a, b) => b.earned_bil - a.earned_bil)
+
+  // 인사이트 생성: 이익 상위자의 stop_condition 분석
+  const topBeneficiaries = sorted.filter(b => b.earned_bil > 0).slice(0, 3)
+  const noStopCount = topBeneficiaries.filter(b => !b.stop_condition || b.stop_condition === '없음').length
+
   return (
     <div>
-      <h4 className="text-sm font-bold text-[var(--text-primary)] mb-2">수혜자별 이익 구조</h4>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[var(--border)]">
-              <th className="text-left py-2 px-3 text-[var(--text-muted)] font-medium">수혜자</th>
-              <th className="text-right py-2 px-3 text-[var(--text-muted)] font-medium">이익</th>
-              <th className="text-left py-2 px-3 text-[var(--text-muted)] font-medium">유형</th>
-              <th className="text-left py-2 px-3 text-[var(--text-muted)] font-medium">멈출 조건</th>
-            </tr>
-          </thead>
-          <tbody>
-            {beneficiaries.map((b) => (
-              <tr key={b.name} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
-                <td className="py-2 px-3 font-medium text-[var(--text-primary)]">{b.name}</td>
-                <td className="py-2 px-3 text-right font-bold text-[#dc2626] tabular-nums">
-                  {fmtBil(b.earned_bil)}
-                </td>
-                <td className="py-2 px-3 text-[var(--text-dim)]">{b.type}</td>
-                <td className="py-2 px-3 text-[var(--text-dim)] text-xs">{b.stop_condition}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h4 className="text-sm font-bold text-[var(--text-primary)] mb-3">수혜자별 이익 구조</h4>
+      <div className="space-y-2">
+        {sorted.map((b) => {
+          const ratio = b.earned_bil / maxEarned
+          const pct = Math.max(ratio * 100, 1) // 최소 1% 표시
+
+          return (
+            <div key={b.name} className="flex items-center gap-3">
+              {/* 이름 */}
+              <div className="w-[120px] shrink-0 text-right">
+                <span className="text-xs font-medium text-[var(--text-primary)] truncate block">{b.name}</span>
+              </div>
+              {/* 바 */}
+              <div className="flex-1 h-6 bg-gray-100 rounded relative overflow-hidden">
+                <div
+                  className="h-full rounded transition-all"
+                  style={{
+                    width: `${pct}%`,
+                    backgroundColor: barColor(ratio),
+                  }}
+                />
+              </div>
+              {/* 금액 */}
+              <div className="w-[70px] shrink-0 text-right">
+                <span className="text-xs font-bold text-[var(--text-primary)] tabular-nums">{fmtBil(b.earned_bil)}</span>
+              </div>
+              {/* 멈출 조건 */}
+              <div className="w-[100px] shrink-0">
+                <span className="text-[10px] text-[var(--text-muted)] truncate block">
+                  {b.stop_condition || '없음'}
+                </span>
+              </div>
+            </div>
+          )
+        })}
       </div>
+
+      {/* 핵심 인사이트 박스 */}
+      {noStopCount >= 2 && (
+        <div className="mt-4 rounded-md p-3 text-center" style={{ backgroundColor: '#FEF2F2' }}>
+          <p className="text-[10px] font-semibold" style={{ color: '#991B1B' }}>
+            핵심: 전쟁을 끝낼 수 있는 자들이 전쟁 지속에서 가장 큰 이익을 본다 → 장기화 가능성 높음
+          </p>
+        </div>
+      )}
     </div>
   )
 }
+
+// ─── 기존 컴포넌트 (유지) ───
 
 function OilScenarioTable({ scenarios }: { scenarios: DeepAnalysis['oil_scenarios'] }) {
   if (!scenarios?.length) return null
@@ -148,7 +186,6 @@ function ChartViewer({ charts }: { charts: Record<string, string> }) {
     war_stop_condition_analysis: '멈출 조건 분석',
   }
 
-  // CSS 변수 폴백 (iframe 내부에서는 부모 CSS 변수 접근 불가)
   const cssVarFallback = `<style>
 :root {
   --color-background-secondary: #f8fafc;
@@ -193,6 +230,8 @@ body { margin: 0; padding: 8px; font-family: 'Noto Sans KR', sans-serif; backgro
   )
 }
 
+// ─── 메인 ───
+
 export default function DeepAnalysisPanel({ analyses }: { analyses: DeepAnalysis[] }) {
   if (!analyses?.length) return null
 
@@ -215,23 +254,19 @@ export default function DeepAnalysisPanel({ analyses }: { analyses: DeepAnalysis
 
           {/* Content */}
           <div className="px-5 py-4 space-y-5">
-            {/* Summary */}
             {da.summary && (
               <p className="text-sm text-[var(--text-primary)] leading-relaxed bg-gray-50 rounded-lg p-3 border-l-4 border-[#dc2626]">
                 {da.summary}
               </p>
             )}
 
-            {/* Key Numbers */}
             <KeyNumbers numbers={da.key_numbers} />
 
-            {/* Beneficiaries */}
-            <BeneficiaryTable beneficiaries={da.beneficiaries} />
+            {/* 수혜자 바 차트 (기존 테이블 대체) */}
+            <BeneficiaryBarChart beneficiaries={da.beneficiaries} />
 
-            {/* Oil Scenarios */}
             <OilScenarioTable scenarios={da.oil_scenarios} />
 
-            {/* Charts */}
             <ChartViewer charts={da.charts_html} />
           </div>
         </div>
