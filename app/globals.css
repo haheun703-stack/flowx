@@ -233,3 +233,13 @@ a[href*="tradingview.com"] img,
   padding-top: 8px;
   border-top: 1px solid var(--fx-border-subtle);
 }
+
+/* FlowX Intelligence 애니메이션 */
+@keyframes pulse-stroke {
+  0%, 100% { stroke-opacity: 1; stroke-width: 3; }
+  50% { stroke-opacity: 0.3; stroke-width: 1.5; }
+}
+
+@keyframes flow-dash {
+  to { stroke-dashoffset: -20; }
+}

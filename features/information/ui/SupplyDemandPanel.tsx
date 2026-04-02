@@ -249,6 +249,11 @@ export function SupplyDemandPanel() {
             <div className="text-sm text-[var(--text-primary)] leading-relaxed">{data.summary}</div>
           </div>
         )}
+
+        {/* 팁 */}
+        <div className="fx-card-tip">
+          💡 외국인이 계속 팔고 있으면 시장에 하방 압력이 있어요. 기관이 사기 시작하면 반전 신호일 수 있어요.
+        </div>
       </div>
     </div>
   )

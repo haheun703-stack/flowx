@@ -202,19 +202,24 @@ interface HotIssuesPanelProps {
   scope: 'GLOBAL' | 'DOMESTIC'
   title: string
   accentColor: string
+  maxPreview?: number
 }
 
-export function HotIssuesPanel({ scope, title, accentColor }: HotIssuesPanelProps) {
+export function HotIssuesPanel({ scope, title, accentColor, maxPreview }: HotIssuesPanelProps) {
   const { data, isLoading } = useInformationNews(scope)
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null)
+  const [showAll, setShowAll] = useState(false)
   const items = data?.items ?? []
   const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
   const isStale = rel ? rel.daysAgo >= 7 : false
 
-  const hero = items[0]
-  const sub = items.slice(1, 3)
-  const rest = items.slice(3)
+  const shouldLimit = maxPreview != null && !showAll && items.length > maxPreview
+  const visibleItems = shouldLimit ? items.slice(0, maxPreview) : items
+
+  const hero = visibleItems[0]
+  const sub = visibleItems.slice(1, 3)
+  const rest = visibleItems.slice(3)
 
   return (
     <>
@@ -222,8 +227,7 @@ export function HotIssuesPanel({ scope, title, accentColor }: HotIssuesPanelProp
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }} />
-            <span className="text-base font-bold text-[var(--text-primary)] tracking-wider">{title}</span>
-            <span className="text-xs text-[var(--text-muted)] font-bold">{items.length}건</span>
+            <span className="text-base font-bold text-[var(--text-primary)] tracking-wider">{title} {items.length}건</span>
           </div>
           <div className="flex items-center gap-2">
             {rel && <span className={`text-xs font-bold ${rel.daysAgo === 0 ? 'text-[var(--green)]' : 'text-[var(--text-muted)]'}`}>{rel.label}</span>}
@@ -244,6 +248,14 @@ export function HotIssuesPanel({ scope, title, accentColor }: HotIssuesPanelProp
               {hero && <HeroNews item={hero} onClick={() => setSelectedNews(hero)} />}
               {sub.map(item => <SubNews key={item.id} item={item} onClick={() => setSelectedNews(item)} />)}
               {rest.map(item => <SmallNews key={item.id} item={item} onClick={() => setSelectedNews(item)} />)}
+              {shouldLimit && (
+                <button
+                  onClick={() => setShowAll(true)}
+                  className="w-full text-center py-2.5 text-xs font-bold text-[var(--blue)] hover:bg-gray-50 transition-colors border-t border-[var(--border)]"
+                >
+                  전체 {items.length}건 보기 →
+                </button>
+              )}
             </>
           )}
         </div>

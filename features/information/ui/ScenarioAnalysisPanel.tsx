@@ -215,13 +215,57 @@ function ScenarioGroup({ item }: { item: ScenarioItem }) {
   )
 }
 
+/** 중복 제거: 같은 question이면 최신(created_at)만 유지 */
+function deduplicateScenarios(items: ScenarioItem[]): ScenarioItem[] {
+  const map = new Map<string, ScenarioItem>()
+  for (const item of items) {
+    const existing = map.get(item.question)
+    if (!existing || item.created_at > existing.created_at) {
+      map.set(item.question, item)
+    }
+  }
+  return Array.from(map.values())
+}
+
+/** 액션 가이드 (아코디언 펼침용) */
+function ActionGuidePanel({ item }: { item: ScenarioItem }) {
+  const topScenario = item.scenarios?.[0]
+  if (!topScenario) return null
+
+  const buyStrategy = topScenario.action ?? '시장 상황을 관망하세요'
+  const stockImpacts = topScenario.stock_impacts ?? []
+  const cashRatio = topScenario.probability >= 60 ? '30~40%' : topScenario.probability >= 40 ? '50%' : '60~70%'
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+      <div className="p-3 rounded-lg bg-[#ECFDF5] border border-emerald-200">
+        <div className="text-[11px] font-bold text-emerald-700 mb-1">💰 매수 전략</div>
+        <div className="text-[10px] text-[var(--text-primary)] leading-relaxed">{buyStrategy}</div>
+      </div>
+      <div className="p-3 rounded-lg bg-[#FFFBEB] border border-amber-200">
+        <div className="text-[11px] font-bold text-amber-700 mb-1">💵 현금 비중</div>
+        <div className="text-[10px] text-[var(--text-primary)] leading-relaxed">추천 현금 비중: {cashRatio}</div>
+      </div>
+      <div className="p-3 rounded-lg bg-[#FEF2F2] border border-red-200">
+        <div className="text-[11px] font-bold text-red-700 mb-1">📌 주목 종목</div>
+        <div className="text-[10px] text-[var(--text-primary)] leading-relaxed">
+          {stockImpacts.length > 0
+            ? stockImpacts.slice(0, 4).map(s => `${s.direction === '+' ? '▲' : s.direction === '-' ? '▼' : '─'} ${s.name}`).join(', ')
+            : '분석 대기중'}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ScenarioAnalysisPanel() {
   const [sessionFilter, setSessionFilter] = useState<'AM' | 'PM' | undefined>(undefined)
+  const [activeIdx, setActiveIdx] = useState(0)
   const { data, isLoading } = useInformationScenarios(sessionFilter)
-  const items = data?.items ?? []
+  const rawItems = data?.items ?? []
+  const items = deduplicateScenarios(rawItems)
   const hitSummary = data?.hit_summary
 
-  // 최신 항목의 regime
   const latestRegime = items[0]?.regime
   const regimeLabel = latestRegime ? (REGIME_KR[latestRegime] ?? latestRegime) : null
 
@@ -269,8 +313,23 @@ export function ScenarioAnalysisPanel() {
             시나리오 데이터 없음
           </div>
         ) : (
-          items.map(item => <ScenarioGroup key={item.id} item={item} />)
+          items.map((item, idx) => (
+            <div key={item.id}>
+              <ScenarioGroup item={item} />
+              <button
+                onClick={() => setActiveIdx(activeIdx === idx ? -1 : idx)}
+                className="mt-2 text-[11px] font-bold text-[var(--blue)] hover:underline"
+              >
+                {activeIdx === idx ? '대응 전략 접기 ▲' : '대응 전략 보기 ▼'}
+              </button>
+              {activeIdx === idx && <ActionGuidePanel item={item} />}
+            </div>
+          ))
         )}
+      </div>
+      {/* 면책 */}
+      <div className="px-6 py-2 text-[9px] text-[#C4C1BA] border-t border-[var(--border)]">
+        위 액션 가이드는 AI 분석 기반 참고 사항이며, 투자 조언이 아닙니다
       </div>
     </div>
   )
