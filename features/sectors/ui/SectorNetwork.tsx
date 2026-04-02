@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useCallback, useState, useMemo } from 'react'
-import { TIER_COLORS } from '@/lib/chart-tokens'
+import { TIER_COLORS, CONNECTION_COLOR } from '@/lib/chart-tokens'
 import { getDisplayName } from '@/lib/stock-name-ko'
 import type { StockNode, SupplyLink } from '../api/useSectorData'
 
@@ -46,21 +46,7 @@ const NETWORK_TIER_LABELS: Record<number, string> = {
   5: 'ETF', 4: '글로벌', 3: '소부장·장비', 2: '한국 대형', 1: '한국 소부장',
 }
 
-// 다크 모드 노드 배경색 (TIER_COLORS.badge 기반 + 투명도)
-const DARK_NODE_BG: Record<number, string> = {
-  5: 'rgba(83,74,183,0.35)',   // 보라
-  4: 'rgba(24,95,165,0.35)',   // 파랑
-  3: 'rgba(15,110,86,0.35)',   // 초록
-  2: 'rgba(133,79,11,0.35)',   // 금색
-  1: 'rgba(153,60,29,0.35)',   // 주황
-}
-const DARK_NODE_BORDER: Record<number, string> = {
-  5: 'rgba(83,74,183,0.7)',
-  4: 'rgba(24,95,165,0.7)',
-  3: 'rgba(15,110,86,0.7)',
-  2: 'rgba(133,79,11,0.7)',
-  1: 'rgba(153,60,29,0.7)',
-}
+// 라이트 테마: 공급망 흐름도(Swimlane)와 동일한 TIER_COLORS 사용
 
 // ── Sankey 내부 타입 ──
 interface SankeyNode {
@@ -343,7 +329,7 @@ export function SectorNetwork({
       return n.stockNames.some(s => themeSet.has(s))
     }
 
-    // ── Tier 헤더 ──
+    // ── Tier 헤더 (Swimlane 스타일) ──
     const tierFirstNode = new Map<number, SankeyNode>()
     for (const n of nodes) {
       if (!tierFirstNode.has(n.tier)) tierFirstNode.set(n.tier, n)
@@ -351,19 +337,20 @@ export function SectorNetwork({
     const drawnTiers = Array.from(tierFirstNode.keys()).sort((a, b) => b - a)
     for (const tier of drawnTiers) {
       const n = tierFirstNode.get(tier)!
-      ctx.font = `bold 22px ${CANVAS_FONT}`
+      const tc = TIER_COLORS[tier] ?? TIER_COLORS[1]
+      ctx.font = `700 14px ${CANVAS_FONT}`
       ctx.textAlign = 'center'
-      ctx.fillStyle = '#111827'
+      ctx.fillStyle = tc.badge
       ctx.fillText(NETWORK_TIER_LABELS[tier] ?? `Tier ${tier}`, n.x + n.w / 2, 34)
     }
     // Tier 간 화살표
-    ctx.font = `22px ${CANVAS_FONT}`
-    ctx.fillStyle = '#9ca3af'
+    ctx.font = `12px ${CANVAS_FONT}`
+    ctx.fillStyle = '#999'
     ctx.textAlign = 'center'
     for (let i = 0; i < drawnTiers.length - 1; i++) {
       const n1 = tierFirstNode.get(drawnTiers[i])
       const n2 = tierFirstNode.get(drawnTiers[i + 1])
-      if (n1 && n2) ctx.fillText('→', (n1.x + n1.w + n2.x) / 2, 34)
+      if (n1 && n2) ctx.fillText('▶', (n1.x + n1.w + n2.x) / 2, 34)
     }
 
     // ── 링크 ──
@@ -409,45 +396,44 @@ export function SectorNetwork({
       ctx.globalAlpha = 1
     }
 
-    // ── 노드 ──
+    // ── 노드 (공급망 흐름도와 동일한 TIER_COLORS 사용) ──
     for (const n of nodes) {
       const isActive = n.id === activeId
       const isConn = connectedIds.has(n.id)
       const isDim = activeId && !isActive && !isConn
       const isThemeDim = hasTheme && !activeId && !nodeHasTheme(n)
+      const tc = TIER_COLORS[n.tier] ?? TIER_COLORS[1]
 
       ctx.globalAlpha = isDim ? 0.12 : isThemeDim ? 0.08 : 1
 
-      // 배경
+      // 배경 — Swimlane과 동일한 라이트 컬러
       ctx.beginPath()
-      ctx.roundRect(n.x, n.y, n.w, n.h, 6)
-      ctx.fillStyle = isActive
-        ? (DARK_NODE_BORDER[n.tier] ?? 'rgba(100,100,100,0.6)')
-        : (DARK_NODE_BG[n.tier] ?? 'rgba(50,50,50,0.3)')
+      ctx.roundRect(n.x, n.y, n.w, n.h, 8)
+      ctx.fillStyle = tc.bg
       ctx.fill()
-      ctx.strokeStyle = isActive ? '#C4B5FD' : (DARK_NODE_BORDER[n.tier] ?? 'rgba(100,100,100,0.4)')
-      ctx.lineWidth = isActive ? 2 : 1
+      ctx.strokeStyle = isActive ? tc.badge : tc.border
+      ctx.lineWidth = isActive ? 2.5 : 1.5
       ctx.stroke()
 
-      // 헤더: sub_category (x2)
-      ctx.font = `bold 26px ${CANVAS_FONT}`
+      // 헤더: sub_category
+      ctx.font = `600 14px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
-      ctx.fillStyle = '#111827'
-      const headerText = n.subCategory.length > 10
-        ? n.subCategory.slice(0, 9) + '…' : n.subCategory
-      ctx.fillText(headerText, n.x + 8, n.y + 26)
+      ctx.fillStyle = tc.text
+      const headerText = n.subCategory.length > 12
+        ? n.subCategory.slice(0, 11) + '…' : n.subCategory
+      ctx.fillText(headerText, n.x + 10, n.y + 24)
 
-      // 종목 수 (x2)
-      ctx.font = `bold 22px ${CANVAS_FONT}`
+      // 종목 수
+      ctx.font = `600 11px ${CANVAS_FONT}`
       ctx.textAlign = 'right'
-      ctx.fillStyle = '#6b7280'
-      ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 8, n.y + 26)
+      ctx.fillStyle = tc.light
+      ctx.fillText(`${n.stockNames.length}종목`, n.x + n.w - 10, n.y + 24)
 
       // 구분선
       ctx.beginPath()
-      ctx.moveTo(n.x + 6, n.y + HEADER_H - 4)
-      ctx.lineTo(n.x + n.w - 6, n.y + HEADER_H - 4)
-      ctx.strokeStyle = 'rgba(0,0,0,0.08)'
+      ctx.moveTo(n.x + 8, n.y + HEADER_H - 4)
+      ctx.lineTo(n.x + n.w - 8, n.y + HEADER_H - 4)
+      ctx.strokeStyle = tc.border + '60'
       ctx.lineWidth = 1
       ctx.stroke()
 
@@ -455,18 +441,18 @@ export function SectorNetwork({
       const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
       const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
 
-      ctx.font = `18px ${CANVAS_FONT}`
-      const maxNameW = n.w - 90
+      ctx.font = `13px ${CANVAS_FONT}`
+      const maxNameW = n.w - 80
 
       for (let si = 0; si < visible.length; si++) {
-        const cy = n.y + HEADER_H + 6 + si * LINE_H + 18
+        const cy = n.y + HEADER_H + 6 + si * LINE_H + 16
         const name = getDisplayName(visible[si])
         const pct = n.changePcts[si] ?? 0
 
-        // 종목명 (캐시된 truncation, x1.5)
-        ctx.font = `18px ${CANVAS_FONT}`
+        // 종목명 — Swimlane과 동일한 tier text 색상
+        ctx.font = `600 13px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
-        ctx.fillStyle = '#111827'
+        ctx.fillStyle = tc.text
         const cacheKey = `${name}|${maxNameW}`
         let displayN = truncCache.current.get(cacheKey)
         if (displayN === undefined) {
@@ -477,30 +463,30 @@ export function SectorNetwork({
           if (displayN !== name) displayN += '…'
           truncCache.current.set(cacheKey, displayN)
         }
-        ctx.fillText(displayN, n.x + 8, cy)
+        ctx.fillText(displayN, n.x + 10, cy)
 
-        // 등락률 (오른쪽 정렬, x1.5)
-        ctx.font = `bold 17px ${CANVAS_FONT}`
+        // 등락률 — Swimlane과 동일 (#E24B4A / #378ADD)
+        ctx.font = `700 12px ${CANVAS_FONT}`
         ctx.textAlign = 'right'
-        ctx.fillStyle = pct >= 0 ? '#dc2626' : '#2563eb'
-        ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 8, cy)
+        ctx.fillStyle = pct >= 0 ? '#E24B4A' : '#378ADD'
+        ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`, n.x + n.w - 10, cy)
       }
 
-      // +N개 더 (x1.5)
+      // +N개 더
       if (n.stockNames.length > visible.length) {
-        const cy = n.y + HEADER_H + 6 + visible.length * LINE_H + 18
-        ctx.font = `17px ${CANVAS_FONT}`
+        const cy = n.y + HEADER_H + 6 + visible.length * LINE_H + 16
+        ctx.font = `11px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
-        ctx.fillStyle = '#9ca3af'
-        ctx.fillText(`+${n.stockNames.length - visible.length}개`, n.x + 8, cy)
+        ctx.fillStyle = tc.light
+        ctx.fillText(`+${n.stockNames.length - visible.length}개 더`, n.x + 10, cy)
       }
 
       ctx.globalAlpha = 1
     }
 
-    // ── 선택 시 관계 라벨 ──
+    // ── 선택 시 관계 라벨 (CONNECTION_COLOR 통일) ──
     if (selected) {
-      ctx.font = `bold 16px ${CANVAS_FONT}`
+      ctx.font = `600 10px ${CANVAS_FONT}`
       let labelIdx = 0
       for (const l of sLinks) {
         if (l.sourceId !== selected && l.targetId !== selected) continue
@@ -509,18 +495,19 @@ export function SectorNetwork({
         if (!sn || !tn) continue
 
         const mx = (sn.x + sn.w + tn.x) / 2
-        const my = (l.sourceY + l.targetY) / 2 + (labelIdx % 2 === 0 ? -18 : 18)
+        const my = (l.sourceY + l.targetY) / 2 + (labelIdx % 2 === 0 ? -14 : 14)
 
         const label = l.relations.map(r => RELATION_KO[r] ?? r).join(', ')
         const tw = ctx.measureText(label).width + 16
-        const th = 26
+        const th = 20
 
-        ctx.fillStyle = 'rgba(255,255,255,0.95)'
+        // 배경: CONNECTION_COLOR 배경 + 흰 글씨 (Swimlane badge 스타일)
+        ctx.fillStyle = CONNECTION_COLOR
         ctx.beginPath()
-        ctx.roundRect(mx - tw / 2, my - th / 2, tw, th, 4)
+        ctx.roundRect(mx - tw / 2, my - th / 2, tw, th, 8)
         ctx.fill()
 
-        ctx.fillStyle = '#FBBF24'
+        ctx.fillStyle = '#FFFFFF'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(label, mx, my)
@@ -708,7 +695,7 @@ export function SectorNetwork({
             {tooltip.stockList.length > 5 ? ` 외 ${tooltip.stockList.length - 5}개` : ''}
           </div>
           <div style={{ marginTop: 4 }}>
-            <span style={{ color: tooltip.changePct >= 0 ? '#dc2626' : '#2563eb', fontWeight: 700 }}>
+            <span style={{ color: tooltip.changePct >= 0 ? '#E24B4A' : '#378ADD', fontWeight: 700 }}>
               평균 {tooltip.changePct >= 0 ? '+' : ''}{tooltip.changePct.toFixed(1)}%
             </span>
             <span style={{ color: '#6b7280', marginLeft: 8 }}>
@@ -716,7 +703,7 @@ export function SectorNetwork({
             </span>
           </div>
           {tooltip.relations.length > 0 && (
-            <div style={{ color: '#FBBF24', fontSize: 11, marginTop: 3 }}>
+            <div style={{ color: CONNECTION_COLOR, fontSize: 11, marginTop: 3, fontWeight: 600 }}>
               {tooltip.relations.slice(0, 3).join(' · ')}
             </div>
           )}

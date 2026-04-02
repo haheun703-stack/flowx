@@ -173,7 +173,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
   }, [ticker])
 
   if (loading) return <div className="text-[var(--text-muted)] text-center py-20">로딩 중...</div>
-  if (!data || ('error' in data)) return <div className="text-[var(--text-muted)] text-center py-20">데이터 없음</div>
+  if (!data) return <div className="text-[var(--text-muted)] text-center py-20">데이터 없음</div>
 
   const { master, pick, why_now, technicals, valuations, ml_prediction } = data
   const signals = data.signals ?? []
