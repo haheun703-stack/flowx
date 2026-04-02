@@ -2,17 +2,37 @@
 
 import { useMacroDaily } from '@/features/macro/api/useMacroDashboard'
 
-/** SVG arc path (from FearGreedGauge pattern) */
-function describeArc(cx: number, cy: number, r: number, startAngle: number, endAngle: number): string {
-  const x1 = cx + r * Math.cos(startAngle)
-  const y1 = cy - r * Math.sin(startAngle)
-  const x2 = cx + r * Math.cos(endAngle)
-  const y2 = cy - r * Math.sin(endAngle)
-  const largeArc = Math.abs(startAngle - endAngle) > Math.PI ? 1 : 0
-  return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 0 ${x2} ${y2}`
+// ─── 각도 게이지 (Angular Gauge) ───
+
+const CX = 100      // 중심 X
+const CY = 90       // 중심 Y
+const R = 75        // 반지름
+const ARC_W = 18    // 호 두께
+const VIEW = '0 0 200 120'
+
+/** 5색 구간 (위험→안전): 빨강→주황→노랑→연두→녹색 */
+const ZONES = [
+  { from: 180, to: 144, color: '#ef4444' },  // 극단 위험
+  { from: 144, to: 108, color: '#f97316' },  // 경고
+  { from: 108, to: 72,  color: '#eab308' },  // 보통
+  { from: 72,  to: 36,  color: '#22c55e' },  // 안정
+  { from: 36,  to: 0,   color: '#16a34a' },  // 매우 안정
+]
+
+function degToRad(deg: number) { return (deg * Math.PI) / 180 }
+
+function arcPath(startDeg: number, endDeg: number): string {
+  const s = degToRad(startDeg)
+  const e = degToRad(endDeg)
+  const x1 = CX - R * Math.cos(s)
+  const y1 = CY - R * Math.sin(s)
+  const x2 = CX - R * Math.cos(e)
+  const y2 = CY - R * Math.sin(e)
+  const large = Math.abs(startDeg - endDeg) > 180 ? 1 : 0
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${R} ${R} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`
 }
 
-/** Normalize raw value to 0-100 (left=danger, right=safe) */
+/** Normalize raw value to 0-100 (0=danger/left, 100=safe/right) */
 function normalize(symbol: string, raw: number): number {
   let v: number
   switch (symbol) {
@@ -25,52 +45,81 @@ function normalize(symbol: string, raw: number): number {
   return Math.max(0, Math.min(100, v))
 }
 
-function getStatusText(value: number): { text: string; color: string } {
-  if (value <= 25) return { text: '극단', color: '#dc2626' }
-  if (value <= 45) return { text: '경고', color: '#f97316' }
-  if (value <= 55) return { text: '보통', color: '#6B7280' }
-  if (value <= 75) return { text: '안정', color: '#2563eb' }
+function getStatus(value: number): { text: string; color: string } {
+  if (value <= 20) return { text: '극단', color: '#dc2626' }
+  if (value <= 40) return { text: '경고', color: '#f97316' }
+  if (value <= 60) return { text: '보통', color: '#6B7280' }
+  if (value <= 80) return { text: '안정', color: '#2563eb' }
   return { text: '매우안정', color: '#16a34a' }
 }
 
-function MiniGauge({ label, value, raw }: { label: string; value: number; raw: string }) {
-  const cx = 60, cy = 56, r = 44
-  const sw = 10
-  const startAngle = Math.PI
-  const endAngle = 0
+function AngularGauge({ label, value, raw }: { label: string; value: number; raw: string }) {
+  // 바늘 각도: 180°(왼쪽, 0%) → 0°(오른쪽, 100%)
+  const needleDeg = 180 - (value / 100) * 180
+  const needleRad = degToRad(needleDeg)
+  const needleLen = R - 8
 
-  // 3-zone arcs: red (180°-120°), orange (120°-60°), blue (60°-0°)
-  const zone1End = startAngle - (Math.PI / 3)
-  const zone2End = startAngle - (2 * Math.PI / 3)
+  // 바늘 끝 삼각형 (화살촉)
+  const tipLen = needleLen + 2
+  const tipX = CX - tipLen * Math.cos(needleRad)
+  const tipY = CY - tipLen * Math.sin(needleRad)
+  const perpRad = needleRad + Math.PI / 2
+  const bw = 4  // 화살촉 너비 절반
+  const baseX = CX - (needleLen - 16) * Math.cos(needleRad)
+  const baseY = CY - (needleLen - 16) * Math.sin(needleRad)
+  const lx = baseX + bw * Math.cos(perpRad)
+  const ly = baseY + bw * Math.sin(perpRad)
+  const rx = baseX - bw * Math.cos(perpRad)
+  const ry = baseY - bw * Math.sin(perpRad)
 
-  const arc1 = describeArc(cx, cy, r, startAngle, zone1End)
-  const arc2 = describeArc(cx, cy, r, zone1End, zone2End)
-  const arc3 = describeArc(cx, cy, r, zone2End, endAngle)
-
-  // Needle
-  const needleAngle = startAngle - (value / 100) * Math.PI
-  const needleLen = r - 10
-  const nx = cx + needleLen * Math.cos(needleAngle)
-  const ny = cy - needleLen * Math.sin(needleAngle)
-
-  const status = getStatusText(value)
+  const status = getStatus(value)
 
   return (
     <div className="flex flex-col items-center">
       <div className="text-[13px] font-bold text-[#1A1A2E] mb-0.5">{label}</div>
-      <svg viewBox="0 0 120 64" className="w-full" style={{ maxWidth: 180 }}>
-        <path d={arc1} fill="none" stroke="#FCA5A5" strokeWidth={sw} strokeLinecap="round" />
-        <path d={arc2} fill="none" stroke="#FDBA74" strokeWidth={sw} strokeLinecap="round" />
-        <path d={arc3} fill="none" stroke="#93C5FD" strokeWidth={sw} strokeLinecap="round" />
-        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={status.color} strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="4.5" fill={status.color} />
-        <circle cx={cx} cy={cy} r="2" fill="white" />
+      <svg viewBox={VIEW} className="w-full" style={{ maxWidth: 200 }}>
+        {/* 5색 호 구간 */}
+        {ZONES.map((z, i) => (
+          <path
+            key={i}
+            d={arcPath(z.from, z.to)}
+            fill="none"
+            stroke={z.color}
+            strokeWidth={ARC_W}
+            strokeLinecap={i === 0 ? 'round' : i === ZONES.length - 1 ? 'round' : 'butt'}
+            opacity={0.85}
+          />
+        ))}
+
+        {/* 바늘 (삼각형) */}
+        <polygon
+          points={`${tipX.toFixed(1)},${tipY.toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)} ${rx.toFixed(1)},${ry.toFixed(1)}`}
+          fill="#1A1A2E"
+          opacity={0.9}
+        />
+
+        {/* 바늘 중심 원 */}
+        <circle cx={CX} cy={CY} r="7" fill="#1A1A2E" />
+        <circle cx={CX} cy={CY} r="3.5" fill="white" />
+
+        {/* 값 텍스트 (바늘 아래) */}
+        <text
+          x={CX} y={CY + 22}
+          textAnchor="middle"
+          fontWeight="900"
+          fontSize="18"
+          fill={status.color}
+          fontFamily="system-ui, sans-serif"
+        >
+          {raw}
+        </text>
       </svg>
-      <div className="text-[17px] font-black tabular-nums -mt-1" style={{ color: status.color }}>{raw}</div>
-      <div className="text-[11px] font-bold" style={{ color: status.color }}>{status.text}</div>
+      <div className="text-[12px] font-bold -mt-2" style={{ color: status.color }}>{status.text}</div>
     </div>
   )
 }
+
+// ─── 메인 패널 ───
 
 export function MacroGaugePanel() {
   const { data, isLoading } = useMacroDaily()
@@ -95,9 +144,9 @@ export function MacroGaugePanel() {
     return (
       <div className="fx-card-green">
         <div className="fx-card-title">매크로 게이지</div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-24 bg-gray-100 animate-pulse rounded-lg" />
+            <div key={i} className="h-28 bg-gray-100 animate-pulse rounded-lg" />
           ))}
         </div>
       </div>
@@ -107,7 +156,7 @@ export function MacroGaugePanel() {
   return (
     <div className="fx-card-green">
       <div className="fx-card-title">🌐 매크로 게이지</div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-1">
         {gauges.map(g => {
           if (!g.item) {
             return (
@@ -123,7 +172,7 @@ export function MacroGaugePanel() {
             : g.symbol === 'BASE_RATE'
               ? g.item.value.toFixed(2) + '%'
               : g.item.value.toFixed(1)
-          return <MiniGauge key={g.symbol} label={g.label} value={normalized} raw={rawStr} />
+          return <AngularGauge key={g.symbol} label={g.label} value={normalized} raw={rawStr} />
         })}
       </div>
       <div className="fx-card-tip">
