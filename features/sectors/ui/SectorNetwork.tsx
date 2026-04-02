@@ -448,15 +448,16 @@ export function SectorNetwork({
       ctx.stroke()
       ctx.globalAlpha = isDim ? 0.25 : isThemeDim ? 0.15 : 1
 
-      // 종목 리스트
-      const maxLines = Math.max(1, Math.floor((n.h - HEADER_H - 4) / LINE_H))
+      // 종목 리스트 — 헤더 바로 아래부터 시작
+      const stockStartY = n.y + HEADER_H + 4
+      const maxLines = Math.max(1, Math.floor((n.h - HEADER_H - 2) / LINE_H))
       const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
 
       ctx.font = `13px ${CANVAS_FONT}`
       const maxNameW = n.w - 80
 
       for (let si = 0; si < visible.length; si++) {
-        const cy = n.y + HEADER_H + 6 + si * LINE_H + 16
+        const cy = stockStartY + si * LINE_H + 18
         const name = getDisplayName(visible[si])
         const pct = n.changePcts[si] ?? 0
 
@@ -485,10 +486,10 @@ export function SectorNetwork({
 
       // +N개 더
       if (n.stockNames.length > visible.length) {
-        const cy = n.y + HEADER_H + 6 + visible.length * LINE_H + 16
+        const cy = stockStartY + visible.length * LINE_H + 18
         ctx.font = `11px ${CANVAS_FONT}`
         ctx.textAlign = 'left'
-        ctx.fillStyle = tc.light
+        ctx.fillStyle = '#9ca3af'
         ctx.fillText(`+${n.stockNames.length - visible.length}개 더`, n.x + 10, cy)
       }
 
