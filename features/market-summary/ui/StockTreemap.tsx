@@ -40,31 +40,15 @@ const MIN_ZOOM = 0.5
 const MAX_ZOOM = 8.0
 const CAMERA_DAMP = 0.12
 
-/* ── Color System (Finviz-style continuous gradient) ── */
-function hexToRgb(hex: string): [number, number, number] {
-  const n = parseInt(hex.slice(1), 16)
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
-}
-
-function lerpColor(hex1: string, hex2: string, t: number): string {
-  const [r1, g1, b1] = hexToRgb(hex1)
-  const [r2, g2, b2] = hexToRgb(hex2)
-  return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`
-}
-
+/* ── Color System (섹터별 트리맵과 동일한 Finviz 단계 색상) ── */
 function getChangeColor(pct: number): string {
-  const clamped = Math.max(-7, Math.min(7, pct))
-  const t = (clamped + 7) / 14 // 0 = max down, 1 = max up
-  if (t < 0.35) return lerpColor('#0055aa', '#5599cc', t / 0.35)
-  if (t < 0.5) return lerpColor('#5599cc', '#9ca3af', (t - 0.35) / 0.15)
-  if (t < 0.65) return lerpColor('#9ca3af', '#cc6655', (t - 0.5) / 0.15)
-  return lerpColor('#cc6655', '#cc2222', (t - 0.65) / 0.35)
-}
-
-function getTextColor(pct: number): string {
-  if (pct > 0) return '#ff6b7a'
-  if (pct < 0) return '#5bb8f0'
-  return '#94a3b8'
+  if (pct >= 10) return '#991B1B'
+  if (pct >= 5)  return '#DC2626'
+  if (pct >= 2)  return '#EF4444'
+  if (pct >= 0)  return '#F87171'
+  if (pct >= -2) return '#93C5FD'
+  if (pct >= -5) return '#60A5FA'
+  return '#2563EB'
 }
 
 /* ── Layout Helpers ── */
@@ -128,21 +112,21 @@ function drawCellText(
     const fs = Math.min(14 / zoom, w * 0.12, h * 0.16)
     if (fs < 4) return
     const lineH = fs * 1.5
-    drawTextOutlined(ctx, data.name, cx, cy - lineH, fs, '#e2e8f0', zoom)
-    drawTextOutlined(ctx, data.ticker, cx, cy, fs * 0.8, '#94a3b8', zoom)
-    drawTextOutlined(ctx, pctText, cx, cy + lineH, fs, getTextColor(data.changePercent), zoom)
+    drawTextOutlined(ctx, data.name, cx, cy - lineH, fs, '#FFFFFF', zoom)
+    drawTextOutlined(ctx, data.ticker, cx, cy, fs * 0.8, '#ffffffcc', zoom)
+    drawTextOutlined(ctx, pctText, cx, cy + lineH, fs, '#FFFFFF', zoom)
   } else if (visW > 40 && visH > 28) {
     // Medium: name + pct (2 lines)
     const fs = Math.min(12 / zoom, w * 0.14, h * 0.22)
     if (fs < 4) return
     const lineH = fs * 1.4
-    drawTextOutlined(ctx, data.name, cx, cy - lineH / 2, fs, '#e2e8f0', zoom)
-    drawTextOutlined(ctx, pctText, cx, cy + lineH / 2, fs, getTextColor(data.changePercent), zoom)
+    drawTextOutlined(ctx, data.name, cx, cy - lineH / 2, fs, '#FFFFFF', zoom)
+    drawTextOutlined(ctx, pctText, cx, cy + lineH / 2, fs, '#FFFFFF', zoom)
   } else {
     // Small: pct only
     const fs = Math.min(10 / zoom, w * 0.2, h * 0.45)
     if (fs < 4) return
-    drawTextOutlined(ctx, pctText, cx, cy, fs, getTextColor(data.changePercent), zoom)
+    drawTextOutlined(ctx, pctText, cx, cy, fs, '#FFFFFF', zoom)
   }
 }
 
@@ -181,12 +165,29 @@ export function StockTreemap({
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
 
   /* ── Compute Layout ── */
+  // 섹터별 상위 종목만 선별 (전체 ~150개로 제한하여 박스 가독성 확보)
+  const trimmedSectors = useMemo(() => {
+    const totalStocks = sectors.reduce((s, sec) => s + sec.stocks.length, 0)
+    if (totalStocks <= 150) return sectors
+
+    const totalCap = sectors.reduce((s, sec) => s + sec.marketCap, 0)
+    return sectors.map(sec => {
+      // 섹터 시총 비중에 비례하여 종목 수 할당 (최소 3, 최대 30)
+      const ratio = totalCap > 0 ? sec.marketCap / totalCap : 1 / sectors.length
+      const maxStocks = Math.max(3, Math.min(30, Math.round(ratio * 150)))
+      return {
+        ...sec,
+        stocks: sec.stocks.slice(0, maxStocks),
+      }
+    })
+  }, [sectors])
+
   const layout = useMemo((): TreemapLayout => {
-    if (!sectors.length) return { leaves: [], sectorRects: [] }
+    if (!trimmedSectors.length) return { leaves: [], sectorRects: [] }
 
     const root = hierarchy({
       name: 'root',
-      children: sectors.map(sec => ({
+      children: trimmedSectors.map(sec => ({
         name: sec.name,
         children: sec.stocks.map(s => ({
           name: s.name,
@@ -218,7 +219,7 @@ export function StockTreemap({
     }))
 
     return { leaves, sectorRects }
-  }, [sectors, sizeBy])
+  }, [trimmedSectors, sizeBy])
 
   // On layout change → trigger animation
   useEffect(() => {
