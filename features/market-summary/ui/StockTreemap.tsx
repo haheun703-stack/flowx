@@ -171,18 +171,24 @@ export function StockTreemap({
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
 
   /* ── Compute Layout ── */
-  // 섹터별 상위 종목만 선별 — 전체 ~80개로 강력 제한 (박스 가독성 확보)
+  // 1) 시총 비중 1.5% 미만 섹터 제외 → 박스 너무 작아서 읽을 수 없음
+  // 2) 섹터당 시총 비중 기반 종목 수 할당 (전체 ~80개)
   const TARGET_TOTAL = 80
+  const MIN_SECTOR_RATIO = 0.015
   const trimmedSectors = useMemo(() => {
     const totalCap = sectors.reduce((s, sec) => s + sec.marketCap, 0)
-    return sectors.map(sec => {
-      const ratio = totalCap > 0 ? sec.marketCap / totalCap : 1 / sectors.length
-      const maxStocks = Math.max(2, Math.min(15, Math.round(ratio * TARGET_TOTAL)))
-      return {
-        ...sec,
-        stocks: sec.stocks.slice(0, maxStocks),
-      }
-    })
+    if (totalCap <= 0) return sectors
+
+    return sectors
+      .filter(sec => sec.marketCap / totalCap >= MIN_SECTOR_RATIO)
+      .map(sec => {
+        const ratio = sec.marketCap / totalCap
+        const maxStocks = Math.max(2, Math.min(15, Math.round(ratio * TARGET_TOTAL)))
+        return {
+          ...sec,
+          stocks: sec.stocks.slice(0, maxStocks),
+        }
+      })
   }, [sectors])
 
   const layout = useMemo((): TreemapLayout => {
