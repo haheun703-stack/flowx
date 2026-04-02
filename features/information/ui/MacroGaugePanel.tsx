@@ -2,40 +2,50 @@
 
 import { useMacroDaily } from '@/features/macro/api/useMacroDashboard'
 
-// ─── 각도 게이지 (Angular Gauge) ───
+// ─── 채워진 도넛형 각도 게이지 (Filled Annular Gauge) ───
 
-const CX = 100      // 중심 X
-const CY = 92       // 중심 Y (약간 아래로 → 반원 위쪽 여백 확보)
-const R = 75        // 반지름
-const ARC_W = 18    // 호 두께
+const CX = 100
+const CY = 95
+const R_OUT = 80    // 바깥 반지름
+const R_IN = 56     // 안쪽 반지름 (밴드 두께 = 24)
 
-/** 5색 구간 (위험→안전): 빨강→주황→노랑→연두→녹색 */
+/** 5색 구간 */
 const ZONES = [
-  { fromPct: 0,   toPct: 20,  color: '#ef4444' },  // 극단 위험
-  { fromPct: 20,  toPct: 40,  color: '#f97316' },  // 경고
-  { fromPct: 40,  toPct: 60,  color: '#eab308' },  // 보통
-  { fromPct: 60,  toPct: 80,  color: '#22c55e' },  // 안정
-  { fromPct: 80,  toPct: 100, color: '#16a34a' },  // 매우 안정
+  { from: 0,   to: 20,  color: '#ef4444' },
+  { from: 20,  to: 40,  color: '#f97316' },
+  { from: 40,  to: 60,  color: '#eab308' },
+  { from: 60,  to: 80,  color: '#22c55e' },
+  { from: 80,  to: 100, color: '#16a34a' },
 ]
 
-/** pct(0~100) → SVG 좌표. 0%=왼쪽(180°), 50%=꼭대기(90°), 100%=오른쪽(0°) */
-function gaugeXY(pct: number) {
-  const rad = Math.PI * (1 - pct / 100)
-  return {
-    x: CX + R * Math.cos(rad),
-    y: CY - R * Math.sin(rad),
-  }
+/** pct(0~100) → radian. 0%=왼쪽(π), 100%=오른쪽(0) */
+function pctToRad(pct: number) {
+  return Math.PI * (1 - pct / 100)
 }
 
-/** SVG arc path: fromPct → toPct (왼쪽에서 오른쪽, 반원 상단) */
-function arcPath(fromPct: number, toPct: number): string {
-  const p1 = gaugeXY(fromPct)
-  const p2 = gaugeXY(toPct)
-  // sweep=0: SVG 화면상 반시계 (왼→위→오 = 반원 상단 경로)
-  return `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} A ${R} ${R} 0 0 0 ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
+/** polar → SVG 좌표 */
+function toXY(rad: number, r: number) {
+  return { x: CX + r * Math.cos(rad), y: CY - r * Math.sin(rad) }
 }
 
-/** Normalize raw value to 0-100 (0=danger/left, 100=safe/right) */
+/** 채워진 도넛 섹터 path (면 기반, stroke 없음) */
+function sectorPath(fromPct: number, toPct: number): string {
+  const a1 = pctToRad(fromPct)
+  const a2 = pctToRad(toPct)
+  const o1 = toXY(a1, R_OUT)
+  const o2 = toXY(a2, R_OUT)
+  const i2 = toXY(a2, R_IN)
+  const i1 = toXY(a1, R_IN)
+  return [
+    `M ${o1.x.toFixed(2)} ${o1.y.toFixed(2)}`,
+    `A ${R_OUT} ${R_OUT} 0 0 0 ${o2.x.toFixed(2)} ${o2.y.toFixed(2)}`,
+    `L ${i2.x.toFixed(2)} ${i2.y.toFixed(2)}`,
+    `A ${R_IN} ${R_IN} 0 0 1 ${i1.x.toFixed(2)} ${i1.y.toFixed(2)}`,
+    'Z',
+  ].join(' ')
+}
+
+/** Normalize raw value to 0-100 */
 function normalize(symbol: string, raw: number): number {
   let v: number
   switch (symbol) {
@@ -56,67 +66,94 @@ function getStatus(value: number): { text: string; color: string } {
   return { text: '매우안정', color: '#16a34a' }
 }
 
+/** 눈금 틱 (0%, 50%, 100% 위치에 작은 선) */
+function Ticks() {
+  const pcts = [0, 25, 50, 75, 100]
+  return (
+    <>
+      {pcts.map(pct => {
+        const rad = pctToRad(pct)
+        const p1 = toXY(rad, R_OUT + 2)
+        const p2 = toXY(rad, R_OUT - 4)
+        return (
+          <line
+            key={pct}
+            x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+            stroke="#9CA3AF" strokeWidth={1.2}
+          />
+        )
+      })}
+    </>
+  )
+}
+
 function AngularGauge({ label, value, raw }: { label: string; value: number; raw: string }) {
   const status = getStatus(value)
+  const needleRad = pctToRad(value)
 
-  // 바늘 좌표: value(0~100) → 반원 위 위치
-  const needleRad = Math.PI * (1 - value / 100)
-  const tipLen = R - 6
-  const tipX = CX + tipLen * Math.cos(needleRad)
-  const tipY = CY - tipLen * Math.sin(needleRad)
+  // 바늘 끝 (안쪽 반지름 안까지)
+  const tipR = R_IN - 3
+  const tip = toXY(needleRad, tipR)
 
-  // 바늘 삼각형 밑변 (중심에서 약간 떨어진 곳)
-  const baseLen = 12
-  const baseX = CX + baseLen * Math.cos(needleRad)
-  const baseY = CY - baseLen * Math.sin(needleRad)
+  // 바늘 밑변 (중심 근처)
+  const baseR = 8
+  const base = toXY(needleRad, baseR)
   const perpRad = needleRad + Math.PI / 2
-  const bw = 4
-  const lx = baseX + bw * Math.cos(perpRad)
-  const ly = baseY - bw * Math.sin(perpRad)
-  const rx = baseX - bw * Math.cos(perpRad)
-  const ry = baseY + bw * Math.sin(perpRad)
+  const hw = 3.5
+  const bL = { x: base.x + hw * Math.cos(perpRad), y: base.y - hw * Math.sin(perpRad) }
+  const bR = { x: base.x - hw * Math.cos(perpRad), y: base.y + hw * Math.sin(perpRad) }
 
   return (
     <div className="flex flex-col items-center">
       <div className="text-[13px] font-bold text-[#1A1A2E] mb-0.5">{label}</div>
-      <svg viewBox="0 0 200 120" className="w-full" style={{ maxWidth: 200 }}>
-        {/* 5색 호 구간 */}
-        {ZONES.map((z, i) => (
-          <path
-            key={i}
-            d={arcPath(z.fromPct, z.toPct)}
-            fill="none"
-            stroke={z.color}
-            strokeWidth={ARC_W}
-            strokeLinecap={i === 0 || i === ZONES.length - 1 ? 'round' : 'butt'}
-            opacity={0.85}
-          />
-        ))}
-
-        {/* 바늘 (삼각형) */}
-        <polygon
-          points={`${tipX.toFixed(1)},${tipY.toFixed(1)} ${lx.toFixed(1)},${ly.toFixed(1)} ${rx.toFixed(1)},${ry.toFixed(1)}`}
-          fill="#1A1A2E"
-          opacity={0.9}
+      <svg viewBox="0 0 200 130" className="w-full" style={{ maxWidth: 190 }}>
+        {/* 배경 반원 (살짝 밝은 회색) */}
+        <path
+          d={sectorPath(0, 100)}
+          fill="#F3F4F6"
         />
 
-        {/* 바늘 중심 원 */}
-        <circle cx={CX} cy={CY} r="7" fill="#1A1A2E" />
-        <circle cx={CX} cy={CY} r="3" fill="white" />
+        {/* 5색 도넛 섹터 */}
+        {ZONES.map((z, i) => (
+          <path key={i} d={sectorPath(z.from, z.to)} fill={z.color} />
+        ))}
 
-        {/* 값 텍스트 (바늘 아래 중앙) */}
+        {/* 눈금 */}
+        <Ticks />
+
+        {/* 왼쪽/오른쪽 라벨 */}
+        <text x={CX - R_OUT - 2} y={CY + 12} textAnchor="end" fontSize="9" fill="#9CA3AF" fontFamily="system-ui">위험</text>
+        <text x={CX + R_OUT + 2} y={CY + 12} textAnchor="start" fontSize="9" fill="#9CA3AF" fontFamily="system-ui">안전</text>
+
+        {/* 바늘 그림자 */}
+        <polygon
+          points={`${(tip.x + 1).toFixed(1)},${(tip.y + 1).toFixed(1)} ${(bL.x + 1).toFixed(1)},${(bL.y + 1).toFixed(1)} ${(bR.x + 1).toFixed(1)},${(bR.y + 1).toFixed(1)}`}
+          fill="rgba(0,0,0,0.12)"
+        />
+
+        {/* 바늘 */}
+        <polygon
+          points={`${tip.x.toFixed(1)},${tip.y.toFixed(1)} ${bL.x.toFixed(1)},${bL.y.toFixed(1)} ${bR.x.toFixed(1)},${bR.y.toFixed(1)}`}
+          fill="#1F2937"
+        />
+
+        {/* 중심 원 */}
+        <circle cx={CX} cy={CY} r="6" fill="#1F2937" />
+        <circle cx={CX} cy={CY} r="2.5" fill="white" />
+
+        {/* 값 텍스트 */}
         <text
           x={CX} y={CY + 22}
           textAnchor="middle"
-          fontWeight="900"
-          fontSize="18"
+          fontWeight="800"
+          fontSize="17"
           fill={status.color}
           fontFamily="system-ui, sans-serif"
         >
           {raw}
         </text>
       </svg>
-      <div className="text-[12px] font-bold -mt-2" style={{ color: status.color }}>{status.text}</div>
+      <div className="text-[11px] font-bold -mt-3" style={{ color: status.color }}>{status.text}</div>
     </div>
   )
 }
@@ -157,7 +194,7 @@ export function MacroGaugePanel() {
 
   return (
     <div className="fx-card-green">
-      <div className="fx-card-title">🌐 매크로 게이지</div>
+      <div className="fx-card-title">매크로 게이지</div>
       <div className="grid grid-cols-2 gap-1">
         {gauges.map(g => {
           if (!g.item) {
@@ -178,7 +215,7 @@ export function MacroGaugePanel() {
         })}
       </div>
       <div className="fx-card-tip">
-        💡 바늘 왼쪽=위험 가운데=보통 오른쪽=안전
+        바늘 왼쪽=위험 · 가운데=보통 · 오른쪽=안전
       </div>
     </div>
   )
