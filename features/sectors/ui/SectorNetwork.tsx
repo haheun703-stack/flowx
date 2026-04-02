@@ -78,7 +78,7 @@ const MARGIN_Y = 50
 const NODE_GAP = 12       // 노드 간 여백 ↑
 const LINE_H = 28         // 종목 1줄 높이 ↑ (가독성)
 const HEADER_H = 40       // 그룹 헤더 높이 ↑
-const MIN_NODE_H = 60
+const MIN_NODE_H = 80
 const LINK_SCALE = 1.5    // strength → px ↑ (선 굵기)
 
 function buildSankey(
@@ -449,7 +449,7 @@ export function SectorNetwork({
       ctx.globalAlpha = isDim ? 0.25 : isThemeDim ? 0.15 : 1
 
       // 종목 리스트
-      const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
+      const maxLines = Math.max(1, Math.floor((n.h - HEADER_H - 4) / LINE_H))
       const visible = n.stockNames.slice(0, Math.min(maxLines, 8))
 
       ctx.font = `13px ${CANVAS_FONT}`
