@@ -57,11 +57,11 @@ export function NewsTop3Panel() {
             >
               {/* 순위 + 뱃지 */}
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-5 h-5 rounded-full bg-[#1A1A2E] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-[#1A1A2E] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
                   {idx + 1}
                 </span>
                 <span
-                  className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  className="text-[12px] font-bold px-2 py-0.5 rounded"
                   style={{
                     backgroundColor: info.bg,
                     color: info.color,
@@ -71,29 +71,29 @@ export function NewsTop3Panel() {
                   {info.label}
                 </span>
                 {item.sectors.slice(0, 1).map(s => (
-                  <span key={s} className="text-[9px] text-[var(--fx-text-muted)] border border-[var(--fx-border-default)] px-1 py-0.5 rounded">
+                  <span key={s} className="text-[11px] text-[var(--fx-text-muted)] border border-[var(--fx-border-default)] px-1.5 py-0.5 rounded">
                     {s}
                   </span>
                 ))}
               </div>
 
               {/* 제목 */}
-              <div className="text-[12px] font-bold text-[#1A1A2E] leading-snug line-clamp-2 mb-1">
+              <div className="text-[15px] font-bold text-[#1A1A2E] leading-snug line-clamp-2 mb-1.5">
                 {item.title}
               </div>
 
               {/* 요약 */}
               {item.kr_impact && (
-                <div className="text-[10px] text-[var(--fx-text-secondary)] leading-relaxed line-clamp-2 mb-2">
+                <div className="text-[13px] text-[var(--fx-text-secondary)] leading-relaxed line-clamp-2 mb-2">
                   {item.kr_impact}
                 </div>
               )}
 
               {/* 관련 종목 */}
               {item.related_tickers?.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {item.related_tickers.slice(0, 3).map(t => (
-                    <span key={t.code} className="text-[9px] text-[var(--fx-text-muted)]">
+                    <span key={t.code} className="text-[12px] font-semibold text-[var(--fx-text-muted)]">
                       {t.name}
                       <span className={t.change_pct >= 0 ? 'text-[var(--fx-up)]' : 'text-[var(--fx-down)]'}>
                         {' '}{t.change_pct >= 0 ? '+' : ''}{t.change_pct?.toFixed(1)}%

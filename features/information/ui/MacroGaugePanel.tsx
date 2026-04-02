@@ -1,6 +1,5 @@
 'use client'
 
-import { useId } from 'react'
 import { useMacroDaily } from '@/features/macro/api/useMacroDashboard'
 
 /** SVG arc path (from FearGreedGauge pattern) */
@@ -35,7 +34,8 @@ function getStatusText(value: number): { text: string; color: string } {
 }
 
 function MiniGauge({ label, value, raw }: { label: string; value: number; raw: string }) {
-  const cx = 50, cy = 48, r = 35
+  const cx = 60, cy = 56, r = 44
+  const sw = 10
   const startAngle = Math.PI
   const endAngle = 0
 
@@ -49,7 +49,7 @@ function MiniGauge({ label, value, raw }: { label: string; value: number; raw: s
 
   // Needle
   const needleAngle = startAngle - (value / 100) * Math.PI
-  const needleLen = r - 8
+  const needleLen = r - 10
   const nx = cx + needleLen * Math.cos(needleAngle)
   const ny = cy - needleLen * Math.sin(needleAngle)
 
@@ -57,17 +57,17 @@ function MiniGauge({ label, value, raw }: { label: string; value: number; raw: s
 
   return (
     <div className="flex flex-col items-center">
-      <div className="text-[11px] font-bold text-[#1A1A2E] mb-1">{label}</div>
-      <svg viewBox="0 0 100 60" className="w-full max-w-[120px]">
-        <path d={arc1} fill="none" stroke="#ef4444" strokeWidth="6" strokeLinecap="round" opacity="0.3" />
-        <path d={arc2} fill="none" stroke="#f97316" strokeWidth="6" strokeLinecap="round" opacity="0.3" />
-        <path d={arc3} fill="none" stroke="#3b82f6" strokeWidth="6" strokeLinecap="round" opacity="0.3" />
-        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={status.color} strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="3" fill={status.color} />
-        <circle cx={cx} cy={cy} r="1.5" fill="white" />
+      <div className="text-[13px] font-bold text-[#1A1A2E] mb-0.5">{label}</div>
+      <svg viewBox="0 0 120 64" className="w-full" style={{ maxWidth: 180 }}>
+        <path d={arc1} fill="none" stroke="#FCA5A5" strokeWidth={sw} strokeLinecap="round" />
+        <path d={arc2} fill="none" stroke="#FDBA74" strokeWidth={sw} strokeLinecap="round" />
+        <path d={arc3} fill="none" stroke="#93C5FD" strokeWidth={sw} strokeLinecap="round" />
+        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={status.color} strokeWidth="2.5" strokeLinecap="round" />
+        <circle cx={cx} cy={cy} r="4.5" fill={status.color} />
+        <circle cx={cx} cy={cy} r="2" fill="white" />
       </svg>
-      <div className="text-[13px] font-black tabular-nums" style={{ color: status.color }}>{raw}</div>
-      <div className="text-[9px] font-bold" style={{ color: status.color }}>{status.text}</div>
+      <div className="text-[17px] font-black tabular-nums -mt-1" style={{ color: status.color }}>{raw}</div>
+      <div className="text-[11px] font-bold" style={{ color: status.color }}>{status.text}</div>
     </div>
   )
 }
@@ -111,9 +111,9 @@ export function MacroGaugePanel() {
         {gauges.map(g => {
           if (!g.item) {
             return (
-              <div key={g.symbol} className="flex flex-col items-center justify-center h-24">
-                <div className="text-[11px] font-bold text-[#1A1A2E] mb-1">{g.label}</div>
-                <div className="text-[10px] text-[var(--fx-text-muted)]">데이터 대기중</div>
+              <div key={g.symbol} className="flex flex-col items-center justify-center h-28">
+                <div className="text-[13px] font-bold text-[#1A1A2E] mb-1">{g.label}</div>
+                <div className="text-[12px] text-[var(--fx-text-muted)]">데이터 대기중</div>
               </div>
             )
           }
