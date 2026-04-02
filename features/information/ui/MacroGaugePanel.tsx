@@ -5,31 +5,34 @@ import { useMacroDaily } from '@/features/macro/api/useMacroDashboard'
 // ─── 각도 게이지 (Angular Gauge) ───
 
 const CX = 100      // 중심 X
-const CY = 90       // 중심 Y
+const CY = 92       // 중심 Y (약간 아래로 → 반원 위쪽 여백 확보)
 const R = 75        // 반지름
 const ARC_W = 18    // 호 두께
-const VIEW = '0 0 200 120'
 
 /** 5색 구간 (위험→안전): 빨강→주황→노랑→연두→녹색 */
 const ZONES = [
-  { from: 180, to: 144, color: '#ef4444' },  // 극단 위험
-  { from: 144, to: 108, color: '#f97316' },  // 경고
-  { from: 108, to: 72,  color: '#eab308' },  // 보통
-  { from: 72,  to: 36,  color: '#22c55e' },  // 안정
-  { from: 36,  to: 0,   color: '#16a34a' },  // 매우 안정
+  { fromPct: 0,   toPct: 20,  color: '#ef4444' },  // 극단 위험
+  { fromPct: 20,  toPct: 40,  color: '#f97316' },  // 경고
+  { fromPct: 40,  toPct: 60,  color: '#eab308' },  // 보통
+  { fromPct: 60,  toPct: 80,  color: '#22c55e' },  // 안정
+  { fromPct: 80,  toPct: 100, color: '#16a34a' },  // 매우 안정
 ]
 
-function degToRad(deg: number) { return (deg * Math.PI) / 180 }
+/** pct(0~100) → SVG 좌표. 0%=왼쪽(180°), 50%=꼭대기(90°), 100%=오른쪽(0°) */
+function gaugeXY(pct: number) {
+  const rad = Math.PI * (1 - pct / 100)
+  return {
+    x: CX + R * Math.cos(rad),
+    y: CY - R * Math.sin(rad),
+  }
+}
 
-function arcPath(startDeg: number, endDeg: number): string {
-  const s = degToRad(startDeg)
-  const e = degToRad(endDeg)
-  const x1 = CX - R * Math.cos(s)
-  const y1 = CY - R * Math.sin(s)
-  const x2 = CX - R * Math.cos(e)
-  const y2 = CY - R * Math.sin(e)
-  const large = Math.abs(startDeg - endDeg) > 180 ? 1 : 0
-  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${R} ${R} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`
+/** SVG arc path: fromPct → toPct (왼쪽에서 오른쪽, 반원 상단) */
+function arcPath(fromPct: number, toPct: number): string {
+  const p1 = gaugeXY(fromPct)
+  const p2 = gaugeXY(toPct)
+  // sweep=0: SVG 화면상 반시계 (왼→위→오 = 반원 상단 경로)
+  return `M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} A ${R} ${R} 0 0 0 ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
 }
 
 /** Normalize raw value to 0-100 (0=danger/left, 100=safe/right) */
@@ -54,39 +57,38 @@ function getStatus(value: number): { text: string; color: string } {
 }
 
 function AngularGauge({ label, value, raw }: { label: string; value: number; raw: string }) {
-  // 바늘 각도: 180°(왼쪽, 0%) → 0°(오른쪽, 100%)
-  const needleDeg = 180 - (value / 100) * 180
-  const needleRad = degToRad(needleDeg)
-  const needleLen = R - 8
-
-  // 바늘 끝 삼각형 (화살촉)
-  const tipLen = needleLen + 2
-  const tipX = CX - tipLen * Math.cos(needleRad)
-  const tipY = CY - tipLen * Math.sin(needleRad)
-  const perpRad = needleRad + Math.PI / 2
-  const bw = 4  // 화살촉 너비 절반
-  const baseX = CX - (needleLen - 16) * Math.cos(needleRad)
-  const baseY = CY - (needleLen - 16) * Math.sin(needleRad)
-  const lx = baseX + bw * Math.cos(perpRad)
-  const ly = baseY + bw * Math.sin(perpRad)
-  const rx = baseX - bw * Math.cos(perpRad)
-  const ry = baseY - bw * Math.sin(perpRad)
-
   const status = getStatus(value)
+
+  // 바늘 좌표: value(0~100) → 반원 위 위치
+  const needleRad = Math.PI * (1 - value / 100)
+  const tipLen = R - 6
+  const tipX = CX + tipLen * Math.cos(needleRad)
+  const tipY = CY - tipLen * Math.sin(needleRad)
+
+  // 바늘 삼각형 밑변 (중심에서 약간 떨어진 곳)
+  const baseLen = 12
+  const baseX = CX + baseLen * Math.cos(needleRad)
+  const baseY = CY - baseLen * Math.sin(needleRad)
+  const perpRad = needleRad + Math.PI / 2
+  const bw = 4
+  const lx = baseX + bw * Math.cos(perpRad)
+  const ly = baseY - bw * Math.sin(perpRad)
+  const rx = baseX - bw * Math.cos(perpRad)
+  const ry = baseY + bw * Math.sin(perpRad)
 
   return (
     <div className="flex flex-col items-center">
       <div className="text-[13px] font-bold text-[#1A1A2E] mb-0.5">{label}</div>
-      <svg viewBox={VIEW} className="w-full" style={{ maxWidth: 200 }}>
+      <svg viewBox="0 0 200 120" className="w-full" style={{ maxWidth: 200 }}>
         {/* 5색 호 구간 */}
         {ZONES.map((z, i) => (
           <path
             key={i}
-            d={arcPath(z.from, z.to)}
+            d={arcPath(z.fromPct, z.toPct)}
             fill="none"
             stroke={z.color}
             strokeWidth={ARC_W}
-            strokeLinecap={i === 0 ? 'round' : i === ZONES.length - 1 ? 'round' : 'butt'}
+            strokeLinecap={i === 0 || i === ZONES.length - 1 ? 'round' : 'butt'}
             opacity={0.85}
           />
         ))}
@@ -100,9 +102,9 @@ function AngularGauge({ label, value, raw }: { label: string; value: number; raw
 
         {/* 바늘 중심 원 */}
         <circle cx={CX} cy={CY} r="7" fill="#1A1A2E" />
-        <circle cx={CX} cy={CY} r="3.5" fill="white" />
+        <circle cx={CX} cy={CY} r="3" fill="white" />
 
-        {/* 값 텍스트 (바늘 아래) */}
+        {/* 값 텍스트 (바늘 아래 중앙) */}
         <text
           x={CX} y={CY + 22}
           textAnchor="middle"
