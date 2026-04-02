@@ -5,6 +5,11 @@ import { useRouter } from 'next/navigation'
 import { hierarchy, treemap, treemapSquarify } from 'd3-hierarchy'
 import type { TreemapSector, TreemapStock } from '../model/useTreemap'
 import type { SizeBy } from './StockTreemap'
+import { SECTOR_LIST } from '@/lib/chart-tokens'
+
+const SECTOR_NAME_TO_KEY = Object.fromEntries(
+  SECTOR_LIST.map((s) => [s.name, s.key])
+)
 
 // ─── 색상 매핑 (Finviz 스타일: 상승=빨강, 하락=파랑) ───
 
@@ -192,14 +197,16 @@ function SectorDrillDown({ sector, sizeBy, onClose }: { sector: TreemapSector; s
       <StockDrilldownGrid stocks={sector.stocks} sizeBy={sizeBy} />
 
       {/* 하단 링크 */}
-      <div className="mt-3 text-center">
-        <a
-          href={`/sectors/${encodeURIComponent(sector.name)}`}
-          className="text-[11px] font-bold text-[var(--blue)] hover:underline"
-        >
-          {sector.name} {sector.stocks.length}종목 전체 리스트 보기 →
-        </a>
-      </div>
+      {SECTOR_NAME_TO_KEY[sector.name] && (
+        <div className="mt-3 text-center">
+          <a
+            href={`/sectors/${SECTOR_NAME_TO_KEY[sector.name]}`}
+            className="text-[11px] font-bold text-[var(--blue)] hover:underline"
+          >
+            {sector.name} {sector.stocks.length}종목 전체 리스트 보기 →
+          </a>
+        </div>
+      )}
     </div>
   )
 }
