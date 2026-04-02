@@ -75,11 +75,11 @@ interface SankeyLink {
 // ── 레이아웃 상수 ──
 const MARGIN_X = 16
 const MARGIN_Y = 50
-const NODE_GAP = 8
-const LINE_H = 26        // 종목 1줄 높이 (x1.5)
-const HEADER_H = 38       // 그룹 헤더 높이 (x1.5)
-const MIN_NODE_H = 56
-const LINK_SCALE = 1.2    // strength → px
+const NODE_GAP = 12       // 노드 간 여백 ↑
+const LINE_H = 28         // 종목 1줄 높이 ↑ (가독성)
+const HEADER_H = 40       // 그룹 헤더 높이 ↑
+const MIN_NODE_H = 60
+const LINK_SCALE = 1.5    // strength → px ↑ (선 굵기)
 
 function buildSankey(
   stocks: StockNode[],
@@ -381,16 +381,16 @@ export function SectorNetwork({
         grad.addColorStop(0, TIER_COLORS[sn.tier]?.badge ?? '#7F77DD')
         grad.addColorStop(1, TIER_COLORS[tn.tier]?.badge ?? '#7F77DD')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.7
+        ctx.globalAlpha = 0.8
       } else if (isDim || isThemeDim) {
-        ctx.strokeStyle = '#e2e5ea'
-        ctx.globalAlpha = 0.06
+        ctx.strokeStyle = '#d1d5db'
+        ctx.globalAlpha = 0.15
       } else {
         const grad = ctx.createLinearGradient(x0, 0, x1, 0)
-        grad.addColorStop(0, TIER_COLORS[sn.tier]?.light ?? '#9DC8F5')
-        grad.addColorStop(1, TIER_COLORS[tn.tier]?.light ?? '#9DC8F5')
+        grad.addColorStop(0, TIER_COLORS[sn.tier]?.border ?? '#9DC8F5')
+        grad.addColorStop(1, TIER_COLORS[tn.tier]?.border ?? '#9DC8F5')
         ctx.strokeStyle = grad
-        ctx.globalAlpha = 0.12
+        ctx.globalAlpha = 0.35
       }
       ctx.stroke()
       ctx.globalAlpha = 1
@@ -404,38 +404,49 @@ export function SectorNetwork({
       const isThemeDim = hasTheme && !activeId && !nodeHasTheme(n)
       const tc = TIER_COLORS[n.tier] ?? TIER_COLORS[1]
 
-      ctx.globalAlpha = isDim ? 0.12 : isThemeDim ? 0.08 : 1
+      ctx.globalAlpha = isDim ? 0.25 : isThemeDim ? 0.15 : 1
 
-      // 배경 — Swimlane과 동일한 라이트 컬러
+      // 배경 — Swimlane과 동일한 라이트 컬러 + 그림자
+      ctx.save()
+      if (!isDim && !isThemeDim) {
+        ctx.shadowColor = 'rgba(0,0,0,0.08)'
+        ctx.shadowBlur = 6
+        ctx.shadowOffsetY = 2
+      }
       ctx.beginPath()
       ctx.roundRect(n.x, n.y, n.w, n.h, 8)
       ctx.fillStyle = tc.bg
       ctx.fill()
+      ctx.restore()
+      ctx.beginPath()
+      ctx.roundRect(n.x, n.y, n.w, n.h, 8)
       ctx.strokeStyle = isActive ? tc.badge : tc.border
       ctx.lineWidth = isActive ? 2.5 : 1.5
       ctx.stroke()
 
       // 헤더: sub_category
-      ctx.font = `600 14px ${CANVAS_FONT}`
+      ctx.font = `bold 15px ${CANVAS_FONT}`
       ctx.textAlign = 'left'
       ctx.fillStyle = tc.text
       const headerText = n.subCategory.length > 12
         ? n.subCategory.slice(0, 11) + '…' : n.subCategory
-      ctx.fillText(headerText, n.x + 10, n.y + 24)
+      ctx.fillText(headerText, n.x + 10, n.y + 26)
 
       // 종목 수
-      ctx.font = `600 11px ${CANVAS_FONT}`
+      ctx.font = `bold 12px ${CANVAS_FONT}`
       ctx.textAlign = 'right'
-      ctx.fillStyle = tc.light
-      ctx.fillText(`${n.stockNames.length}종목`, n.x + n.w - 10, n.y + 24)
+      ctx.fillStyle = tc.badge
+      ctx.fillText(`${n.stockNames.length}`, n.x + n.w - 10, n.y + 26)
 
       // 구분선
       ctx.beginPath()
-      ctx.moveTo(n.x + 8, n.y + HEADER_H - 4)
-      ctx.lineTo(n.x + n.w - 8, n.y + HEADER_H - 4)
-      ctx.strokeStyle = tc.border + '60'
+      ctx.moveTo(n.x + 8, n.y + HEADER_H - 2)
+      ctx.lineTo(n.x + n.w - 8, n.y + HEADER_H - 2)
+      ctx.strokeStyle = tc.border
       ctx.lineWidth = 1
+      ctx.globalAlpha = isDim ? 0.25 : isThemeDim ? 0.15 : 0.4
       ctx.stroke()
+      ctx.globalAlpha = isDim ? 0.25 : isThemeDim ? 0.15 : 1
 
       // 종목 리스트
       const maxLines = Math.floor((n.h - HEADER_H - 4) / LINE_H)
