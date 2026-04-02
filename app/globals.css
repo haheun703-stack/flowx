@@ -243,3 +243,8 @@ a[href*="tradingview.com"] img,
 @keyframes flow-dash {
   to { stroke-dashoffset: -20; }
 }
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; transform: translateY(-10px); }
+  to { opacity: 1; max-height: 800px; transform: translateY(0); }
+}

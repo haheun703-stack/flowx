@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useTreemap, TreemapSector } from '@/features/market-summary/model/useTreemap'
 import { StockTreemap, SizeBy, LeafNode } from '@/features/market-summary/ui/StockTreemap'
+import { SectorTreemapGrid } from '@/features/market-summary/ui/SectorTreemapGrid'
 
 const FONT = 'var(--font-jetbrains), monospace'
 
@@ -177,6 +178,7 @@ function SectorCard({ sector, defaultOpen }: { sector: TreemapSector; defaultOpe
 
 export default function TreemapPage() {
   const { data: sectors, isLoading } = useTreemap()
+  const [viewMode, setViewMode] = useState<'sector' | 'all'>('sector')
   const [sizeBy, setSizeBy] = useState<SizeBy>('marketCap')
   const [selected, setSelected] = useState<LeafNode | null>(null)
   const [drilledSector, setDrilledSector] = useState<string | null>(null)
@@ -196,13 +198,38 @@ export default function TreemapPage() {
           <span className="text-base font-black tracking-widest uppercase text-[var(--text-primary)]">
             시가총액 트리맵
           </span>
+
+          {/* View mode tabs */}
+          <div className="flex gap-1 ml-2">
+            <button
+              onClick={() => setViewMode('sector')}
+              className={`text-[10px] font-semibold px-2.5 py-1 rounded transition-colors ${
+                viewMode === 'sector'
+                  ? 'bg-[#00FF88] text-[#0A3D23]'
+                  : 'bg-[#F0EDE8] text-[#9CA3AF] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              섹터별
+            </button>
+            <button
+              onClick={() => setViewMode('all')}
+              className={`text-[10px] font-semibold px-2.5 py-1 rounded transition-colors ${
+                viewMode === 'all'
+                  ? 'bg-[#00FF88] text-[#0A3D23]'
+                  : 'bg-[#F0EDE8] text-[#9CA3AF] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              전체 종목
+            </button>
+          </div>
+
           <span className="text-sm font-black text-[var(--text-muted)]">
-            {drilledSector
+            {viewMode === 'all' && drilledSector
               ? `${market === '전체' ? 'KOSPI · KOSDAQ' : market} — ${drilledSector}`
               : `${market === '전체' ? 'KOSPI · KOSDAQ' : market} ${totalStocks}종목`
             }
           </span>
-          {drilledSector && (
+          {viewMode === 'all' && drilledSector && (
             <button
               onClick={() => setDrilledSector(null)}
               className="ml-2 px-2 py-1 text-xs font-bold text-[var(--blue)] border border-[var(--blue)]/30 rounded hover:bg-[var(--blue)]/10 transition-colors"
@@ -252,43 +279,64 @@ export default function TreemapPage() {
       {/* Filter description */}
       <div className="flex items-center justify-between px-4 py-1.5 border-b border-[var(--border)] bg-white" style={{ fontFamily: FONT }}>
         <span className="text-xs text-[var(--text-dim)]">
-          {currentFilter.desc} · 색상 = 등락률 · 스크롤 = 줌 · 드래그 = 이동 · 섹터 클릭 = 확대
+          {viewMode === 'sector'
+            ? `${currentFilter.desc} · 색상 = 등락률 · 섹터 클릭 = 드릴다운`
+            : `${currentFilter.desc} · 색상 = 등락률 · 스크롤 = 줌 · 드래그 = 이동 · 섹터 클릭 = 확대`
+          }
         </span>
-        <span className="text-xs text-[var(--text-muted)]">더블클릭 = 전체보기</span>
+        {viewMode === 'all' && (
+          <span className="text-xs text-[var(--text-muted)]">더블클릭 = 전체보기</span>
+        )}
       </div>
 
-      {/* Treemap + Detail Panel */}
-      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 500 }}>
-        <div className="flex-1 p-2">
+      {/* Content */}
+      {viewMode === 'sector' ? (
+        /* ── 섹터별 트리맵 ── */
+        <div className="flex-1 p-4">
           {isLoading ? (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-96">
               <div className="text-[var(--text-muted)] text-sm" style={{ fontFamily: FONT }}>데이터 로딩중...</div>
             </div>
           ) : (
-            <StockTreemap
-              sectors={filtered}
-              sizeBy={sizeBy}
-              selectedTicker={selected?.ticker}
-              onStockClick={(stock) => setSelected(prev => prev?.ticker === stock.ticker ? null : stock)}
-              onSectorDrillDown={setDrilledSector}
-            />
+            <SectorTreemapGrid sectors={filtered} sizeBy={sizeBy} />
           )}
         </div>
-        {selected && <DetailPanel stock={selected} onClose={() => setSelected(null)} />}
-      </div>
-
-      {/* Sector Detail Cards */}
-      {!isLoading && nonEtc.length > 0 && (
-        <div className="border-t border-[var(--border)] bg-[var(--bg-base)] p-4" style={{ fontFamily: FONT }}>
-          <div className="max-w-[1400px] mx-auto space-y-3">
-            <h3 className="text-xs font-bold text-[var(--text-dim)] uppercase tracking-wider mb-2">
-              섹터별 상세 ({nonEtc.length}개 섹터)
-            </h3>
-            {nonEtc.map((s, i) => (
-              <SectorCard key={s.name} sector={s} defaultOpen={i < DEFAULT_OPEN} />
-            ))}
+      ) : (
+        /* ── 전체 종목 트리맵 (기존) ── */
+        <>
+          <div className="flex flex-1 overflow-hidden" style={{ minHeight: 500 }}>
+            <div className="flex-1 p-2">
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-[var(--text-muted)] text-sm" style={{ fontFamily: FONT }}>데이터 로딩중...</div>
+                </div>
+              ) : (
+                <StockTreemap
+                  sectors={filtered}
+                  sizeBy={sizeBy}
+                  selectedTicker={selected?.ticker}
+                  onStockClick={(stock) => setSelected(prev => prev?.ticker === stock.ticker ? null : stock)}
+                  onSectorDrillDown={setDrilledSector}
+                />
+              )}
+            </div>
+            {selected && <DetailPanel stock={selected} onClose={() => setSelected(null)} />}
           </div>
-        </div>
+
+          {/* Sector Detail Cards */}
+          {!isLoading && nonEtc.length > 0 && (
+            <div className="border-t border-[var(--border)] bg-[var(--bg-base)] p-4" style={{ fontFamily: FONT }}>
+              <div className="max-w-[1400px] mx-auto space-y-3">
+                <h3 className="text-xs font-bold text-[var(--text-dim)] uppercase tracking-wider mb-2">
+                  섹터별 상세 ({nonEtc.length}개 섹터)
+                </h3>
+                {nonEtc.map((s, i) => (
+                  <SectorCard key={s.name} sector={s} defaultOpen={i < DEFAULT_OPEN} />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
