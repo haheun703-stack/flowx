@@ -165,16 +165,13 @@ export function StockTreemap({
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
 
   /* ── Compute Layout ── */
-  // 섹터별 상위 종목만 선별 (전체 ~150개로 제한하여 박스 가독성 확보)
+  // 섹터별 상위 종목만 선별 — 전체 ~80개로 강력 제한 (박스 가독성 확보)
+  const TARGET_TOTAL = 80
   const trimmedSectors = useMemo(() => {
-    const totalStocks = sectors.reduce((s, sec) => s + sec.stocks.length, 0)
-    if (totalStocks <= 150) return sectors
-
     const totalCap = sectors.reduce((s, sec) => s + sec.marketCap, 0)
     return sectors.map(sec => {
-      // 섹터 시총 비중에 비례하여 종목 수 할당 (최소 3, 최대 30)
       const ratio = totalCap > 0 ? sec.marketCap / totalCap : 1 / sectors.length
-      const maxStocks = Math.max(3, Math.min(30, Math.round(ratio * 150)))
+      const maxStocks = Math.max(2, Math.min(15, Math.round(ratio * TARGET_TOTAL)))
       return {
         ...sec,
         stocks: sec.stocks.slice(0, maxStocks),
