@@ -85,8 +85,8 @@ function drawTextOutlined(
   ctx.font = `bold ${fontSize}px ${CANVAS_FONT}`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.strokeStyle = 'rgba(0,0,0,0.6)'
-  ctx.lineWidth = 3 / zoom
+  ctx.strokeStyle = fontSize < 6 ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)'
+  ctx.lineWidth = Math.max(1, (fontSize < 6 ? 2 : 3)) / zoom
   ctx.lineJoin = 'round'
   ctx.strokeText(text, x, y)
   ctx.fillStyle = fillColor
@@ -101,16 +101,17 @@ function drawCellText(
   const h = rect.y1 - rect.y0
   const visW = w * zoom
   const visH = h * zoom
-  if (visW < 20 || visH < 14) return
+  if (visW < 8 || visH < 8) return
 
   const cx = rect.x0 + w / 2
   const cy = rect.y0 + h / 2
   const pctText = `${data.changePercent >= 0 ? '+' : ''}${data.changePercent.toFixed(2)}%`
+  const shortPct = `${data.changePercent >= 0 ? '+' : ''}${data.changePercent.toFixed(1)}%`
 
   if (visW > 70 && visH > 50) {
     // Large: name + ticker + pct (3 lines)
     const fs = Math.min(14 / zoom, w * 0.12, h * 0.16)
-    if (fs < 4) return
+    if (fs < 2) return
     const lineH = fs * 1.5
     drawTextOutlined(ctx, data.name, cx, cy - lineH, fs, '#FFFFFF', zoom)
     drawTextOutlined(ctx, data.ticker, cx, cy, fs * 0.8, '#ffffffcc', zoom)
@@ -118,15 +119,20 @@ function drawCellText(
   } else if (visW > 40 && visH > 28) {
     // Medium: name + pct (2 lines)
     const fs = Math.min(12 / zoom, w * 0.14, h * 0.22)
-    if (fs < 4) return
+    if (fs < 2) return
     const lineH = fs * 1.4
     drawTextOutlined(ctx, data.name, cx, cy - lineH / 2, fs, '#FFFFFF', zoom)
     drawTextOutlined(ctx, pctText, cx, cy + lineH / 2, fs, '#FFFFFF', zoom)
+  } else if (visW > 24 && visH > 16) {
+    // Small: name only (fits better than %)
+    const fs = Math.min(10 / zoom, w * 0.18, h * 0.35)
+    if (fs < 2) return
+    drawTextOutlined(ctx, data.name, cx, cy, fs, '#FFFFFF', zoom)
   } else {
-    // Small: pct only
-    const fs = Math.min(10 / zoom, w * 0.2, h * 0.45)
-    if (fs < 4) return
-    drawTextOutlined(ctx, pctText, cx, cy, fs, '#FFFFFF', zoom)
+    // Tiny: short pct only
+    const fs = Math.min(8 / zoom, w * 0.22, h * 0.5)
+    if (fs < 1.5) return
+    drawTextOutlined(ctx, shortPct, cx, cy, fs, '#FFFFFF', zoom)
   }
 }
 
