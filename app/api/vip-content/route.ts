@@ -1,21 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { getSessionFromRequest, getUserTier, unauthorized } from '@/lib/api-auth'
-import { readJsonFile } from '@/shared/lib/dataReader'
 import { fetchWorldIndices } from '@/features/market-ticker/api/fetchWorldIndices'
 
 export const dynamic = 'force-dynamic'
-
-/* ── Types ── */
-interface SectorMomentumFile {
-  date: string
-  sectors: {
-    sector: string
-    ret_5: number
-    momentum_score: number
-    category: string
-  }[]
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapSignalRow(row: any) {
@@ -37,21 +25,39 @@ function mapSignalRow(row: any) {
 
 /* ── Panel 6: 릴레이 체인 (섹터 로테이션 + 원자재) ── */
 async function buildPanel6() {
-  // 1. 섹터 데이터 — sector_momentum.json
+  // 1. 섹터 데이터 — Supabase sector_rotation 테이블
   let hotSectors: { sector: string; status: string; change: string }[] = []
   try {
-    const momentum = readJsonFile<SectorMomentumFile>('sector_rotation/sector_momentum.json')
-    const sorted = momentum.sectors
-      .filter(s => s.category === 'sector')
-      .sort((a, b) => b.ret_5 - a.ret_5)
+    const sb = getSupabaseAdmin()
+    const { data: latest } = await sb
+      .from('sector_rotation')
+      .select('date')
+      .order('date', { ascending: false })
+      .limit(1)
+      .single()
 
-    hotSectors = sorted.slice(0, 8).map(s => {
-      let status = 'CLUSTER'
-      if (s.ret_5 > 2) status = 'HOT'
-      else if (s.ret_5 > 0) status = 'ROTATION'
-      const sign = s.ret_5 >= 0 ? '+' : ''
-      return { sector: s.sector, status, change: `${sign}${s.ret_5.toFixed(1)}%` }
-    })
+    if (latest) {
+      const { data: rows } = await sb
+        .from('sector_rotation')
+        .select('*')
+        .eq('date', latest.date)
+        .order('rank')
+
+      if (rows) {
+        const sorted = rows
+          .filter((s: Record<string, unknown>) => (s.category ?? 'sector') === 'sector')
+          .sort((a: Record<string, unknown>, b: Record<string, unknown>) => Number(b.ret_5 ?? 0) - Number(a.ret_5 ?? 0))
+
+        hotSectors = sorted.slice(0, 8).map((s: Record<string, unknown>) => {
+          const ret5 = Number(s.ret_5 ?? 0)
+          let status = 'CLUSTER'
+          if (ret5 > 2) status = 'HOT'
+          else if (ret5 > 0) status = 'ROTATION'
+          const sign = ret5 >= 0 ? '+' : ''
+          return { sector: (s.sector ?? '') as string, status, change: `${sign}${ret5.toFixed(1)}%` }
+        })
+      }
+    }
   } catch { /* fallback empty */ }
 
   // 2. 원자재 데이터 — world indices

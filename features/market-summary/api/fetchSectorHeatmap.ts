@@ -1,29 +1,38 @@
 import { SectorData } from '../types'
-import { readJsonFile } from '@/shared/lib/dataReader'
-
-interface SectorMomentumFile {
-  date: string
-  sectors: {
-    sector: string
-    ret_5: number
-    momentum_score: number
-    category: string
-  }[]
-}
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 /**
- * 섹터 히트맵 데이터 — _SPECS/data/sector_rotation/sector_momentum.json 활용
- * 5일 수익률을 히트맵 기준으로 사용
+ * 섹터 히트맵 데이터 — Supabase sector_rotation 테이블
+ * 최신 날짜의 섹터별 5일 수익률을 히트맵 기준으로 사용
  */
-export function fetchSectorHeatmap(): SectorData[] {
+export async function fetchSectorHeatmap(): Promise<SectorData[]> {
   try {
-    const data = readJsonFile<SectorMomentumFile>('sector_rotation/sector_momentum.json')
-    return data.sectors
-      .filter(s => s.category === 'sector')
+    const sb = getSupabaseAdmin()
+
+    // 최신 날짜 조회
+    const { data: latest } = await sb
+      .from('sector_rotation')
+      .select('date')
+      .order('date', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (!latest) return []
+
+    const { data, error } = await sb
+      .from('sector_rotation')
+      .select('*')
+      .eq('date', latest.date)
+      .order('rank')
+
+    if (error || !data) return []
+
+    return data
+      .filter((s: Record<string, unknown>) => (s.category ?? 'sector') === 'sector')
       .slice(0, 9)
-      .map(s => ({
-        name: s.sector,
-        changePercent: s.ret_5,
+      .map((s: Record<string, unknown>) => ({
+        name: (s.sector ?? '') as string,
+        changePercent: Number(s.ret_5 ?? 0),
         count: 0,
       }))
   } catch {

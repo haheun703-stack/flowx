@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const data = fetchSectorHeatmap()
+    const data = await fetchSectorHeatmap()
     return NextResponse.json(data)
   } catch {
     return NextResponse.json([], { status: 500 })
