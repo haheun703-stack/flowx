@@ -41,12 +41,12 @@ function PhaseBar({ chain, currentPhase }: { chain: ScenarioPhase[]; currentPhas
               }}
             />
             <p
-              className="text-[16px] font-bold leading-tight truncate"
+              className="text-[8px] font-bold leading-tight truncate"
               style={{ color: isCurrent ? '#F59E0B' : '#6B7280' }}
             >
               {isCurrent ? `▶ P${ph.phase} 지금` : `P${ph.phase}`}
             </p>
-            <p className="text-[14px] text-[#9CA3AF] leading-tight truncate">
+            <p className="text-[7px] text-[#9CA3AF] leading-tight truncate">
               {ph.name.split('(')[0].trim()}
             </p>
           </div>
@@ -64,12 +64,12 @@ function SectorBadges({ hot, cold }: { hot: string[]; cold: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5 mt-3">
       {hot.map(s => (
-        <span key={s} className="text-[18px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
+        <span key={s} className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
           HOT {s}
         </span>
       ))}
       {cold.map(s => (
-        <span key={s} className="text-[18px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
+        <span key={s} className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
           COLD {s}
         </span>
       ))}
@@ -109,26 +109,26 @@ export default function HeroCard({ scenario, analysis }: HeroCardProps) {
         <div className="flex-1 min-w-0">
           {/* 시나리오명 + 점수 + Phase/D+ */}
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-[44px] font-bold text-[#1A1A2E] leading-tight">
+            <h2 className="text-[22px] font-bold text-[#1A1A2E] leading-tight">
               {scenario.name}
             </h2>
-            <span className={`text-[22px] font-bold text-white px-2.5 py-0.5 rounded-full ${scoreBadge(scenario.score)}`}>
+            <span className={`text-[11px] font-bold text-white px-2.5 py-0.5 rounded-full ${scoreBadge(scenario.score)}`}>
               {scenario.score}점
             </span>
           </div>
 
-          <p className="text-[20px] text-[#6B7280] mt-1">
+          <p className="text-[10px] text-[#6B7280] mt-1">
             Phase {scenario.current_phase}/{scenario.total_phases} · D+{scenario.days_active}
           </p>
 
           {/* 핵심 메시지 1줄: 상황 */}
-          <p className="text-[30px] font-bold mt-3 leading-snug" style={{ color: messageColor }}>
+          <p className="text-[15px] font-bold mt-3 leading-snug" style={{ color: messageColor }}>
             {situationMsg}
           </p>
 
           {/* 핵심 메시지 2줄: 액션 */}
           {actionMsg && (
-            <p className="text-[30px] font-bold text-[#059669] mt-1 leading-snug">
+            <p className="text-[15px] font-bold text-[#059669] mt-1 leading-snug">
               {actionMsg}
             </p>
           )}
@@ -147,17 +147,17 @@ export default function HeroCard({ scenario, analysis }: HeroCardProps) {
               minWidth: 100,
             }}
           >
-            <p className="text-[20px] text-[#6B7280] font-medium mb-1">이번 주 변화</p>
+            <p className="text-[10px] text-[#6B7280] font-medium mb-1">이번 주 변화</p>
             {scoreChange !== null && (
               <p
-                className="text-[26px] font-bold"
+                className="text-[13px] font-bold"
                 style={{ color: scoreChange >= 0 ? '#16A34A' : '#DC2626' }}
               >
                 {scoreChange >= 0 ? '+' : ''}{scoreChange}
               </p>
             )}
             {phaseChanged && (
-              <p className="text-[22px] font-bold text-[#D97706] mt-0.5">
+              <p className="text-[11px] font-bold text-[#D97706] mt-0.5">
                 P{sc.prev_phase}→P{scenario.current_phase} 전환!
               </p>
             )}

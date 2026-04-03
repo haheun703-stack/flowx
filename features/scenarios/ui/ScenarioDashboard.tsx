@@ -38,8 +38,8 @@ function Accordion({
           cursor: 'pointer',
         }}
       >
-        <span className="text-[26px] font-bold text-[#1A1A2E]">{title}</span>
-        <span className="text-[22px] font-semibold text-[#00CC6A]">
+        <span className="text-[13px] font-bold text-[#1A1A2E]">{title}</span>
+        <span className="text-[11px] font-semibold text-[#00CC6A]">
           {isOpen ? '접기 ▲' : '펼치기 ▼'}
         </span>
       </button>
@@ -117,7 +117,7 @@ export default function ScenarioDashboardView() {
     return (
       <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
         <p className="text-[#9CA3AF]">시나리오 데이터가 아직 없습니다.</p>
-        <p className="text-[#9CA3AF] text-[28px] mt-1">매일 장마감 후 업데이트됩니다.</p>
+        <p className="text-[#9CA3AF] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
     )
   }
@@ -193,19 +193,19 @@ export default function ScenarioDashboardView() {
         {firstScenario?.next_phase_name && (
           <Accordion id="nextphase" title="다음 Phase 프리뷰" openSection={openSection} onToggle={toggleSection}>
             <div className="space-y-2">
-              <p className="text-[26px] font-bold text-[#1A1A2E]">
+              <p className="text-[13px] font-bold text-[#1A1A2E]">
                 Phase {firstScenario.current_phase + 1}: {firstScenario.next_phase_name}
               </p>
               {firstScenario.next_hot?.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {firstScenario.next_hot.map(s => (
-                    <span key={s} className="text-[20px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
+                    <span key={s} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
                       {s}
                     </span>
                   ))}
                 </div>
               )}
-              <p className="text-[22px] text-[#6B7280]">
+              <p className="text-[11px] text-[#6B7280]">
                 Phase 전환 시 관련 섹터와 종목이 자동으로 업데이트됩니다.
               </p>
             </div>

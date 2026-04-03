@@ -56,10 +56,10 @@ export default function LogicChainPanel({ scenario, analysis }: LogicChainProps)
                 border: `${node.borderWidth}px solid ${node.border}`,
               }}
             >
-              <p className="text-[18px] font-bold text-[#6B7280] mb-1 uppercase tracking-wider">
+              <p className="text-[9px] font-bold text-[#6B7280] mb-1 uppercase tracking-wider">
                 {node.label}
               </p>
-              <p className="text-[24px] font-semibold text-[#1A1A2E] leading-snug break-words">
+              <p className="text-xs font-semibold text-[#1A1A2E] leading-snug break-words">
                 {node.key === 'conclusion' && values[node.key].includes('이익 무제한') ? (
                   <span className="text-[#059669] font-bold">{values[node.key]}</span>
                 ) : node.key === 'logic' && values[node.key].includes('하방 없음') ? (
@@ -72,7 +72,7 @@ export default function LogicChainPanel({ scenario, analysis }: LogicChainProps)
 
             {/* 화살표 */}
             {i < NODES.length - 1 && (
-              <div className="flex items-center px-1 text-[#9CA3AF] text-[36px] font-light shrink-0">
+              <div className="flex items-center px-1 text-[#9CA3AF] text-lg font-light shrink-0">
                 →
               </div>
             )}

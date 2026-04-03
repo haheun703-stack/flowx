@@ -68,17 +68,17 @@ export default function KeyNumbersGrid({ keyNumbers }: { keyNumbers: Record<stri
 
   return (
     <div>
-      <h3 className="text-[30px] font-bold text-[#1A1A2E] mb-3">
+      <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
         핵심 숫자 — 전쟁 전 vs 지금
       </h3>
 
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {entries.map(e => (
           <div key={e.key} className="rounded-lg p-2 text-center" style={{ backgroundColor: '#F5F4F0' }}>
-            <p className="text-[18px] text-[#6B7280] font-medium">{e.label}</p>
-            <p className="text-[32px] font-bold text-[#1A1A2E] tabular-nums">{e.value}</p>
+            <p className="text-[9px] text-[#6B7280] font-medium">{e.label}</p>
+            <p className="text-[16px] font-bold text-[#1A1A2E] tabular-nums">{e.value}</p>
             {e.change && (
-              <p className="text-[18px] font-semibold" style={{ color: e.change.color }}>
+              <p className="text-[9px] font-semibold" style={{ color: e.change.color }}>
                 {e.change.text}
               </p>
             )}
