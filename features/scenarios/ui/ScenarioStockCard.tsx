@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { ScenarioStock } from '../types'
 
 function formatKRW(n: number) {
@@ -8,107 +9,132 @@ function formatKRW(n: number) {
 }
 
 function flowLabel(val: number) {
-  if (val === 0) return { text: '-', color: 'text-[var(--text-muted)]' }
+  if (val === 0) return { text: '-', color: 'text-[#9CA3AF]' }
   const bil = val / 1_000_000_000
-  return { text: `${bil >= 0 ? '+' : ''}${bil.toFixed(0)}억`, color: bil >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]' }
+  return { text: `${bil >= 0 ? '+' : ''}${bil.toFixed(0)}억`, color: bil >= 0 ? 'text-[#DC2626]' : 'text-[#2563EB]' }
 }
-
-// ─── 카테고리별 좌측 색상 라인 (스펙 §6) ───
 
 function getCategoryBorder(tag: string): string {
   const lower = tag.toLowerCase()
-  if (lower.includes('원유') || lower.includes('에너지') || lower.includes('oil') || lower.includes('lpg') || lower.includes('가스')) {
-    return '#EF4444'
-  }
-  if (lower.includes('방산') || lower.includes('defense') || lower.includes('무기') || lower.includes('군수')) {
+  if (lower.includes('원유') || lower.includes('에너지') || lower.includes('oil') || lower.includes('lpg') || lower.includes('가스'))
+    return '#DC2626'
+  if (lower.includes('방산') || lower.includes('defense') || lower.includes('무기') || lower.includes('군수'))
+    return '#DC2626'
+  if (lower.includes('etf') || lower.includes('인버스') || lower.includes('레버리지'))
     return '#2563EB'
-  }
-  if (lower.includes('etf') || lower.includes('인버스') || lower.includes('레버리지')) {
+  if (lower.includes('간접') || lower.includes('보험') || lower.includes('해운'))
     return '#F59E0B'
-  }
-  if (lower.includes('안전') || lower.includes('금') || lower.includes('gold') || lower.includes('채권') || lower.includes('달러')) {
-    return '#6B7280'
-  }
-  return '#6B7280'
+  return '#F59E0B'
+}
+
+function getCategoryLabel(tag: string): string {
+  const lower = tag.toLowerCase()
+  if (lower.includes('etf') || lower.includes('인버스') || lower.includes('레버리지'))
+    return 'ETF'
+  if (lower.includes('간접') || lower.includes('보험') || lower.includes('해운'))
+    return '간접 수혜'
+  return '직접 수혜'
 }
 
 export default function ScenarioStockCard({ stocks }: { stocks: ScenarioStock[] }) {
+  const [openTicker, setOpenTicker] = useState<string | null>(null)
+
   if (!stocks.length) {
-    return <p className="text-[var(--text-muted)] text-sm">시나리오 연동 종목이 없습니다.</p>
+    return <p className="text-[#9CA3AF] text-sm">투자 유니버스가 비어있습니다.</p>
   }
 
+  const topStocks = stocks.slice(0, 3)
+
   return (
-    <div className="space-y-3">
-      {stocks.map((st) => {
-        const borderColor = getCategoryBorder(st.scenario_tag)
+    <div>
+      <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
+        지금 뭘 사야 할까? — 투자 유니버스
+      </h2>
 
-        return (
-          <div
-            key={st.ticker}
-            className="rounded-lg border border-[var(--border)] bg-white p-4 shadow-sm"
-            style={{ borderLeft: `3px solid ${borderColor}` }}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[var(--text-primary)] font-bold">{st.name}</span>
-                <span className="text-[var(--text-muted)] text-xs">{st.ticker}</span>
-                <span
-                  className="text-xs px-1.5 py-0.5 rounded border"
-                  style={{ color: borderColor, borderColor: `${borderColor}40`, backgroundColor: `${borderColor}10` }}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {topStocks.map((st) => {
+          const borderColor = getCategoryBorder(st.scenario_tag)
+          const categoryLabel = getCategoryLabel(st.scenario_tag)
+          const isOpen = openTicker === st.ticker
+          const foreignFlow = flowLabel(st.foreign_5d)
+          const instFlow = flowLabel(st.inst_5d)
+
+          return (
+            <div
+              key={st.ticker}
+              className="rounded-r-[10px] overflow-hidden"
+              style={{ background: '#F5F4F0', borderLeft: `3px solid ${borderColor}` }}
+            >
+              <div className="p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[13px] font-bold text-[#1A1A2E]">{st.name}</span>
+                  <span
+                    className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                    style={{ color: borderColor, backgroundColor: `${borderColor}15`, border: `1px solid ${borderColor}30` }}
+                  >
+                    {categoryLabel}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#6B7280]">{st.ticker} | {formatKRW(st.close)}원</p>
+                {st.scenario_narrative && (
+                  <p className="text-[11px] text-[#374151] mt-1.5 leading-relaxed line-clamp-2">{st.scenario_narrative}</p>
+                )}
+                <button
+                  onClick={() => setOpenTicker(isOpen ? null : st.ticker)}
+                  className="text-[11px] font-semibold text-[#00CC6A] mt-2 hover:underline"
                 >
-                  {st.scenario_tag}
-                </span>
+                  {isOpen ? '접기 ▲' : '상세 근거 보기 ▼'}
+                </button>
               </div>
-              <span className={`text-sm font-bold ${st.total_score >= 60 ? 'text-[var(--green)]' : st.total_score >= 40 ? 'text-[var(--yellow)]' : 'text-[var(--text-dim)]'}`}>
-                {st.total_score.toFixed(1)}점
-              </span>
+
+              {isOpen && (
+                <div className="px-3 pb-3 space-y-2 border-t border-[#E8E6E0] pt-2">
+                  <div className="bg-white rounded-lg p-2">
+                    <p className="text-[9px] font-bold text-[#6B7280] mb-1">수급 (5일)</p>
+                    <div className="flex gap-3 text-[11px]">
+                      <span>외국인: <span className={`font-bold ${foreignFlow.color}`}>{foreignFlow.text}</span></span>
+                      <span>기관: <span className={`font-bold ${instFlow.color}`}>{instFlow.text}</span></span>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-2">
+                    <p className="text-[9px] font-bold text-[#6B7280] mb-1">차트 지표</p>
+                    <div className="flex gap-3 text-[11px]">
+                      <span>RSI: <span className={`font-bold ${st.rsi >= 70 ? 'text-[#DC2626]' : st.rsi <= 30 ? 'text-[#16A34A]' : 'text-[#1A1A2E]'}`}>{st.rsi.toFixed(1)}</span></span>
+                      <span>등급: <span className="font-bold text-[#1A1A2E]">{st.grade}</span></span>
+                      <span>점수: <span className={`font-bold ${st.total_score >= 60 ? 'text-[#16A34A]' : st.total_score >= 40 ? 'text-[#D97706]' : 'text-[#9CA3AF]'}`}>{st.total_score.toFixed(1)}</span></span>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-2">
+                    <p className="text-[9px] font-bold text-[#6B7280] mb-1">시나리오 연동</p>
+                    <p className="text-[11px] text-[#374151]">{st.scenario_tag}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-2">
+                    <p className="text-[9px] font-bold text-[#6B7280] mb-1">매매 전략</p>
+                    <div className="grid grid-cols-3 gap-2 text-[11px]">
+                      <div>
+                        <span className="text-[#9CA3AF] text-[9px] block">진입가</span>
+                        <span className="font-bold text-[#1A1A2E]">{formatKRW(st.entry_price)}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#9CA3AF] text-[9px] block">목표가</span>
+                        <span className="font-bold text-[#16A34A]">{formatKRW(st.target_price)}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#9CA3AF] text-[9px] block">손절가</span>
+                        <span className="font-bold text-[#DC2626]">{formatKRW(st.stop_loss)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-
-            {st.scenario_narrative && (
-              <p className="text-xs text-[var(--text-dim)] mb-3 leading-relaxed">{st.scenario_narrative}</p>
-            )}
-
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-xs">
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">현재가</span>
-                <span className="text-[var(--text-primary)] font-mono">{formatKRW(st.close)}</span>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">진입가</span>
-                <span className="text-[var(--text-primary)] font-mono">{formatKRW(st.entry_price)}</span>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">목표가</span>
-                <span className="text-[var(--green)] font-mono">{formatKRW(st.target_price)}</span>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">손절가</span>
-                <span className="text-[var(--up)] font-mono">{formatKRW(st.stop_loss)}</span>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">RSI</span>
-                <span className={`font-mono ${st.rsi >= 70 ? 'text-[var(--up)]' : st.rsi <= 30 ? 'text-[var(--green)]' : 'text-[var(--text-primary)]'}`}>
-                  {st.rsi.toFixed(1)}
-                </span>
-              </div>
-              <div className="bg-gray-50 rounded p-2">
-                <span className="text-[var(--text-muted)] block">수급 5일</span>
-                <span className={`font-mono ${flowLabel(st.foreign_5d).color}`}>
-                  외{flowLabel(st.foreign_5d).text}
-                </span>
-              </div>
-            </div>
-          </div>
-        )
-      })}
-
-      {/* 색상 범례 */}
-      <div className="flex flex-wrap gap-3 mt-2 justify-center text-[10px] text-[var(--text-muted)]">
-        <span><span style={{ color: '#EF4444' }}>{'\u25A0'}</span> 원유/에너지</span>
-        <span><span style={{ color: '#2563EB' }}>{'\u25A0'}</span> 방산</span>
-        <span><span style={{ color: '#F59E0B' }}>{'\u25A0'}</span> ETF</span>
-        <span><span style={{ color: '#6B7280' }}>{'\u25A0'}</span> 안전자산/기타</span>
+          )
+        })}
       </div>
+
+      {stocks.length > 3 && (
+        <p className="text-[10px] text-[#9CA3AF] text-center mt-2">외 {stocks.length - 3}개 종목</p>
+      )}
     </div>
   )
 }

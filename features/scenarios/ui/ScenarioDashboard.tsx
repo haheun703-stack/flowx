@@ -2,20 +2,73 @@
 
 import { useEffect, useState } from 'react'
 import type { ScenarioDashboard, DeepAnalysis } from '../types'
-import MarketStatusBar from './MarketStatusBar'
-import ScenarioCard from './ScenarioCard'
+import HeroCard from './HeroCard'
+import ScenarioStockCard from './ScenarioStockCard'
 import LogicChainPanel from './LogicChainPanel'
 import FanChartPanel from './FanChartPanel'
-import DeepAnalysisPanel from './DeepAnalysisPanel'
-import CommodityTable from './CommodityTable'
-import ScenarioStockCard from './ScenarioStockCard'
-import ScenarioETFMap from './ScenarioETFMap'
+import CommodityIconGrid from './CommodityIconGrid'
+import BeneficiaryVerticalBarChart from './BeneficiaryBarChart'
+import KeyNumbersGrid from './KeyNumbersGrid'
 import StopConditionCards from './StopConditionCards'
-import ScenarioGuide from './ScenarioGuide'
+
+// ─── 아코디언 공통 컴포넌트 ───
+
+function Accordion({
+  id,
+  title,
+  openSection,
+  onToggle,
+  children,
+}: {
+  id: string
+  title: string
+  openSection: string | null
+  onToggle: (id: string) => void
+  children: React.ReactNode
+}) {
+  const isOpen = openSection === id
+
+  return (
+    <div className="mb-1">
+      <button
+        onClick={() => onToggle(id)}
+        className="w-full flex items-center justify-between rounded-lg px-4 py-3 transition-colors"
+        style={{
+          background: isOpen ? '#ECEAE4' : '#F5F4F0',
+          cursor: 'pointer',
+        }}
+      >
+        <span className="text-[13px] font-bold text-[#1A1A2E]">{title}</span>
+        <span className="text-[11px] font-semibold text-[#00CC6A]">
+          {isOpen ? '접기 ▲' : '펼치기 ▼'}
+        </span>
+      </button>
+
+      {isOpen && (
+        <div
+          className="rounded-xl mt-1 p-4 overflow-hidden"
+          style={{
+            background: '#FFF',
+            border: '1px solid #E8E6E0',
+          }}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── 메인 대시보드 ───
 
 export default function ScenarioDashboardView() {
   const [data, setData] = useState<ScenarioDashboard | null>(null)
   const [loading, setLoading] = useState(true)
+  const [openSection, setOpenSection] = useState<string | null>(null)
+
+  function toggleSection(id: string) {
+    setOpenSection(openSection === id ? null : id)
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -27,8 +80,6 @@ export default function ScenarioDashboardView() {
         if (!json || !json.market_status) {
           setData(null)
         } else {
-          // 퀀트봇이 key_numbers/beneficiaries/oil_scenarios/scenario_id를
-          // deep_analyses 안이 아닌 최상위에 넣는 경우 병합
           if (json.deep_analyses?.length) {
             json.deep_analyses = json.deep_analyses.map((da: Partial<DeepAnalysis>) => ({
               ...da,
@@ -52,14 +103,12 @@ export default function ScenarioDashboardView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-20 bg-gray-200 rounded-lg" />
-          ))}
+      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-4">
+        <div className="h-40 bg-gray-200 rounded-2xl" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-28 bg-gray-200 rounded-lg" />)}
         </div>
-        <div className="h-48 bg-gray-200 rounded-lg" />
-        <div className="h-32 bg-gray-200 rounded-lg" />
+        {[1, 2, 3, 4].map(i => <div key={i} className="h-12 bg-gray-200 rounded-lg" />)}
       </div>
     )
   }
@@ -67,88 +116,102 @@ export default function ScenarioDashboardView() {
   if (!data) {
     return (
       <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
-        <p className="text-[var(--text-muted)]">시나리오 데이터가 아직 없습니다.</p>
-        <p className="text-[var(--text-muted)] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
+        <p className="text-[#9CA3AF]">시나리오 데이터가 아직 없습니다.</p>
+        <p className="text-[#9CA3AF] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
     )
   }
 
-  // 첫 번째 시나리오 + 첫 번째 심층 분석 (Logic Chain, Fan Chart, Stop Conditions에 사용)
   const firstScenario = data.active_scenarios?.[0]
   const firstAnalysis = data.deep_analyses?.[0]
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
-      {/* 1. 시장 상태 */}
-      <section>
-        <MarketStatusBar status={data.market_status} />
-      </section>
+    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-4">
 
-      {/* 2. 활성 시나리오 (헤더 + Phase 프로그레스 바) */}
-      <section>
-        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">활성 시나리오</h2>
-        <ScenarioCard scenarios={data.active_scenarios} conflicts={data.conflicts} />
-      </section>
-
-      {/* 3. 보이지 않는 손의 논리 (Logic Chain) */}
+      {/* ═══ Row 1: 30초 요약 히어로 ═══ */}
       {firstScenario && (
         <section>
-          <LogicChainPanel scenario={firstScenario} analysis={firstAnalysis} />
+          <HeroCard scenario={firstScenario} analysis={firstAnalysis} />
         </section>
       )}
 
-      {/* 4. 시나리오 전망 팬 차트 */}
-      {firstAnalysis?.oil_scenarios?.length ? (
-        <section>
-          <FanChartPanel
-            oilScenarios={firstAnalysis.oil_scenarios}
-            keyNumbers={firstAnalysis.key_numbers}
-          />
-        </section>
-      ) : null}
-
-      {/* 5. 심층 분석 (수혜자 바 차트 포함) */}
-      {(data.deep_analyses?.length ?? 0) > 0 && (
-        <section>
-          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">심층 분석</h2>
-          <DeepAnalysisPanel analyses={data.deep_analyses!} />
-        </section>
-      )}
-
-      {/* 6. 원자재 온도 게이지 */}
-      <section>
-        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">원자재 원가갭 분석</h2>
-        <CommodityTable commodities={data.commodities} />
-      </section>
-
-      {/* 7. 시나리오 연동 종목 (색상 라인) */}
+      {/* ═══ Row 2: 투자 유니버스 ═══ */}
       {(data.scenario_stocks?.length ?? 0) > 0 && (
         <section>
-          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">투자 유니버스</h2>
           <ScenarioStockCard stocks={data.scenario_stocks} />
         </section>
       )}
 
-      {/* 8. ETF 매핑 */}
-      {(data.etf_map?.length ?? 0) > 0 && (
-        <section>
-          <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">시나리오별 ETF 매핑</h2>
-          <ScenarioETFMap etfMap={data.etf_map} />
-        </section>
-      )}
+      {/* ═══ Row 3~9: 아코디언 섹션들 ═══ */}
+      <div className="space-y-1">
+        {/* Row 3: 보이지 않는 손의 논리 */}
+        {firstScenario && (
+          <Accordion id="logic" title="보이지 않는 손의 논리" openSection={openSection} onToggle={toggleSection}>
+            <LogicChainPanel scenario={firstScenario} analysis={firstAnalysis} />
+          </Accordion>
+        )}
 
-      {/* 9. 멈출 조건 카드 */}
-      {firstAnalysis?.beneficiaries?.length ? (
-        <section>
-          <StopConditionCards beneficiaries={firstAnalysis.beneficiaries} />
-        </section>
-      ) : null}
+        {/* Row 4: 시나리오 전망 팬차트 */}
+        {firstAnalysis?.oil_scenarios?.length ? (
+          <Accordion id="fanchart" title="시나리오 전망 — 유가 팬차트" openSection={openSection} onToggle={toggleSection}>
+            <FanChartPanel
+              oilScenarios={firstAnalysis.oil_scenarios}
+              keyNumbers={firstAnalysis.key_numbers}
+            />
+          </Accordion>
+        ) : null}
 
-      {/* 10. 초보자 가이드 */}
-      <section>
-        <h2 className="text-[var(--text-primary)] text-xl font-bold mb-4">초보자 가이드</h2>
-        <ScenarioGuide />
-      </section>
+        {/* Row 5: 원자재 원가갭 */}
+        {data.commodities?.length > 0 && (
+          <Accordion id="commodity" title="원자재 원가갭 — 지금 얼마나 올랐나?" openSection={openSection} onToggle={toggleSection}>
+            <CommodityIconGrid commodities={data.commodities} />
+          </Accordion>
+        )}
+
+        {/* Row 6: 수혜자별 이익 구조 */}
+        {firstAnalysis?.beneficiaries?.length ? (
+          <Accordion id="beneficiary" title="수혜자별 이익 구조 — 누가 돈을 벌고 있나?" openSection={openSection} onToggle={toggleSection}>
+            <BeneficiaryVerticalBarChart beneficiaries={firstAnalysis.beneficiaries} />
+          </Accordion>
+        ) : null}
+
+        {/* Row 7: 핵심 숫자 */}
+        {firstAnalysis?.key_numbers && Object.keys(firstAnalysis.key_numbers).length > 0 && (
+          <Accordion id="keynumbers" title="핵심 숫자 — 전쟁 전 vs 지금" openSection={openSection} onToggle={toggleSection}>
+            <KeyNumbersGrid keyNumbers={firstAnalysis.key_numbers} />
+          </Accordion>
+        )}
+
+        {/* Row 8: 멈출 조건 */}
+        {firstAnalysis?.beneficiaries?.length ? (
+          <Accordion id="stopconditions" title="멈출 조건" openSection={openSection} onToggle={toggleSection}>
+            <StopConditionCards beneficiaries={firstAnalysis.beneficiaries} />
+          </Accordion>
+        ) : null}
+
+        {/* Row 9: 다음 Phase 프리뷰 */}
+        {firstScenario?.next_phase_name && (
+          <Accordion id="nextphase" title="다음 Phase 프리뷰" openSection={openSection} onToggle={toggleSection}>
+            <div className="space-y-2">
+              <p className="text-[13px] font-bold text-[#1A1A2E]">
+                Phase {firstScenario.current_phase + 1}: {firstScenario.next_phase_name}
+              </p>
+              {firstScenario.next_hot?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {firstScenario.next_hot.map(s => (
+                    <span key={s} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="text-[11px] text-[#6B7280]">
+                Phase 전환 시 관련 섹터와 종목이 자동으로 업데이트됩니다.
+              </p>
+            </div>
+          </Accordion>
+        )}
+      </div>
     </div>
   )
 }

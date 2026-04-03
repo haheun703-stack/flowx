@@ -21,11 +21,19 @@ const BRANCH_COLORS = ['#EF4444', '#F59E0B', '#3B82F6', '#9CA3AF']
 
 function sortByProbDesc(scenarios: OilScenario[]) {
   return [...scenarios].sort((a, b) => {
-    // 극단(높은 가격)을 빨강, 기본을 파랑, 조기종전을 회색으로
     const avgA = (a.wti_q2 + a.wti_q4) / 2
     const avgB = (b.wti_q2 + b.wti_q4) / 2
-    return avgB - avgA // 가격 높은 순
+    return avgB - avgA
   })
+}
+
+function getActionLabel(scenario: OilScenario, rank: number): string {
+  const avgPrice = (scenario.wti_q2 + scenario.wti_q4) / 2
+  if (avgPrice >= 120) return '인버스 전환 필요'
+  if (rank === 0 && avgPrice >= 100) return '포지션 확대'
+  if (scenario.probability >= 40) return '현 포지션 유지'
+  if (avgPrice <= 70) return '포지션 축소'
+  return '모니터링'
 }
 
 export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProps) {
@@ -53,11 +61,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
   const xLabels = ['전쟁 전', '현재', 'Q2 전망', 'Q4 전망']
 
   return (
-    <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-      <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3">
-        시나리오 전망 팬 차트
-      </h3>
-
+    <div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 360 }}>
         {/* 그리드 */}
         {yTicks.map(v => (
@@ -84,20 +88,30 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
           </text>
         ))}
 
-        {/* 원가 라인 (하방 지지선) */}
+        {/* 원가 라인 (하방 지지선) + 강조 rect */}
+        <rect
+          x={PAD.left} y={yScale(preWar) - 8}
+          width={CHART_W} height={16}
+          fill="#dc2626" opacity={0.08} rx={3}
+        />
         <line
           x1={PAD.left} y1={yScale(preWar)}
           x2={W - PAD.right} y2={yScale(preWar)}
           stroke="#dc2626" strokeWidth={1.5} strokeDasharray="6 3"
         />
+        <rect
+          x={W - PAD.right + 2} y={yScale(preWar) - 10}
+          width={52} height={28} rx={4}
+          fill="#dc2626" opacity={0.1}
+        />
         <text
-          x={W - PAD.right + 4} y={yScale(preWar) + 3}
+          x={W - PAD.right + 6} y={yScale(preWar) + 3}
           fontSize={8} fontWeight={700} fill="#dc2626"
         >
           원가 ${preWar}
         </text>
         <text
-          x={W - PAD.right + 4} y={yScale(preWar) + 14}
+          x={W - PAD.right + 6} y={yScale(preWar) + 14}
           fontSize={8} fontWeight={800} fill="#dc2626"
         >
           하방 없음!
@@ -138,6 +152,13 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
                 fontSize={7} fill={color}
               >
                 {sc.probability}%
+              </text>
+              {/* 액션 라벨 */}
+              <text
+                x={xScale(3) + 8} y={yScale(sc.wti_q4) + 23}
+                fontSize={7} fontWeight={600} fill={i === 0 ? '#DC2626' : '#6B7280'}
+              >
+                → {getActionLabel(sc, i)}
               </text>
             </g>
           )
