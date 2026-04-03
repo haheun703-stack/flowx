@@ -365,13 +365,22 @@ export function MoneyFlowMapPanel() {
       {/* ── 하단 곡선 화살표 (카드 아래) ── */}
       <div className="w-full h-[70px] relative">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 60" preserveAspectRatio="xMidYMid meet">
+          {/* 실선: 미국→아시아 전체 자금 흐름 (회색/빨강) */}
+          <path
+            d="M 60,6 C 60,32 300,38 540,14"
+            stroke="#dc2626" strokeWidth="1.5" strokeOpacity="0.4" fill="none"
+          />
+          <polygon points="538,11 544,17 536,18" fill="#dc2626" opacity="0.4" />
+
+          {/* 점선: 미국→한국 유입 추적 (녹색) */}
           <path
             d="M 60,4 C 60,45 400,52 740,4"
             stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
             className="animate-[flow-dash_2s_linear_infinite]"
           />
           <polygon points="738,1 744,7 736,8" fill="#16a34a" />
-          <text x="400" y="55" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
+
+          <text x="500" y="55" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
         </svg>
       </div>
 
