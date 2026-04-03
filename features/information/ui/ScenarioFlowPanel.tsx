@@ -93,7 +93,7 @@ function buildScenarioData(usdkrw: number, vix: number, foreignStreak: number): 
 function FlowTreeSVG({ data }: { data: TabData }) {
   const scenarios = data.scenarios
   const count = scenarios.length
-  const W = 700, H = count <= 3 ? 230 : 280
+  const W = 830, H = count <= 3 ? 230 : 300
   const nodeH = 52, gap = 12
 
   // Y 위치 계산
@@ -106,7 +106,7 @@ function FlowTreeSVG({ data }: { data: TabData }) {
   // 시나리오 노드
   const scX = 240, scW = 155
   // 액션 노드
-  const acX = 510, acW = 180
+  const acX = 510, acW = 300
 
   // 화살표 굵기: 확률 비례
   const getStroke = (prob: number) => {
@@ -169,12 +169,12 @@ function FlowTreeSVG({ data }: { data: TabData }) {
             <text x={acX + 10} y={scenarioYs[i] + 18} fontSize="9" fontWeight="700" fill={sc.color} fontFamily="system-ui">
               이렇게 하세요
             </text>
-            <text x={acX + 10} y={scenarioYs[i] + 34} fontSize="8.5" fill="#4B5563" fontFamily="system-ui">
-              {sc.action.length > 28 ? sc.action.slice(0, 28) + '…' : sc.action}
+            <text x={acX + 10} y={scenarioYs[i] + 34} fontSize="9" fill="#4B5563" fontFamily="system-ui">
+              {sc.action.length > 38 ? sc.action.slice(0, 38) + '…' : sc.action}
             </text>
-            {sc.action.length > 28 && (
-              <text x={acX + 10} y={scenarioYs[i] + 46} fontSize="8.5" fill="#4B5563" fontFamily="system-ui">
-                {sc.action.slice(28, 56)}
+            {sc.action.length > 38 && (
+              <text x={acX + 10} y={scenarioYs[i] + 46} fontSize="9" fill="#4B5563" fontFamily="system-ui">
+                {sc.action.slice(38, 76)}
               </text>
             )}
           </g>
