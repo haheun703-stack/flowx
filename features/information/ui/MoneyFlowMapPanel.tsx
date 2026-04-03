@@ -26,110 +26,81 @@ function fmtBillion(n: number) {
   return `$${abs.toFixed(0)}`
 }
 
-// ─── 나라별 지도 실루엣 (간략화된 실제 형태) ───
+// ─── 자금 흐름 상태 판정 (데이터 연동 색상) ───
 
-/** 미국 본토 실루엣 */
-function USMap() {
+type FlowStatus = 'inflow' | 'outflow' | 'neutral'
+
+function getFlowStatus(change: number): FlowStatus {
+  if (change > 0.3) return 'inflow'
+  if (change < -0.3) return 'outflow'
+  return 'neutral'
+}
+
+const FLOW_COLOR: Record<FlowStatus, string> = {
+  inflow: '#22c55e',
+  outflow: '#ef4444',
+  neutral: '#9ca3af',
+}
+
+// ─── 나라별 SVG 벡터 지도 (데이터 연동) ───
+
+/** 미국 본토 */
+function USMap({ fill }: { fill: string }) {
   return (
-    <svg viewBox="0 0 130 85" className="w-full h-full">
+    <svg viewBox="0 0 200 130" className="w-full h-full">
       <path
-        d={`M8,22 L5,28 L4,35 L5,42 L7,48 L10,52 L14,56 L16,60 L22,63
-          L28,65 L34,64 L36,62 L40,60 L44,58 L48,60 L52,64 L54,68
-          L56,72 L58,70 L60,64 L62,58 L66,52 L72,46 L78,40 L82,36
-          L86,33 L90,30 L94,27 L96,24 L92,20 L86,18 L78,16 L70,14
-          L60,13 L50,12 L40,13 L30,15 L20,18 L12,20 Z`}
-        fill="#93C5FD"
-        opacity="0.25"
+        d="M 12,30 L 10,40 L 8,50 L 10,58 L 14,64 L 22,66 L 32,66 L 42,70 L 46,78 L 52,86 L 60,84 L 70,82 L 78,82 L 82,86 L 86,82 L 90,88 L 96,98 L 102,104 L 108,98 L 106,88 L 110,78 L 118,70 L 128,64 L 138,56 L 148,46 L 158,40 L 166,36 L 174,32 L 174,28 L 166,24 L 154,20 L 142,18 L 130,20 L 120,24 L 112,20 L 102,18 L 90,18 L 78,16 L 66,16 L 54,16 L 42,18 L 30,22 L 18,26 Z"
+        fill={fill}
       />
-      {/* 알래스카 */}
-      <ellipse cx="16" cy="12" rx="10" ry="6" fill="#93C5FD" opacity="0.15" />
-      {/* 도시 마커 */}
-      <circle cx="75" cy="35" r="2.5" fill="#3B82F6" opacity="0.4" />
-      <circle cx="60" cy="44" r="2" fill="#3B82F6" opacity="0.3" />
-      <circle cx="15" cy="38" r="2" fill="#3B82F6" opacity="0.3" />
+      <ellipse cx="20" cy="12" rx="14" ry="8" fill={fill} opacity={0.7} />
     </svg>
   )
 }
 
 /** 유럽 실루엣 */
-function EuropeMap() {
+function EuropeMap({ fill }: { fill: string }) {
   return (
-    <svg viewBox="0 0 100 100" className="w-full h-full">
-      {/* 본토 */}
-      <path
-        d={`M35,10 L42,8 L50,6 L58,8 L65,12 L70,10 L75,14 L78,20
-          L76,26 L72,30 L68,28 L64,32 L66,38 L70,42 L74,48
-          L76,55 L73,60 L68,64 L62,68 L56,72 L50,74
-          L44,72 L38,68 L34,62 L30,56 L28,50 L26,44
-          L24,38 L22,32 L24,26 L28,20 L32,15 Z`}
-        fill="#D1D5DB"
-        opacity="0.25"
-      />
+    <svg viewBox="0 0 130 140" className="w-full h-full">
       {/* 영국 */}
-      <path
-        d={`M18,22 L22,18 L24,22 L22,28 L18,30 L16,26 Z`}
-        fill="#D1D5DB"
-        opacity="0.2"
-      />
+      <path d="M 22,30 L 26,24 L 32,20 L 36,24 L 38,32 L 36,40 L 30,46 L 26,44 L 22,38 Z" fill={fill} />
+      {/* 아일랜드 */}
+      <ellipse cx="16" cy="36" rx="6" ry="9" fill={fill} opacity={0.7} />
+      {/* 스칸디나비아 */}
+      <path d="M 68,4 L 74,8 L 80,6 L 86,10 L 88,20 L 84,30 L 78,34 L 72,30 L 68,22 L 66,12 Z" fill={fill} />
+      {/* 유럽 본토 */}
+      <path d="M 40,36 L 50,32 L 60,30 L 72,34 L 82,38 L 92,44 L 100,52 L 104,62 L 100,70 L 94,68 L 88,72 L 82,68 L 76,72 L 70,68 L 64,64 L 58,60 L 50,58 L 44,62 L 40,56 L 36,48 L 38,42 Z" fill={fill} />
+      {/* 이베리아 반도 */}
+      <path d="M 28,66 L 36,62 L 44,62 L 48,68 L 46,78 L 40,84 L 32,86 L 26,82 L 24,74 Z" fill={fill} />
       {/* 이탈리아 반도 */}
-      <path
-        d={`M56,62 L58,68 L62,74 L60,78 L56,76 L54,70 Z`}
-        fill="#D1D5DB"
-        opacity="0.2"
-      />
-      {/* 도시 마커 */}
-      <circle cx="50" cy="35" r="2" fill="#6B7280" opacity="0.35" />
-      <circle cx="38" cy="45" r="1.8" fill="#6B7280" opacity="0.3" />
+      <path d="M 76,72 L 80,80 L 84,90 L 88,98 L 86,102 L 82,100 L 78,92 L 74,82 Z" fill={fill} />
     </svg>
   )
 }
 
 /** 중국·일본 실루엣 */
-function AsiaMap() {
+function AsiaMap({ fill }: { fill: string }) {
   return (
-    <svg viewBox="0 0 120 90" className="w-full h-full">
+    <svg viewBox="0 0 160 120" className="w-full h-full">
       {/* 중국 본토 */}
-      <path
-        d={`M10,20 L18,14 L28,10 L40,8 L52,10 L62,14 L70,20
-          L76,28 L80,36 L82,44 L80,52 L76,58 L70,62
-          L62,66 L52,68 L42,66 L32,62 L24,56 L18,48
-          L14,40 L12,32 L10,26 Z`}
-        fill="#FCA5A5"
-        opacity="0.22"
-      />
-      {/* 일본 열도 */}
-      <path
-        d={`M88,18 L92,22 L94,30 L96,38 L98,46 L100,52
-          L98,56 L94,52 L92,44 L90,36 L88,28 L86,24 Z`}
-        fill="#FCA5A5"
-        opacity="0.2"
-      />
-      <path d="M96,56 L100,60 L98,64 L94,62 Z" fill="#FCA5A5" opacity="0.15" />
-      {/* 도시 마커 */}
-      <circle cx="50" cy="38" r="2.5" fill="#EF4444" opacity="0.3" />
-      <circle cx="94" cy="40" r="2" fill="#EF4444" opacity="0.3" />
+      <path d="M 10,24 L 20,16 L 32,10 L 48,6 L 62,10 L 74,18 L 84,28 L 90,40 L 92,52 L 88,64 L 80,74 L 70,80 L 56,82 L 42,78 L 30,70 L 22,58 L 16,44 L 12,34 Z" fill={fill} />
+      {/* 일본 혼슈 */}
+      <path d="M 118,22 L 122,30 L 126,40 L 130,50 L 134,60 L 136,68 L 132,72 L 128,66 L 124,56 L 120,46 L 116,36 L 114,28 Z" fill={fill} />
+      {/* 홋카이도 */}
+      <path d="M 124,14 L 130,12 L 136,16 L 134,22 L 128,24 L 122,20 Z" fill={fill} opacity={0.85} />
+      {/* 규슈+시코쿠 */}
+      <path d="M 128,74 L 134,72 L 138,76 L 136,82 L 130,80 Z" fill={fill} opacity={0.85} />
     </svg>
   )
 }
 
 /** 한반도 실루엣 */
-function KoreaMap() {
+function KoreaMap({ fill }: { fill: string }) {
   return (
-    <svg viewBox="0 0 60 90" className="w-full h-full">
+    <svg viewBox="0 0 80 120" className="w-full h-full">
       {/* 한반도 */}
-      <path
-        d={`M22,8 L28,6 L34,8 L38,14 L40,20 L42,28
-          L43,36 L42,44 L40,52 L38,58 L36,64 L33,70
-          L30,74 L26,78 L22,76 L20,70 L18,64 L16,58
-          L15,52 L14,44 L15,36 L16,28 L18,20 L20,14 Z`}
-        fill="#86EFAC"
-        opacity="0.3"
-      />
+      <path d="M 28,8 L 36,6 L 44,8 L 50,16 L 54,26 L 56,38 L 56,48 L 54,58 L 50,66 L 46,74 L 42,80 L 38,86 L 34,90 L 30,88 L 26,82 L 24,74 L 22,64 L 20,54 L 20,44 L 22,34 L 24,24 L 26,16 Z" fill={fill} />
       {/* 제주도 */}
-      <ellipse cx="28" cy="84" rx="6" ry="3" fill="#86EFAC" opacity="0.2" />
-      {/* 도시 마커 */}
-      <circle cx="30" cy="42" r="2.5" fill="#16a34a" opacity="0.35" />
-      <circle cx="26" cy="56" r="2" fill="#16a34a" opacity="0.3" />
+      <ellipse cx="36" cy="100" rx="8" ry="4" fill={fill} opacity={0.7} />
     </svg>
   )
 }
@@ -242,6 +213,13 @@ export function MoneyFlowMapPanel() {
   const asiaColor = asiaChg >= 0 ? '#16a34a' : '#dc2626'
   const krColor = krChg >= 0 ? '#16a34a' : '#dc2626'
 
+  // SVG 지도 데이터 연동 색상
+  const usStatus = getFlowStatus(usChg)
+  const euStatus = getFlowStatus(euChg)
+  const asiaStatus = getFlowStatus(asiaChg)
+  const krStatus = getFlowStatus(krChg)
+  const mapOp = (s: FlowStatus) => s === 'neutral' ? 'opacity-[0.10]' : 'opacity-[0.15]'
+
   return (
     <div className="fx-card-green">
       <div className="fx-card-title">글로벌 자금 플로우 맵 — 돈은 지금 어디에?</div>
@@ -249,8 +227,8 @@ export function MoneyFlowMapPanel() {
       {/* ── 4지역 플로우 맵 ── */}
       <div className="flex items-stretch gap-0 overflow-x-auto">
         {/* 미국 카드 */}
-        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[160px]">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[70%]"><USMap /></div></div>
+        <div className="group relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[160px]">
+          <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${mapOp(usStatus)} group-hover:opacity-[0.25]`}><div className="w-[85%] h-[70%]"><USMap fill={FLOW_COLOR[usStatus]} /></div></div>
           <div className="relative z-10">
             <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">NORTH AMERICA</div>
             <div className="text-[18px] font-black text-[#1A1A2E] mt-1">미국</div>
@@ -274,8 +252,8 @@ export function MoneyFlowMapPanel() {
         </div>
 
         {/* 유럽 카드 */}
-        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[140px]">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[75%] h-[75%]"><EuropeMap /></div></div>
+        <div className="group relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[140px]">
+          <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${mapOp(euStatus)} group-hover:opacity-[0.25]`}><div className="w-[75%] h-[75%]"><EuropeMap fill={FLOW_COLOR[euStatus]} /></div></div>
           <div className="relative z-10">
             <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">EUROPE</div>
             <div className="text-[18px] font-black text-[#1A1A2E] mt-1">유럽</div>
@@ -299,8 +277,8 @@ export function MoneyFlowMapPanel() {
         </div>
 
         {/* 중국·일본 카드 */}
-        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[155px]">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[75%]"><AsiaMap /></div></div>
+        <div className="group relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[155px]">
+          <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${mapOp(asiaStatus)} group-hover:opacity-[0.25]`}><div className="w-[85%] h-[75%]"><AsiaMap fill={FLOW_COLOR[asiaStatus]} /></div></div>
           <div className="relative z-10">
             <div className="text-[9px] font-bold tracking-widest text-[#dc2626]/60 uppercase">CHINA / JAPAN</div>
             <div className="text-[18px] font-black text-[#1A1A2E] mt-1">중국·일본</div>
@@ -333,8 +311,8 @@ export function MoneyFlowMapPanel() {
         </div>
 
         {/* 한국 카드 (깜빡이는 녹색 테두리) */}
-        <div className="relative rounded-xl border-2 bg-[#F0FDF4] overflow-hidden p-4 min-h-[195px] flex-1 min-w-[175px] shadow-lg animate-[korea-pulse_2s_ease-in-out_infinite]" style={{ borderColor: '#16a34a' }}>
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[60%] h-[80%]"><KoreaMap /></div></div>
+        <div className="group relative rounded-xl border-2 bg-[#F0FDF4] overflow-hidden p-4 min-h-[195px] flex-1 min-w-[175px] shadow-lg animate-[korea-pulse_2s_ease-in-out_infinite]" style={{ borderColor: '#16a34a' }}>
+          <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${mapOp(krStatus)} group-hover:opacity-[0.25]`}><div className="w-[60%] h-[80%]"><KoreaMap fill={FLOW_COLOR[krStatus]} /></div></div>
           <div className="relative z-10">
             <div className="text-[9px] font-bold tracking-widest text-[#16a34a] uppercase">KOREA</div>
             <div className="text-[18px] font-black text-[#1A1A2E] mt-1">한국</div>
