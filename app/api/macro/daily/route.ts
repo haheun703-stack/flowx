@@ -24,6 +24,9 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   GDAXI: { name_ko: 'DAX', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
   SSEC:  { name_ko: '상해종합', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
   FTSE:  { name_ko: 'FTSE100', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
+  KOSPI: { name_ko: 'KOSPI', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
+  KOSDAQ:{ name_ko: 'KOSDAQ', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
+  STOXX: { name_ko: 'STOXX600', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
   // commodities
   WTI:    { name_ko: 'WTI유', category: 'commodity', unit: 'USD/bbl', alert_threshold: null, alert_direction: null },
   GOLD:   { name_ko: '금', category: 'commodity', unit: 'USD/oz', alert_threshold: null, alert_direction: null },
