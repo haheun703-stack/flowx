@@ -79,8 +79,8 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
   ])
 
   return (
-    <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 420 }}>
+    <div className="flex flex-col items-center">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxWidth: 900, maxHeight: 420, display: 'block', margin: '0 auto' }}>
         {/* 그리드 */}
         {yTicks.map(v => (
           <g key={v}>
