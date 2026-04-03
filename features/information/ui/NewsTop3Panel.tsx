@@ -132,7 +132,7 @@ export function NewsTop3Panel() {
   if (isLoading) {
     return (
       <div className="fx-card-green">
-        <div className="fx-card-title">뉴스 TOP 3</div>
+        <div className="fx-card-title">오늘 꼭 알아야 할 뉴스 TOP 3</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="h-32 bg-gray-100 animate-pulse rounded-lg" />
@@ -145,7 +145,7 @@ export function NewsTop3Panel() {
   if (top3.length === 0) {
     return (
       <div className="fx-card-green">
-        <div className="fx-card-title">뉴스 TOP 3</div>
+        <div className="fx-card-title">오늘 꼭 알아야 할 뉴스 TOP 3</div>
         <div className="flex items-center justify-center h-32 text-[var(--fx-text-muted)] text-sm">
           뉴스 데이터 없음
         </div>

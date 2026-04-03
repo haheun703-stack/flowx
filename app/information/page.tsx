@@ -6,7 +6,7 @@ import { NewsTop3Panel } from '@/features/information/ui/NewsTop3Panel'
 import { MacroGaugePanel } from '@/features/information/ui/MacroGaugePanel'
 import { MoneyFlowMapPanel } from '@/features/information/ui/MoneyFlowMapPanel'
 import { SupplyDemandPanel } from '@/features/information/ui/SupplyDemandPanel'
-import { ScenarioAnalysisPanel } from '@/features/information/ui/ScenarioAnalysisPanel'
+import { ScenarioFlowPanel } from '@/features/information/ui/ScenarioFlowPanel'
 import { HotIssuesPanel } from '@/features/information/ui/HotIssuesPanel'
 
 export default function InformationPage() {
@@ -30,9 +30,7 @@ export default function InformationPage() {
       </div>
 
       {/* 5. 시나리오 확률 */}
-      <div className={CARD_INNER.M}>
-        <ScenarioAnalysisPanel />
-      </div>
+      <ScenarioFlowPanel />
 
       {/* 6. 글로벌 + 국내 핫이슈 (미리보기 4건) */}
       <div className={GRID.col2}>
