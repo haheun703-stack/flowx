@@ -193,7 +193,7 @@ function TransitionConditions({ conditions }: { conditions: Condition[] }) {
 
   return (
     <div className="mt-4 p-4 rounded-xl border-2 border-[#16a34a]/30 bg-white">
-      <div className="text-[13px] font-bold text-[#059669] mb-3">
+      <div className="text-[15px] font-bold text-[#059669] mb-3">
         지금 → 다음 단계, 무엇이 바뀌면 전환될까?
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -205,11 +205,11 @@ function TransitionConditions({ conditions }: { conditions: Condition[] }) {
           return (
             <div key={c.name} className="p-3 rounded-lg" style={{ backgroundColor: bg }}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-bold text-[#1A1A2E]">{c.name}</span>
-                <span className="text-[13px] font-bold" style={{ color: iconColor }}>{icon}</span>
+                <span className="text-[13px] font-bold text-[#1A1A2E]">{c.name}</span>
+                <span className="text-[15px] font-bold" style={{ color: iconColor }}>{icon}</span>
               </div>
-              <div className="text-[10px] text-gray-500 mb-1">기준: {c.threshold}</div>
-              <div className="text-[11px] font-semibold text-[#1A1A2E]">현재: {c.current}</div>
+              <div className="text-[12px] text-gray-500 mb-1">기준: {c.threshold}</div>
+              <div className="text-[13px] font-semibold text-[#1A1A2E]">현재: {c.current}</div>
               {/* 프로그레스 바 */}
               <div className="w-full h-1.5 bg-gray-200 rounded-full mt-2">
                 <div
@@ -226,7 +226,7 @@ function TransitionConditions({ conditions }: { conditions: Condition[] }) {
       </div>
       {/* 판정 */}
       <div
-        className="mt-3 p-2 rounded-lg text-center text-[12px] font-bold"
+        className="mt-3 p-2 rounded-lg text-center text-[14px] font-bold"
         style={{ backgroundColor: '#FFFBEB', color: verdictColors[Math.min(metCount, 3)] }}
       >
         판정: 3개 중 {metCount}개 충족 — {verdicts[Math.min(metCount, 3)]}
@@ -242,17 +242,17 @@ function WeeklyChangeAndEvents() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
       {/* 좌: 지난주 대비 변화 */}
       <div className="p-3 rounded-lg bg-[#F5F4F0]">
-        <div className="text-[12px] font-bold text-[#1A1A2E] mb-2">지난주 대비 뭐가 바뀌었나?</div>
+        <div className="text-[14px] font-bold text-[#1A1A2E] mb-2">지난주 대비 뭐가 바뀌었나?</div>
         <div className="space-y-1.5">
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#16A34A]">↑ 좋아진 것:</span>{' '}
             <span className="text-[#374151]">KOSPI 반등, 기관 순매수 전환</span>
           </div>
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#DC2626]">↓ 나빠진 것:</span>{' '}
             <span className="text-[#374151]">환율 1,500원 돌파, 유가 급등</span>
           </div>
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#D97706]">→ 유지:</span>{' '}
             <span className="text-[#374151]">외국인 순매도 지속, VIX 경계 수준</span>
           </div>
@@ -261,17 +261,17 @@ function WeeklyChangeAndEvents() {
 
       {/* 우: 다음 주 이벤트 */}
       <div className="p-3 rounded-lg bg-[#F5F4F0]">
-        <div className="text-[12px] font-bold text-[#1A1A2E] mb-2">다음 주 주목 이벤트</div>
+        <div className="text-[14px] font-bold text-[#1A1A2E] mb-2">다음 주 주목 이벤트</div>
         <div className="space-y-1.5">
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#DC2626]">D-4</span>{' '}
             <span className="text-[#374151]">FOMC — 금리 동결 예상. 결과에 따라 확률 변동.</span>
           </div>
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#D97706]">D-7</span>{' '}
             <span className="text-[#374151]">CPI — 물가 하회 시 기술주 반등 기대.</span>
           </div>
-          <div className="text-[11px] leading-relaxed">
+          <div className="text-[13px] leading-relaxed">
             <span className="font-bold text-[#6B7280]">D-11</span>{' '}
             <span className="text-[#374151]">삼전 실적 — 실적 전 주가 패턴 관심.</span>
           </div>
