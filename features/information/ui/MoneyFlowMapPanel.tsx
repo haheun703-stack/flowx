@@ -365,22 +365,24 @@ export function MoneyFlowMapPanel() {
       {/* ── 하단 곡선 화살표 (카드 아래) ── */}
       <div className="w-full h-[70px] relative">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 60" preserveAspectRatio="xMidYMid meet">
-          {/* 실선: 미국→아시아 전체 자금 흐름 (회색/빨강) */}
+          {/* 빨간 실선: 중국·일본 → 한국 (아시아 내 자금 이동) */}
           <path
-            d="M 60,6 C 60,32 300,38 540,14"
-            stroke="#dc2626" strokeWidth="1.5" strokeOpacity="0.4" fill="none"
+            d="M 540,4 C 540,28 640,32 730,8"
+            stroke="#dc2626" strokeWidth="1.8" strokeOpacity="0.5" fill="none"
           />
-          <polygon points="538,11 544,17 536,18" fill="#dc2626" opacity="0.4" />
+          {/* 빨간 화살촉 */}
+          <path d="M 726,10 L 734,5 L 730,14 Z" fill="#dc2626" opacity="0.5" />
 
-          {/* 점선: 미국→한국 유입 추적 (녹색) */}
+          {/* 녹색 점선: 미국 → 한국 유입 추적 */}
           <path
-            d="M 60,4 C 60,45 400,52 740,4"
+            d="M 60,4 C 60,44 400,50 730,6"
             stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
             className="animate-[flow-dash_2s_linear_infinite]"
           />
-          <polygon points="738,1 744,7 736,8" fill="#16a34a" />
+          {/* 녹색 화살촉 */}
+          <path d="M 726,8 L 734,3 L 730,12 Z" fill="#16a34a" />
 
-          <text x="500" y="55" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
+          <text x="640" y="36" textAnchor="middle" fontSize="10" fill="#dc2626" fontFamily="system-ui" fontStyle="italic" opacity="0.7">아시아 내 자금 이동</text>
         </svg>
       </div>
 
