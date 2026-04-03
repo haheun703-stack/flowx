@@ -363,15 +363,17 @@ export function MoneyFlowMapPanel() {
       </div>
 
       {/* ── 하단 곡선 화살표 (카드 아래) ── */}
-      <svg className="w-full h-[50px] -mt-1" viewBox="0 0 100 50" preserveAspectRatio="none">
-        <path
-          d="M 8,4 C 8,36 50,40 88,8"
-          stroke="#16a34a" strokeWidth="0.4" strokeDasharray="1.5,1" fill="none"
-          className="animate-[flow-dash_2s_linear_infinite]"
-        />
-        <polygon points="87.5,6 90,10 86,10" fill="#16a34a" />
-        <text x="50" y="44" textAnchor="middle" fontSize="3.5" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
-      </svg>
+      <div className="w-full h-[70px] relative">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 60" preserveAspectRatio="xMidYMid meet">
+          <path
+            d="M 60,4 C 60,45 400,52 740,4"
+            stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
+            className="animate-[flow-dash_2s_linear_infinite]"
+          />
+          <polygon points="738,1 744,7 736,8" fill="#16a34a" />
+          <text x="400" y="55" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
+        </svg>
+      </div>
 
       {/* 추적 뱃지 */}
       <div className="flex justify-center mt-1 mb-3">
