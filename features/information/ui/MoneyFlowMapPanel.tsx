@@ -247,128 +247,131 @@ export function MoneyFlowMapPanel() {
       <div className="fx-card-title">글로벌 자금 플로우 맵 — 돈은 지금 어디에?</div>
 
       {/* ── 4지역 플로우 맵 ── */}
-      <div className="relative">
-        <div className="grid grid-cols-4 gap-3 mb-2">
-          {/* 미국 카드 */}
-          <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[180px]">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[70%]"><USMap /></div></div>
-            <div className="relative z-10">
-              <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">NORTH AMERICA</div>
-              <div className="text-[18px] font-black text-[#1A1A2E] mt-1">미국</div>
-              <div className="mt-2">
-                <span className="text-[11px] text-gray-500">S&P </span>
-                <span className="text-[15px] font-black" style={{ color: usColor }}>{fmt(usChg)}</span>
-              </div>
-              <div className="text-[12px] font-bold mt-1" style={{ color: usColor }}>
-                {usChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(usFlow))}
-              </div>
-              <div className="mt-2 text-[10px] text-gray-400 leading-snug">
-                {usChg >= 0 ? '빅테크 실적 호조 + 금리 인하' : '금리 인하 불확실성'}
-              </div>
+      <div className="flex items-stretch gap-0 overflow-x-auto">
+        {/* 미국 카드 */}
+        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[160px]">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[70%]"><USMap /></div></div>
+          <div className="relative z-10">
+            <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">NORTH AMERICA</div>
+            <div className="text-[18px] font-black text-[#1A1A2E] mt-1">미국</div>
+            <div className="mt-2">
+              <span className="text-[11px] text-gray-500">S&P </span>
+              <span className="text-[15px] font-black" style={{ color: usColor }}>{fmt(usChg)}</span>
             </div>
-          </div>
-
-          {/* 유럽 카드 */}
-          <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[180px]">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[75%] h-[75%]"><EuropeMap /></div></div>
-            <div className="relative z-10">
-              <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">EUROPE</div>
-              <div className="text-[18px] font-black text-[#1A1A2E] mt-1">유럽</div>
-              <div className="mt-2">
-                <span className="text-[11px] text-gray-500">STOXX </span>
-                <span className="text-[15px] font-black" style={{ color: euColor }}>{fmt(euChg)}</span>
-              </div>
-              <div className="text-[12px] font-bold mt-1" style={{ color: euColor }}>
-                {euChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(euFlow))}
-              </div>
-              <div className="mt-2 text-[10px] text-gray-400 leading-snug">
-                {euChg >= 0 ? 'ECB 금리 동결 전망' : 'ECB 긴축 지속'}
-              </div>
+            <div className="text-[12px] font-bold mt-1" style={{ color: usColor }}>
+              {usChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(usFlow))}
             </div>
-          </div>
-
-          {/* 중국·일본 카드 */}
-          <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[180px]">
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[75%]"><AsiaMap /></div></div>
-            <div className="relative z-10">
-              <div className="text-[9px] font-bold tracking-widest text-[#dc2626]/60 uppercase">CHINA / JAPAN</div>
-              <div className="text-[18px] font-black text-[#1A1A2E] mt-1">중국·일본</div>
-              <div className="mt-2">
-                <span className="text-[11px] text-gray-500">상해 </span>
-                <span className="text-[15px] font-black" style={{ color: asiaColor }}>{fmt(asiaChg)}</span>
-              </div>
-              <div className="text-[12px] font-bold mt-1" style={{ color: asiaColor }}>
-                {asiaChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(asiaFlow))}
-              </div>
-              <div className="mt-2 space-y-0.5">
-                {asiaChg < 0 ? (
-                  <>
-                    <div className="inline-block text-[9px] px-1.5 py-0.5 rounded bg-[#FEF2F2] text-[#dc2626] font-semibold">엔캐리 청산 압력</div>
-                    <div className="text-[10px] text-gray-400">위안화 약세 지속</div>
-                  </>
-                ) : (
-                  <div className="text-[10px] text-gray-400">중국 부양책 기대</div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 한국 카드 (깜빡이는 녹색 테두리) */}
-          <div className="relative rounded-xl border-2 bg-[#F0FDF4] overflow-hidden p-4 min-h-[180px] shadow-lg animate-[korea-pulse_2s_ease-in-out_infinite]" style={{ borderColor: '#16a34a' }}>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[60%] h-[80%]"><KoreaMap /></div></div>
-            <div className="relative z-10">
-              <div className="text-[9px] font-bold tracking-widest text-[#16a34a] uppercase">KOREA</div>
-              <div className="text-[18px] font-black text-[#1A1A2E] mt-1">한국</div>
-              <div className="mt-2">
-                <span className="text-[11px] text-gray-500">KOSPI </span>
-                <span className="text-[15px] font-black" style={{ color: krColor }}>{fmt(krChg)}</span>
-              </div>
-              <div className="text-[12px] font-black mt-1" style={{ color: fNet >= 0 ? '#16a34a' : '#dc2626' }}>
-                외국인 {fNet >= 0 ? '순매수' : '순매도'}
-              </div>
-              <div className="text-[11px] text-gray-700 font-semibold mt-0.5">
-                외국인 {fmtKr(fNet)} ({Math.abs(fStreak)}일 연속)
-              </div>
-              <div className="text-[11px] text-gray-700 font-semibold">
-                기관 {iNet >= 0 ? '+' : ''}{fmtKr(iNet)} ({iNet >= 0 ? '순매수 전환' : '순매도'})
-              </div>
-              {/* 주목 섹터 뱃지 */}
-              <div className="flex flex-wrap gap-1 mt-2">
-                <span className="text-[9px] text-gray-500 font-semibold leading-5">주목 섹터</span>
-                {(topSectors.length > 0 ? topSectors : ['반도체', '방산', '건설']).map((s, i) => (
-                  <span key={i} className="text-[9px] px-1.5 py-0.5 rounded-full bg-white text-[#059669] font-bold border border-[#A7F3D0]">{s}</span>
-                ))}
-              </div>
+            <div className="mt-2 text-[10px] text-gray-400 leading-snug">
+              {usChg >= 0 ? '빅테크 실적 호조 + 금리 인하' : '금리 인하 불확실성'}
             </div>
           </div>
         </div>
 
-        {/* ── 카드 사이 화살표 (금액 + 곡선) ── */}
-        <svg className="absolute top-0 left-0 w-full h-full pointer-events-none" style={{ zIndex: 5 }} viewBox="0 0 1000 250" preserveAspectRatio="none">
-          {/* 미국→유럽 화살표 */}
-          <line x1="240" y1="90" x2="265" y2="90" stroke="#9CA3AF" strokeWidth="2.5" />
-          <polygon points="265,85 275,90 265,95" fill="#9CA3AF" />
-          <text x="258" y="80" textAnchor="middle" fontSize="11" fontWeight="700" fill="#1A1A2E" fontFamily="system-ui">{fmtBillion(Math.abs(usFlow))}</text>
+        {/* 미국→유럽 화살표 */}
+        <div className="flex flex-col items-center justify-center shrink-0 w-12">
+          <div className="text-[9px] font-bold text-[#1A1A2E] whitespace-nowrap">{fmtBillion(Math.abs(usFlow))}</div>
+          <svg width="36" height="14" viewBox="0 0 36 14"><line x1="0" y1="7" x2="28" y2="7" stroke="#9CA3AF" strokeWidth="2.5" /><polygon points="28,2 36,7 28,12" fill="#9CA3AF" /></svg>
+        </div>
 
-          {/* 유럽→아시아 화살표 */}
-          <line x1="490" y1="90" x2="515" y2="90" stroke="#9CA3AF" strokeWidth="2.5" />
-          <polygon points="515,85 525,90 515,95" fill="#9CA3AF" />
-          <text x="508" y="80" textAnchor="middle" fontSize="11" fontWeight="700" fill="#1A1A2E" fontFamily="system-ui">{fmtBillion(Math.abs(euFlow))}</text>
+        {/* 유럽 카드 */}
+        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[140px]">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[75%] h-[75%]"><EuropeMap /></div></div>
+          <div className="relative z-10">
+            <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase">EUROPE</div>
+            <div className="text-[18px] font-black text-[#1A1A2E] mt-1">유럽</div>
+            <div className="mt-2">
+              <span className="text-[11px] text-gray-500">STOXX </span>
+              <span className="text-[15px] font-black" style={{ color: euColor }}>{fmt(euChg)}</span>
+            </div>
+            <div className="text-[12px] font-bold mt-1" style={{ color: euColor }}>
+              {euChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(euFlow))}
+            </div>
+            <div className="mt-2 text-[10px] text-gray-400 leading-snug">
+              {euChg >= 0 ? 'ECB 금리 동결 전망' : 'ECB 긴축 지속'}
+            </div>
+          </div>
+        </div>
 
-          {/* 아시아→한국 녹색 점선 */}
-          <line x1="740" y1="90" x2="765" y2="90" stroke="#16a34a" strokeWidth="2.5" strokeDasharray="6,4" className="animate-[flow-dash_1.5s_linear_infinite]" />
-          <polygon points="765,85 775,90 765,95" fill="#16a34a" />
+        {/* 유럽→아시아 화살표 */}
+        <div className="flex flex-col items-center justify-center shrink-0 w-12">
+          <div className="text-[9px] font-bold text-[#1A1A2E] whitespace-nowrap">{fmtBillion(Math.abs(euFlow))}</div>
+          <svg width="36" height="14" viewBox="0 0 36 14"><line x1="0" y1="7" x2="28" y2="7" stroke="#9CA3AF" strokeWidth="2.5" /><polygon points="28,2 36,7 28,12" fill="#9CA3AF" /></svg>
+        </div>
 
-          {/* 하단 곡선: 미국→한국 추적선 */}
-          <path
-            d="M 130,200 Q 130,240 250,240 Q 500,245 750,240 Q 870,240 870,200"
-            stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
-            className="animate-[flow-dash_2s_linear_infinite]"
-          />
-          <polygon points="870,195 875,205 865,205" fill="#16a34a" />
-          <text x="500" y="238" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui">아시아 내 자금 이동</text>
-        </svg>
+        {/* 중국·일본 카드 */}
+        <div className="relative rounded-xl border border-gray-200 bg-white overflow-hidden p-4 min-h-[195px] flex-1 min-w-[155px]">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[85%] h-[75%]"><AsiaMap /></div></div>
+          <div className="relative z-10">
+            <div className="text-[9px] font-bold tracking-widest text-[#dc2626]/60 uppercase">CHINA / JAPAN</div>
+            <div className="text-[18px] font-black text-[#1A1A2E] mt-1">중국·일본</div>
+            <div className="mt-2">
+              <span className="text-[11px] text-gray-500">상해 </span>
+              <span className="text-[15px] font-black" style={{ color: asiaColor }}>{fmt(asiaChg)}</span>
+            </div>
+            <div className="text-[12px] font-bold mt-1" style={{ color: asiaColor }}>
+              {asiaChg >= 0 ? '유입' : '유출'} {fmtBillion(Math.abs(asiaFlow))}
+            </div>
+            <div className="mt-2 space-y-0.5">
+              {asiaChg < 0 ? (
+                <>
+                  <div className="inline-block text-[9px] px-1.5 py-0.5 rounded bg-[#FEF2F2] text-[#dc2626] font-semibold">엔캐리 청산 압력</div>
+                  <div className="text-[10px] text-gray-400">위안화 약세 지속</div>
+                </>
+              ) : (
+                <div className="text-[10px] text-gray-400">중국 부양책 기대</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 아시아→한국 녹색 점선 화살표 */}
+        <div className="flex flex-col items-center justify-center shrink-0 w-12">
+          <svg width="36" height="14" viewBox="0 0 36 14">
+            <line x1="0" y1="7" x2="28" y2="7" stroke="#16a34a" strokeWidth="2.5" strokeDasharray="5,3" className="animate-[flow-dash_1.5s_linear_infinite]" />
+            <polygon points="28,2 36,7 28,12" fill="#16a34a" />
+          </svg>
+        </div>
+
+        {/* 한국 카드 (깜빡이는 녹색 테두리) */}
+        <div className="relative rounded-xl border-2 bg-[#F0FDF4] overflow-hidden p-4 min-h-[195px] flex-1 min-w-[175px] shadow-lg animate-[korea-pulse_2s_ease-in-out_infinite]" style={{ borderColor: '#16a34a' }}>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><div className="w-[60%] h-[80%]"><KoreaMap /></div></div>
+          <div className="relative z-10">
+            <div className="text-[9px] font-bold tracking-widest text-[#16a34a] uppercase">KOREA</div>
+            <div className="text-[18px] font-black text-[#1A1A2E] mt-1">한국</div>
+            <div className="mt-2">
+              <span className="text-[11px] text-gray-500">KOSPI </span>
+              <span className="text-[15px] font-black" style={{ color: krColor }}>{fmt(krChg)}</span>
+            </div>
+            <div className="text-[12px] font-black mt-1" style={{ color: fNet >= 0 ? '#16a34a' : '#dc2626' }}>
+              외국인 {fNet >= 0 ? '순매수' : '순매도'}
+            </div>
+            <div className="text-[11px] text-gray-700 font-semibold mt-0.5">
+              외국인 {fmtKr(fNet)} ({Math.abs(fStreak)}일 연속)
+            </div>
+            <div className="text-[11px] text-gray-700 font-semibold">
+              기관 {iNet >= 0 ? '+' : ''}{fmtKr(iNet)} ({iNet >= 0 ? '순매수 전환' : '순매도'})
+            </div>
+            {/* 주목 섹터 뱃지 */}
+            <div className="flex flex-wrap gap-1 mt-2">
+              <span className="text-[9px] text-gray-500 font-semibold leading-5">주목 섹터</span>
+              {(topSectors.length > 0 ? topSectors : ['반도체', '방산', '건설']).map((s, i) => (
+                <span key={i} className="text-[9px] px-1.5 py-0.5 rounded-full bg-white text-[#059669] font-bold border border-[#A7F3D0]">{s}</span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* ── 하단 곡선 화살표 (카드 아래) ── */}
+      <svg className="w-full h-[45px] -mt-1" viewBox="0 0 1000 45" preserveAspectRatio="xMidYMid meet">
+        <path
+          d="M 80,2 C 80,38 500,42 920,2"
+          stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
+          className="animate-[flow-dash_2s_linear_infinite]"
+        />
+        <polygon points="918,-2 926,5 916,7" fill="#16a34a" />
+        <text x="500" y="40" textAnchor="middle" fontSize="11" fill="#6B7280" fontFamily="system-ui" fontStyle="italic">아시아 내 자금 이동</text>
+      </svg>
 
       {/* 추적 뱃지 */}
       <div className="flex justify-center mt-1 mb-3">
