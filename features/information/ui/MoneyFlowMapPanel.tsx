@@ -229,22 +229,64 @@ function buildAnalysis(foreignNet: number, foreignStreak: number, _instNet: numb
   }
 }
 
-// ─── 화살표 컴포넌트 ───
+// ─── Flowing Particles 컴포넌트 ───
 
-function FlowArrow({ amount, color, dashed }: { amount: string; color: string; dashed?: boolean }) {
+function getFlowVolume(amount: number): number {
+  const abs = Math.abs(amount)
+  if (abs >= 5e9) return 5
+  if (abs >= 1e9) return 3
+  return 1
+}
+
+function FlowParticles({ color, count, label, isOpen }: { color: string; count: number; label: string; isOpen: boolean }) {
+  const dur = isOpen ? 2.5 : 5
+  const motionPath = 'M 4,14 L 40,14'
+
   return (
-    <div className="flex flex-col items-center justify-center shrink-0 w-12">
-      <div className="text-[9px] font-bold whitespace-nowrap" style={{ color }}>{amount}</div>
-      <svg width="36" height="14" viewBox="0 0 36 14">
-        <line
-          x1="0" y1="7" x2="28" y2="7"
-          stroke={color} strokeWidth="2.5"
-          strokeDasharray={dashed ? '5,3' : 'none'}
-          className={dashed ? 'animate-[flow-dash_1.5s_linear_infinite]' : ''}
-        />
-        <polygon points="28,2 36,7 28,12" fill={color} />
+    <div className="flex flex-col items-center justify-center shrink-0 w-12 relative">
+      {label && <div className="text-[9px] font-bold whitespace-nowrap" style={{ color }}>{label}</div>}
+      <svg width="48" height="28" viewBox="0 0 48 28" className="overflow-visible">
+        {/* 배경 점선 경로 */}
+        <line x1="4" y1="14" x2="40" y2="14" stroke="rgba(255,255,255,0.06)" strokeWidth="1.5" strokeDasharray="4 3" />
+        {/* 화살촉 */}
+        <polygon points="38,9 48,14 38,19" fill={color} opacity={0.6} />
+        {/* 빛 입자 */}
+        {Array.from({ length: count }).map((_, i) => (
+          <g key={i}>
+            {/* 글로우 헤일로 */}
+            <circle r="5" fill={color} opacity={0}>
+              <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} path={motionPath} />
+              <animate attributeName="opacity" values="0;0.15;0.15;0" keyTimes="0;0.1;0.9;1" dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} />
+            </circle>
+            {/* 코어 */}
+            <circle r="2" fill={color} opacity={0}>
+              <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} path={motionPath} />
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} />
+            </circle>
+          </g>
+        ))}
       </svg>
     </div>
+  )
+}
+
+/** 하단 곡선 경로용 입자 (SVG 내부에서 렌더) */
+function CurveParticles({ pathD, color, count, dur }: { pathD: string; color: string; count: number; dur: number }) {
+  return (
+    <>
+      {Array.from({ length: count }).map((_, i) => (
+        <g key={i}>
+          <circle r="4" fill={color} opacity={0}>
+            <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} path={pathD} />
+            <animate attributeName="opacity" values="0;0.2;0.2;0" keyTimes="0;0.1;0.9;1" dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} />
+          </circle>
+          <circle r="2" fill={color} opacity={0}>
+            <animateMotion dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} path={pathD} />
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur={`${dur}s`} repeatCount="indefinite" begin={`${(i / count) * dur}s`} />
+          </circle>
+        </g>
+      ))}
+    </>
   )
 }
 
@@ -354,8 +396,8 @@ export function MoneyFlowMapPanel() {
           </div>
         </div>
 
-        {/* 화살표: 미국→유럽 */}
-        <FlowArrow amount={fmtBillion(Math.abs(usFlow))} color={usGlow} />
+        {/* 입자: 미국→유럽 */}
+        <FlowParticles color={usGlow} count={getFlowVolume(usFlow)} label={fmtBillion(Math.abs(usFlow))} isOpen={usOpen} />
 
         {/* ─ 유럽 ─ */}
         <div
@@ -382,8 +424,8 @@ export function MoneyFlowMapPanel() {
           </div>
         </div>
 
-        {/* 화살표: 유럽→아시아 */}
-        <FlowArrow amount={fmtBillion(Math.abs(euFlow))} color={euGlow} />
+        {/* 입자: 유럽→아시아 */}
+        <FlowParticles color={euGlow} count={getFlowVolume(euFlow)} label={fmtBillion(Math.abs(euFlow))} isOpen={euOpen} />
 
         {/* ─ 중국·일본 ─ */}
         <div
@@ -417,8 +459,8 @@ export function MoneyFlowMapPanel() {
           </div>
         </div>
 
-        {/* 화살표: 아시아→한국 (녹색 점선) */}
-        <FlowArrow amount="" color="#22c55e" dashed />
+        {/* 입자: 아시아→한국 */}
+        <FlowParticles color="#22c55e" count={3} label="" isOpen={krOpen} />
 
         {/* ─ 한국 (주목 시장: 글로우 테두리) ─ */}
         <div
@@ -460,21 +502,20 @@ export function MoneyFlowMapPanel() {
         </div>
       </div>
 
-      {/* ── 하단 곡선 화살표 ── */}
+      {/* ── 하단 곡선 화살표 + 입자 ── */}
       <div className="w-full h-[70px] relative">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 60" preserveAspectRatio="xMidYMid meet">
-          <path
-            d="M 540,4 C 540,28 640,32 730,8"
-            stroke="#dc2626" strokeWidth="1.8" strokeOpacity="0.5" fill="none"
-          />
+          {/* 빨간 곡선: 중국·일본 → 한국 */}
+          <path d="M 540,4 C 540,28 640,32 730,8" stroke="#dc2626" strokeWidth="1.8" strokeOpacity="0.3" fill="none" />
           <path d="M 726,10 L 734,5 L 730,14 Z" fill="#dc2626" opacity="0.5" />
-          <path
-            d="M 60,4 C 60,44 400,50 730,6"
-            stroke="#16a34a" strokeWidth="2" strokeDasharray="8,5" fill="none"
-            className="animate-[flow-dash_2s_linear_infinite]"
-          />
+          <CurveParticles pathD="M 540,4 C 540,28 640,32 730,8" color="#ef4444" count={3} dur={4} />
+
+          {/* 녹색 곡선: 미국 → 한국 */}
+          <path d="M 60,4 C 60,44 400,50 730,6" stroke="#16a34a" strokeWidth="1.5" strokeOpacity="0.2" strokeDasharray="8,5" fill="none" />
           <path d="M 726,8 L 734,3 L 730,12 Z" fill="#16a34a" />
-          <text x="640" y="36" textAnchor="middle" fontSize="10" fill="#dc2626" fontFamily="system-ui" fontStyle="italic" opacity="0.7">아시아 내 자금 이동</text>
+          <CurveParticles pathD="M 60,4 C 60,44 400,50 730,6" color="#22c55e" count={4} dur={5} />
+
+          <text x="640" y="50" textAnchor="middle" fontSize="10" fill="#dc2626" fontFamily="system-ui" fontStyle="italic" opacity="0.5">아시아 내 자금 이동</text>
         </svg>
       </div>
 
@@ -494,7 +535,7 @@ export function MoneyFlowMapPanel() {
         <span className="text-gray-300">|</span>
         <span>빛 펄스 = 장 개장 중</span>
         <span className="text-gray-300">|</span>
-        <span>화살표 색상 = 자금 방향</span>
+        <span>흐르는 입자 = 자금 이동</span>
       </div>
 
       {/* ── AI 자금 이동 근거 분석 ── */}
