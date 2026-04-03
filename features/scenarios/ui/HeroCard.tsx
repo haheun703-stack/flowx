@@ -41,12 +41,12 @@ function PhaseBar({ chain, currentPhase }: { chain: ScenarioPhase[]; currentPhas
               }}
             />
             <p
-              className="text-[8px] font-bold leading-tight truncate"
+              className="text-[16px] font-bold leading-tight truncate"
               style={{ color: isCurrent ? '#F59E0B' : '#6B7280' }}
             >
               {isCurrent ? `▶ P${ph.phase} 지금` : `P${ph.phase}`}
             </p>
-            <p className="text-[7px] text-[#9CA3AF] leading-tight truncate">
+            <p className="text-[14px] text-[#9CA3AF] leading-tight truncate">
               {ph.name.split('(')[0].trim()}
             </p>
           </div>
