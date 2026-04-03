@@ -10,11 +10,13 @@ interface FanChartProps {
   keyNumbers: Record<string, number>
 }
 
-const W = 600
-const H = 320
-const PAD = { top: 30, right: 110, bottom: 40, left: 55 }
+const W = 1000
+const H = 340
+const PAD = { top: 30, right: 260, bottom: 40, left: 50 }
 const CHART_W = W - PAD.left - PAD.right
 const CHART_H = H - PAD.top - PAD.bottom
+const LABEL_X = W - PAD.right + 20
+const MIN_LABEL_GAP = 40
 
 // 색상: 확률 높은 순 빨강→주황→파랑→회색
 const BRANCH_COLORS = ['#EF4444', '#F59E0B', '#3B82F6', '#9CA3AF']
@@ -25,6 +27,16 @@ function sortByProbDesc(scenarios: OilScenario[]) {
     const avgB = (b.wti_q2 + b.wti_q4) / 2
     return avgB - avgA
   })
+}
+
+function spreadLabels(positions: { y: number; key: string }[]) {
+  const sorted = [...positions].sort((a, b) => a.y - b.y)
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].y - sorted[i - 1].y < MIN_LABEL_GAP) {
+      sorted[i].y = sorted[i - 1].y + MIN_LABEL_GAP
+    }
+  }
+  return new Map(sorted.map(s => [s.key, s.y]))
 }
 
 function getActionLabel(scenario: OilScenario, rank: number): string {
@@ -60,9 +72,15 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
   // X축 라벨
   const xLabels = ['전쟁 전', '현재', 'Q2 전망', 'Q4 전망']
 
+  // 라벨 겹침 방지: 끝점 Y좌표 기준으로 최소 간격 확보
+  const labelYMap = spreadLabels([
+    ...sorted.map((sc, i) => ({ y: yScale(sc.wti_q4), key: `s-${i}` })),
+    { y: yScale(preWar), key: 'cost' },
+  ])
+
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 360 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 420 }}>
         {/* 그리드 */}
         {yTicks.map(v => (
           <g key={v}>
@@ -71,7 +89,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
               x2={W - PAD.right} y2={yScale(v)}
               stroke="#E5E7EB" strokeWidth={1}
             />
-            <text x={PAD.left - 8} y={yScale(v) + 3} textAnchor="end" fontSize={9} fill="#9CA3AF">
+            <text x={PAD.left - 8} y={yScale(v) + 4} textAnchor="end" fontSize={11} fill="#9CA3AF">
               ${v}
             </text>
           </g>
@@ -82,7 +100,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
           <text
             key={label}
             x={xScale(i)} y={H - 8}
-            textAnchor="middle" fontSize={9} fill="#6B7280"
+            textAnchor="middle" fontSize={11} fill="#6B7280"
           >
             {label}
           </text>
@@ -99,23 +117,21 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
           x2={W - PAD.right} y2={yScale(preWar)}
           stroke="#dc2626" strokeWidth={1.5} strokeDasharray="6 3"
         />
-        <rect
-          x={W - PAD.right + 2} y={yScale(preWar) - 10}
-          width={52} height={28} rx={4}
-          fill="#dc2626" opacity={0.1}
-        />
-        <text
-          x={W - PAD.right + 6} y={yScale(preWar) + 3}
-          fontSize={8} fontWeight={700} fill="#dc2626"
-        >
-          원가 ${preWar}
-        </text>
-        <text
-          x={W - PAD.right + 6} y={yScale(preWar) + 14}
-          fontSize={8} fontWeight={800} fill="#dc2626"
-        >
-          하방 없음!
-        </text>
+        {(() => {
+          const costLabelY = labelYMap.get('cost') ?? yScale(preWar)
+          return (
+            <g>
+              <line x1={W - PAD.right} y1={yScale(preWar)} x2={LABEL_X - 8} y2={costLabelY} stroke="#dc2626" strokeWidth={0.7} opacity={0.4} />
+              <rect x={LABEL_X - 6} y={costLabelY - 12} width={100} height={30} rx={4} fill="#dc2626" opacity={0.08} />
+              <text x={LABEL_X} y={costLabelY + 2} fontSize={10} fontWeight={700} fill="#dc2626">
+                원가 ${preWar}
+              </text>
+              <text x={LABEL_X} y={costLabelY + 14} fontSize={9} fontWeight={800} fill="#dc2626">
+                하방 없음!
+              </text>
+            </g>
+          )
+        })()}
 
         {/* 실선: 전쟁 전 → 현재 */}
         <line
@@ -127,37 +143,24 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
         {/* 분기 점선들 */}
         {sorted.map((sc, i) => {
           const color = BRANCH_COLORS[i] ?? '#9CA3AF'
-          const pathD = `M ${xScale(1)} ${yScale(current)} L ${xScale(2)} ${yScale(sc.wti_q2)} L ${xScale(3)} ${yScale(sc.wti_q4)}`
+          const endY = yScale(sc.wti_q4)
+          const labelY = labelYMap.get(`s-${i}`) ?? endY
+          const pathD = `M ${xScale(1)} ${yScale(current)} L ${xScale(2)} ${yScale(sc.wti_q2)} L ${xScale(3)} ${endY}`
 
           return (
             <g key={sc.name}>
-              <path
-                d={pathD}
-                fill="none"
-                stroke={color}
-                strokeWidth={2}
-                strokeDasharray="6 4"
-              />
-              {/* 끝점 원 */}
-              <circle cx={xScale(3)} cy={yScale(sc.wti_q4)} r={3} fill={color} />
-              {/* 라벨 */}
-              <text
-                x={xScale(3) + 8} y={yScale(sc.wti_q4) + 3}
-                fontSize={8} fontWeight={600} fill={color}
-              >
+              <path d={pathD} fill="none" stroke={color} strokeWidth={2} strokeDasharray="6 4" />
+              <circle cx={xScale(3)} cy={endY} r={4} fill={color} />
+              {/* 리더 라인: 끝점 → 라벨 */}
+              <line x1={xScale(3) + 4} y1={endY} x2={LABEL_X - 8} y2={labelY} stroke={color} strokeWidth={0.7} opacity={0.4} />
+              {/* 라벨 (겹침 방지 위치) */}
+              <text x={LABEL_X} y={labelY - 2} fontSize={10} fontWeight={700} fill={color}>
                 {sc.name}
               </text>
-              <text
-                x={xScale(3) + 8} y={yScale(sc.wti_q4) + 13}
-                fontSize={7} fill={color}
-              >
+              <text x={LABEL_X} y={labelY + 10} fontSize={9} fill={color}>
                 {sc.probability}%
               </text>
-              {/* 액션 라벨 */}
-              <text
-                x={xScale(3) + 8} y={yScale(sc.wti_q4) + 23}
-                fontSize={7} fontWeight={600} fill={i === 0 ? '#DC2626' : '#6B7280'}
-              >
+              <text x={LABEL_X} y={labelY + 22} fontSize={9} fontWeight={600} fill={i === 0 ? '#DC2626' : '#6B7280'}>
                 → {getActionLabel(sc, i)}
               </text>
             </g>
@@ -168,7 +171,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
         <circle cx={xScale(1)} cy={yScale(current)} r={5} fill="#dc2626" />
         <text
           x={xScale(1)} y={yScale(current) - 10}
-          textAnchor="middle" fontSize={9} fontWeight={700} fill="#dc2626"
+          textAnchor="middle" fontSize={11} fontWeight={700} fill="#dc2626"
         >
           현재 ${current}
         </text>
