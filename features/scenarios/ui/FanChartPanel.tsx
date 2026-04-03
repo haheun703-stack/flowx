@@ -12,7 +12,7 @@ interface FanChartProps {
 
 const W = 600
 const H = 320
-const PAD = { top: 30, right: 110, bottom: 40, left: 55 }
+const PAD = { top: 36, right: 160, bottom: 50, left: 70 }
 const CHART_W = W - PAD.left - PAD.right
 const CHART_H = H - PAD.top - PAD.bottom
 
@@ -71,7 +71,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
               x2={W - PAD.right} y2={yScale(v)}
               stroke="#E5E7EB" strokeWidth={1}
             />
-            <text x={PAD.left - 8} y={yScale(v) + 3} textAnchor="end" fontSize={9} fill="#9CA3AF">
+            <text x={PAD.left - 8} y={yScale(v) + 3} textAnchor="end" fontSize={18} fill="#9CA3AF">
               ${v}
             </text>
           </g>
@@ -82,7 +82,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
           <text
             key={label}
             x={xScale(i)} y={H - 8}
-            textAnchor="middle" fontSize={9} fill="#6B7280"
+            textAnchor="middle" fontSize={18} fill="#6B7280"
           >
             {label}
           </text>
@@ -106,13 +106,13 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
         />
         <text
           x={W - PAD.right + 6} y={yScale(preWar) + 3}
-          fontSize={8} fontWeight={700} fill="#dc2626"
+          fontSize={16} fontWeight={700} fill="#dc2626"
         >
           원가 ${preWar}
         </text>
         <text
           x={W - PAD.right + 6} y={yScale(preWar) + 14}
-          fontSize={8} fontWeight={800} fill="#dc2626"
+          fontSize={16} fontWeight={800} fill="#dc2626"
         >
           하방 없음!
         </text>
@@ -143,20 +143,20 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
               {/* 라벨 */}
               <text
                 x={xScale(3) + 8} y={yScale(sc.wti_q4) + 3}
-                fontSize={8} fontWeight={600} fill={color}
+                fontSize={16} fontWeight={600} fill={color}
               >
                 {sc.name}
               </text>
               <text
                 x={xScale(3) + 8} y={yScale(sc.wti_q4) + 13}
-                fontSize={7} fill={color}
+                fontSize={14} fill={color}
               >
                 {sc.probability}%
               </text>
               {/* 액션 라벨 */}
               <text
                 x={xScale(3) + 8} y={yScale(sc.wti_q4) + 23}
-                fontSize={7} fontWeight={600} fill={i === 0 ? '#DC2626' : '#6B7280'}
+                fontSize={14} fontWeight={600} fill={i === 0 ? '#DC2626' : '#6B7280'}
               >
                 → {getActionLabel(sc, i)}
               </text>
@@ -168,7 +168,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
         <circle cx={xScale(1)} cy={yScale(current)} r={5} fill="#dc2626" />
         <text
           x={xScale(1)} y={yScale(current) - 10}
-          textAnchor="middle" fontSize={9} fontWeight={700} fill="#dc2626"
+          textAnchor="middle" fontSize={18} fontWeight={700} fill="#dc2626"
         >
           현재 ${current}
         </text>
@@ -182,7 +182,7 @@ export default function FanChartPanel({ oilScenarios, keyNumbers }: FanChartProp
         {sorted.map((sc, i) => (
           <div key={sc.name} className="flex items-center gap-1.5">
             <span className="w-3 h-0.5 inline-block" style={{ backgroundColor: BRANCH_COLORS[i] ?? '#9CA3AF' }} />
-            <span className="text-[10px] text-[var(--text-muted)]">{sc.name} ({sc.probability}%)</span>
+            <span className="text-[20px] text-[var(--text-muted)]">{sc.name} ({sc.probability}%)</span>
           </div>
         ))}
       </div>
