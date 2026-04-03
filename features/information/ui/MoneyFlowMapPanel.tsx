@@ -1,127 +1,198 @@
 'use client'
 
+import { useMacroDaily } from '@/features/macro/api/useMacroDashboard'
+import { useInformationSupplyDemand } from '../api/useInformation'
+
+// ─── 유틸 ───
+
+function fmt(n: number) {
+  const sign = n >= 0 ? '+' : ''
+  return `${sign}${n.toFixed(2)}%`
+}
+
+function fmtKr(n: number) {
+  const sign = n >= 0 ? '+' : ''
+  const abs = Math.abs(n)
+  if (abs >= 1e8) return `${sign}${(n / 1e8).toFixed(0)}억`
+  return `${sign}${(n / 1e4).toFixed(0)}만`
+}
+
+// ─── 지역 카드 ───
+
+function RegionCard({
+  sublabel, label, changePct, flowDesc, note, isKorea, extraLines, cloudColor,
+}: {
+  sublabel: string; label: string; changePct: number; flowDesc: string; note: string;
+  isKorea?: boolean; extraLines?: string[]; cloudColor: string;
+}) {
+  const color = changePct >= 0 ? '#16a34a' : '#dc2626'
+  return (
+    <div className={`relative rounded-xl p-4 border-2 flex-1 min-w-[145px] ${
+      isKorea ? 'border-[#16a34a] bg-[#F0FDF4] shadow-md' : 'border-gray-200 bg-white'
+    }`}>
+      <div className="text-[10px] text-gray-400 font-semibold">{sublabel}</div>
+      <div className="text-[15px] font-bold text-[#1A1A2E] mb-1.5">{label}</div>
+      <div className="text-[20px] font-black mb-1" style={{ color }}>{fmt(changePct)}</div>
+      <div className="text-[12px] font-semibold text-gray-600 mb-0.5">{flowDesc}</div>
+      {extraLines?.map((line, i) => (
+        <div key={i} className="text-[11px] text-gray-500">{line}</div>
+      ))}
+      <div className="text-[10px] text-gray-400 mt-1.5">{note}</div>
+      <div className="absolute bottom-3 right-3 w-12 h-8 rounded-full opacity-15" style={{ backgroundColor: cloudColor }} />
+    </div>
+  )
+}
+
+// ─── 화살표 ───
+
+function Arrow({ label, strong }: { label?: string; strong?: boolean }) {
+  return (
+    <div className="flex flex-col items-center justify-center shrink-0 w-8">
+      {label && <div className="text-[9px] text-gray-400 whitespace-nowrap mb-0.5">{label}</div>}
+      <div className={`text-[20px] leading-none ${strong ? 'text-[#16a34a] font-bold' : 'text-gray-300'}`}>→</div>
+    </div>
+  )
+}
+
+// ─── AI 분석 ───
+
+function buildAnalysis(foreignNet: number, foreignStreak: number, instNet: number, usdkrw: number, vix: number) {
+  return {
+    current: {
+      title: `현재: ${foreignNet >= 0 ? '한국 유입 전환' : '미국에 집중'}`,
+      items: [
+        foreignNet >= 0
+          ? `외국인 순매수 전환 (${fmtKr(foreignNet)})`
+          : `외국인 ${Math.abs(foreignStreak)}일 연속 순매도`,
+        vix > 25
+          ? `VIX ${vix.toFixed(1)} — 변동성 확대, 안전자산 선호`
+          : `VIX ${vix.toFixed(1)} — 비교적 안정적 환경`,
+        usdkrw > 1400
+          ? `환율 ${usdkrw.toFixed(0)}원 — 달러 강세, 신흥국 유출 압력`
+          : `환율 ${usdkrw.toFixed(0)}원 — 원화 안정, 유입 우호적`,
+      ],
+      bg: '#F0FDF4', border: '#A7F3D0',
+    },
+    transition: {
+      title: '전환 조건: 한국 유입 가능성',
+      items: [
+        `환율 ${usdkrw > 1400 ? '1,400원 이하 안정 시' : `현재 ${usdkrw.toFixed(0)}원 (양호)`}`,
+        'KOSPI PBR 0.9배 이하(현 저평가 구간)',
+        `외국인 ${foreignNet < 0 ? '순매도 반전' : '순매수 지속'} + 3일 연속 시 유입 확인`,
+      ],
+      bg: '#FFFBEB', border: '#FDE68A',
+    },
+    risk: {
+      title: `위험 신호: ${vix > 30 ? '변동성 경고' : '추가 유출 가능'}`,
+      items: [
+        `환율 1,500원 돌파 시 + VIX ${vix > 30 ? `${vix.toFixed(0)} (이미 경고)` : '35 이상'}`,
+        '중동 분쟁 확전 시 아시아 전반 자금 유출 가속',
+        '글로벌 채권금리 급등 시 위험자산 회피',
+      ],
+      bg: '#FEF2F2', border: '#FECACA',
+    },
+  }
+}
+
+// ─── 메인 패널 ───
+
 export function MoneyFlowMapPanel() {
-  const regions = [
-    { id: 'us', label: '미국', x: 30, y: 30, w: 150, h: 195, bg: '#EFF6FF', status: '금리 동결 관망', emoji: '🇺🇸' },
-    { id: 'eu', label: '유럽', x: 200, y: 50, w: 120, h: 170, bg: '#F9FAFB', status: '재정 확대 기대', emoji: '🇪🇺' },
-    { id: 'asia', label: '중국·일본', x: 340, y: 40, w: 130, h: 180, bg: '#FEF2F2', status: '유동성 확대', emoji: '🇨🇳' },
-    { id: 'kr', label: '한국', x: 490, y: 30, w: 160, h: 260, bg: '#E8F5E9', status: '외국인 순유입 전환?', emoji: '🇰🇷' },
+  const { data: macroData, isLoading: ml } = useMacroDaily()
+  const { data: supplyData, isLoading: sl } = useInformationSupplyDemand()
+
+  if (ml || sl) {
+    return (
+      <div className="fx-card-green">
+        <div className="fx-card-title">글로벌 자금 플로우 맵 — 돈은 지금 어디에?</div>
+        <div className="h-48 bg-gray-100 animate-pulse rounded-lg" />
+      </div>
+    )
+  }
+
+  // 매크로 데이터
+  const items = macroData?.items ?? []
+  const find = (sym: string) => items.find(i => i.symbol === sym)
+
+  const spx = find('SPX') ?? find('GSPC')
+  const gdaxi = find('GDAXI') ?? find('FTSE')
+  const hsi = find('HSI') ?? find('N225') ?? find('SSEC')
+  const usdkrw = find('USDKRW')?.value ?? 1400
+  const vix = find('VIX')?.value ?? 20
+
+  const usChg = spx?.change_pct ?? 0
+  const euChg = gdaxi?.change_pct ?? 0
+  const asiaChg = hsi?.change_pct ?? 0
+
+  // 한국 수급
+  const fNet = supplyData?.foreign_net ?? 0
+  const iNet = supplyData?.inst_net ?? 0
+  const fStreak = supplyData?.foreign_streak ?? 0
+
+  // 섹터 흐름
+  const topSectors = (supplyData?.sector_flows ?? [])
+    .filter(s => (s.foreign_net ?? s.net ?? 0) > 0)
+    .sort((a, b) => (b.foreign_net ?? b.net ?? 0) - (a.foreign_net ?? a.net ?? 0))
+    .slice(0, 2)
+    .map(s => s.sector)
+
+  const krExtra = [
+    `${Math.abs(fStreak)}일 연속 ${fNet >= 0 ? '순매수' : '순매도'}`,
+    `기관 ${iNet >= 0 ? '순매수 전환' : '순매도'} ${fmtKr(iNet)}`,
+    ...(topSectors.length > 0 ? [`${topSectors.join(' · ')} 섹터 유입 조짐`] : []),
   ]
 
-  const arrows = [
-    { x1: 180, y1: 128, x2: 198, y2: 135, strong: false },
-    { x1: 320, y1: 135, x2: 338, y2: 130, strong: false },
-    { x1: 470, y1: 130, x2: 488, y2: 120, strong: true },
-  ]
-
-  const analysis = [
-    {
-      title: '📍 현재 상태',
-      bg: '#F0FDF4',
-      border: '#A7F3D0',
-      items: ['글로벌 달러 약세 전환 초기', '신흥국 자금 유입 모드 진입', '한국 외국인 매수 전환 시그널'],
-    },
-    {
-      title: '🔄 전환 조건',
-      bg: '#FFFBEB',
-      border: '#FDE68A',
-      items: ['환율 ≤ 1,400원 도달 시', 'PBR ≤ 0.9 (저평가 구간)', '외국인 3일 연속 순매수'],
-    },
-    {
-      title: '⚠️ 위험 신호',
-      bg: '#FEF2F2',
-      border: '#FECACA',
-      items: ['VIX 30 이상 급등 시 자금 회수', '미중 무역갈등 재점화', '글로벌 채권금리 급등'],
-    },
-  ]
+  const analysis = buildAnalysis(fNet, fStreak, iNet, usdkrw, vix)
 
   return (
     <div className="fx-card-green">
-      <div className="fx-card-title">🗺️ 글로벌 자금 플로우 맵 — 돈은 지금 어디에?</div>
+      <div className="fx-card-title">글로벌 자금 플로우 맵 — 돈은 지금 어디에?</div>
 
-      {/* SVG Flow Map */}
-      <div className="w-full overflow-x-auto">
-        <svg viewBox="0 0 680 320" className="w-full min-w-[500px]" style={{ maxHeight: 320 }}>
-          <defs>
-            <marker id="fx-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L8,3 L0,6" fill="#00FF88" />
-            </marker>
-            <marker id="fx-arrow-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-              <path d="M0,0 L8,3 L0,6" fill="#9CA3AF" />
-            </marker>
-          </defs>
+      {/* 4지역 플로우 맵 */}
+      <div className="flex items-stretch gap-0 overflow-x-auto pb-2">
+        <RegionCard
+          sublabel="North America" label="미국" changePct={usChg} cloudColor="#93C5FD"
+          flowDesc={usChg >= 0 ? '자금 유입 지속' : '자금 유출 조짐'}
+          note={usChg >= 0 ? '빅테크 실적 호조' : '금리 인하 불확실성'}
+        />
+        <Arrow label={euChg >= 0 ? '유입' : ''} strong={euChg >= 0} />
 
-          {/* Region cards */}
-          {regions.map(r => (
-            <g key={r.id}>
-              <rect
-                x={r.x} y={r.y} width={r.w} height={r.h}
-                rx="12" fill={r.bg}
-                stroke={r.id === 'kr' ? '#00FF88' : '#E5E7EB'}
-                strokeWidth={r.id === 'kr' ? 3 : 1}
-                className={r.id === 'kr' ? 'animate-[pulse-stroke_2s_ease-in-out_infinite]' : ''}
-              />
-              <text x={r.x + r.w / 2} y={r.y + 30} textAnchor="middle" fontSize="14" fontWeight="800" fill="#1A1A2E">
-                {r.emoji} {r.label}
-              </text>
-              <text x={r.x + r.w / 2} y={r.y + 52} textAnchor="middle" fontSize="10" fill="#6B7280">
-                {r.status}
-              </text>
-              {/* Simplified continent silhouette */}
-              {r.id === 'us' && (
-                <ellipse cx={r.x + r.w / 2} cy={r.y + 120} rx="45" ry="55" fill="#DBEAFE" opacity="0.5" />
-              )}
-              {r.id === 'eu' && (
-                <ellipse cx={r.x + r.w / 2} cy={r.y + 110} rx="30" ry="45" fill="#E5E7EB" opacity="0.5" />
-              )}
-              {r.id === 'asia' && (
-                <ellipse cx={r.x + r.w / 2} cy={r.y + 115} rx="35" ry="50" fill="#FECACA" opacity="0.3" />
-              )}
-              {r.id === 'kr' && (
-                <>
-                  <ellipse cx={r.x + r.w / 2} cy={r.y + 140} rx="40" ry="65" fill="#BBF7D0" opacity="0.3" />
-                  <text x={r.x + r.w / 2} y={r.y + r.h - 20} textAnchor="middle" fontSize="20" fontWeight="900" fill="#00FF88" opacity="0.8">
-                    ★
-                  </text>
-                </>
-              )}
-            </g>
-          ))}
+        <RegionCard
+          sublabel="Europe" label="유럽" changePct={euChg} cloudColor="#D1D5DB"
+          flowDesc={euChg >= 0 ? '완만한 유입' : '소폭 유출'}
+          note={euChg >= 0 ? '재정 확대 기대' : 'ECB 긴축 지속'}
+        />
+        <Arrow label={asiaChg >= 0 ? '유입' : ''} strong={asiaChg >= 0} />
 
-          {/* Flow arrows */}
-          {arrows.map((a, i) => (
-            <line
-              key={i}
-              x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2}
-              stroke={a.strong ? '#00FF88' : '#9CA3AF'}
-              strokeWidth={a.strong ? 3 : 1.5}
-              strokeDasharray={a.strong ? '0' : '6 4'}
-              markerEnd={a.strong ? 'url(#fx-arrow)' : 'url(#fx-arrow-gray)'}
-              className={!a.strong ? 'animate-[flow-dash_1s_linear_infinite]' : ''}
-            />
-          ))}
-        </svg>
+        <RegionCard
+          sublabel="East Asia" label="중국·일본" changePct={asiaChg} cloudColor="#FCA5A5"
+          flowDesc={asiaChg >= 0 ? '유동성 확대 수혜' : '엔캐리 청산 압력'}
+          note={asiaChg < 0 ? '위안화 약세 부담' : '중국 부양책 기대'}
+        />
+        <Arrow label={fNet >= 0 ? '유입 전환?' : ''} strong={fNet >= 0} />
+
+        <RegionCard
+          sublabel="Korea" label="한국" changePct={0} isKorea cloudColor="#86EFAC"
+          flowDesc={`외국인 ${fNet >= 0 ? '순매수' : '순매도'} ${fmtKr(fNet)}`}
+          note={supplyData?.summary?.slice(0, 30) ?? '수급 데이터 연동'}
+          extraLines={krExtra}
+        />
       </div>
 
-      {/* Analysis Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-        {analysis.map(a => (
-          <div key={a.title} className="p-3 rounded-lg border" style={{ backgroundColor: a.bg, borderColor: a.border }}>
-            <div className="text-[12px] font-bold text-[#1A1A2E] mb-2">{a.title}</div>
-            <ul className="space-y-1">
-              {a.items.map((item, i) => (
-                <li key={i} className="text-[10px] text-[var(--fx-text-secondary)] flex items-start gap-1">
-                  <span className="text-[var(--fx-green)] mt-0.5">•</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <div className="fx-card-tip">
-        💡 현재 Phase 1 정적 데이터입니다. 추후 실시간 자금 흐름 데이터와 연동됩니다.
+      {/* AI 분석 */}
+      <div className="mt-4 mb-1">
+        <div className="text-[13px] font-bold text-[#1A1A2E] mb-2">자금 이동 근거 분석 (AI)</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[analysis.current, analysis.transition, analysis.risk].map(a => (
+            <div key={a.title} className="p-3 rounded-lg border" style={{ backgroundColor: a.bg, borderColor: a.border }}>
+              <div className="text-[12px] font-bold text-[#1A1A2E] mb-2">{a.title}</div>
+              <div className="space-y-1.5">
+                {a.items.map((item, i) => (
+                  <div key={i} className="text-[12px] text-[#4B5563] leading-relaxed">{item}</div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
