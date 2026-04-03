@@ -93,12 +93,13 @@ function buildScenarioData(usdkrw: number, vix: number, foreignStreak: number): 
 function FlowTreeSVG({ data }: { data: TabData }) {
   const scenarios = data.scenarios
   const count = scenarios.length
-  const W = 830, H = count <= 3 ? 230 : 300
   const nodeH = 52, gap = 12
+  const totalH = count * nodeH + (count - 1) * gap
+  const padY = 25
+  const W = 830, H = totalH + padY * 2
 
   // Y 위치 계산
-  const totalH = count * nodeH + (count - 1) * gap
-  const startY = (H - totalH) / 2
+  const startY = padY
   const scenarioYs = scenarios.map((_, i) => startY + i * (nodeH + gap))
 
   // 시작 노드
@@ -117,7 +118,7 @@ function FlowTreeSVG({ data }: { data: TabData }) {
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 300 }}>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
       {/* 시작 노드 */}
       <rect x={sX} y={sY} width={sW} height={sH} rx="10" fill={data.startColor} stroke={data.startBorder} strokeWidth="1.5" />
       <text x={sX + sW / 2} y={sY + 22} textAnchor="middle" fontSize="9" fill="#6B7280" fontFamily="system-ui">{data.startLabel}</text>
