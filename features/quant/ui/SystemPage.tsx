@@ -141,10 +141,13 @@ export default function SystemPage() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
-      {/* 보라 그라데이션 상단 라인 */}
+      {/* 상단 그라데이션 라인 (퀀트=보라, 스윙=녹색) */}
       <div
         className="h-[2px] rounded-full"
-        style={{ background: 'linear-gradient(90deg, #7C3AED, #A78BFA 30%, #7C3AED 60%, #A78BFA)' }}
+        style={{ background: tab === 'quant'
+          ? 'linear-gradient(90deg, #7C3AED, #A78BFA 30%, #7C3AED 60%, #A78BFA)'
+          : 'linear-gradient(90deg, #00FF88, #4ADE80 30%, #00FF88 60%, #4ADE80)'
+        }}
       />
 
       {/* Quant / Swing 서브탭 */}
