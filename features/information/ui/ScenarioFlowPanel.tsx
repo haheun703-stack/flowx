@@ -93,9 +93,9 @@ function buildScenarioData(usdkrw: number, vix: number, foreignStreak: number): 
 function FlowTreeSVG({ data }: { data: TabData }) {
   const scenarios = data.scenarios
   const count = scenarios.length
-  const nodeH = 52, gap = 12
+  const nodeH = 62, gap = 16
   const totalH = count * nodeH + (count - 1) * gap
-  const padY = 25
+  const padY = 20
   const W = 830, H = totalH + padY * 2
 
   // Y 위치 계산
@@ -103,11 +103,11 @@ function FlowTreeSVG({ data }: { data: TabData }) {
   const scenarioYs = scenarios.map((_, i) => startY + i * (nodeH + gap))
 
   // 시작 노드
-  const sX = 10, sY = H / 2 - 30, sW = 115, sH = 60
+  const sX = 10, sY = H / 2 - 33, sW = 120, sH = 66
   // 시나리오 노드
-  const scX = 240, scW = 155
+  const scX = 245, scW = 160
   // 액션 노드
-  const acX = 510, acW = 300
+  const acX = 520, acW = 295
 
   // 화살표 굵기: 확률 비례
   const getStroke = (prob: number) => {
@@ -121,8 +121,8 @@ function FlowTreeSVG({ data }: { data: TabData }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
       {/* 시작 노드 */}
       <rect x={sX} y={sY} width={sW} height={sH} rx="10" fill={data.startColor} stroke={data.startBorder} strokeWidth="1.5" />
-      <text x={sX + sW / 2} y={sY + 22} textAnchor="middle" fontSize="9" fill="#6B7280" fontFamily="system-ui">{data.startLabel}</text>
-      <text x={sX + sW / 2} y={sY + 40} textAnchor="middle" fontSize="11" fill="#1A1A2E" fontWeight="700" fontFamily="system-ui">현재 상태</text>
+      <text x={sX + sW / 2} y={sY + 25} textAnchor="middle" fontSize="10" fill="#6B7280" fontFamily="system-ui">{data.startLabel}</text>
+      <text x={sX + sW / 2} y={sY + 44} textAnchor="middle" fontSize="13" fill="#1A1A2E" fontWeight="700" fontFamily="system-ui">현재 상태</text>
 
       {scenarios.map((sc, i) => {
         const yMid = scenarioYs[i] + nodeH / 2
@@ -143,7 +143,7 @@ function FlowTreeSVG({ data }: { data: TabData }) {
               transform={`rotate(180, ${scX - 4}, ${yMid})`}
             />
             {/* 확률 라벨 */}
-            <text x={(sX + sW + scX) / 2} y={yMid - 6} textAnchor="middle" fontSize="11" fontWeight="800" fill={sc.color} fontFamily="system-ui">
+            <text x={(sX + sW + scX) / 2} y={yMid - 8} textAnchor="middle" fontSize="13" fontWeight="800" fill={sc.color} fontFamily="system-ui">
               {sc.prob}%
             </text>
 
@@ -154,10 +154,10 @@ function FlowTreeSVG({ data }: { data: TabData }) {
               strokeWidth={i === 0 ? 2 : 1}
               className={i === 0 ? 'animate-pulse' : ''}
             />
-            <text x={scX + 10} y={scenarioYs[i] + 20} fontSize="11" fontWeight="700" fill="#1A1A2E" fontFamily="system-ui">
+            <text x={scX + 12} y={scenarioYs[i] + 25} fontSize="13" fontWeight="700" fill="#1A1A2E" fontFamily="system-ui">
               {sc.name}
             </text>
-            <text x={scX + 10} y={scenarioYs[i] + 38} fontSize="9" fill="#6B7280" fontFamily="system-ui">
+            <text x={scX + 12} y={scenarioYs[i] + 45} fontSize="10" fill="#6B7280" fontFamily="system-ui">
               {sc.impact}
             </text>
 
@@ -167,15 +167,15 @@ function FlowTreeSVG({ data }: { data: TabData }) {
 
             {/* 액션 노드 */}
             <rect x={acX} y={scenarioYs[i]} width={acW} height={nodeH} rx="8" fill="#FFF" stroke={sc.color} strokeWidth="1" opacity="0.8" />
-            <text x={acX + 10} y={scenarioYs[i] + 18} fontSize="9" fontWeight="700" fill={sc.color} fontFamily="system-ui">
+            <text x={acX + 12} y={scenarioYs[i] + 22} fontSize="10" fontWeight="700" fill={sc.color} fontFamily="system-ui">
               이렇게 하세요
             </text>
-            <text x={acX + 10} y={scenarioYs[i] + 34} fontSize="9" fill="#4B5563" fontFamily="system-ui">
-              {sc.action.length > 38 ? sc.action.slice(0, 38) + '…' : sc.action}
+            <text x={acX + 12} y={scenarioYs[i] + 40} fontSize="10" fill="#4B5563" fontFamily="system-ui">
+              {sc.action.length > 36 ? sc.action.slice(0, 36) + '…' : sc.action}
             </text>
-            {sc.action.length > 38 && (
-              <text x={acX + 10} y={scenarioYs[i] + 46} fontSize="9" fill="#4B5563" fontFamily="system-ui">
-                {sc.action.slice(38, 76)}
+            {sc.action.length > 36 && (
+              <text x={acX + 12} y={scenarioYs[i] + 54} fontSize="10" fill="#4B5563" fontFamily="system-ui">
+                {sc.action.slice(36, 72)}
               </text>
             )}
           </g>
