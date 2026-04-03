@@ -67,7 +67,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
     .slice(0, 10)
 
   return (
-    <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden">
+    <div className="bg-white rounded-r-xl shadow-sm overflow-hidden" style={{ border: '1px solid var(--border)', borderLeft: '3px solid #059669' }}>
       {/* 헤더 */}
       <div className="px-5 py-3 border-b border-[var(--border)]/50 flex items-center justify-between">
         <h3 className="text-[15px] font-bold text-[var(--text-primary)]">
