@@ -405,21 +405,21 @@ export function MoneyFlowMapPanel() {
 
       {/* ── AI 자금 이동 근거 분석 ── */}
       <div className="border-t border-gray-100 pt-4 mb-1">
-        <div className="text-[14px] font-black text-[#1A1A2E] mb-3">자금 이동 근거 분석 (AI)</div>
+        <div className="text-[17px] font-black text-[#1A1A2E] mb-3">자금 이동 근거 분석 (AI)</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[analysis.current, analysis.transition, analysis.risk].map(a => (
             <div key={a.title} className="p-4 rounded-lg border" style={{ backgroundColor: a.bg, borderColor: a.border }}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: a.dot }} />
-                <div className="text-[12px] font-black text-[#1A1A2E]">{a.title}</div>
+                <div className="text-[14px] font-black text-[#1A1A2E]">{a.title}</div>
               </div>
               <div className="space-y-2">
                 {a.items.map((item, i) => (
-                  <div key={i} className="text-[11px] text-[#4B5563] leading-relaxed">{item}</div>
+                  <div key={i} className="text-[13px] text-[#4B5563] leading-relaxed">{item}</div>
                 ))}
               </div>
               {'verdict' in a && (
-                <div className="mt-3 pt-2.5 border-t text-[11px] font-bold" style={{ borderColor: a.border, color: a.dot }}>
+                <div className="mt-3 pt-2.5 border-t text-[13px] font-bold" style={{ borderColor: a.border, color: a.dot }}>
                   {(a as { verdict: string }).verdict}
                 </div>
               )}
