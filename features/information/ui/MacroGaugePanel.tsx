@@ -59,9 +59,9 @@ function GaugeCard({ subtitle, symbol, value, raw }: {
   const needleAngle = -90 + (normalized / 100) * 180
 
   return (
-    <div className="bg-[#F9FAFB] rounded-xl p-3 pb-4 flex flex-col items-center">
+    <div className="bg-[#F9FAFB] rounded-xl p-3 pb-4 flex flex-col items-center justify-center min-h-[200px]">
       {/* 게이지 영역 */}
-      <div className="relative" style={{ width: SZ, height: 68 }}>
+      <div className="relative mx-auto" style={{ width: SZ, height: 68 }}>
         {/* 반원 클리핑 (위쪽 절반만 표시) */}
         <div style={{ width: SZ, height: 64, overflow: 'hidden' }}>
           {/* conic-gradient 원: 왼쪽(270°)=빨강 → 위(0°)=노랑 → 오른쪽(90°)=초록 */}
@@ -103,11 +103,13 @@ function GaugeCard({ subtitle, symbol, value, raw }: {
       </div>
 
       {/* 텍스트 영역 */}
-      <div className="text-[13px] font-bold mt-1" style={{ color: status.color }}>
-        {status.text}
+      <div className="text-center">
+        <div className="text-[13px] font-bold mt-1" style={{ color: status.color }}>
+          {status.text}
+        </div>
+        <div className="text-[22px] font-black text-[#1A1A2E] leading-tight">{raw}</div>
+        <div className="text-[11px] text-gray-400 mt-0.5">{subtitle}</div>
       </div>
-      <div className="text-[22px] font-black text-[#1A1A2E] leading-tight">{raw}</div>
-      <div className="text-[11px] text-gray-400 mt-0.5">{subtitle}</div>
     </div>
   )
 }
@@ -153,7 +155,7 @@ export function MacroGaugePanel() {
         {gauges.map(g => {
           if (!g.item) {
             return (
-              <div key={g.symbol} className="bg-[#F9FAFB] rounded-xl p-4 flex flex-col items-center justify-center h-[200px]">
+              <div key={g.symbol} className="bg-[#F9FAFB] rounded-xl p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
                 <div className="text-[13px] font-bold text-[#1A1A2E] mb-1">{g.subtitle}</div>
                 <div className="text-[12px] text-gray-400">데이터 대기중</div>
               </div>
