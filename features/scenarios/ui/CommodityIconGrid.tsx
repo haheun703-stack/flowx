@@ -160,12 +160,12 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
   const fillH = calculateFillHeight(commodity.gap_pct, svgH)
 
   return (
-    <div className="flex flex-col items-center text-center min-w-[70px]">
+    <div className="flex flex-col items-center text-center min-w-[100px]">
       {/* 원자재명 */}
-      <p className="text-[11px] font-bold text-[#1A1A2E] mb-1 truncate w-full">{commodity.name}</p>
+      <p className="text-[14px] font-bold text-[#1A1A2E] mb-1.5 truncate w-full">{commodity.name}</p>
 
       {/* SVG 아이콘 */}
-      <svg width="60" height="80" viewBox="0 0 60 80" className="mb-1">
+      <svg width="80" height="100" viewBox="0 0 60 80" className="mb-1.5">
         {/* 외곽 + clipPath 정의 */}
         {iconMeta.render(id)}
 
@@ -184,7 +184,7 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
       </svg>
 
       {/* 현재가 */}
-      <p className="text-[12px] font-bold text-[#1A1A2E] tabular-nums">
+      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">
         {commodity.unit === 'USD/bbl' || commodity.unit === 'USD/oz' || commodity.unit === 'USD/lb'
           ? `$${commodity.price.toFixed(1)}`
           : commodity.price.toLocaleString()
@@ -192,13 +192,13 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
       </p>
 
       {/* 원가 */}
-      <p className="text-[9px] text-[#6B7280]">
+      <p className="text-[12px] text-[#6B7280]">
         원가 {commodity.production_cost.toLocaleString()}
       </p>
 
       {/* 변동률 */}
       <p
-        className="text-[10px] font-bold"
+        className="text-[13px] font-bold"
         style={{ color: commodity.gap_pct >= 50 ? '#DC2626' : commodity.gap_pct >= 20 ? '#D97706' : '#16A34A' }}
       >
         {commodity.gap_pct >= 0 ? '+' : ''}{commodity.gap_pct.toFixed(1)}% {commodity.gap_pct >= 0 ? '↑' : '↓'}
@@ -206,7 +206,7 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
 
       {/* 상태 뱃지 */}
       <span
-        className="text-[8px] font-bold px-1.5 py-0.5 rounded-full mt-0.5"
+        className="text-[11px] font-bold px-2 py-0.5 rounded-full mt-1"
         style={{ backgroundColor: status.bg, color: status.text }}
       >
         {status.label}
@@ -222,21 +222,21 @@ export default function CommodityIconGrid({ commodities }: { commodities: Commod
 
   return (
     <div>
-      <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
+      <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-4">
         원자재 원가갭 — 지금 얼마나 올랐나?
       </h3>
 
-      <div className="flex flex-wrap gap-4 justify-center">
+      <div className="flex flex-wrap gap-6 justify-center">
         {commodities.map(c => (
           <CommodityIcon key={c.key} commodity={c} />
         ))}
       </div>
 
       {/* 하단 범례 */}
-      <div className="flex flex-wrap gap-4 justify-center mt-3 text-[9px] text-[#6B7280]">
-        <span><span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: '#DCFCE7' }} />매수구간(&lt;20%)</span>
-        <span><span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: '#FEF3C7' }} />관찰/보유(20~80%)</span>
-        <span><span className="inline-block w-2 h-2 rounded-full mr-1" style={{ backgroundColor: '#FEE2E2' }} />과열(80%+)</span>
+      <div className="flex flex-wrap gap-5 justify-center mt-4 text-[12px] text-[#6B7280]">
+        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#DCFCE7' }} />매수구간(&lt;20%)</span>
+        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#FEF3C7' }} />관찰/보유(20~80%)</span>
+        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#FEE2E2' }} />과열(80%+)</span>
       </div>
     </div>
   )
