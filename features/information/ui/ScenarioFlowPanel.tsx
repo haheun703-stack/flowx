@@ -286,7 +286,7 @@ function WeeklyChangeAndEvents() {
 
 const TABS = [
   { key: 'market', label: '시장 전망' },
-  { key: 'fomc', label: 'FOMC' },
+  { key: 'fomc', label: '금리 전망' },
   { key: 'tariff', label: '관세' },
 ] as const
 
