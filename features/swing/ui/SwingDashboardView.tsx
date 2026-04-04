@@ -41,6 +41,11 @@ interface SwingData {
   picks: Pick[]; etf_picks: EtfPick[]; watchlist: WatchItem[]
   nxt_signal: string; nxt_signal_text: string; nxt_score: number
   nxt_reason: string; nxt_targets: NxtTarget[]
+  nxt_rationale?: {
+    timestamp?: string; verdict?: string
+    green?: number; yellow?: number; red?: number; total?: number
+    indicators?: { key: string; name: string; signal: string; signal_label: string; detail: string }[]
+  }
   vix: number; nasdaq_pct: number; usdkrw: number
   oil_pct: number; gold_pct: number; silver_pct: number
   analysis: Record<string, string>; portfolio: Record<string, number>
@@ -382,6 +387,97 @@ export default function SwingDashboardView() {
           </div>
         </section>
       )}
+
+      {/* ═══ 채권자경단 v2 — 야간 매매 판단 근거 ═══ */}
+      {(() => {
+        const rat = data.nxt_rationale
+        const indicators = rat?.indicators
+        const hasData = indicators && indicators.length > 0 && rat?.verdict && rat.verdict !== '수집실패'
+
+        const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
+          '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
+          '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
+          '경계': { backgroundColor: '#eab308', color: '#FFF' },
+          '회피': { backgroundColor: '#ef4444', color: '#FFF' },
+        }
+        const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
+          GREEN: { bg: '#F0FDF4', text: '#16A34A', dot: '#22c55e' },
+          YELLOW: { bg: '#FFFBEB', text: '#A16207', dot: '#eab308' },
+          RED: { bg: '#FEF2F2', text: '#DC2626', dot: '#ef4444' },
+        }
+
+        return (
+          <section>
+            <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
+            <div
+              className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5"
+              style={{ borderLeft: '3px solid #7C3AED' }}
+            >
+              {!hasData ? (
+                <p className="text-[13px] text-[#6B7280] text-center py-4">
+                  데이터 수집 중입니다. 16:35 이후 갱신됩니다.
+                </p>
+              ) : (
+                <>
+                  {/* 종합 판정 헤더 */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-[14px] font-black px-3 py-1.5 rounded-lg"
+                        style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
+                      >
+                        종합: {rat.verdict}
+                      </span>
+                      <div className="flex items-center gap-2 text-[13px] font-bold">
+                        <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
+                        <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
+                        <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
+                        <span className="text-[#9CA3AF]">/ {rat.total ?? 7}개</span>
+                      </div>
+                    </div>
+                    {rat.timestamp && (
+                      <span className="text-[11px] text-[#9CA3AF]">
+                        기준: {rat.timestamp.slice(0, 16)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 7개 지표 테이블 */}
+                  <div className="space-y-1.5">
+                    {indicators!.map((ind) => {
+                      const ss = SIGNAL_STYLE[ind.signal] ?? SIGNAL_STYLE.GREEN
+                      return (
+                        <div
+                          key={ind.key}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2"
+                          style={{ backgroundColor: ss.bg }}
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: ss.dot }}
+                          />
+                          <span className="text-[13px] font-bold text-[#1A1A2E] w-[130px] shrink-0">
+                            {ind.name}
+                          </span>
+                          <span
+                            className="text-[12px] font-bold w-[40px] shrink-0 text-center"
+                            style={{ color: ss.text }}
+                          >
+                            {ind.signal_label}
+                          </span>
+                          <span className="text-[12px] text-[#6B7280] flex-1 truncate">
+                            {ind.detail}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* NXT 야간매매 종목 */}
       {nxtPicks.length > 0 && (
