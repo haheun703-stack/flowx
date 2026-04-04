@@ -73,13 +73,13 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </svg>
 
       {/* ── 가격 + % : SVG 아래 HTML ── */}
-      <div className="text-center -mt-3">
+      <div className="text-center -mt-2">
         <p className="text-[15px] font-black text-[#111827] tabular-nums">{item.current_price?.toLocaleString('ko-KR') ?? '—'}</p>
         <p className="text-[12px] font-bold" style={{ color }}>{pct.toFixed(0)}%</p>
       </div>
 
       {/* ── 바닥 / 천장 라벨 ── */}
-      <div className="flex justify-between w-full mt-1 px-1">
+      <div className="flex justify-between w-full max-w-[200px] -mt-8 px-[17px]">
         <div className="text-left">
           <p className="text-[9px] font-bold text-[#22c55e] truncate max-w-[80px]">{item.floor_name ?? '바닥'}</p>
           <p className="text-[11px] font-black text-[#22c55e] tabular-nums">{item.floor_price.toLocaleString('ko-KR')}</p>
