@@ -86,13 +86,13 @@ export function FearGreedGauge() {
             </svg>
 
             {/* ── 값 + 라벨: SVG 아래 HTML ── */}
-            <div className="text-center -mt-3">
+            <div className="text-center -mt-2">
               <p className="text-[28px] font-black tabular-nums" style={{ color: label.color }}>{Math.round(fgValue)}</p>
               <p className="text-[12px] font-extrabold" style={{ color: label.color }}>{label.text}</p>
             </div>
 
             {/* ── 공포 / 탐욕 라벨 ── */}
-            <div className="flex justify-between w-full mt-1 px-2">
+            <div className="flex justify-between w-full -mt-1 px-2">
               <div className="text-left">
                 <p className="text-[12px] font-extrabold text-[#ef4444]">공포</p>
                 <p className="text-[13px] font-black text-[#ef4444] tabular-nums">0</p>
