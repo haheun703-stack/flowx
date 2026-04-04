@@ -10,7 +10,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const US_FIXED = new Set(['SPX', 'IXIC', 'DJI'])
 
-function IndexChip({ index }: { index: WorldIndex }) {
+function IndexChip({ index, compact }: { index: WorldIndex; compact?: boolean }) {
   const isPositive = index.changePercent >= 0
   const color = isPositive ? 'text-[var(--up)]' : 'text-[var(--down)]'
   const sign = isPositive ? '+' : ''
@@ -22,10 +22,12 @@ function IndexChip({ index }: { index: WorldIndex }) {
     : new Intl.NumberFormat('ko-KR', { maximumFractionDigits: index.currency === 'JPY' ? 0 : 2 }).format(index.price)
 
   return (
-    <div className="flex items-center gap-2.5 px-4 h-14 border-r border-[#D1D5DB]/30 whitespace-nowrap hover:bg-[#F0EDE8] transition-colors cursor-default shrink-0">
-      <span className="text-[14px] font-semibold text-[#6B7280]">{index.name}</span>
-      <span className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{fmtPrice}</span>
-      <span className={`text-[14px] font-bold tabular-nums ${color}`}>
+    <div className={`flex items-center border-r border-[#D1D5DB]/30 whitespace-nowrap hover:bg-[#F0EDE8] transition-colors cursor-default shrink-0 ${
+      compact ? 'gap-1.5 px-2.5 h-10' : 'gap-2.5 px-4 h-14'
+    }`}>
+      <span className={`font-semibold text-[#6B7280] ${compact ? 'text-[11px]' : 'text-[14px]'}`}>{index.name}</span>
+      <span className={`font-bold text-[#1A1A2E] tabular-nums ${compact ? 'text-[12px]' : 'text-[15px]'}`}>{fmtPrice}</span>
+      <span className={`font-bold tabular-nums ${color} ${compact ? 'text-[11px]' : 'text-[14px]'}`}>
         {sign}{index.changePercent.toFixed(2)}%
       </span>
     </div>
@@ -48,39 +50,60 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
   const fixedIndices = indices.filter(idx => US_FIXED.has(idx.symbol))
   const scrollIndices = indices.filter(idx => !US_FIXED.has(idx.symbol))
 
-  const chips: { type: 'chip' | 'sep'; index?: WorldIndex; label?: string; key: string }[] = []
+  // 모바일용: 전체 인덱스를 스크롤에 포함
+  const allChips: { type: 'chip' | 'sep'; index?: WorldIndex; label?: string; key: string }[] = []
+  let lastCat = ''
+  for (const idx of indices) {
+    if (idx.category !== lastCat) {
+      const label = CATEGORY_LABELS[idx.category] ?? idx.category
+      if (lastCat !== '') allChips.push({ type: 'sep', label, key: `sep-all-${idx.category}` })
+      lastCat = idx.category
+    }
+    allChips.push({ type: 'chip', index: idx, key: `all-${idx.symbol}` })
+  }
+
+  // 데스크톱용: 고정 제외 스크롤
+  const desktopChips: typeof allChips = []
   let lastCategory = ''
   for (const idx of scrollIndices) {
     if (idx.category !== lastCategory) {
       const label = CATEGORY_LABELS[idx.category] ?? idx.category
-      if (lastCategory !== '') {
-        chips.push({ type: 'sep', label, key: `sep-${idx.category}` })
-      }
+      if (lastCategory !== '') desktopChips.push({ type: 'sep', label, key: `sep-${idx.category}` })
       lastCategory = idx.category
     }
-    chips.push({ type: 'chip', index: idx, key: idx.symbol })
+    desktopChips.push({ type: 'chip', index: idx, key: idx.symbol })
   }
 
   return (
-    <div className="flex items-center h-14 border-b border-[#ECEAE4] leading-none">
+    <div className="flex items-center h-10 md:h-14 border-b border-[#ECEAE4] leading-none">
       {/* LIVE + 글로벌 */}
-      <div className="flex items-center gap-2.5 px-5 h-full border-r border-[#ECEAE4] shrink-0">
-        <span className="w-[8px] h-[8px] rounded-full bg-[#00FF88] animate-pulse shrink-0" />
-        <span className="text-[14px] font-black text-[#00CC6A] tracking-wide">LIVE</span>
-        <span className="text-[14px] font-bold text-[#4B5563]">글로벌</span>
+      <div className="flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-full border-r border-[#ECEAE4] shrink-0">
+        <span className="w-[6px] h-[6px] md:w-[8px] md:h-[8px] rounded-full bg-[#00FF88] animate-pulse shrink-0" />
+        <span className="text-[11px] md:text-[14px] font-black text-[#00CC6A] tracking-wide">LIVE</span>
+        <span className="hidden sm:inline text-[14px] font-bold text-[#4B5563]">글로벌</span>
       </div>
 
-      {/* 고정: S&P, NASDAQ, DOW */}
-      <div className="flex shrink-0">
+      {/* 데스크톱: 고정 인덱스 */}
+      <div className="hidden md:flex shrink-0">
         {fixedIndices.map(idx => <IndexChip key={idx.symbol} index={idx} />)}
       </div>
+      <div className="hidden md:block w-px h-5 bg-[#D1D5DB]/40 shrink-0" />
 
-      <div className="w-px h-5 bg-[#D1D5DB]/40 shrink-0" />
+      {/* 모바일: 전체 스크롤 */}
+      <div className="md:hidden flex overflow-hidden relative flex-1">
+        <div className="flex animate-ticker">
+          {[...allChips, ...allChips].map((chip, i) =>
+            chip.type === 'sep'
+              ? <CategorySeparator key={`${chip.key}-${i}`} label={chip.label!} />
+              : <IndexChip key={`${chip.key}-${i}`} index={chip.index!} compact />
+          )}
+        </div>
+      </div>
 
-      {/* 스크롤: 기타 지수 */}
-      <div className="flex overflow-hidden relative flex-1 group">
+      {/* 데스크톱: 기타 스크롤 */}
+      <div className="hidden md:flex overflow-hidden relative flex-1 group">
         <div className="flex animate-ticker group-hover:[animation-play-state:paused]">
-          {[...chips, ...chips].map((chip, i) =>
+          {[...desktopChips, ...desktopChips].map((chip, i) =>
             chip.type === 'sep'
               ? <CategorySeparator key={`${chip.key}-${i}`} label={chip.label!} />
               : <IndexChip key={`${chip.key}-${i}`} index={chip.index!} />

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { TickerSearch } from './TickerSearch'
@@ -53,6 +54,7 @@ const NAV_TABS = [
 
 export function Navbar() {
   const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <div className="sticky top-0 z-40">
@@ -70,8 +72,8 @@ export function Navbar() {
           <span className="text-[11px] font-extrabold px-1.5 py-0.5 rounded bg-[#E8F5E9] text-[#00CC6A]">BETA</span>
         </Link>
 
-        {/* 5개 탭 */}
-        <div className="flex items-center h-full">
+        {/* 데스크톱: 5개 탭 (md 이상에서만 표시) */}
+        <div className="hidden md:flex items-center h-full">
           {NAV_TABS.map((tab) => {
             const active = tab.match(pathname)
             return (
@@ -114,12 +116,73 @@ export function Navbar() {
 
         {/* 우측: 검색 + 인증 */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <TickerSearch />
           </div>
           <NavbarAuth />
         </div>
+
+        {/* 모바일: 햄버거 버튼 (md 미만에서만 표시) */}
+        <button
+          className="md:hidden ml-2 p-2 text-[#1A1A2E]"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="메뉴"
+        >
+          <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5">
+            {menuOpen ? (
+              <path d="M5 5l12 12M5 17L17 5" />
+            ) : (
+              <path d="M3 6h16M3 11h16M3 16h16" />
+            )}
+          </svg>
+        </button>
       </nav>
+
+      {/* 모바일: 드롭다운 메뉴 */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-b border-[#E8E6E0] shadow-lg z-50 relative">
+          {NAV_TABS.map((tab) => {
+            const active = tab.match(pathname)
+            return (
+              <div key={tab.label}>
+                <Link
+                  href={tab.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block px-5 py-3.5 text-[15px] border-b border-[#F0EDE8] ${
+                    active
+                      ? 'text-[#1A1A2E] font-bold bg-[#F5F4F0]'
+                      : 'text-[#6B7280] font-semibold'
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+                {tab.sub && (
+                  <div className="bg-[#FAFAF8]">
+                    {tab.sub.map((s) => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        onClick={() => setMenuOpen(false)}
+                        className={`block pl-10 pr-5 py-2.5 text-[14px] border-b border-[#F0EDE8] ${
+                          pathname === s.href || pathname.startsWith(s.href + '/')
+                            ? 'text-[#1A1A2E] font-bold'
+                            : 'text-[#9CA3AF] font-medium'
+                        }`}
+                      >
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+          {/* 모바일 검색 */}
+          <div className="px-5 py-3">
+            <TickerSearch />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
