@@ -13,6 +13,9 @@ interface Pick {
   action?: string; conviction_label?: string; reasons?: string[]
   close?: number; chg_pct?: number; rsi?: number
   vol_ratio?: number; sector?: string; is_etf?: boolean
+  /* 피보나치 (단타봇 v4 추가) */
+  fib_position?: string; fib_upside_pct?: number; fib_downside_pct?: number
+  sl_fib?: number; tp_fib?: number; fib_adj?: number
 }
 
 interface EtfPick {
@@ -310,6 +313,54 @@ export default function SwingDashboardView() {
                           </p>
                         </div>
                       </div>
+                      {/* 피보나치 레벨 (데이터 있을 때만) */}
+                      {p.fib_position && (
+                        <div className="bg-[#F5F4F0] rounded-lg p-3 mb-3">
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <span className="w-5 h-5 rounded-full bg-[#7C3AED] text-white text-[9px] font-bold flex items-center justify-center">F</span>
+                            <span className="text-[11px] font-bold text-[#1A1A2E]">피보나치 분석</span>
+                            <span className="text-[9px] text-[#6B7280] ml-auto">{p.fib_position}</span>
+                          </div>
+                          {/* 게이지 바: 하방 ← 현재 → 상방 */}
+                          <div className="relative h-4 bg-[#E8E6E0] rounded-full overflow-hidden mb-1.5">
+                            {/* 하방 영역 */}
+                            <div
+                              className="absolute left-0 top-0 h-full bg-[#DC2626]/25 rounded-l-full"
+                              style={{ width: `${Math.min(((p.fib_downside_pct ?? 0) / ((p.fib_downside_pct ?? 0) + (p.fib_upside_pct ?? 0) || 1)) * 100, 100)}%` }}
+                            />
+                            {/* 상방 영역 */}
+                            <div
+                              className="absolute right-0 top-0 h-full bg-[#16A34A]/25 rounded-r-full"
+                              style={{ width: `${Math.min(((p.fib_upside_pct ?? 0) / ((p.fib_downside_pct ?? 0) + (p.fib_upside_pct ?? 0) || 1)) * 100, 100)}%` }}
+                            />
+                            {/* 현재 위치 마커 */}
+                            <div
+                              className="absolute top-0 h-full w-[3px] bg-[#1A1A2E]"
+                              style={{ left: `${Math.min(((p.fib_downside_pct ?? 0) / ((p.fib_downside_pct ?? 0) + (p.fib_upside_pct ?? 0) || 1)) * 100, 100)}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-[9px]">
+                            <span className="text-[#DC2626] font-bold">▼ {(p.fib_downside_pct ?? 0).toFixed(1)}%</span>
+                            <span className="text-[#16A34A] font-bold">▲ {(p.fib_upside_pct ?? 0).toFixed(1)}%</span>
+                          </div>
+                          {/* 피보 손절/목표 */}
+                          <div className="grid grid-cols-3 gap-1.5 mt-2">
+                            <div className="text-center bg-white rounded p-1">
+                              <p className="text-[8px] text-[#9CA3AF]">피보 손절</p>
+                              <p className="text-[11px] font-bold text-[#DC2626] tabular-nums">{(p.sl_fib ?? 0).toLocaleString()}</p>
+                            </div>
+                            <div className="text-center bg-white rounded p-1">
+                              <p className="text-[8px] text-[#9CA3AF]">피보 목표</p>
+                              <p className="text-[11px] font-bold text-[#2563EB] tabular-nums">{(p.tp_fib ?? 0).toLocaleString()}</p>
+                            </div>
+                            <div className="text-center bg-white rounded p-1">
+                              <p className="text-[8px] text-[#9CA3AF]">피보 보정</p>
+                              <p className="text-[11px] font-bold text-[#7C3AED] tabular-nums">{(p.fib_adj ?? 0).toFixed(1)}%</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       {/* 근거 태그 */}
                       {p.reasons?.length ? (
                         <div className="flex flex-wrap gap-1.5">
