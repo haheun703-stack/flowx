@@ -17,7 +17,7 @@ interface RelayItem {
 
 const SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
   '강한 매수 기회': { color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
-  '매수 기회': { color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200' },
+  '매수 기회': { color: 'text-[var(--yellow)]', bg: 'bg-amber-50 border-amber-200' },
   '관심 구간': { color: 'text-[var(--yellow)]', bg: 'bg-yellow-50 border-yellow-200' },
   '추격 진행중': { color: 'text-[var(--green)]', bg: 'bg-green-50 border-green-200' },
   '선행 하락': { color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
@@ -52,7 +52,7 @@ export default function RelayView() {
     return (
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded-lg" />
+          <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
       </div>
     )
@@ -83,8 +83,8 @@ export default function RelayView() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="매수 기회" count={buySignals.length} color="text-[var(--up)]" bg="bg-red-50" />
-        <SummaryCard label="기타 시그널" count={otherSignals.length} color="text-[var(--down)]" bg="bg-blue-50" />
+        <SummaryCard label="매수 기회" count={buySignals.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
+        <SummaryCard label="기타 시그널" count={otherSignals.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
         <SummaryCard label="전체 쌍" count={items.length} color="text-[var(--text-primary)]" bg="bg-gray-50" />
       </div>
 
@@ -109,7 +109,7 @@ export default function RelayView() {
               const sig = SIGNAL_STYLE[item.signal_type] ?? { color: 'text-[var(--text-dim)]', bg: 'bg-gray-50 border-[var(--border)]' }
               const gapNum = Number(item.gap)
               return (
-                <tr key={`${item.lead_sector}-${item.lag_sector}`} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={`${item.lead_sector}-${item.lag_sector}`} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="py-2.5 px-2">
                     <span className="text-[var(--text-primary)] font-medium">{item.lead_sector}</span>
                     <span className="text-[var(--text-muted)] mx-1.5">→</span>
@@ -151,7 +151,7 @@ export default function RelayView() {
 
 function SummaryCard({ label, count, color, bg }: { label: string; count: number; color: string; bg: string }) {
   return (
-    <div className={`${bg} rounded-lg p-4 border border-[var(--border)] shadow-sm`}>
+    <div className={`${bg} rounded-xl p-4 border border-[var(--border)] shadow-sm`}>
       <p className="text-[var(--text-muted)] text-xs">{label}</p>
       <p className={`${color} text-2xl font-bold mt-1`}>{count}</p>
       <p className="text-[var(--text-muted)] text-xs mt-0.5">쌍</p>

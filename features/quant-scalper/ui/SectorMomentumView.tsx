@@ -108,7 +108,7 @@ export function SectorMomentumView() {
             </thead>
             <tbody>
               {sectors.map((s, i) => (
-                <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="text-center py-2.5 px-2 text-[var(--text-muted)]">{s.rank}</td>
                   <td className="px-3 text-[var(--text-primary)] font-medium">{s.sector}</td>
                   <td className="text-center px-2">

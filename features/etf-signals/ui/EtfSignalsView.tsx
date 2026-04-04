@@ -18,14 +18,14 @@ interface EtfSignalItem {
 }
 
 const SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
-  '대량 자금유입': { color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
-  '자금유입': { color: 'text-red-600', bg: 'bg-red-50/50 border-red-200/50' },
-  '강세 급등': { color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200' },
-  '강세': { color: 'text-orange-500', bg: 'bg-orange-50/50 border-orange-200/50' },
-  '대량 자금유출': { color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
-  '자금유출': { color: 'text-blue-500', bg: 'bg-blue-50/50 border-blue-200/50' },
-  '약세 급락': { color: 'text-cyan-600', bg: 'bg-cyan-50 border-cyan-200' },
-  '약세': { color: 'text-cyan-500', bg: 'bg-cyan-50/50 border-cyan-200/50' },
+  '대량 자금유입': { color: 'text-[var(--up)]', bg: 'bg-[var(--up-bg)] border-[var(--up)]/20' },
+  '자금유입': { color: 'text-[var(--up)]', bg: 'bg-[var(--up-bg)]/60 border-[var(--up)]/10' },
+  '강세 급등': { color: 'text-[var(--yellow)]', bg: 'bg-amber-50 border-amber-200' },
+  '강세': { color: 'text-[var(--yellow)]', bg: 'bg-amber-50/60 border-amber-200/60' },
+  '대량 자금유출': { color: 'text-[var(--down)]', bg: 'bg-[var(--down-bg)] border-[var(--down)]/20' },
+  '자금유출': { color: 'text-[var(--down)]', bg: 'bg-[var(--down-bg)]/60 border-[var(--down)]/10' },
+  '약세 급락': { color: 'text-[var(--down)]', bg: 'bg-[var(--down-bg)] border-[var(--down)]/20' },
+  '약세': { color: 'text-[var(--down)]', bg: 'bg-[var(--down-bg)]/60 border-[var(--down)]/10' },
   '보합': { color: 'text-[var(--text-dim)]', bg: 'bg-gray-50 border-[var(--border)]' },
 }
 
@@ -70,7 +70,7 @@ export default function EtfSignalsView() {
     return (
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded-lg" />
+          <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
       </div>
     )
@@ -102,8 +102,8 @@ export default function EtfSignalsView() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="자금유입/강세" count={inflow.length} color="text-[var(--up)]" bg="bg-red-50" />
-        <SummaryCard label="자금유출/약세" count={outflow.length} color="text-[var(--down)]" bg="bg-blue-50" />
+        <SummaryCard label="자금유입/강세" count={inflow.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
+        <SummaryCard label="자금유출/약세" count={outflow.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
         <SummaryCard label="보합" count={neutral.length} color="text-[var(--text-dim)]" bg="bg-gray-50" />
       </div>
 
@@ -127,7 +127,7 @@ export default function EtfSignalsView() {
             {items.map((item) => {
               const sig = SIGNAL_STYLE[item.signal_type] ?? { color: 'text-[var(--text-dim)]', bg: 'bg-gray-50 border-[var(--border)]' }
               return (
-                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="py-2.5 px-2">
                     <span className="text-[var(--text-primary)] font-medium">{item.name}</span>
                     <span className="text-[var(--text-muted)] text-xs ml-1.5">{item.ticker}</span>
@@ -163,7 +163,7 @@ export default function EtfSignalsView() {
 
 function SummaryCard({ label, count, color, bg }: { label: string; count: number; color: string; bg: string }) {
   return (
-    <div className={`${bg} rounded-lg p-4 border border-[var(--border)] shadow-sm`}>
+    <div className={`${bg} rounded-xl p-4 border border-[var(--border)] shadow-sm`}>
       <p className="text-[var(--text-muted)] text-xs">{label}</p>
       <p className={`${color} text-2xl font-bold mt-1`}>{count}</p>
       <p className="text-[var(--text-muted)] text-xs mt-0.5">ETF</p>

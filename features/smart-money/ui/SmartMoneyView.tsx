@@ -57,7 +57,7 @@ export default function SmartMoneyView() {
     return (
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-16 bg-gray-200 rounded-lg" />
+          <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
       </div>
     )
@@ -89,9 +89,9 @@ export default function SmartMoneyView() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="쌍끌이 매수" count={dual.length} color="text-[var(--up)]" bg="bg-red-50" />
+        <SummaryCard label="쌍끌이 매수" count={dual.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
         <SummaryCard label="외인 매집" count={foreign.length} color="text-[var(--green)]" bg="bg-green-50" />
-        <SummaryCard label="기관 매집" count={inst.length} color="text-[var(--down)]" bg="bg-blue-50" />
+        <SummaryCard label="기관 매집" count={inst.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
       </div>
 
       {/* 종목 리스트 */}
@@ -114,7 +114,7 @@ export default function SmartMoneyView() {
             {items.map((item) => {
               const sig = SIGNAL_STYLE[item.signal_type] ?? { label: item.signal_type, color: 'text-[var(--text-dim)]', bg: 'bg-gray-50 border-[var(--border)]' }
               return (
-                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="py-2.5 px-2">
                     <span className="text-[var(--text-primary)] font-medium">{item.name}</span>
                     <span className="text-[var(--text-muted)] text-xs ml-1.5">{item.ticker}</span>
@@ -156,7 +156,7 @@ export default function SmartMoneyView() {
 
 function SummaryCard({ label, count, color, bg }: { label: string; count: number; color: string; bg: string }) {
   return (
-    <div className={`${bg} rounded-lg p-4 border border-[var(--border)] shadow-sm`}>
+    <div className={`${bg} rounded-xl p-4 border border-[var(--border)] shadow-sm`}>
       <p className="text-[var(--text-muted)] text-xs">{label}</p>
       <p className={`${color} text-2xl font-bold mt-1`}>{count}</p>
       <p className="text-[var(--text-muted)] text-xs mt-0.5">종목</p>

@@ -111,7 +111,7 @@ export function SectorFlowView() {
             </thead>
             <tbody>
               {sectors.map((s, i) => (
-                <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="py-2.5 px-4 font-medium text-[var(--text-primary)]">{s.alias || s.sector}</td>
                   <td className={`text-right px-3 ${signColor(s.inst_1d)}`}>{fmt(s.inst_1d)}</td>
                   <td className={`text-right px-3 ${signColor(s.inst_3d)}`}>{fmt(s.inst_3d)}</td>

@@ -72,7 +72,7 @@ function Skeleton({ rows = 5 }: { rows?: number }) {
   return (
     <>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="h-[40px] mx-2 my-px bg-gray-100 animate-pulse rounded-sm" />
+        <div key={i} className="h-[40px] mx-2 my-px bg-[var(--bg-row)] animate-pulse rounded" />
       ))}
     </>
   )
@@ -82,12 +82,12 @@ function Panel({ title, badge, dot, sample, children }: {
   title: string; badge?: string; dot?: string; sample?: boolean; children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col bg-white border border-[var(--border)] rounded overflow-hidden">
+    <div className="flex flex-col bg-white border border-[var(--border)] rounded-xl overflow-hidden">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)]">
         <div className="flex items-center gap-1.5">
           {dot && <span className={`w-2 h-2 rounded-full ${dot} animate-pulse`} />}
           <span className="text-sm font-bold text-[var(--text-primary)] tracking-wider uppercase">{title}</span>
-          {sample && <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30 font-bold ml-1">샘플</span>}
+          {sample && <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-amber-50 text-[var(--yellow)] border border-[var(--yellow)]/30 font-bold ml-1">샘플</span>}
         </div>
         {badge && <span className="text-xs text-[var(--text-dim)] font-bold">{badge}</span>}
       </div>
@@ -157,7 +157,7 @@ function Panel1_Recommendations({ stocks, isLoading }: { stocks: ShortSignalItem
         {isLoading ? <Skeleton rows={8} /> : stocks.length === 0 ? <EmptyState /> :
           stocks.map((s, i) => (
             <Link key={s.code} href={`/chart/${s.code}`}
-              className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-gray-50 cursor-pointer transition-colors ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
+              className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-[var(--bg-row)] cursor-pointer transition-colors ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
               style={{ gridTemplateColumns: COLS }}>
               <span className={`text-[11px] px-1.5 py-0.5 rounded-sm border text-center whitespace-nowrap font-bold ${GRADE_COLOR[s.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
                 {SIGNAL_LABEL[s.signal_type] ?? s.grade}
@@ -352,7 +352,7 @@ function Panel5_AccumulationRadar() {
           <EmptyState msg="tv_scanner 데이터 준비중" />
         ) : whales.slice(0, 20).map((w, i) => (
           <div key={w.ticker || i}
-            className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-gray-50 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
+            className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-[var(--bg-row)] ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
             style={{ gridTemplateColumns: '72px 1fr 64px 64px 56px' }}>
             <span className={`text-[9px] px-1 py-0.5 rounded-sm border text-center font-bold ${WHALE_STATUS_COLOR[w.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
               {w.grade ?? 'QUIET'}

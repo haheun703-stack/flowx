@@ -135,7 +135,7 @@ export function EtfFlowView() {
                 </thead>
                 <tbody>
                   {items.map((e, i) => (
-                    <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                    <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                       <td className="py-2 px-4">
                         <div className="text-[var(--text-primary)] font-medium">{e.alias || e.name}</div>
                         <div className="text-[var(--text-muted)] text-[10px]">{e.code}</div>
@@ -150,7 +150,7 @@ export function EtfFlowView() {
                         <span className="text-[10px] text-[var(--yellow)]">{e.signal}</span>
                       </td>
                       <td className="text-right px-3">
-                        <div className="w-12 h-1.5 bg-gray-200 rounded-full inline-block align-middle">
+                        <div className="w-12 h-1.5 bg-[var(--bg-row)] rounded-full inline-block align-middle">
                           <div
                             className="h-full rounded-full bg-[#2563eb]"
                             style={{ width: `${Math.min(e.strength, 100)}%` }}

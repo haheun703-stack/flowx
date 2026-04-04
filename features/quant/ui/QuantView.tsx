@@ -2,16 +2,16 @@
 
 import { useQuantDashboard, type QuantDashboardState, type Zone2Item, type Zone7MarketHeader, type Zone7EtfItem, type Zone5SdPattern } from '@/features/dashboard/api/useDashboard'
 
-/* ── CSS 변수 참조 색상 (HTML 레퍼런스 기준) ── */
+/* ── 라이트 테마 색상 (Dashboard 기준 통일) ── */
 const C = {
-  bg: '#0a0c10', bg2: '#0f1218', bg3: '#161b24',
-  border: '#1e2736', border2: '#2a3545',
-  text: '#e2e8f0', muted: '#5a6a82', muted2: '#3d4e63',
-  green: '#00e59b', green2: '#003d2b', green3: '#001f16',
-  amber: '#f5a623', amber2: '#3d2800',
-  red: '#ff4d6d', red2: '#3d0012',
-  blue: '#38bdf8', blue2: '#0c2a3d',
-  purple: '#a78bfa', purple2: '#1e1040',
+  bg: '#f8f9fb', bg2: '#ffffff', bg3: '#f3f4f6',
+  border: '#e2e5ea', border2: '#d1d5db',
+  text: '#111827', muted: '#6b7280', muted2: '#9ca3af',
+  green: '#16a34a', green2: '#dcfce7', green3: '#f0fdf4',
+  amber: '#d97706', amber2: '#fef9c3',
+  red: '#dc2626', red2: '#fef2f2',
+  blue: '#2563eb', blue2: '#eff6ff',
+  purple: '#7c3aed', purple2: '#f5f3ff',
 } as const
 
 const MONO = "'Space Mono', monospace"
@@ -59,7 +59,7 @@ function TrustBar({ z6, shield }: { z6: QuantDashboardState['zone6']; shield: st
   const hits = (z6.recent_10 ?? []).filter(x => x === 1).length
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', background: C.bg2, borderBottom: `1px solid ${C.border}`, overflowX: 'auto', scrollbarWidth: 'none' as const, padding: '0 24px' }}>
+    <div className="quant-trust-bar" style={{ display: 'flex', alignItems: 'center', background: C.bg2, borderBottom: `1px solid ${C.border}`, overflowX: 'auto', scrollbarWidth: 'none' as const, padding: '0 24px' }}>
       {items.map(it => (
         <div key={it.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 20px', borderRight: `1px solid ${C.border}`, whiteSpace: 'nowrap', flexShrink: 0 }}>
           <span style={{ color: C.muted, fontSize: 11 }}>{it.label}</span>
@@ -113,7 +113,7 @@ function VerdictZone({ z1 }: { z1: QuantDashboardState['zone1'] }) {
 
   return (
     <Zone label="오늘의 판단" title="AI 종합 분석">
-      <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr' }}>
+      <div className="quant-verdict-grid" style={{ display: 'grid', gridTemplateColumns: '180px 1fr' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', borderRight: `1px solid ${C.border}`, gap: 8 }}>
           <div style={{ width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 700, fontFamily: MONO, border: `2px solid ${vcColor}`, color: vcColor, background: vcBg }}>
             {z1.verdict}
@@ -161,16 +161,16 @@ function StockCard({ a }: { a: Zone2Item }) {
   const act = (a.action || 'WATCH').toUpperCase()
   const actKr = act === 'BUY' ? '매수' : act === 'SELL' ? '매도' : '관찰'
   const stratKr = a.strategy === 'AI_BRAIN' ? 'AI 판단' : a.strategy === 'SCAN' ? '스캔 발굴' : a.strategy
-  const borderColor = act === 'BUY' ? 'rgba(0,229,155,0.3)' : act === 'SELL' ? 'rgba(255,77,109,0.3)' : 'rgba(245,166,35,0.25)'
-  const bg = act === 'BUY' ? C.green3 : act === 'SELL' ? C.red2 : '#1a1600'
+  const borderColor = act === 'BUY' ? 'rgba(22,163,74,0.3)' : act === 'SELL' ? 'rgba(220,38,38,0.3)' : 'rgba(217,119,6,0.25)'
+  const bg = act === 'BUY' ? C.green3 : act === 'SELL' ? C.red2 : C.amber2
   const gradeColor = act === 'BUY' ? C.green : act === 'SELL' ? C.red : C.amber
   const badgeBg = act === 'BUY' ? C.green : act === 'SELL' ? C.red : C.amber
-  const badgeText = act === 'SELL' ? '#fff' : '#000'
+  const badgeText = '#fff'
 
   return (
     <div style={{ borderRadius: 6, border: `1px solid ${borderColor}`, background: bg, overflow: 'hidden' }}>
       {/* 헤더 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderBottom: `1px solid ${C.border}` }}>
+      <div className="quant-stock-header" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderBottom: `1px solid ${C.border}` }}>
         <span style={{ fontFamily: MONO, fontSize: 18, fontWeight: 700, color: gradeColor }}>{a.grade}</span>
         <span style={{ fontSize: 14, fontWeight: 600, flex: 1 }}>{a.name} <em style={{ fontStyle: 'normal', color: C.muted, fontSize: 11, marginLeft: 6 }}>{a.ticker}</em></span>
         <span style={{ fontFamily: MONO, fontSize: 10, padding: '2px 8px', borderRadius: 3, fontWeight: 700, background: badgeBg, color: badgeText }}>{actKr}</span>
@@ -287,7 +287,7 @@ function PortfolioZone({ z3 }: { z3: QuantDashboardState['zone3'] }) {
     <Zone label="포트폴리오" title="모의투자 성과">
       <div style={{ padding: 16 }}>
         {/* 성과 그리드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: C.border, borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
+        <div className="quant-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: C.border, borderRadius: 4, overflow: 'hidden', marginBottom: 14 }}>
           {[
             { label: '총 자산', val: z3.equity != null ? z3.equity.toLocaleString() + '원' : '—', sub: `${pctSign(totRet)}${totRet.toFixed(2)}% (초기 ${(z3.initial_capital ?? 0).toLocaleString()}원)`, color: valCls(totRet) },
             { label: '이번 주', val: `${pctSign(weekRet)}${weekRet.toFixed(2)}%`, sub: '', color: valCls(weekRet) },
@@ -390,7 +390,7 @@ function SupplyZone({ z5 }: { z5: QuantDashboardState['zone5'] }) {
               const patCls = d.pattern === '매집' ? { bg: C.green3, color: C.green } : d.pattern === '분산' ? { bg: C.red2, color: C.red } : { bg: C.amber2, color: C.amber }
               return (
                 <div key={d.ticker} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', borderRadius: 4, background: C.bg3, border: `1px solid ${C.border}` }}>
-                  <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, width: 18, color: d.grade === 'A' ? C.green : d.grade === 'B' ? '#7dd3fc' : C.amber }}>{d.grade}</span>
+                  <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, width: 18, color: d.grade === 'A' ? C.green : d.grade === 'B' ? C.blue : C.amber }}>{d.grade}</span>
                   <span style={{ fontSize: 12, flex: 1 }}>{d.name}</span>
                   <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 3, whiteSpace: 'nowrap', background: patCls.bg, color: patCls.color }}>{d.pattern} {d.pattern_name ? `(${d.pattern_name})` : ''}</span>
                   <span style={{ fontFamily: MONO, fontSize: 10, color: C.muted }}>{d.sd_score}</span>
@@ -402,7 +402,7 @@ function SupplyZone({ z5 }: { z5: QuantDashboardState['zone5'] }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {z5.foreign_flow.map(f => (
               <div key={f.ticker} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', borderRadius: 4, background: C.bg3, border: `1px solid ${C.border}` }}>
-                <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, width: 18, color: '#7dd3fc' }}>—</span>
+                <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, width: 18, color: C.blue }}>—</span>
                 <span style={{ fontSize: 12, flex: 1 }}>{f.name}</span>
                 <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 3, background: C.amber2, color: C.amber }}>{f.direction} z{f.z_score.toFixed(1)}</span>
                 <span style={{ fontFamily: MONO, fontSize: 10, color: C.muted }}>score {f.score}</span>
@@ -515,7 +515,7 @@ export function QuantView() {
   return (
     <div style={{ minHeight: '100vh', background: C.bg, fontFamily: "'Noto Sans KR', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
       {/* 헤더 */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: `1px solid ${C.border}`, background: C.bg2, position: 'sticky', top: 0, zIndex: 100 }}>
+      <header className="quant-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px', borderBottom: `1px solid ${C.border}`, background: C.bg2, position: 'sticky', top: 0, zIndex: 100 }}>
         <span style={{ fontFamily: MONO, fontSize: 15, color: C.green, letterSpacing: '0.1em' }}>퀀트 시스템 <span style={{ color: C.muted, fontSize: 11 }}>PRO</span></span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, boxShadow: `0 0 8px ${C.green}` }} className="animate-pulse" />
@@ -527,7 +527,7 @@ export function QuantView() {
       <TrustBar z6={data.zone6} shield={data.zone1.shield_status} />
 
       {/* 메인 */}
-      <main style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <main className="quant-main" style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         <VerdictZone z1={data.zone1} />
         <ActionZone z2={data.zone2} />
         <PortfolioZone z3={data.zone3} />

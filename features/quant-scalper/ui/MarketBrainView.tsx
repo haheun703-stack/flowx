@@ -45,9 +45,9 @@ const riskColor = (r: string) => {
   switch (r) {
     case "LOW": return "text-[#16a34a] bg-[#16a34a]/10 border-[#16a34a]/30"
     case "MEDIUM": return "text-[var(--yellow)] bg-yellow-400/10 border-yellow-400/30"
-    case "HIGH": return "text-orange-600 bg-orange-400/10 border-orange-400/30"
+    case "HIGH": return "text-[var(--yellow)] bg-amber-50 border-amber-200"
     case "EXTREME": return "text-[#dc2626] bg-[#dc2626]/10 border-[#dc2626]/30"
-    default: return "text-[var(--text-dim)] bg-gray-200 border-[var(--border)]"
+    default: return "text-[var(--text-dim)] bg-[var(--bg-row)] border-[var(--border)]"
   }
 }
 
@@ -98,7 +98,7 @@ export function MarketBrainView() {
             <span className="text-xs text-[var(--text-muted)] block">투자비중</span>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-[#2563eb]">{data.position_size_pct}%</span>
-              <div className="w-24 h-2 bg-gray-200 rounded-full">
+              <div className="w-24 h-2 bg-[var(--bg-row)] rounded-full">
                 <div className="h-full rounded-full bg-[#2563eb]" style={{ width: `${data.position_size_pct}%` }} />
               </div>
             </div>
@@ -112,7 +112,7 @@ export function MarketBrainView() {
         {/* Phase 1: 매크로 */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 1</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 1</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">매크로</span>
           </div>
           <span className={`text-lg font-bold ${macroColor(data.macro_direction)}`}>{data.macro_direction}</span>
@@ -141,7 +141,7 @@ export function MarketBrainView() {
         {/* Phase 2: 원자재 */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 2</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 2</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">원자재 릴레이</span>
           </div>
           <span className="text-lg font-bold text-[var(--yellow)]">{data.commodity_relay}</span>
@@ -151,7 +151,7 @@ export function MarketBrainView() {
         {/* Phase 3: 섹터 */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 3</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 3</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">섹터</span>
           </div>
           <div className="space-y-2 text-xs">
@@ -167,7 +167,7 @@ export function MarketBrainView() {
               <span className="text-[var(--text-muted)]">NEXT</span>
               <div className="flex flex-wrap gap-1 mt-0.5">
                 {(data.next_sectors ?? []).map((s, i) => (
-                  <span key={i} className="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 border border-orange-500/30 text-[10px]">{s}</span>
+                  <span key={i} className="px-1.5 py-0.5 rounded bg-amber-50 text-[var(--yellow)] border border-[var(--yellow)]/30 text-[10px]">{s}</span>
                 ))}
               </div>
             </div>
@@ -175,7 +175,7 @@ export function MarketBrainView() {
               <span className="text-[var(--text-muted)]">COOLING</span>
               <div className="flex flex-wrap gap-1 mt-0.5">
                 {(data.cooling_sectors ?? []).map((s, i) => (
-                  <span key={i} className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-600 border border-cyan-500/30 text-[10px]">{s}</span>
+                  <span key={i} className="px-1.5 py-0.5 rounded bg-[var(--down-bg)] text-[var(--down)] border border-[var(--down)]/30 text-[10px]">{s}</span>
                 ))}
               </div>
             </div>
@@ -186,7 +186,7 @@ export function MarketBrainView() {
         {/* Phase 4: 수급 */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 4</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 4</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">수급</span>
           </div>
           <span className="text-lg font-bold text-[#2563eb]">주도: {data.dominant_buyer}</span>
@@ -196,7 +196,7 @@ export function MarketBrainView() {
         {/* Phase 5: 리스크 */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 5</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 5</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">리스크</span>
           </div>
           <div className="flex items-center gap-3">
@@ -209,7 +209,7 @@ export function MarketBrainView() {
         {/* Phase 6: 종목 서술 (미리보기) */}
         <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-200 text-[var(--text-dim)]">Phase 6</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-row)] text-[var(--text-dim)]">Phase 6</span>
             <span className="text-sm text-[var(--text-primary)] font-bold">종목 AI 분석</span>
             <span className="text-xs text-[var(--text-muted)]">{(data.stock_narratives ?? []).length}종목</span>
           </div>
@@ -247,7 +247,7 @@ export function MarketBrainView() {
               </thead>
               <tbody>
                 {(data.stock_narratives ?? []).map((s, i) => (
-                  <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                  <tr key={i} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                     <td className={`text-center py-2 px-3 font-bold ${gradeColor(s.grade)}`}>{s.grade}</td>
                     <td className="px-3">
                       <span className="text-[var(--text-primary)]">{s.name}</span>

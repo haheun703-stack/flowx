@@ -28,15 +28,15 @@ export function SwingTabsView() {
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* 탭 바 — /quant pill 스타일 */}
       <div className="max-w-[1400px] mx-auto px-6 pt-6">
-        <nav className="flex gap-1 bg-gray-100 rounded-lg p-1 border border-[var(--border)] overflow-x-auto">
+        <nav className="flex gap-1 bg-[var(--bg-row)] rounded-xl p-1 border border-[var(--border)] overflow-x-auto">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`shrink-0 py-2 px-3 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`shrink-0 py-2 px-3 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                 tab === t.key
-                  ? "bg-blue-600 text-white"
-                  : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
+                  ? "bg-[var(--text-primary)] text-white"
+                  : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-white"
               }`}
             >
               {t.label}

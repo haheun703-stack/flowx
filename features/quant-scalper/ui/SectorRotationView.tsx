@@ -116,7 +116,7 @@ export function SectorRotationView() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.sector} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
+                <tr key={r.sector} className="border-b border-[var(--border)]/50 hover:bg-[var(--bg-row)]">
                   <td className="text-center py-2.5 px-2 text-[var(--text-muted)] font-mono">{r.rank}</td>
                   <td className="text-center px-2 text-[10px]">{rankArrow(r.rank_change)}</td>
                   <td className="px-3">

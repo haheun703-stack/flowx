@@ -139,11 +139,11 @@ export default function SwingDashboardView() {
   if (loading) {
     return (
       <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
-        <div className="h-20 bg-gray-200 rounded-lg" />
+        <div className="h-20 bg-[var(--bg-row)] rounded-xl" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[1,2,3,4].map(i => <div key={i} className="h-24 bg-gray-200 rounded-lg" />)}
+          {[1,2,3,4].map(i => <div key={i} className="h-24 bg-[var(--bg-row)] rounded-xl" />)}
         </div>
-        <div className="h-64 bg-gray-200 rounded-lg" />
+        <div className="h-64 bg-[var(--bg-row)] rounded-xl" />
       </div>
     )
   }
@@ -432,7 +432,7 @@ export default function SwingDashboardView() {
               </thead>
               <tbody>
                 {data.etf_picks.map((e) => (
-                  <tr key={e.code} className="border-b border-[var(--border)]/30 hover:bg-gray-50/50">
+                  <tr key={e.code} className="border-b border-[var(--border)]/30 hover:bg-[var(--bg-row)]/50">
                     <td className="py-2.5 px-3">
                       <span className="font-bold text-[#1A1A2E]">{e.name}</span>
                       <span className="text-[#6B7280] ml-1">{e.code}</span>

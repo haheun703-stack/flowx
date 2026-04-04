@@ -113,15 +113,15 @@ export function EtfPicksView() {
 
             {/* 가격 목표 */}
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="bg-gray-100 rounded-lg p-2">
+              <div className="bg-[var(--bg-row)] rounded-lg p-2">
                 <span className="text-[10px] text-[var(--text-muted)] block">진입가</span>
                 <span className="text-sm text-[var(--text-primary)] font-bold">{fmtPrice(p.entry)}</span>
               </div>
-              <div className="bg-gray-100 rounded-lg p-2">
+              <div className="bg-[var(--bg-row)] rounded-lg p-2">
                 <span className="text-[10px] text-[var(--text-muted)] block">손절가</span>
                 <span className="text-sm text-[#dc2626] font-bold">{fmtPrice(p.sl)}</span>
               </div>
-              <div className="bg-gray-100 rounded-lg p-2">
+              <div className="bg-[var(--bg-row)] rounded-lg p-2">
                 <span className="text-[10px] text-[var(--text-muted)] block">목표가</span>
                 <span className="text-sm text-[#16a34a] font-bold">{fmtPrice(p.tp)}</span>
               </div>
@@ -134,7 +134,7 @@ export function EtfPicksView() {
             </div>
 
             {/* 사유 */}
-            <p className="text-xs text-[var(--text-dim)] bg-gray-100 rounded p-2">{p.reason}</p>
+            <p className="text-xs text-[var(--text-dim)] bg-[var(--bg-row)] rounded p-2">{p.reason}</p>
           </div>
         ))}
       </div>
