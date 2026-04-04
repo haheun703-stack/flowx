@@ -70,8 +70,8 @@ export function FearGreedGauge() {
 
       <div className="p-3">
         {fgItem ? (
-          <div className="flex flex-col items-center gap-1">
-            <svg viewBox="0 0 200 155" className="w-full max-w-[220px]">
+          <div className="flex flex-col items-center">
+            <svg viewBox="0 10 200 98" className="w-full max-w-[220px]">
               {/* 배경 호 */}
               <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
               {/* 색상 세그먼트 */}
@@ -83,26 +83,25 @@ export function FearGreedGauge() {
               {/* 중심 점 */}
               <circle cx={CX} cy={CY} r={5} fill={label.color} />
               <circle cx={CX} cy={CY} r={2.5} fill="white" />
-
-              {/* ── 값 + 라벨: 바늘 아래 ── */}
-              <text x={CX} y={CY + 22} textAnchor="middle" fill={label.color} fontSize="28" fontWeight="900"
-                style={{ fontVariantNumeric: 'tabular-nums' }}>
-                {Math.round(fgValue)}
-              </text>
-              <text x={CX} y={CY + 38} textAnchor="middle" fill={label.color} fontSize="12" fontWeight="800">
-                {label.text}
-              </text>
-
-              {/* ── 좌: 공포 (크고 진하게) ── */}
-              <text x={CX - R - 2} y={CY + 4} textAnchor="start" fill="#ef4444" fontSize="12" fontWeight="800">공포</text>
-              <text x={CX - R - 2} y={CY + 18} textAnchor="start" fill="#ef4444" fontSize="13" fontWeight="900"
-                style={{ fontVariantNumeric: 'tabular-nums' }}>0</text>
-
-              {/* ── 우: 탐욕 (크고 진하게) ── */}
-              <text x={CX + R + 2} y={CY + 4} textAnchor="end" fill="#22c55e" fontSize="12" fontWeight="800">탐욕</text>
-              <text x={CX + R + 2} y={CY + 18} textAnchor="end" fill="#22c55e" fontSize="13" fontWeight="900"
-                style={{ fontVariantNumeric: 'tabular-nums' }}>100</text>
             </svg>
+
+            {/* ── 값 + 라벨: SVG 아래 HTML ── */}
+            <div className="text-center -mt-1">
+              <p className="text-[28px] font-black tabular-nums" style={{ color: label.color }}>{Math.round(fgValue)}</p>
+              <p className="text-[12px] font-extrabold" style={{ color: label.color }}>{label.text}</p>
+            </div>
+
+            {/* ── 공포 / 탐욕 라벨 ── */}
+            <div className="flex justify-between w-full mt-1 px-2">
+              <div className="text-left">
+                <p className="text-[12px] font-extrabold text-[#ef4444]">공포</p>
+                <p className="text-[13px] font-black text-[#ef4444] tabular-nums">0</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[12px] font-extrabold text-[#22c55e]">탐욕</p>
+                <p className="text-[13px] font-black text-[#22c55e] tabular-nums">100</p>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="flex items-center justify-center h-24 text-[var(--text-muted)] text-sm">

@@ -58,7 +58,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </div>
 
       {/* SVG Gauge */}
-      <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
+      <svg viewBox="0 10 200 98" className="w-full max-w-[200px]">
         {/* Background arc */}
         <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
         {/* Colored segments */}
