@@ -1,7 +1,18 @@
 'use client'
 
-import { useId } from 'react'
 import { useMacroDaily } from '../api/useMacroDashboard'
+
+/* ── Gauge constants (CostFloorGauge와 동일) ── */
+const CX = 100, CY = 100, R = 75, SW = 12
+
+/* 공포→탐욕: 왼쪽(0)=빨강, 오른쪽(100)=초록 */
+const ARCS = [
+  { from: 180, to: 144, color: '#ef4444' },  // 극단적 공포 (빨강)
+  { from: 144, to: 108, color: '#f97316' },  // 공포 (주황)
+  { from: 108, to: 72,  color: '#eab308' },  // 중립 (노랑)
+  { from: 72,  to: 36,  color: '#84cc16' },  // 탐욕 (연두)
+  { from: 36,  to: 0,   color: '#22c55e' },  // 극단적 탐욕 (초록)
+]
 
 /** 0~100 값을 공포/탐욕 라벨로 */
 function getLabel(value: number): { text: string; color: string } {
@@ -12,79 +23,23 @@ function getLabel(value: number): { text: string; color: string } {
   return { text: '극단적 탐욕', color: '#22c55e' }
 }
 
-/** 반원 SVG 게이지 */
-function SemiCircleGauge({ value, size = 220 }: { value: number; size?: number }) {
-  const gradId = useId()
-  const cx = size / 2
-  const cy = size / 2 + 10
-  const r = size / 2 - 20
-  const startAngle = Math.PI       // 180° (왼쪽)
-  const endAngle = 0               // 0° (오른쪽)
-  const valueAngle = startAngle - (value / 100) * Math.PI // 0~100 → 180°~0°
-
-  // 배경 호 경로
-  const bgArc = describeArc(cx, cy, r, startAngle, endAngle)
-  // 값 호 경로
-  const valArc = describeArc(cx, cy, r, startAngle, valueAngle)
-  // 바늘 좌표
-  const needleX = cx + (r - 15) * Math.cos(valueAngle)
-  const needleY = cy - (r - 15) * Math.sin(valueAngle)
-
-  const label = getLabel(value)
-
-  return (
-    <svg width={size} height={size / 2 + 40} viewBox={`0 0 ${size} ${size / 2 + 40}`} className="mx-auto">
-      {/* 배경 그라데이션 정의 */}
-      <defs>
-        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ef4444" />
-          <stop offset="25%" stopColor="#f97316" />
-          <stop offset="50%" stopColor="#eab308" />
-          <stop offset="75%" stopColor="#84cc16" />
-          <stop offset="100%" stopColor="#22c55e" />
-        </linearGradient>
-      </defs>
-
-      {/* 배경 호 (회색) */}
-      <path d={bgArc} fill="none" stroke="#e5e7eb" strokeWidth="16" strokeLinecap="round" />
-
-      {/* 값 호 (그라데이션) */}
-      <path d={valArc} fill="none" stroke={`url(#${gradId})`} strokeWidth="16" strokeLinecap="round" />
-
-      {/* 바늘 */}
-      <circle cx={needleX} cy={needleY} r="6" fill={label.color} stroke="white" strokeWidth="2" />
-      <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke={label.color} strokeWidth="2" opacity="0.6" />
-
-      {/* 중앙 원 */}
-      <circle cx={cx} cy={cy} r="8" fill="white" stroke="#d1d5db" strokeWidth="2" />
-
-      {/* 라벨: 0, 50, 100 */}
-      <text x={20} y={cy + 20} fill="#64748b" fontSize="11" textAnchor="middle">0</text>
-      <text x={cx} y={cy - r - 8} fill="#64748b" fontSize="11" textAnchor="middle">50</text>
-      <text x={size - 20} y={cy + 20} fill="#64748b" fontSize="11" textAnchor="middle">100</text>
-
-      {/* 큰 숫자 */}
-      <text x={cx} y={cy - 20} fill={label.color} fontSize="36" fontWeight="900" textAnchor="middle">{Math.round(value)}</text>
-      <text x={cx} y={cy + 4} fill={label.color} fontSize="14" fontWeight="700" textAnchor="middle">{label.text}</text>
-    </svg>
-  )
+/** polar → cartesian (SVG y-down) */
+function toXY(deg: number, r = R) {
+  const rad = (deg * Math.PI) / 180
+  return [CX + r * Math.cos(rad), CY - r * Math.sin(rad)] as const
 }
 
-/** SVG 호 경로 생성 (시계 방향 위에서 그림) */
-function describeArc(cx: number, cy: number, r: number, startAngle: number, endAngle: number): string {
-  const x1 = cx + r * Math.cos(startAngle)
-  const y1 = cy - r * Math.sin(startAngle)
-  const x2 = cx + r * Math.cos(endAngle)
-  const y2 = cy - r * Math.sin(endAngle)
-  const largeArc = Math.abs(startAngle - endAngle) > Math.PI ? 1 : 0
-  // 반시계 방향 (sweep=0) → 위쪽 반원
-  return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 0 ${x2} ${y2}`
+/** SVG arc path */
+function arcD(from: number, to: number) {
+  const [x1, y1] = toXY(from)
+  const [x2, y2] = toXY(to)
+  const large = (from - to) > 180 ? 1 : 0
+  return `M${x1.toFixed(1)} ${y1.toFixed(1)}A${R} ${R} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`
 }
 
 export function FearGreedGauge() {
   const { data, isLoading, isError } = useMacroDaily()
 
-  // F&G 값 찾기 (sentiment 카테고리에서 우선 검색)
   const sentimentItems = data?.categories?.sentiment ?? data?.items
   const fgItem = sentimentItems?.find(i => i.symbol === 'FNG' || i.symbol === 'FEAR_GREED')
   const vixItem = sentimentItems?.find(i => i.symbol === 'VIX') ?? data?.items?.find(i => i.symbol === 'VIX')
@@ -101,13 +56,18 @@ export function FearGreedGauge() {
     )
   }
 
-  const fgValue = fgItem?.value ?? 50
+  const fgValue = Math.max(0, Math.min(100, fgItem?.value ?? 50))
   const vixValue = vixItem?.value ?? 0
   const vixAlert = vixValue >= 25
+  const label = getLabel(fgValue)
+
+  // 바늘 각도: 0→180°(왼쪽), 100→0°(오른쪽)
+  const needleDeg = 180 - (fgValue * 180) / 100
+  const [nx, ny] = toXY(needleDeg, R - SW / 2 - 8)
 
   return (
     <div className="bg-white rounded-xl overflow-hidden">
-      {/* CategoryCard 동일 헤더 스타일 */}
+      {/* 헤더 */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--border)]/50">
         <span className="text-lg">😱</span>
         <span className="text-lg font-bold" style={{ color: '#ef4444' }}>공포 & 탐욕</span>
@@ -115,7 +75,36 @@ export function FearGreedGauge() {
 
       <div className="p-3">
         {fgItem ? (
-          <SemiCircleGauge value={fgValue} size={200} />
+          <div className="flex flex-col items-center gap-1">
+            <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
+              {/* 배경 호 */}
+              <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
+              {/* 색상 세그먼트 */}
+              {ARCS.map((a, i) => (
+                <path key={i} d={arcD(a.from, a.to)} fill="none" stroke={a.color} strokeWidth={SW} opacity={0.8} />
+              ))}
+              {/* 바늘 */}
+              <line x1={CX} y1={CY} x2={nx} y2={ny} stroke={label.color} strokeWidth={2.5} strokeLinecap="round" />
+              {/* 중심 점 */}
+              <circle cx={CX} cy={CY} r={5} fill={label.color} />
+              <circle cx={CX} cy={CY} r={2.5} fill="white" />
+              {/* 값 */}
+              <text x={CX} y={CY - 24} textAnchor="middle" fill={label.color} fontSize="26" fontWeight="900"
+                style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {Math.round(fgValue)}
+              </text>
+              {/* 라벨 */}
+              <text x={CX} y={CY - 8} textAnchor="middle" fill={label.color} fontSize="11" fontWeight="700">
+                {label.text}
+              </text>
+              {/* 좌: 공포 */}
+              <text x={CX - R} y={CY + 15} textAnchor="start" fill="#9ca3af" fontSize="9">공포</text>
+              <text x={CX - R} y={CY + 27} textAnchor="start" fill="#ef4444" fontSize="10" fontWeight="bold">0</text>
+              {/* 우: 탐욕 */}
+              <text x={CX + R} y={CY + 15} textAnchor="end" fill="#9ca3af" fontSize="9">탐욕</text>
+              <text x={CX + R} y={CY + 27} textAnchor="end" fill="#22c55e" fontSize="10" fontWeight="bold">100</text>
+            </svg>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-24 text-[var(--text-muted)] text-sm">
             F&G 데이터 없음
@@ -125,7 +114,7 @@ export function FearGreedGauge() {
         {/* VIX */}
         {vixItem && (
           <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
-            vixAlert ? 'bg-red-50 border border-red-200' : 'hover:bg-gray-50'
+            vixAlert ? 'bg-red-50 border border-red-200' : 'hover:bg-[var(--bg-row)]'
           }`}>
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--text-primary)] font-medium">VIX</span>
@@ -134,7 +123,7 @@ export function FearGreedGauge() {
             <div className="flex items-center gap-2.5 shrink-0">
               <span className="text-base text-[var(--text-primary)] font-bold tabular-nums">{vixValue.toFixed(1)}</span>
               {vixItem.change_pct != null && (
-                <span className={`text-sm font-bold tabular-nums w-16 text-right`}
+                <span className="text-sm font-bold tabular-nums w-16 text-right"
                   style={{ color: vixItem.change_pct >= 0 ? '#dc2626' : '#2563eb' }}>
                   {vixItem.change_pct >= 0 ? '+' : ''}{vixItem.change_pct.toFixed(2)}%
                 </span>

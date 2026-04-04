@@ -43,7 +43,7 @@ function MacroItemRow({ item }: { item: MacroItem }) {
   return (
     <div className={`flex items-center justify-between py-2.5 px-3 rounded transition-colors ${
       isAlert ? 'bg-red-50 border border-red-200' :
-      isHighlight ? 'bg-gray-100' : 'hover:bg-gray-50'
+      isHighlight ? 'bg-[var(--bg-row)]' : 'hover:bg-[var(--bg-row)]'
     }`}>
       <div className="flex items-center gap-2 min-w-0">
         <span className="text-sm text-[var(--text-primary)] font-medium truncate">{item.name_ko}</span>
