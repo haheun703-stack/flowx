@@ -58,7 +58,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </div>
 
       {/* SVG Gauge */}
-      <svg viewBox="0 0 200 155" className="w-full max-w-[220px]">
+      <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
         {/* Background arc */}
         <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
         {/* Colored segments */}
@@ -70,34 +70,25 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         {/* Center dot */}
         <circle cx={CX} cy={CY} r={5} fill={color} />
         <circle cx={CX} cy={CY} r={2.5} fill="white" />
-
-        {/* ── 가격 + % : 바늘 아래 ── */}
-        <text x={CX} y={CY + 22} textAnchor="middle" fill="#111827" fontSize="16" fontWeight="900"
-          style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.current_price?.toLocaleString('ko-KR') ?? '—'}
-        </text>
-        <text x={CX} y={CY + 38} textAnchor="middle" fill={color} fontSize="13" fontWeight="800">
-          {pct.toFixed(0)}%
-        </text>
-
-        {/* ── 좌: 바닥 (크고 진하게) ── */}
-        <text x={CX - R - 2} y={CY + 4} textAnchor="start" fill="#22c55e" fontSize="12" fontWeight="800">
-          {item.floor_name ?? '바닥'}
-        </text>
-        <text x={CX - R - 2} y={CY + 18} textAnchor="start" fill="#22c55e" fontSize="13" fontWeight="900"
-          style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.floor_price.toLocaleString('ko-KR')}
-        </text>
-
-        {/* ── 우: 천장 (크고 진하게) ── */}
-        <text x={CX + R + 2} y={CY + 4} textAnchor="end" fill="#ef4444" fontSize="12" fontWeight="800">
-          {item.ceiling_name ?? '천장'}
-        </text>
-        <text x={CX + R + 2} y={CY + 18} textAnchor="end" fill="#ef4444" fontSize="13" fontWeight="900"
-          style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {item.ceiling_price.toLocaleString('ko-KR')}
-        </text>
       </svg>
+
+      {/* ── 가격 + % : SVG 아래 HTML ── */}
+      <div className="text-center -mt-1">
+        <p className="text-[15px] font-black text-[#111827] tabular-nums">{item.current_price?.toLocaleString('ko-KR') ?? '—'}</p>
+        <p className="text-[12px] font-bold" style={{ color }}>{pct.toFixed(0)}%</p>
+      </div>
+
+      {/* ── 바닥 / 천장 라벨 ── */}
+      <div className="flex justify-between w-full mt-1 px-1">
+        <div className="text-left">
+          <p className="text-[9px] font-bold text-[#22c55e] truncate max-w-[80px]">{item.floor_name ?? '바닥'}</p>
+          <p className="text-[11px] font-black text-[#22c55e] tabular-nums">{item.floor_price.toLocaleString('ko-KR')}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[9px] font-bold text-[#ef4444] truncate max-w-[80px] ml-auto">{item.ceiling_name ?? '천장'}</p>
+          <p className="text-[11px] font-black text-[#ef4444] tabular-nums">{item.ceiling_price.toLocaleString('ko-KR')}</p>
+        </div>
+      </div>
 
       {/* Warning badge */}
       {warn === 'high' && (
