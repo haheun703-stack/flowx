@@ -3,7 +3,16 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
-import { SECTOR_LIST, TIER_COLORS } from '@/lib/chart-tokens'
+import { SECTOR_LIST } from '@/lib/chart-tokens'
+
+/* 트리맵과 동일한 색상 체계 — 티어 높을수록 빨강(상위), 낮을수록 파랑(하위) */
+const TIER_BAR: Record<number, string> = {
+  5: '#991B1B',  // Tier5 글로벌 ETF
+  4: '#DC2626',  // Tier4 글로벌 대장주
+  3: '#F87171',  // Tier3 소부장/장비
+  2: '#93C5FD',  // Tier2 KR 대형
+  1: '#2563EB',  // Tier1 KR 소부장
+}
 import { getDisplayName } from '@/lib/stock-name-ko'
 
 const FONT = 'var(--font-jetbrains), monospace'
@@ -63,7 +72,7 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
               key={tier}
               style={{
                 flex: count,
-                backgroundColor: TIER_COLORS[tier].badge,
+                backgroundColor: TIER_BAR[tier],
               }}
               title={`Tier ${tier}: ${count}종목`}
             />

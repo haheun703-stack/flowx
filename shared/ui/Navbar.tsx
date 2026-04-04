@@ -27,8 +27,8 @@ const NAV_TABS = [
     href: '/sectors',
     match: (p: string) => p.startsWith('/sectors') || p.startsWith('/market/treemap'),
     sub: [
-      { label: '섹터맵', href: '/sectors' },
       { label: '트리맵', href: '/market/treemap' },
+      { label: '섹터맵', href: '/sectors' },
       { label: '글로벌 대장주', href: '/sectors/leaders' },
     ],
   },
