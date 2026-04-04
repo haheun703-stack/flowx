@@ -203,20 +203,20 @@ export default function FibStocksView() {
                         <span className="font-bold text-[#1A1A2E]">{s.name}</span>
                       </td>
                       <td className="text-center py-2.5 px-2 text-[#6B7280]">{s.sector}</td>
-                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{fmtCap(s.cap)}</td>
-                      <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums">{s.price.toLocaleString()}</td>
+                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{fmtCap(s.cap ?? 0)}</td>
+                      <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums">{(s.price ?? 0).toLocaleString()}</td>
                       <td className="text-right py-2.5 px-2 font-bold tabular-nums" style={{ color: '#DC2626' }}>
-                        {s.drop.toFixed(1)}%
+                        {(s.drop ?? 0).toFixed(1)}%
                       </td>
                       <td className="py-2.5 px-2">
                         <FibMiniGauge stock={s} />
                         <p className="text-[10px] text-[#6B7280] text-center mt-0.5">{s.fib_status}</p>
                       </td>
                       <td className="text-right py-2.5 px-2 font-bold tabular-nums" style={{ color: '#16A34A' }}>
-                        +{s.upside.toFixed(1)}%
+                        +{(s.upside ?? 0).toFixed(1)}%
                       </td>
-                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{s.per.toFixed(1)}</td>
-                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{s.frgn.toFixed(1)}%</td>
+                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{(s.per ?? 0).toFixed(1)}</td>
+                      <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums">{(s.frgn ?? 0).toFixed(1)}%</td>
                     </tr>
                   ))}
                 </tbody>
