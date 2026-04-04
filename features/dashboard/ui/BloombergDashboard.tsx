@@ -11,12 +11,19 @@ import { MorningNewsPanel } from './MorningNewsPanel'
 import { MarketJudgmentCard } from './MarketJudgmentCard'
 import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvestorFlowKosdaq } from '../api/useDashboard'
 
+type FlowPeriod = '1D' | '5D' | '30D'
+const PERIOD_DAYS: Record<FlowPeriod, number> = { '1D': 1, '5D': 5, '30D': 30 }
+const PERIOD_LABELS: Record<FlowPeriod, string> = { '1D': '1일', '5D': '5일', '30D': '30일' }
+
 export function BloombergDashboard() {
   const [activeIndex, setActiveIndex] = useState<'KOSPI' | 'KOSDAQ'>('KOSPI')
+  const [flowPeriod, setFlowPeriod] = useState<FlowPeriod>('30D')
+  const days = PERIOD_DAYS[flowPeriod]
+
   const { data: kospiData } = useDashboardDaily()
   const { data: kosdaqData } = useDashboardDailyKosdaq()
-  const { data: investorFlow } = useInvestorFlow()
-  const { data: investorFlowKosdaq } = useInvestorFlowKosdaq()
+  const { data: investorFlow } = useInvestorFlow(days)
+  const { data: investorFlowKosdaq } = useInvestorFlowKosdaq(days)
 
   const chartData = activeIndex === 'KOSPI' ? kospiData : kosdaqData
   const flowData = activeIndex === 'KOSPI' ? investorFlow : investorFlowKosdaq
@@ -47,9 +54,26 @@ export function BloombergDashboard() {
                     </button>
                   ))}
                 </div>
-                <span className="text-[13px] font-medium text-[#9CA3AF]">
-                  30일 차트 | {chartData?.lastDate ?? ''} 종가 기준
-                </span>
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {(['1D', '5D', '30D'] as const).map(p => (
+                      <button
+                        key={p}
+                        onClick={() => setFlowPeriod(p)}
+                        className={`px-2 py-0.5 text-[13px] font-bold rounded transition-colors ${
+                          flowPeriod === p
+                            ? 'text-[#1A1A2E] bg-[#F0EDE8]'
+                            : 'text-[#B0ADA6] hover:text-[#6B7280]'
+                        }`}
+                      >
+                        {PERIOD_LABELS[p]}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[13px] font-medium text-[#9CA3AF]">
+                    {days}일 수급 | {chartData?.lastDate ?? ''} 종가 기준
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-baseline gap-3 mb-1">
@@ -80,11 +104,59 @@ export function BloombergDashboard() {
                 marketOpen={chartData?.marketOpen ?? false}
                 mode={(chartData?.mode as 'intraday' | 'daily' | 'empty') ?? 'empty'}
                 lastDate={chartData?.lastDate}
-                investorFlow={flowData}
+                investorFlow={flowPeriod !== '1D' ? flowData : undefined}
                 indexLabel={activeIndex}
               />
 
-              {flowData && flowData.length > 0 && (() => {
+              {/* 1일 바 차트 */}
+              {flowPeriod === '1D' && flowData && flowData.length > 0 && (() => {
+                const latest = flowData[flowData.length - 1]
+                const toEok = (v: number) => Math.round(v / 100)
+                const items = [
+                  { label: '외국인', value: toEok(latest.foreign_net), color: '#1A1A2E' },
+                  { label: '기관', value: toEok(latest.inst_net), color: '#EAB308' },
+                  { label: '개인', value: toEok(latest.indiv_net), color: '#00FF88' },
+                ]
+                const maxAbs = Math.max(...items.map(i => Math.abs(i.value)), 1)
+                return (
+                  <div className="mt-3 flex items-end justify-center gap-8" style={{ height: 160 }}>
+                    {items.map(item => {
+                      const pct = Math.abs(item.value) / maxAbs * 100
+                      const isPos = item.value >= 0
+                      return (
+                        <div key={item.label} className="flex flex-col items-center" style={{ height: '100%' }}>
+                          {/* 값 */}
+                          <span className="text-[13px] font-bold tabular-nums mb-1" style={{ color: item.color }}>
+                            {item.value >= 0 ? '+' : ''}{item.value.toLocaleString()}억
+                          </span>
+                          {/* 바 컨테이너: 위=양수, 아래=음수 */}
+                          <div className="flex-1 flex flex-col justify-center w-14 relative">
+                            {/* 0 기준선 */}
+                            <div className="absolute left-0 right-0 top-1/2 h-px bg-[#E8E6E0]" />
+                            {isPos ? (
+                              <div className="flex flex-col justify-end items-center" style={{ height: '50%' }}>
+                                <div className="w-10 rounded-t" style={{ height: `${pct}%`, minHeight: 4, backgroundColor: item.color, opacity: 0.85 }} />
+                              </div>
+                            ) : (
+                              <>
+                                <div style={{ height: '50%' }} />
+                                <div className="flex flex-col justify-start items-center" style={{ height: '50%' }}>
+                                  <div className="w-10 rounded-b" style={{ height: `${pct}%`, minHeight: 4, backgroundColor: item.color, opacity: 0.85 }} />
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          {/* 라벨 */}
+                          <span className="text-[12px] font-semibold text-[#6B7280] mt-1">{item.label}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
+
+              {/* 수급 요약 (5일/30일) */}
+              {flowPeriod !== '1D' && flowData && flowData.length > 0 && (() => {
                 const latest = flowData[flowData.length - 1]
                 const toEok = (v: number) => Math.round(v / 100)
                 const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}억`

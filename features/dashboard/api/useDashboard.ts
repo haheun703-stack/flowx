@@ -322,7 +322,7 @@ export function useDashboardDailyKosdaq() {
   })
 }
 
-// --- KOSPI 투자자별 일별 순매수 (30일) ---
+// --- KOSPI 투자자별 일별 순매수 ---
 export interface InvestorFlowPoint {
   date: string
   foreign_net: number
@@ -330,19 +330,19 @@ export interface InvestorFlowPoint {
   indiv_net: number
 }
 
-export function useInvestorFlow() {
+export function useInvestorFlow(days: number = 30) {
   return useQuery<InvestorFlowPoint[]>({
-    queryKey: ['investor-flow'],
-    queryFn: () => fetchJson('/api/market/investor-flow'),
+    queryKey: ['investor-flow', days],
+    queryFn: () => fetchJson(`/api/market/investor-flow?days=${days}`),
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 30,
   })
 }
 
-export function useInvestorFlowKosdaq() {
+export function useInvestorFlowKosdaq(days: number = 30) {
   return useQuery<InvestorFlowPoint[]>({
-    queryKey: ['investor-flow-kosdaq'],
-    queryFn: () => fetchJson('/api/market/investor-flow-kosdaq'),
+    queryKey: ['investor-flow-kosdaq', days],
+    queryFn: () => fetchJson(`/api/market/investor-flow-kosdaq?days=${days}`),
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 30,
   })

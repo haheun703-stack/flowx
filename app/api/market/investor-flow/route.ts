@@ -3,20 +3,26 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+const ALLOWED_DAYS = [1, 5, 30] as const
+
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const rawDays = Number(searchParams.get('days') ?? 30)
+    const days = ALLOWED_DAYS.includes(rawDays as 1 | 5 | 30) ? rawDays : 30
+
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('market_investor_trend')
       .select('date, foreign_net, inst_net, individual_net')
       .eq('market', 'KOSPI')
-      .order('date', { ascending: true })
-      .limit(30)
+      .order('date', { ascending: false })
+      .limit(days)
 
     if (error) throw error
 
-    // individual_net → indiv_net 매핑 (프론트엔드 호환)
-    const mapped = (data ?? []).map(row => ({
+    // 최신 N일 → 날짜순 정렬 + individual_net → indiv_net 매핑
+    const mapped = (data ?? []).reverse().map(row => ({
       date: row.date,
       foreign_net: row.foreign_net,
       inst_net: row.inst_net,
