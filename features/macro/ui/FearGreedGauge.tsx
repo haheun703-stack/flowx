@@ -92,7 +92,7 @@ export function FearGreedGauge() {
             </div>
 
             {/* ── 공포 / 탐욕 라벨 ── */}
-            <div className="flex justify-between w-full max-w-[220px] -mt-6 px-[23px]">
+            <div className="flex justify-between w-full max-w-[220px] -mt-8 px-[19px]">
               <div className="text-left">
                 <p className="text-[12px] font-extrabold text-[#ef4444]">공포</p>
                 <p className="text-[13px] font-black text-[#ef4444] tabular-nums">0</p>
