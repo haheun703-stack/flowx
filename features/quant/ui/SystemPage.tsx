@@ -168,7 +168,7 @@ export default function SystemPage() {
           </button>
         ))}
         {data?.date && (
-          <span className="text-[10px] text-[var(--text-muted)] ml-3">
+          <span className="text-[12px] text-[var(--text-muted)] ml-3">
             {data.date}
           </span>
         )}
@@ -193,21 +193,21 @@ export default function SystemPage() {
 
       {/* Row 2: 미국장 → 한국장 릴레이 */}
       <section>
-        <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">미국장 → 한국장 릴레이</h2>
+        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">미국장 → 한국장 릴레이</h2>
         <PreMarketScanner />
       </section>
 
       {/* Row 3: FlowX 파워 스코어 TOP 10 */}
       {picks.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">FlowX 파워 스코어 TOP 10</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">FlowX 파워 스코어 TOP 10</h2>
           <PowerScoreTop10 picks={picks} />
         </section>
       )}
 
       {/* Row 4: 이벤트 캘린더 + 저점 사냥기 */}
       <section>
-        <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">이벤트 캘린더 & 저점 사냥기</h2>
+        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">이벤트 캘린더 & 저점 사냥기</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <EventCalendarPanel />
           <BottomFishingPanel />
@@ -217,7 +217,7 @@ export default function SystemPage() {
       {/* Row 5: 스마트 머니 추적 */}
       {picks.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">스마트 머니 추적</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">스마트 머니 추적</h2>
           <SmartMoneyTracking picks={picks} />
         </section>
       )}
@@ -225,23 +225,23 @@ export default function SystemPage() {
       {/* Row 6: 포트폴리오 배분 + 섹터 온도 */}
       {(etf || portfolio || hotSectors.length > 0 || coldSectors.length > 0) && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">포트폴리오 배분 & 섹터 온도</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">포트폴리오 배분 & 섹터 온도</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 좌: 포트폴리오 배분 (방어/공격 바) */}
             <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
               {portfolio ? (
                 <>
-                  <h4 className="text-[12px] font-bold text-[#1A1A2E] mb-3">포트폴리오 제안</h4>
+                  <h4 className="text-[14px] font-bold text-[#1A1A2E] mb-3">포트폴리오 제안</h4>
                   {/* 방어/공격 가로 바 */}
                   <div className="flex h-5 rounded-full overflow-hidden mb-3">
                     <div
-                      className="bg-[#059669] flex items-center justify-center text-[9px] font-bold text-white"
+                      className="bg-[#059669] flex items-center justify-center text-[11px] font-bold text-white"
                       style={{ width: `${portfolio.defense_pct ?? 50}%` }}
                     >
                       방어 {portfolio.defense_pct ?? 0}%
                     </div>
                     <div
-                      className="bg-[#DC2626] flex items-center justify-center text-[9px] font-bold text-white"
+                      className="bg-[#DC2626] flex items-center justify-center text-[11px] font-bold text-white"
                       style={{ width: `${portfolio.offense_pct ?? 50}%` }}
                     >
                       공격 {portfolio.offense_pct ?? 0}%
@@ -249,13 +249,13 @@ export default function SystemPage() {
                   </div>
                   <div className="space-y-1">
                     {portfolio.defense?.map((d) => (
-                      <div key={d.ticker} className="flex justify-between text-[11px]">
+                      <div key={d.ticker} className="flex justify-between text-[13px]">
                         <span className="text-[#1A1A2E]">{d.name}</span>
                         <span className="text-[#059669] font-bold tabular-nums">{d.pct}%</span>
                       </div>
                     ))}
                     {portfolio.offense?.map((o) => (
-                      <div key={o.ticker} className="flex justify-between text-[11px]">
+                      <div key={o.ticker} className="flex justify-between text-[13px]">
                         <span className="text-[#1A1A2E]">{o.name}</span>
                         <span className="text-[#DC2626] font-bold tabular-nums">{o.pct}%</span>
                       </div>
@@ -264,20 +264,20 @@ export default function SystemPage() {
                 </>
               ) : etf?.allocation ? (
                 <>
-                  <h4 className="text-[12px] font-bold text-[#1A1A2E] mb-3">
+                  <h4 className="text-[14px] font-bold text-[#1A1A2E] mb-3">
                     자산배분 ({etf.regime ?? '-'})
                   </h4>
                   <div className="space-y-2">
                     {Object.entries(etf.allocation).map(([k, v]) => (
                       <div key={k} className="flex items-center gap-3">
-                        <span className="text-[11px] text-[#6B7280] w-[80px] truncate">{k}</span>
+                        <span className="text-[13px] text-[#6B7280] w-[80px] truncate">{k}</span>
                         <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full bg-[#7C3AED]"
                             style={{ width: `${Math.min(v, 100)}%` }}
                           />
                         </div>
-                        <span className="text-[11px] font-bold text-[#1A1A2E] w-[36px] text-right tabular-nums">
+                        <span className="text-[13px] font-bold text-[#1A1A2E] w-[36px] text-right tabular-nums">
                           {v}%
                         </span>
                       </div>
@@ -285,13 +285,13 @@ export default function SystemPage() {
                   </div>
                 </>
               ) : (
-                <p className="text-[11px] text-[#6B7280]">포트폴리오 데이터 없음</p>
+                <p className="text-[13px] text-[#6B7280]">포트폴리오 데이터 없음</p>
               )}
             </div>
 
             {/* 우: 섹터 온도 */}
             <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-              <h4 className="text-[12px] font-bold text-[#1A1A2E] mb-3">섹터 온도</h4>
+              <h4 className="text-[14px] font-bold text-[#1A1A2E] mb-3">섹터 온도</h4>
               {etf?.accelerations && etf.accelerations.length > 0 ? (
                 <div className="space-y-2">
                   {etf.accelerations.map((a) => {
@@ -300,19 +300,19 @@ export default function SystemPage() {
                     return (
                       <div key={a.sector} className="flex items-center gap-2">
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
                           style={{ backgroundColor: `${tempColor}15`, color: tempColor }}
                         >
                           {temp}
                         </span>
-                        <span className="text-[11px] font-bold text-[#1A1A2E] flex-1 truncate">{a.sector}</span>
+                        <span className="text-[13px] font-bold text-[#1A1A2E] flex-1 truncate">{a.sector}</span>
                         <span
-                          className="text-[11px] font-bold tabular-nums"
+                          className="text-[13px] font-bold tabular-nums"
                           style={{ color: a.ret_5d >= 0 ? '#059669' : '#DC2626' }}
                         >
                           {a.ret_5d >= 0 ? '+' : ''}{a.ret_5d.toFixed(1)}%
                         </span>
-                        <span className="text-[10px] text-[#6B7280] tabular-nums">
+                        <span className="text-[12px] text-[#6B7280] tabular-nums">
                           점수 {a.score.toFixed(0)}
                         </span>
                       </div>
@@ -323,21 +323,21 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   {hotSectors.map((s) => (
                     <div key={s.sector} className="flex items-center gap-2">
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] shrink-0">HOT</span>
-                      <span className="text-[11px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
-                      <span className="text-[11px] font-bold text-[#059669] tabular-nums">+{s.ret_5.toFixed(1)}%</span>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] shrink-0">HOT</span>
+                      <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
+                      <span className="text-[13px] font-bold text-[#059669] tabular-nums">+{s.ret_5.toFixed(1)}%</span>
                     </div>
                   ))}
                   {coldSectors.map((s) => (
                     <div key={s.sector} className="flex items-center gap-2">
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#3B82F6] shrink-0">COLD</span>
-                      <span className="text-[11px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
-                      <span className="text-[11px] font-bold text-[#DC2626] tabular-nums">{s.ret_5.toFixed(1)}%</span>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#3B82F6] shrink-0">COLD</span>
+                      <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
+                      <span className="text-[13px] font-bold text-[#DC2626] tabular-nums">{s.ret_5.toFixed(1)}%</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-[11px] text-[#6B7280]">섹터 데이터 없음</p>
+                <p className="text-[13px] text-[#6B7280]">섹터 데이터 없음</p>
               )}
             </div>
           </div>

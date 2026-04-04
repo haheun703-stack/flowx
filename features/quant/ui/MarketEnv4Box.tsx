@@ -70,7 +70,7 @@ export default function MarketEnv4Box({ verdict, riskLevel, cashPct, recommendat
           key={c.label}
           className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-4"
         >
-          <p className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">
+          <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">
             {c.label}
           </p>
           <p
@@ -80,7 +80,7 @@ export default function MarketEnv4Box({ verdict, riskLevel, cashPct, recommendat
             {c.value}
           </p>
           {c.sub && (
-            <p className="text-[9px] text-[var(--text-muted)] mt-1 truncate">{c.sub}</p>
+            <p className="text-[11px] text-[var(--text-muted)] mt-1 truncate">{c.sub}</p>
           )}
         </div>
       ))}

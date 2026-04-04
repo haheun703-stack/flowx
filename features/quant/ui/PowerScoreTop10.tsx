@@ -70,17 +70,17 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
     <div className="bg-white rounded-r-xl shadow-sm overflow-hidden" style={{ border: '1px solid var(--border)', borderLeft: '3px solid #059669' }}>
       {/* 헤더 */}
       <div className="px-5 py-3 border-b border-[var(--border)]/50 flex items-center justify-between">
-        <h3 className="text-[15px] font-bold text-[var(--text-primary)]">
+        <h3 className="text-[17px] font-bold text-[var(--text-primary)]">
           FlowX Power Score TOP 10
         </h3>
-        <span className="text-[10px] text-[var(--text-muted)]">
+        <span className="text-[12px] text-[var(--text-muted)]">
           교차검증 기반 종합 점수
         </span>
       </div>
 
       {/* 테이블 */}
       <div className="overflow-x-auto">
-        <table className="w-full text-xs">
+        <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 text-[var(--text-muted)]">
               <th className="px-3 py-2 text-left w-[40px]">#</th>
@@ -106,7 +106,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   {/* 순위 */}
                   <td className="px-3 py-2.5">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold"
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold"
                       style={{
                         backgroundColor: rankColor(rank),
                         color: rank <= 3 ? '#fff' : '#6B7280',
@@ -126,13 +126,13 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                       {pick.sources.slice(0, 3).map((s) => (
                         <span
                           key={s}
-                          className="text-[9px] px-1.5 py-0.5 rounded bg-gray-100 text-[var(--text-muted)]"
+                          className="text-[11px] px-1.5 py-0.5 rounded bg-gray-100 text-[var(--text-muted)]"
                         >
                           {s}
                         </span>
                       ))}
                       {pick.sources.length > 3 && (
-                        <span className="text-[9px] text-[var(--text-muted)]">
+                        <span className="text-[11px] text-[var(--text-muted)]">
                           +{pick.sources.length - 3}
                         </span>
                       )}
@@ -166,7 +166,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   {/* 등급 뱃지 */}
                   <td className="px-3 py-2.5 text-center">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: gs.bg, color: gs.text }}
                     >
                       {gs.label}

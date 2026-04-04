@@ -51,13 +51,13 @@ export default function MarketAlertBanner({ verdict, regime, hotSectors, coldSec
       <div className="flex items-center gap-3 mb-2">
         <span className="text-lg">{style.icon}</span>
         <span
-          className="text-xs font-bold px-2.5 py-1 rounded-full"
+          className="text-sm font-bold px-2.5 py-1 rounded-full"
           style={{ backgroundColor: `${style.text}15`, color: style.text }}
         >
           {style.label}
         </span>
         {regime && (
-          <span className="text-xs font-medium" style={{ color: style.text }}>
+          <span className="text-sm font-medium" style={{ color: style.text }}>
             {regime}
           </span>
         )}
@@ -74,11 +74,11 @@ export default function MarketAlertBanner({ verdict, regime, hotSectors, coldSec
       <div className="flex flex-wrap gap-4">
         {hotSectors && hotSectors.length > 0 && (
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[10px] font-bold text-[#059669]">HOT</span>
+            <span className="text-[12px] font-bold text-[#059669]">HOT</span>
             {hotSectors.slice(0, 5).map((s) => (
               <span
                 key={s.sector}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-medium"
+                className="text-[12px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-medium"
               >
                 {s.sector} +{s.ret_5.toFixed(1)}%
               </span>
@@ -87,11 +87,11 @@ export default function MarketAlertBanner({ verdict, regime, hotSectors, coldSec
         )}
         {coldSectors && coldSectors.length > 0 && (
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[10px] font-bold text-[#DC2626]">COLD</span>
+            <span className="text-[12px] font-bold text-[#DC2626]">COLD</span>
             {coldSectors.slice(0, 5).map((s) => (
               <span
                 key={s.sector}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] font-medium"
+                className="text-[12px] px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] font-medium"
               >
                 {s.sector} {s.ret_5.toFixed(1)}%
               </span>

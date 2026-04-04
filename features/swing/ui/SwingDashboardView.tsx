@@ -176,33 +176,33 @@ export default function SwingDashboardView() {
       >
         <div className="flex items-start justify-between mb-2">
           <div>
-            <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-1">BRAIN AI 오늘의 결론</h2>
-            <p className="text-[22px] font-bold" style={{ color: hero.text }}>
+            <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-1">BRAIN AI 오늘의 결론</h2>
+            <p className="text-[24px] font-bold" style={{ color: hero.text }}>
               {data.brain_verdict} ({data.brain_pct}%)
             </p>
           </div>
           <div className="flex gap-2 items-center">
             <span
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+              className="text-[13px] font-bold px-2.5 py-1 rounded-full"
               style={{ backgroundColor: `${hero.text}15`, color: hero.text }}
             >
               {data.regime} ({data.regime_severity}/5)
             </span>
-            <span className="text-[10px] text-[#6B7280]">{data.date}</span>
+            <span className="text-[12px] text-[#6B7280]">{data.date}</span>
           </div>
         </div>
         {data.brain_reason && (
-          <p className="text-[13px] font-medium" style={{ color: hero.text }}>{data.brain_reason}</p>
+          <p className="text-[15px] font-medium" style={{ color: hero.text }}>{data.brain_reason}</p>
         )}
         {data.regime_desc && (
-          <p className="text-[11px] text-[#6B7280] mt-2">{data.regime_desc}</p>
+          <p className="text-[13px] text-[#6B7280] mt-2">{data.regime_desc}</p>
         )}
       </section>
 
       {/* ═══ 2행: 추천 종목 카드 (접힌/펼침) ═══ */}
       {krxPicks?.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">
             추천 종목 — 클릭하면 AI 분석 근거가 펼쳐져요
           </h2>
           <div
@@ -227,27 +227,27 @@ export default function SwingDashboardView() {
                     {/* 상단: 종목명 + 등급 + 점수 */}
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        {p.star && <span className="text-[#D97706] text-xs">★</span>}
-                        <span className="text-[15px] font-bold text-[#1A1A2E]">{p.name}</span>
-                        <span className="text-[10px] text-[#6B7280]">{p.code}</span>
+                        {p.star && <span className="text-[#D97706] text-sm">★</span>}
+                        <span className="text-[17px] font-bold text-[#1A1A2E]">{p.name}</span>
+                        <span className="text-[12px] text-[#6B7280]">{p.code}</span>
                         {p.action && (
                           <span
-                            className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                            className="text-[12px] font-bold px-2 py-0.5 rounded-full"
                             style={{ backgroundColor: actionStyle.bg, color: actionStyle.text, border: `1px solid ${actionStyle.border}` }}
                           >
                             {p.action}
                           </span>
                         )}
                         <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                          className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                           style={{ backgroundColor: gradeS.bg, color: gradeS.text }}
                         >
                           {p.grade}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[18px] font-bold text-[#1A1A2E] tabular-nums">{p.score.toFixed(1)}점</span>
-                        <span className="text-[12px] font-bold" style={{ color: isExpanded ? '#00CC6A' : '#9CA3AF' }}>
+                        <span className="text-[20px] font-bold text-[#1A1A2E] tabular-nums">{p.score.toFixed(1)}점</span>
+                        <span className="text-[14px] font-bold" style={{ color: isExpanded ? '#00CC6A' : '#9CA3AF' }}>
                           상세 근거 {isExpanded ? '▼' : '▸'}
                         </span>
                       </div>
@@ -266,7 +266,7 @@ export default function SwingDashboardView() {
                     {/* 트리거 바 */}
                     {p.catalyst && (
                       <div
-                        className="mt-2 rounded-r-md text-[10px] font-medium px-2.5 py-1.5"
+                        className="mt-2 rounded-r-md text-[12px] font-medium px-2.5 py-1.5"
                         style={{ backgroundColor: '#ECFDF5', borderLeft: '3px solid #00FF88', color: '#065F46' }}
                       >
                         트리거: {p.catalyst}
@@ -285,30 +285,30 @@ export default function SwingDashboardView() {
                         {/* 수급 */}
                         <div className="bg-[#F5F4F0] rounded-lg p-3">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[9px] font-bold flex items-center justify-center">1</span>
-                            <span className="text-[11px] font-bold text-[#1A1A2E]">수급 근거</span>
+                            <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[11px] font-bold flex items-center justify-center">1</span>
+                            <span className="text-[13px] font-bold text-[#1A1A2E]">수급 근거</span>
                           </div>
-                          <p className="text-[10px] text-[#6B7280]">
+                          <p className="text-[12px] text-[#6B7280]">
                             매집점수 {p.supply_score} · {p.nat_power_grade ?? '-'}
                           </p>
                         </div>
                         {/* 차트 */}
                         <div className="bg-[#F5F4F0] rounded-lg p-3">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[9px] font-bold flex items-center justify-center">2</span>
-                            <span className="text-[11px] font-bold text-[#1A1A2E]">차트 근거</span>
+                            <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[11px] font-bold flex items-center justify-center">2</span>
+                            <span className="text-[13px] font-bold text-[#1A1A2E]">차트 근거</span>
                           </div>
-                          <p className="text-[10px] text-[#6B7280]">
+                          <p className="text-[12px] text-[#6B7280]">
                             RSI {p.rsi?.toFixed(0) ?? '-'} · {p.tv_pattern ?? '패턴 분석 중'}
                           </p>
                         </div>
                         {/* 종합 */}
                         <div className="bg-[#F5F4F0] rounded-lg p-3">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="w-5 h-5 rounded-full bg-[#16A34A] text-white text-[9px] font-bold flex items-center justify-center">AI</span>
-                            <span className="text-[11px] font-bold text-[#1A1A2E]">AI 종합</span>
+                            <span className="w-5 h-5 rounded-full bg-[#16A34A] text-white text-[11px] font-bold flex items-center justify-center">AI</span>
+                            <span className="text-[13px] font-bold text-[#1A1A2E]">AI 종합</span>
                           </div>
-                          <p className="text-[10px] text-[#6B7280]">
+                          <p className="text-[12px] text-[#6B7280]">
                             {p.conviction_label ?? p.conviction} · {p.sector ?? ''}
                           </p>
                         </div>
@@ -317,9 +317,9 @@ export default function SwingDashboardView() {
                       {p.fib_position && (
                         <div className="bg-[#F5F4F0] rounded-lg p-3 mb-3">
                           <div className="flex items-center gap-1.5 mb-2">
-                            <span className="w-5 h-5 rounded-full bg-[#7C3AED] text-white text-[9px] font-bold flex items-center justify-center">F</span>
-                            <span className="text-[11px] font-bold text-[#1A1A2E]">피보나치 분석</span>
-                            <span className="text-[9px] text-[#6B7280] ml-auto">{p.fib_position}</span>
+                            <span className="w-5 h-5 rounded-full bg-[#7C3AED] text-white text-[11px] font-bold flex items-center justify-center">F</span>
+                            <span className="text-[13px] font-bold text-[#1A1A2E]">피보나치 분석</span>
+                            <span className="text-[11px] text-[#6B7280] ml-auto">{p.fib_position}</span>
                           </div>
                           {/* 게이지 바: 하방 ← 현재 → 상방 */}
                           <div className="relative h-4 bg-[#E8E6E0] rounded-full overflow-hidden mb-1.5">
@@ -339,7 +339,7 @@ export default function SwingDashboardView() {
                               style={{ left: `${Math.min(((p.fib_downside_pct ?? 0) / ((p.fib_downside_pct ?? 0) + (p.fib_upside_pct ?? 0) || 1)) * 100, 100)}%` }}
                             />
                           </div>
-                          <div className="flex justify-between text-[9px]">
+                          <div className="flex justify-between text-[11px]">
                             <span className="text-[#DC2626] font-bold">▼ {(p.fib_downside_pct ?? 0).toFixed(1)}%</span>
                             <span className="text-[#16A34A] font-bold">▲ {(p.fib_upside_pct ?? 0).toFixed(1)}%</span>
                           </div>
@@ -347,15 +347,15 @@ export default function SwingDashboardView() {
                           <div className="grid grid-cols-3 gap-1.5 mt-2">
                             <div className="text-center bg-white rounded p-1">
                               <p className="text-[8px] text-[#9CA3AF]">피보 손절</p>
-                              <p className="text-[11px] font-bold text-[#DC2626] tabular-nums">{(p.sl_fib ?? 0).toLocaleString()}</p>
+                              <p className="text-[13px] font-bold text-[#DC2626] tabular-nums">{(p.sl_fib ?? 0).toLocaleString()}</p>
                             </div>
                             <div className="text-center bg-white rounded p-1">
                               <p className="text-[8px] text-[#9CA3AF]">피보 목표</p>
-                              <p className="text-[11px] font-bold text-[#2563EB] tabular-nums">{(p.tp_fib ?? 0).toLocaleString()}</p>
+                              <p className="text-[13px] font-bold text-[#2563EB] tabular-nums">{(p.tp_fib ?? 0).toLocaleString()}</p>
                             </div>
                             <div className="text-center bg-white rounded p-1">
                               <p className="text-[8px] text-[#9CA3AF]">피보 보정</p>
-                              <p className="text-[11px] font-bold text-[#7C3AED] tabular-nums">{(p.fib_adj ?? 0).toFixed(1)}%</p>
+                              <p className="text-[13px] font-bold text-[#7C3AED] tabular-nums">{(p.fib_adj ?? 0).toFixed(1)}%</p>
                             </div>
                           </div>
                         </div>
@@ -365,13 +365,13 @@ export default function SwingDashboardView() {
                       {p.reasons?.length ? (
                         <div className="flex flex-wrap gap-1.5">
                           {p.reasons.map((r, i) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#065F46] border border-[#A7F3D0]">
+                            <span key={i} className="text-[12px] px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#065F46] border border-[#A7F3D0]">
                               {r}
                             </span>
                           ))}
                         </div>
                       ) : null}
-                      <p className="text-[10px] text-[#9CA3AF] mt-2 text-center">
+                      <p className="text-[12px] text-[#9CA3AF] mt-2 text-center">
                         상세 근거 6가지 (수급/차트/시나리오/재무/비교/AI) — 준비 중
                       </p>
                     </div>
@@ -386,7 +386,7 @@ export default function SwingDashboardView() {
       {/* NXT 야간매매 종목 */}
       {nxtPicks.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">추천 종목 — 야간 매매 (NXT)</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">추천 종목 — 야간 매매 (NXT)</h2>
           <div
             className="rounded-r-xl p-4 space-y-2"
             style={{ border: '1px solid var(--border)', borderLeft: '3px solid #7C3AED' }}
@@ -400,15 +400,15 @@ export default function SwingDashboardView() {
                 <div key={p.code} className="rounded-[10px] p-3" style={{ backgroundColor: '#F5F4F0' }}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      {p.star && <span className="text-[#D97706] text-xs">★</span>}
-                      <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
-                      <span className="text-[10px] text-[#6B7280]">{p.code}</span>
+                      {p.star && <span className="text-[#D97706] text-sm">★</span>}
+                      <span className="text-[16px] font-bold text-[#1A1A2E]">{p.name}</span>
+                      <span className="text-[12px] text-[#6B7280]">{p.code}</span>
                       {p.action && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: actionStyle.bg, color: actionStyle.text }}>
+                        <span className="text-[12px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: actionStyle.bg, color: actionStyle.text }}>
                           {p.action}
                         </span>
                       )}
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: gradeS.bg, color: gradeS.text }}>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: gradeS.bg, color: gradeS.text }}>
                         {p.grade}
                       </span>
                     </div>
@@ -431,7 +431,7 @@ export default function SwingDashboardView() {
 
       {/* ═══ 3행: 매매 타임라인 ═══ */}
       <section>
-        <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">오늘의 매매 타임라인</h2>
+        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">오늘의 매매 타임라인</h2>
         <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
           <div className="relative pl-7">
             {/* 세로 선 */}
@@ -446,12 +446,12 @@ export default function SwingDashboardView() {
                   />
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[13px] font-bold" style={{ color: t.color }}>{t.time}</span>
-                      <p className="text-[11px] font-bold text-[#1A1A2E]">{t.action}</p>
-                      <p className="text-[10px] text-[#6B7280]">{t.desc}</p>
+                      <span className="text-[15px] font-bold" style={{ color: t.color }}>{t.time}</span>
+                      <p className="text-[13px] font-bold text-[#1A1A2E]">{t.action}</p>
+                      <p className="text-[12px] text-[#6B7280]">{t.desc}</p>
                     </div>
                     {t.badge && (
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
                         {t.badge}
                       </span>
                     )}
@@ -466,9 +466,9 @@ export default function SwingDashboardView() {
       {/* ═══ 4행: ETF 추천 ═══ */}
       {data.etf_picks?.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">ETF 추천</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">ETF 추천</h2>
           <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-x-auto">
-            <table className="w-full text-[11px]">
+            <table className="w-full text-[13px]">
               <thead>
                 <tr className="text-[#6B7280] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">ETF</th>
@@ -507,11 +507,11 @@ export default function SwingDashboardView() {
 
       {/* ═══ 5행: 시장 지표 + 자산 배분 (2열) ═══ */}
       <section>
-        <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">시장 지표 & 자산 배분</h2>
+        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">시장 지표 & 자산 배분</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 좌: 시장 지표 */}
           <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-            <h3 className="text-[12px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
+            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
             <div className="grid grid-cols-3 gap-2">
               <MetricCard label="VIX" value={data.vix.toFixed(1)} bg={data.vix >= 25 ? '#FEF2F2' : data.vix >= 18 ? '#FFFBEB' : '#DBEAFE'} color={data.vix >= 25 ? '#DC2626' : data.vix >= 18 ? '#D97706' : '#2563EB'} />
               <MetricCard label="NASDAQ" value={`${data.nasdaq_pct >= 0 ? '+' : ''}${data.nasdaq_pct.toFixed(2)}%`} color={data.nasdaq_pct >= 0 ? '#059669' : '#DC2626'} />
@@ -522,7 +522,7 @@ export default function SwingDashboardView() {
             </div>
             {/* 위험 경고 */}
             {data.stress_level === 'HIGH' && (
-              <div className="mt-3 rounded-r-md text-[10px] px-3 py-2" style={{ backgroundColor: '#FEF2F2', borderLeft: '3px solid #EF4444', color: '#DC2626' }}>
+              <div className="mt-3 rounded-r-md text-[12px] px-3 py-2" style={{ backgroundColor: '#FEF2F2', borderLeft: '3px solid #EF4444', color: '#DC2626' }}>
                 위험 신호: 스트레스 {data.stress_level} ({data.stress_index.toFixed(1)})
               </div>
             )}
@@ -530,11 +530,11 @@ export default function SwingDashboardView() {
 
           {/* 우: 자산 배분 */}
           <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-            <h3 className="text-[12px] font-bold text-[#1A1A2E] mb-3">자산 배분</h3>
+            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">자산 배분</h3>
             {data.alloc_cash >= 100 ? (
               <div className="bg-[#DBEAFE] rounded-xl p-6 text-center">
                 <p className="text-[16px] font-bold text-[#1D4ED8] mb-1">현금 100%</p>
-                <p className="text-[11px] text-[#3B82F6]">지금은 쉬세요. 시장이 안전해지면 자동 배분 변경</p>
+                <p className="text-[13px] text-[#3B82F6]">지금은 쉬세요. 시장이 안전해지면 자동 배분 변경</p>
               </div>
             ) : (
               <>
@@ -568,8 +568,8 @@ export default function SwingDashboardView() {
                     { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
                   ].map((a) => (
                     <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2">
-                      <p className="text-[9px] text-[#6B7280]">{a.label}</p>
-                      <p className="text-[14px] font-bold tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
+                      <p className="text-[11px] text-[#6B7280]">{a.label}</p>
+                      <p className="text-[16px] font-bold tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
                     </div>
                   ))}
                 </div>
@@ -582,7 +582,7 @@ export default function SwingDashboardView() {
       {/* ═══ 6행: BRAIN 분석 보고서 (4칸 + 나이트워치) ═══ */}
       {analysisCards && (
         <section>
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">BRAIN 분석 보고서</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">BRAIN 분석 보고서</h2>
 
           {/* 4칸 카드 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -609,7 +609,7 @@ export default function SwingDashboardView() {
           {Object.keys(analysisCards.rest).length > 0 && (
             <div className="mt-3">
               <button
-                className="text-[12px] font-bold cursor-pointer mb-2"
+                className="text-[14px] font-bold cursor-pointer mb-2"
                 style={{ color: brainExpanded ? '#00CC6A' : '#9CA3AF' }}
                 onClick={() => setBrainExpanded(!brainExpanded)}
               >
@@ -619,8 +619,8 @@ export default function SwingDashboardView() {
                 <div className="space-y-2">
                   {Object.entries(analysisCards.rest).map(([key, value]) => (
                     <div key={key} className="bg-white rounded-lg border border-[var(--border)] p-3">
-                      <p className="text-[10px] font-bold text-[#6B7280] mb-1">{formatAnalysisKey(key)}</p>
-                      <p className="text-[11px] text-[#1A1A2E] whitespace-pre-wrap">{value}</p>
+                      <p className="text-[12px] font-bold text-[#6B7280] mb-1">{formatAnalysisKey(key)}</p>
+                      <p className="text-[13px] text-[#1A1A2E] whitespace-pre-wrap">{value}</p>
                     </div>
                   ))}
                 </div>
@@ -631,8 +631,8 @@ export default function SwingDashboardView() {
           {/* 마켓 코멘트 */}
           {data.market_comment && (
             <div className="mt-3 bg-white rounded-lg border border-[var(--border)] p-4">
-              <p className="text-[10px] font-bold text-[#6B7280] mb-1">마켓 코멘트</p>
-              <p className="text-[11px] text-[#1A1A2E] whitespace-pre-wrap">{data.market_comment}</p>
+              <p className="text-[12px] font-bold text-[#6B7280] mb-1">마켓 코멘트</p>
+              <p className="text-[13px] text-[#1A1A2E] whitespace-pre-wrap">{data.market_comment}</p>
             </div>
           )}
         </section>
@@ -641,23 +641,23 @@ export default function SwingDashboardView() {
       {/* ── 워치리스트 ── */}
       {data.watchlist?.length > 0 && (
         <section className="pb-8">
-          <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-3">워치리스트</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">워치리스트</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {data.watchlist.map((w) => {
               const gradeS = gradeBadgeStyle(w.grade)
               return (
                 <div key={w.code} className="bg-white rounded-lg border border-[var(--border)] p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[13px] font-bold text-[#1A1A2E]">
-                      {w.name} <span className="text-[10px] text-[#6B7280]">{w.code}</span>
+                    <span className="text-[15px] font-bold text-[#1A1A2E]">
+                      {w.name} <span className="text-[12px] text-[#6B7280]">{w.code}</span>
                     </span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: gradeS.bg, color: gradeS.text }}>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: gradeS.bg, color: gradeS.text }}>
                       {w.grade}
                     </span>
                   </div>
-                  <p className="text-[10px] text-[#6B7280]">{w.reason}</p>
+                  <p className="text-[12px] text-[#6B7280]">{w.reason}</p>
                   {w.trigger && (
-                    <p className="text-[10px] text-[#D97706] mt-1 font-medium">트리거: {w.trigger}</p>
+                    <p className="text-[12px] text-[#D97706] mt-1 font-medium">트리거: {w.trigger}</p>
                   )}
                 </div>
               )
@@ -682,8 +682,8 @@ function PriceCell({ label, value, bg, sub, subColor, isRatio, isDays }: {
   return (
     <div className="rounded-md p-1.5 text-center" style={{ backgroundColor: bg ?? '#FFF' }}>
       <p className="text-[8px] text-[#9CA3AF]">{label}</p>
-      <p className="text-[13px] font-bold text-[#1A1A2E] tabular-nums">{display}</p>
-      {sub && <p className="text-[9px] font-bold tabular-nums" style={{ color: subColor ?? '#6B7280' }}>{sub}</p>}
+      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{display}</p>
+      {sub && <p className="text-[11px] font-bold tabular-nums" style={{ color: subColor ?? '#6B7280' }}>{sub}</p>}
     </div>
   )
 }
@@ -692,8 +692,8 @@ function PriceCell({ label, value, bg, sub, subColor, isRatio, isDays }: {
 function MetricCard({ label, value, color, bg }: { label: string; value: string; color: string; bg?: string }) {
   return (
     <div className="rounded-lg p-2.5 text-center" style={{ backgroundColor: bg ?? '#F5F4F0' }}>
-      <p className="text-[9px] text-[#6B7280]">{label}</p>
-      <p className="text-[14px] font-bold font-mono tabular-nums" style={{ color }}>{value}</p>
+      <p className="text-[11px] text-[#6B7280]">{label}</p>
+      <p className="text-[16px] font-bold font-mono tabular-nums" style={{ color }}>{value}</p>
     </div>
   )
 }
@@ -709,8 +709,8 @@ function ReportCard({ title, content, bg, lineColor }: { title: string; content:
         borderRadius: lineColor ? '0 8px 8px 0' : '8px',
       }}
     >
-      <p className="text-[11px] font-bold text-[#1A1A2E] mb-1">{title}</p>
-      <p className="text-[11px] text-[#374151] whitespace-pre-wrap leading-relaxed">{content}</p>
+      <p className="text-[13px] font-bold text-[#1A1A2E] mb-1">{title}</p>
+      <p className="text-[13px] text-[#374151] whitespace-pre-wrap leading-relaxed">{content}</p>
     </div>
   )
 }

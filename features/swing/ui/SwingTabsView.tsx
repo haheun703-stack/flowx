@@ -33,7 +33,7 @@ export function SwingTabsView() {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`shrink-0 py-2 px-3 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 tab === t.key
                   ? "bg-[var(--text-primary)] text-white"
                   : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-white"

@@ -217,10 +217,10 @@ export default function EventCalendarPanel() {
     <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm h-full flex flex-col">
       {/* 헤더: 월 네비게이션 */}
       <div className="px-4 py-3 border-b border-[var(--border)]/50 flex items-center justify-between">
-        <h3 className="text-[15px] font-bold text-[#1A1A2E]">이벤트 캘린더</h3>
+        <h3 className="text-[17px] font-bold text-[#1A1A2E]">이벤트 캘린더</h3>
         <div className="flex items-center gap-3">
           <button onClick={prevMonth} className="text-[#6B7280] hover:text-[#1A1A2E] text-sm font-bold cursor-pointer">◀</button>
-          <span className="text-[13px] font-bold text-[#1A1A2E]">{year}년 {month + 1}월</span>
+          <span className="text-[15px] font-bold text-[#1A1A2E]">{year}년 {month + 1}월</span>
           <button onClick={nextMonth} className="text-[#6B7280] hover:text-[#1A1A2E] text-sm font-bold cursor-pointer">▶</button>
         </div>
       </div>
@@ -231,7 +231,7 @@ export default function EventCalendarPanel() {
           {WEEKDAYS.map((w, i) => (
             <span
               key={w}
-              className="text-[9px] font-bold py-1"
+              className="text-[11px] font-bold py-1"
               style={{ color: i >= 5 ? '#3B82F6' : '#6B7280' }}
             >
               {w}
@@ -262,7 +262,7 @@ export default function EventCalendarPanel() {
                 {day}
                 {/* 이벤트 라벨 (D-5 이내 배경 채움일 때) */}
                 {eventMap[dateKey] && style.bg !== 'transparent' && (
-                  <div className="text-[6px] leading-none truncate px-0.5" style={{ color: style.text }}>
+                  <div className="text-[9px] leading-none truncate px-0.5" style={{ color: style.text }}>
                     {eventMap[dateKey][0].name.length > 4 ? eventMap[dateKey][0].name.slice(0, 4) : eventMap[dateKey][0].name}
                   </div>
                 )}
@@ -306,9 +306,9 @@ export default function EventCalendarPanel() {
                 >
                   {/* 이벤트명 + D-N */}
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[12px] font-bold text-[#1A1A2E]">{ev.name}</span>
+                    <span className="text-[14px] font-bold text-[#1A1A2E]">{ev.name}</span>
                     <span
-                      className="text-[12px] font-bold"
+                      className="text-[14px] font-bold"
                       style={{ color: d <= 3 ? '#DC2626' : d <= 7 ? '#D97706' : '#6B7280' }}
                     >
                       {d === 0 ? 'D-DAY' : d > 0 ? `D-${d}` : `D+${Math.abs(d)}`}
@@ -316,15 +316,15 @@ export default function EventCalendarPanel() {
                   </div>
                   {/* 설명 */}
                   {ev.description && (
-                    <p className="text-[10px] text-[#374151] mb-1 leading-relaxed">{ev.description}</p>
+                    <p className="text-[12px] text-[#374151] mb-1 leading-relaxed">{ev.description}</p>
                   )}
                   {/* 역사적 패턴 */}
                   {ev.historical_pattern && (
-                    <p className="text-[10px] text-[#6B7280] mb-1">{ev.historical_pattern}</p>
+                    <p className="text-[12px] text-[#6B7280] mb-1">{ev.historical_pattern}</p>
                   )}
                   {/* AI 전략 */}
                   {ev.ai_strategy && (
-                    <p className="text-[10px] font-medium text-[#4C1D95] leading-relaxed">{ev.ai_strategy}</p>
+                    <p className="text-[12px] font-medium text-[#4C1D95] leading-relaxed">{ev.ai_strategy}</p>
                   )}
                 </div>
               )

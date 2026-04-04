@@ -87,11 +87,11 @@ export default function SmartMoneyTracking({ picks }: SmartMoneyTrackingProps) {
             className="px-4 py-2.5 flex items-center justify-between"
             style={{ backgroundColor: box.bg }}
           >
-            <h4 className="text-xs font-bold" style={{ color: box.color }}>
+            <h4 className="text-sm font-bold" style={{ color: box.color }}>
               {box.title}
             </h4>
             <span
-              className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+              className="text-[11px] font-bold px-2 py-0.5 rounded-full"
               style={{ backgroundColor: `${box.color}15`, color: box.color }}
             >
               {box.badge}
@@ -101,16 +101,16 @@ export default function SmartMoneyTracking({ picks }: SmartMoneyTrackingProps) {
           {/* 종목 리스트 */}
           <div className="bg-white divide-y divide-[var(--border)]/30">
             {box.items.length === 0 ? (
-              <p className="text-[var(--text-muted)] text-xs p-4 text-center">해당 종목 없음</p>
+              <p className="text-[var(--text-muted)] text-sm p-4 text-center">해당 종목 없음</p>
             ) : (
               box.items.map((p) => (
                 <div key={p.ticker} className="px-4 py-2.5 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-[var(--text-primary)]">{p.name}</span>
-                    <span className="text-[10px] text-[var(--text-muted)] ml-1">{p.ticker}</span>
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{p.name}</span>
+                    <span className="text-[12px] text-[var(--text-muted)] ml-1">{p.ticker}</span>
                   </div>
                   <div className="text-right">
-                    <div className="flex gap-2 text-[10px]">
+                    <div className="flex gap-2 text-[12px]">
                       <span className={p.foreign_5d > 0 ? 'text-[#059669] font-bold' : 'text-[var(--text-muted)]'}>
                         외{formatBil(p.foreign_5d)}
                       </span>

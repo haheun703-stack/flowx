@@ -558,7 +558,7 @@ export default function JarvisControlTower() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`shrink-0 py-2 px-3 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+            className={`shrink-0 py-2 px-3 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === tab.key
                 ? "bg-blue-600 text-white"
                 : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
@@ -591,7 +591,7 @@ export default function JarvisControlTower() {
             ) : (
               <div className="bg-white rounded-lg p-6 border border-[var(--border)] text-center">
                 <p className="text-[var(--text-dim)] text-sm">현재 교차검증 통과 종목이 없습니다</p>
-                <p className="text-gray-600 text-xs mt-1">
+                <p className="text-gray-600 text-sm mt-1">
                   2개 이상 시그널 + 거래량 2배 이상 조건 충족 시 표시됩니다
                 </p>
               </div>
@@ -600,33 +600,33 @@ export default function JarvisControlTower() {
 
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
-              <h3 className="text-[var(--text-dim)] text-xs mb-3">등급 분포 ({picks?.total_candidates ?? 0}종목)</h3>
+              <h3 className="text-[var(--text-dim)] text-sm mb-3">등급 분포 ({picks?.total_candidates ?? 0}종목)</h3>
               <div className="space-y-2">
                 {Object.entries(stats).map(([grade, count]) => (
                   <div key={grade} className="flex items-center justify-between">
-                    <span className={`text-xs px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
+                    <span className={`text-sm px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
                       {grade}
                     </span>
                     <div className="flex-1 mx-3 bg-gray-200 rounded-full h-2">
                       <div className="bg-blue-600 rounded-full h-2"
                         style={{ width: `${Math.min(((count as number) / (picks?.total_candidates ?? 1)) * 100, 100)}%` }} />
                     </div>
-                    <span className="text-[var(--text-dim)] text-xs w-12 text-right">{count as number}건</span>
+                    <span className="text-[var(--text-dim)] text-sm w-12 text-right">{count as number}건</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
-              <h3 className="text-[var(--text-dim)] text-xs mb-3">매매 신호 감지 현황</h3>
+              <h3 className="text-[var(--text-dim)] text-sm mb-3">매매 신호 감지 현황</h3>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(sourceCounts)
                   .sort(([, a], [, b]) => b - a)
                   .slice(0, 10)
                   .map(([source, count]) => (
                     <div key={source} className="flex items-center justify-between bg-gray-100 rounded px-2 py-1">
-                      <span className="text-[var(--text-primary)] text-xs">{source}</span>
-                      <span className="text-blue-400 text-xs font-bold">{count}</span>
+                      <span className="text-[var(--text-primary)] text-sm">{source}</span>
+                      <span className="text-blue-400 text-sm font-bold">{count}</span>
                     </div>
                   ))}
               </div>
@@ -646,9 +646,9 @@ export default function JarvisControlTower() {
                     const color = rate >= 60 ? "text-[var(--green)]" : rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
                     return (
                       <div key={name} className="bg-white rounded-lg p-3 border border-[var(--border)] text-center">
-                        <p className="text-gray-500 text-xs">{name}</p>
+                        <p className="text-gray-500 text-sm">{name}</p>
                         <p className={`${color} text-xl font-bold`}>{rate}%</p>
-                        <p className="text-gray-600 text-xs">{d.total ?? 0}건</p>
+                        <p className="text-gray-600 text-sm">{d.total ?? 0}건</p>
                       </div>
                     );
                   })}
@@ -730,7 +730,7 @@ function MarketGuideBanner({
   return (
     <div className={bannerStyle}>
       {stale && (
-        <div className="bg-yellow-50 text-yellow-400 text-xs px-3 py-2 rounded-lg mb-3">
+        <div className="bg-yellow-50 text-yellow-400 text-sm px-3 py-2 rounded-lg mb-3">
           {ICO.WARN} {stale.message}
         </div>
       )}
@@ -741,12 +741,12 @@ function MarketGuideBanner({
             {summaryIcon} {guide.summary}
           </p>
           {guide.strategy && (
-            <p className="text-[var(--text-dim)] text-xs mt-1">{guide.strategy}</p>
+            <p className="text-[var(--text-dim)] text-sm mt-1">{guide.strategy}</p>
           )}
         </div>
         <div className="flex gap-2">
           {guide.vix != null && guide.vix > 0 && (
-            <span className={`text-xs px-2 py-1 rounded ${
+            <span className={`text-sm px-2 py-1 rounded ${
               guide.vix >= 40 ? "bg-red-100 text-[var(--up)] font-bold animate-pulse" :
               guide.vix >= 30 ? "bg-red-50 text-[var(--up)]" :
               guide.vix >= 20 ? "bg-yellow-50 text-[var(--yellow)]" :
@@ -756,7 +756,7 @@ function MarketGuideBanner({
             </span>
           )}
           {dangerMode !== "NORMAL" && (
-            <span className={`text-xs px-2 py-1 rounded font-bold ${
+            <span className={`text-sm px-2 py-1 rounded font-bold ${
               dangerMode === "PANIC" ? "bg-red-600 text-white animate-pulse" :
               dangerMode === "DANGER" ? "bg-orange-50 text-orange-600" :
               "bg-yellow-50 text-[var(--yellow)]"
@@ -770,13 +770,13 @@ function MarketGuideBanner({
       </div>
 
       {dangerMode === "PANIC" && (
-        <div className="bg-red-50 text-red-300 text-xs px-3 py-2 rounded-lg mb-3">
+        <div className="bg-red-50 text-red-300 text-sm px-3 py-2 rounded-lg mb-3">
           {ICO.SHIELD} <strong>ETF(금/채권) 95%</strong> + 개별주 5% 이하 | 현금 55% 이상 유지 권장
         </div>
       )}
 
       {(hot.length > 0 || cold.length > 0) && (
-        <div className="flex flex-wrap gap-2 text-xs">
+        <div className="flex flex-wrap gap-2 text-sm">
           {hot.map((s) => (
             <span key={s.sector} className="bg-red-50 text-red-400 px-2 py-0.5 rounded-full">
               {ICO.FIRE} {s.sector} {s.ret_5 > 0 ? `+${s.ret_5.toFixed(1)}%` : `${s.ret_5.toFixed(1)}%`}
@@ -827,7 +827,7 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
               />
             ))}
           </div>
-          <div className="flex flex-wrap gap-3 mt-2 text-xs">
+          <div className="flex flex-wrap gap-3 mt-2 text-sm">
             {activeAlloc.map(([key, val]) => (
               <span key={key} className="text-[var(--text-dim)]">
                 <span className={`inline-block w-2 h-2 rounded-full mr-1 ${ALLOC_COLORS[key] || "bg-gray-500"}`} />
@@ -840,10 +840,10 @@ function ETFSection({ etf }: { etf: NonNullable<JarvisData["etf_picks"]> }) {
 
       {accel.length > 0 && (
         <div>
-          <p className="text-gray-500 text-xs mb-2">급부상 업종 (순위 급상승)</p>
+          <p className="text-gray-500 text-sm mb-2">급부상 업종 (순위 급상승)</p>
           <div className="flex flex-wrap gap-2">
             {accel.map((a) => (
-              <span key={a.sector} className="bg-orange-50 text-orange-400 text-xs px-2 py-1 rounded border border-orange-200">
+              <span key={a.sector} className="bg-orange-50 text-orange-400 text-sm px-2 py-1 rounded border border-orange-200">
                 🚀 {a.sector}
                 <span className="text-orange-300 ml-1">+{a.rank_change}↑</span>
                 <span className="text-gray-500 ml-1">({a.ret_5d > 0 ? "+" : ""}{a.ret_5d.toFixed(1)}%)</span>
@@ -861,9 +861,9 @@ function StatusCard({ label, value, icon, color, sub }: {
 }) {
   return (
     <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
-      <p className="text-gray-500 text-xs">{label}</p>
+      <p className="text-gray-500 text-sm">{label}</p>
       <p className={`${color} text-lg font-bold mt-1`}>{icon} {value}</p>
-      {sub && <p className="text-gray-600 text-xs mt-1">{sub}</p>}
+      {sub && <p className="text-gray-600 text-sm mt-1">{sub}</p>}
     </div>
   );
 }
@@ -879,24 +879,24 @@ function PickRow({ pick }: { pick: PickItem }) {
     <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <span className={`text-xs px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
+          <span className={`text-sm px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
             {pick.grade}
           </span>
           <span className="text-[var(--text-primary)] font-medium">{pick.name}</span>
-          <span className="text-gray-500 text-xs">{pick.ticker}</span>
+          <span className="text-gray-500 text-sm">{pick.ticker}</span>
         </div>
         <span className="text-blue-400 font-bold">{pick.total_score}점</span>
       </div>
 
       <div className="flex flex-wrap gap-1 mb-2">
         {(pick.sources ?? []).map((s) => (
-          <span key={s} className="bg-blue-50 text-blue-400 text-xs px-2 py-0.5 rounded-full border border-blue-200">
+          <span key={s} className="bg-blue-50 text-blue-400 text-sm px-2 py-0.5 rounded-full border border-blue-200">
             {s}
           </span>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
         <div>
           <span className="text-[var(--text-muted)]">외국인 5일</span>{" "}
           <span className={f5 >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}>
@@ -920,7 +920,7 @@ function PickRow({ pick }: { pick: PickItem }) {
       </div>
 
       {entry && entry.entry > 0 && (
-        <div className="mt-2 grid grid-cols-3 gap-2 text-xs bg-gray-100 rounded p-2">
+        <div className="mt-2 grid grid-cols-3 gap-2 text-sm bg-gray-100 rounded p-2">
           <div>
             <span className="text-[var(--text-muted)]">진입</span>{" "}
             <span className="text-[var(--text-primary)]">{entry.entry.toLocaleString()}</span>
@@ -937,7 +937,7 @@ function PickRow({ pick }: { pick: PickItem }) {
       )}
 
       {(pick.reasons?.length ?? 0) > 0 && (
-        <p className="text-gray-500 text-xs mt-2">
+        <p className="text-gray-500 text-sm mt-2">
           {pick.reasons.slice(0, 3).join(" · ")}
         </p>
       )}
@@ -955,7 +955,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
           {ICO.CHART_DOWN} 업종 모멘텀 TOP 10
         </h2>
         {sectors.date && (
-          <span className="text-gray-500 text-xs">{sectors.date} 기준</span>
+          <span className="text-gray-500 text-sm">{sectors.date} 기준</span>
         )}
       </div>
 
@@ -976,7 +976,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
                       {isAccel && `${ICO.FIRE} `}{s.sector}
                     </span>
                     {s.rank_change !== 0 && (
-                      <span className={`text-xs ${rankColor}`}>
+                      <span className={`text-sm ${rankColor}`}>
                         {s.rank_change > 0 ? `+${s.rank_change}\u2191` : `${s.rank_change}\u2193`}
                       </span>
                     )}
@@ -984,7 +984,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
                   <span className="text-blue-400 font-bold text-sm">{s.score.toFixed(0)}점</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="grid grid-cols-3 gap-2 text-sm">
                   <div>
                     <span className="text-[var(--text-muted)]">5일 수익</span>{" "}
                     <span className={ret5Color}>
@@ -1036,7 +1036,7 @@ function SignalsTab({
     <div className="space-y-6">
       {cv && (
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-[var(--text-dim)] text-xs mb-3">교차검증 필터링</h3>
+          <h3 className="text-[var(--text-dim)] text-sm mb-3">교차검증 필터링</h3>
           <div className="flex items-end justify-between gap-2 h-24">
             {[
               { label: "전체 감지", value: total, color: "bg-gray-600" },
@@ -1054,19 +1054,19 @@ function SignalsTab({
                       style={{ height: `${Math.max(pct, 4)}%` }}
                     />
                   </div>
-                  <span className="text-gray-500 text-[10px]">{item.label}</span>
+                  <span className="text-gray-500 text-[12px]">{item.label}</span>
                 </div>
               );
             })}
           </div>
-          <p className="text-gray-500 text-[10px] mt-2 text-center">
+          <p className="text-gray-500 text-[12px] mt-2 text-center">
             2소스 이상 교차검증 통과 = 실제 매수 후보
           </p>
         </div>
       )}
 
       <div className="bg-white rounded-xl p-4">
-        <h3 className="text-[var(--text-dim)] text-xs mb-3">시그널 소스 활성도</h3>
+        <h3 className="text-[var(--text-dim)] text-sm mb-3">시그널 소스 활성도</h3>
         <div className="space-y-2">
           {sources.map((s) => {
             const barPct = (s.count / maxCount) * 100;
@@ -1074,26 +1074,26 @@ function SignalsTab({
             const accColor = s.hit_rate >= 60 ? "text-[var(--green)]" : s.hit_rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
             return (
               <div key={s.source} className="flex items-center gap-3">
-                <span className="text-[var(--text-primary)] text-xs w-16 shrink-0 truncate">{s.source}</span>
+                <span className="text-[var(--text-primary)] text-sm w-16 shrink-0 truncate">{s.source}</span>
                 <div className="flex-1 bg-gray-200 rounded-full h-3 relative">
                   <div
                     className="bg-blue-600 rounded-full h-3 transition-all"
                     style={{ width: `${barPct}%` }}
                   />
                 </div>
-                <span className="text-[var(--text-dim)] text-xs w-8 text-right">{s.count}</span>
+                <span className="text-[var(--text-dim)] text-sm w-8 text-right">{s.count}</span>
                 {hasAccuracy ? (
-                  <span className={`${accColor} text-xs w-12 text-right font-medium`}>
+                  <span className={`${accColor} text-sm w-12 text-right font-medium`}>
                     {s.hit_rate}%
                   </span>
                 ) : (
-                  <span className="text-gray-600 text-xs w-12 text-right">-</span>
+                  <span className="text-gray-600 text-sm w-12 text-right">-</span>
                 )}
               </div>
             );
           })}
         </div>
-        <div className="flex justify-end mt-2 gap-4 text-[10px] text-gray-600">
+        <div className="flex justify-end mt-2 gap-4 text-[12px] text-gray-600">
           <span>| 감지수</span>
           <span>| 적중률</span>
         </div>
@@ -1101,13 +1101,13 @@ function SignalsTab({
 
       {combos.length > 0 && (
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-[var(--text-dim)] text-xs mb-3">자주 나타나는 시그널 조합</h3>
+          <h3 className="text-[var(--text-dim)] text-sm mb-3">자주 나타나는 시그널 조합</h3>
           <div className="space-y-2">
             {combos.map((c) => (
               <div key={c.combo} className="flex items-center justify-between bg-gray-200 rounded-lg px-3 py-2">
                 <div className="flex flex-wrap gap-1">
                   {c.combo.split("+").map((src) => (
-                    <span key={src} className="bg-blue-50 text-blue-300 text-xs px-2 py-0.5 rounded">
+                    <span key={src} className="bg-blue-50 text-blue-300 text-sm px-2 py-0.5 rounded">
                       {src}
                     </span>
                   ))}
@@ -1121,7 +1121,7 @@ function SignalsTab({
 
       {accuracy && Object.keys(accuracy).length > 0 && (
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-[var(--text-dim)] text-xs mb-3">시그널 적중률 상세</h3>
+          <h3 className="text-[var(--text-dim)] text-sm mb-3">시그널 적중률 상세</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {Object.entries(accuracy)
               .filter(([, v]) => typeof v === "object" && v !== null && ((v as Record<string, number>).total ?? 0) > 0)
@@ -1132,9 +1132,9 @@ function SignalsTab({
                 const color = rate >= 60 ? "text-[var(--green)]" : rate >= 45 ? "text-[var(--yellow)]" : "text-[var(--up)]";
                 return (
                   <div key={name} className="bg-gray-200 rounded-lg p-3 text-center">
-                    <p className="text-gray-500 text-[10px] truncate">{name}</p>
+                    <p className="text-gray-500 text-[12px] truncate">{name}</p>
                     <p className={`${color} text-xl font-bold`}>{rate}%</p>
-                    <p className="text-gray-600 text-[10px]">{d.total ?? 0}건 검증</p>
+                    <p className="text-gray-600 text-[12px]">{d.total ?? 0}건 검증</p>
                   </div>
                 );
               })}
@@ -1181,7 +1181,7 @@ function PerformanceTab({ performance, cfo, cto }: {
         <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[var(--text-primary)] text-sm font-bold">CFO 포트폴리오 건강</h3>
-            <span className={`text-xs font-bold ${
+            <span className={`text-sm font-bold ${
               DRAWDOWN_STYLE[cfo.drawdown_action]?.color ?? "text-[var(--text-dim)]"
             }`}>
               {DRAWDOWN_STYLE[cfo.drawdown_action]?.label ?? cfo.drawdown_action}
@@ -1198,28 +1198,28 @@ function PerformanceTab({ performance, cfo, cto }: {
                   cfo.health_score >= 70 ? "text-[var(--green)]" : cfo.health_score >= 40 ? "text-[var(--yellow)]" : "text-[var(--up)]"
                 }`}>{Math.round(cfo.health_score)}</span>
               </div>
-              <p className="text-gray-500 text-[10px] mt-1">\uAC74\uAC15\uC810\uC218</p>
+              <p className="text-gray-500 text-[12px] mt-1">\uAC74\uAC15\uC810\uC218</p>
             </div>
 
             <div className="text-center">
               <p className={`text-2xl font-bold font-mono ${cfo.cash_ratio < 10 ? "text-[var(--up)]" : cfo.cash_ratio < 20 ? "text-[var(--yellow)]" : "text-[var(--green)]"}`}>
                 {cfo.cash_ratio.toFixed(1)}%
               </p>
-              <p className="text-gray-500 text-[10px]">\uD604\uAE08\uBE44\uC728</p>
+              <p className="text-gray-500 text-[12px]">\uD604\uAE08\uBE44\uC728</p>
             </div>
 
             <div className="text-center">
               <p className={`text-2xl font-bold font-mono ${cfo.max_sector_pct > 50 ? "text-[var(--up)]" : "text-[var(--text-primary)]"}`}>
                 {cfo.max_sector_pct.toFixed(0)}%
               </p>
-              <p className="text-gray-500 text-[10px]">{cfo.max_sector_name} \uC9D1\uC911</p>
+              <p className="text-gray-500 text-[12px]">{cfo.max_sector_name} \uC9D1\uC911</p>
             </div>
 
             <div className="text-center">
               <p className="text-2xl font-bold font-mono text-red-400">
                 {cfo.var_95.toFixed(1)}%
               </p>
-              <p className="text-gray-500 text-[10px]">VaR-95</p>
+              <p className="text-gray-500 text-[12px]">VaR-95</p>
             </div>
           </div>
 
@@ -1227,7 +1227,7 @@ function PerformanceTab({ performance, cfo, cto }: {
           {cfo.warnings.length > 0 && (
             <div className="space-y-1">
               {cfo.warnings.map((w, i) => (
-                <div key={i} className="text-xs bg-red-50 text-red-400 px-3 py-1.5 rounded border border-red-200">
+                <div key={i} className="text-sm bg-red-50 text-red-400 px-3 py-1.5 rounded border border-red-200">
                   {w}
                 </div>
               ))}
@@ -1242,12 +1242,12 @@ function PerformanceTab({ performance, cfo, cto }: {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[var(--text-primary)] text-sm font-bold">CTO \uC2DC\uC2A4\uD15C \uC131\uACFC</h3>
             <div className="flex items-center gap-2">
-              <span className={`text-xs font-mono ${
+              <span className={`text-sm font-mono ${
                 cto.data_health_score >= 90 ? "text-[var(--green)]" : cto.data_health_score >= 70 ? "text-[var(--yellow)]" : "text-[var(--up)]"
               }`}>
                 \uB370\uC774\uD130 {cto.data_health_score.toFixed(0)}\uC810
               </span>
-              <span className="text-gray-600 text-xs">{cto.total_records}\uAC74</span>
+              <span className="text-gray-600 text-sm">{cto.total_records}\uAC74</span>
             </div>
           </div>
 
@@ -1261,24 +1261,24 @@ function PerformanceTab({ performance, cfo, cto }: {
                   const retColor = s.avg_return >= 0 ? "text-[var(--green)]" : "text-[var(--up)]";
                   return (
                     <div key={s.source} className="flex items-center gap-2">
-                      <span className="text-[var(--text-primary)] text-xs w-16 shrink-0 truncate">
+                      <span className="text-[var(--text-primary)] text-sm w-16 shrink-0 truncate">
                         {s.decay && "\uD83D\uDD34 "}{s.source}
                       </span>
                       <div className="flex-1 bg-gray-200 rounded-full h-3">
                         <div className={`${barColor} rounded-full h-3 transition-all`}
                           style={{ width: `${Math.min(s.win_rate, 100)}%` }} />
                       </div>
-                      <span className={`text-xs w-10 text-right font-mono ${
+                      <span className={`text-sm w-10 text-right font-mono ${
                         s.win_rate >= 50 ? "text-[var(--green)]" : s.win_rate >= 35 ? "text-[var(--yellow)]" : "text-[var(--up)]"
                       }`}>{s.win_rate.toFixed(0)}%</span>
-                      <span className={`text-xs w-14 text-right font-mono ${retColor}`}>
+                      <span className={`text-sm w-14 text-right font-mono ${retColor}`}>
                         {s.avg_return >= 0 ? "+" : ""}{s.avg_return.toFixed(1)}%
                       </span>
-                      <span className="text-gray-600 text-xs w-8 text-right">{s.total}</span>
+                      <span className="text-gray-600 text-sm w-8 text-right">{s.total}</span>
                     </div>
                   );
                 })}
-              <div className="flex justify-end gap-4 text-[10px] text-gray-600 mt-1">
+              <div className="flex justify-end gap-4 text-[12px] text-gray-600 mt-1">
                 <span>| \uC2B9\uB960</span>
                 <span>| \uD3C9\uADE0\uC218\uC775</span>
                 <span>| \uAC74\uC218</span>
@@ -1290,7 +1290,7 @@ function PerformanceTab({ performance, cfo, cto }: {
           {cto.suggestions.length > 0 && (
             <div className="space-y-1">
               {cto.suggestions.map((s, i) => (
-                <div key={i} className={`text-xs px-3 py-1.5 rounded border ${
+                <div key={i} className={`text-sm px-3 py-1.5 rounded border ${
                   s.priority === "HIGH" ? "bg-red-50 text-red-400 border-red-200" :
                   s.priority === "MEDIUM" ? "bg-yellow-900/20 text-yellow-400 border-yellow-800/30" :
                   "bg-gray-100 text-[var(--text-dim)] border-[var(--border)]"
@@ -1306,21 +1306,21 @@ function PerformanceTab({ performance, cfo, cto }: {
       {trend.length > 0 && (
         <>
           <div className="bg-white rounded-xl p-4">
-            <h3 className="text-[var(--text-dim)] text-xs mb-3">일별 시그널 적중률 추이</h3>
+            <h3 className="text-[var(--text-dim)] text-sm mb-3">일별 시그널 적중률 추이</h3>
             <div className="flex items-end gap-2 h-32">
               {trend.map((d) => {
                 const pct = (d.avg_hit_rate / maxHit) * 100;
                 const color = d.avg_hit_rate >= 60 ? "bg-green-500" : d.avg_hit_rate >= 40 ? "bg-yellow-500" : "bg-red-500";
                 return (
                   <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                    <span className="text-[var(--text-primary)] text-xs font-bold">{d.avg_hit_rate}%</span>
+                    <span className="text-[var(--text-primary)] text-sm font-bold">{d.avg_hit_rate}%</span>
                     <div className="w-full flex justify-center" style={{ height: "80px" }}>
                       <div
                         className={`${color} rounded-t w-full max-w-[40px] transition-all`}
                         style={{ height: `${Math.max(pct, 5)}%`, marginTop: "auto" }}
                       />
                     </div>
-                    <span className="text-gray-500 text-[10px]">{d.date.slice(5)}</span>
+                    <span className="text-gray-500 text-[12px]">{d.date.slice(5)}</span>
                   </div>
                 );
               })}
@@ -1328,14 +1328,14 @@ function PerformanceTab({ performance, cfo, cto }: {
           </div>
 
           <div className="bg-white rounded-xl p-4">
-            <h3 className="text-[var(--text-dim)] text-xs mb-3">일별 시장 현황</h3>
+            <h3 className="text-[var(--text-dim)] text-sm mb-3">일별 시장 현황</h3>
             <div className="space-y-2">
               {trend.map((d) => {
                 const retColor = d.market_avg_ret >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
                 return (
                   <div key={d.date} className="flex items-center justify-between bg-gray-200 rounded-lg px-3 py-2">
-                    <span className="text-[var(--text-primary)] text-xs">{d.date.slice(5)}</span>
-                    <div className="flex gap-4 text-xs">
+                    <span className="text-[var(--text-primary)] text-sm">{d.date.slice(5)}</span>
+                    <div className="flex gap-4 text-sm">
                       <span className="text-[var(--text-dim)]">
                         상승 <span className="text-[var(--up)]">{d.up_ratio}%</span>
                       </span>
@@ -1354,7 +1354,7 @@ function PerformanceTab({ performance, cfo, cto }: {
 
           {latest?.sources && Object.keys(latest.sources).length > 0 && (
             <div className="bg-white rounded-xl p-4">
-              <h3 className="text-[var(--text-dim)] text-xs mb-3">
+              <h3 className="text-[var(--text-dim)] text-sm mb-3">
                 {latest.date ? `${latest.date} ` : ""}소스별 적중률
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -1365,14 +1365,14 @@ function PerformanceTab({ performance, cfo, cto }: {
                     const retColor = s.avg_ret >= 0 ? "text-[var(--up)]" : "text-[var(--down)]";
                     return (
                       <div key={name} className="bg-gray-200 rounded-lg p-3">
-                        <p className="text-[var(--text-dim)] text-[10px] truncate mb-1">{name}</p>
+                        <p className="text-[var(--text-dim)] text-[12px] truncate mb-1">{name}</p>
                         <div className="flex items-baseline justify-between">
                           <span className={`${color} text-lg font-bold`}>{s.hit_rate}%</span>
-                          <span className={`${retColor} text-xs`}>
+                          <span className={`${retColor} text-sm`}>
                             {s.avg_ret >= 0 ? "+" : ""}{s.avg_ret}%
                           </span>
                         </div>
-                        <p className="text-gray-600 text-[10px] mt-1">{s.total}건 검증</p>
+                        <p className="text-gray-600 text-[12px] mt-1">{s.total}건 검증</p>
                       </div>
                     );
                   })}
@@ -1401,7 +1401,7 @@ function TabEmpty({ label }: { label: string }) {
   return (
     <div className="bg-white rounded-xl p-6 text-center">
       <p className="text-[var(--text-dim)] text-sm">{label} 데이터가 아직 없습니다</p>
-      <p className="text-gray-600 text-xs mt-1">매일 장마감 후 업데이트됩니다</p>
+      <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다</p>
     </div>
   );
 }
@@ -1460,7 +1460,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               );
             })}
           </div>
-          <div className="flex flex-wrap gap-3 text-xs">
+          <div className="flex flex-wrap gap-3 text-sm">
             {STATUS_ORDER.map((key) => {
               const count = counts[key] ?? 0;
               if (count === 0) return null;
@@ -1480,12 +1480,12 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
         <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
             <span className="text-sm font-bold text-[var(--text-primary)]">적자→흑자 전환 (강력)</span>
-            <span className="text-xs text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
+            <span className="text-sm text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+                <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1499,7 +1499,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
                   <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
                       <span className="text-[var(--text-primary)]">{s.name}</span>
-                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                      <span className="text-gray-600 text-[12px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-emerald-400">{s.score}</td>
                     <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
@@ -1521,12 +1521,12 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
         <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
             <span className="text-sm font-bold text-[var(--text-primary)]">적자 축소 중 (EARLY)</span>
-            <span className="text-xs text-gray-500 ml-2">{turnaround.early.length}건</span>
+            <span className="text-sm text-gray-500 ml-2">{turnaround.early.length}건</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+                <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1540,7 +1540,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
                   <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
                       <span className="text-[var(--text-primary)]">{s.name}</span>
-                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                      <span className="text-gray-600 text-[12px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-amber-400">{s.score}</td>
                     <td className="text-right px-2 font-mono text-red-400">{fmtBil(s.op_income_q1)}</td>
@@ -1562,12 +1562,12 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
         <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
             <span className="text-sm font-bold text-[var(--text-primary)]">실적 가속 종목</span>
-            <span className="text-xs text-gray-500 ml-2">{earnings.accelerating.length}건</span>
+            <span className="text-sm text-gray-500 ml-2">{earnings.accelerating.length}건</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+                <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
                   <th className="text-right px-2">점수</th>
                   <th className="text-right px-2">이전 영업이익</th>
@@ -1581,7 +1581,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
                   <tr key={s.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                     <td className="py-2 px-3">
                       <span className="text-[var(--text-primary)]">{s.name}</span>
-                      <span className="text-gray-600 text-[10px] ml-1">{s.ticker}</span>
+                      <span className="text-gray-600 text-[12px] ml-1">{s.ticker}</span>
                     </td>
                     <td className="text-right px-2 font-mono font-bold text-blue-400">{s.score}</td>
                     <td className="text-right px-2 font-mono text-[var(--text-dim)]">{fmtBil(s.prev_op_income)}</td>
@@ -1599,7 +1599,7 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
               </tbody>
             </table>
             {earnings.accelerating.length > 30 && (
-              <div className="text-center py-2 text-gray-600 text-xs">
+              <div className="text-center py-2 text-gray-600 text-sm">
                 +{earnings.accelerating.length - 30}건 더 있음
               </div>
             )}
@@ -1621,28 +1621,28 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-gray-900 text-lg font-bold">ETF 자금흐름 시그널</h2>
-        {date && <span className="text-gray-500 text-xs">{date}</span>}
+        {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">유입/강세</p>
+          <p className="text-gray-500 text-[12px]">유입/강세</p>
           <p className="text-red-400 text-xl font-bold">{inflow.length}</p>
         </div>
         <div className="bg-blue-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">유출/약세</p>
+          <p className="text-gray-500 text-[12px]">유출/약세</p>
           <p className="text-blue-400 text-xl font-bold">{outflow.length}</p>
         </div>
         <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">전체</p>
+          <p className="text-gray-500 text-[12px]">전체</p>
           <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-xs">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+            <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">ETF</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1659,10 +1659,10 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
                 <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                   <td className="py-2 px-2">
                     <span className="text-[var(--text-primary)]">{item.name}</span>
-                    <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
+                    <span className="text-gray-600 text-[12px] ml-1">{item.ticker}</span>
                   </td>
                   <td className="text-center py-2 px-2">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
                     <span className={`font-bold font-mono ${item.score >= 70 ? "text-[var(--up)]" : item.score >= 40 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
@@ -1697,28 +1697,28 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-gray-900 text-lg font-bold">섹터 릴레이 (Lead-Lag)</h2>
-        {date && <span className="text-gray-500 text-xs">{date}</span>}
+        {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">매수 기회</p>
+          <p className="text-gray-500 text-[12px]">매수 기회</p>
           <p className="text-red-400 text-xl font-bold">{buySignals.length}</p>
         </div>
         <div className="bg-blue-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">기타</p>
+          <p className="text-gray-500 text-[12px]">기타</p>
           <p className="text-blue-400 text-xl font-bold">{items.length - buySignals.length}</p>
         </div>
         <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">전체 쌍</p>
+          <p className="text-gray-500 text-[12px]">전체 쌍</p>
           <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-xs">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+            <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">선행 → 후행</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1740,7 +1740,7 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
                     <span className="text-[var(--text-primary)]">{item.lag_sector}</span>
                   </td>
                   <td className="text-center py-2 px-2">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
                     <span className={`font-bold font-mono ${item.score >= 50 ? "text-[var(--up)]" : item.score >= 30 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
@@ -1777,28 +1777,28 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-gray-900 text-lg font-bold">스나이퍼워치</h2>
-        {date && <span className="text-gray-500 text-xs">{date}</span>}
+        {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-red-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">고점수 (70+)</p>
+          <p className="text-gray-500 text-[12px]">고점수 (70+)</p>
           <p className="text-red-400 text-xl font-bold">{highScore.length}</p>
         </div>
         <div className="bg-yellow-900/20 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">관심 (40-69)</p>
+          <p className="text-gray-500 text-[12px]">관심 (40-69)</p>
           <p className="text-yellow-400 text-xl font-bold">{items.filter((i) => i.score >= 40 && i.score < 70).length}</p>
         </div>
         <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[10px]">전체</p>
+          <p className="text-gray-500 text-[12px]">전체</p>
           <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-xs">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="text-gray-500 text-[10px] border-b border-[var(--border)]">
+            <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">종목</th>
               <th className="text-center py-2 px-2">시그널</th>
               <th className="text-right py-2 px-2">점수</th>
@@ -1818,10 +1818,10 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
                 <tr key={item.ticker} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
                   <td className="py-2 px-2">
                     <span className="text-[var(--text-primary)]">{item.name}</span>
-                    <span className="text-gray-600 text-[10px] ml-1">{item.ticker}</span>
+                    <span className="text-gray-600 text-[12px] ml-1">{item.ticker}</span>
                   </td>
                   <td className="text-center py-2 px-2">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
+                    <span className={`text-[12px] px-1.5 py-0.5 rounded border ${sig.bg} ${sig.color}`}>{item.signal_type}</span>
                   </td>
                   <td className="text-right py-2 px-2">
                     <span className={`font-bold font-mono ${item.score >= 70 ? "text-[var(--up)]" : item.score >= 40 ? "text-[var(--yellow)]" : "text-[var(--text-dim)]"}`}>{item.score}</span>
@@ -1908,7 +1908,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
     return (
       <div className="bg-white rounded-lg p-8 border border-[var(--border)] text-center">
         <p className="text-[var(--text-muted)]">킬러픽 데이터가 아직 없습니다.</p>
-        <p className="text-gray-500 text-xs mt-1">매일 장마감 후 생성됩니다.</p>
+        <p className="text-gray-500 text-sm mt-1">매일 장마감 후 생성됩니다.</p>
       </div>
     );
   }
@@ -1941,7 +1941,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
           <h2 className="text-lg font-black text-[var(--text-primary)]">
             킬러픽 — {kp.target_label ?? kp.date ?? ""}
           </h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+          <p className="text-sm text-[var(--text-muted)] mt-0.5">
             12개 데이터소스 교차검증 · 생성 {kp.generated_at ?? ""}
           </p>
         </div>
@@ -1950,10 +1950,10 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 1: 시장 환경 */}
       {env && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">시장 환경</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">시장 환경</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
             <div className={`rounded-lg p-3 border ${regimeColor}`}>
-              <p className="text-[10px] opacity-70">시장상태</p>
+              <p className="text-[12px] opacity-70">시장상태</p>
               <p className="text-lg font-black">{
                 env.regime === "NORMAL" ? "정상" :
                 env.regime === "CAUTION" ? "주의" :
@@ -1966,11 +1966,11 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
               : (env.vix ?? 0) <= 25 ? "text-amber-600 bg-amber-50 border-amber-200"
               : "text-red-600 bg-red-50 border-red-200"
             }`}>
-              <p className="text-[10px] opacity-70">공포지수</p>
+              <p className="text-[12px] opacity-70">공포지수</p>
               <p className="text-lg font-black">{env.vix ?? "-"}</p>
             </div>
             <div className={`rounded-lg p-3 border ${shieldColor}`}>
-              <p className="text-[10px] opacity-70">방어등급</p>
+              <p className="text-[12px] opacity-70">방어등급</p>
               <p className="text-lg font-black">{
                 env.shield === "GREEN" ? "안전" :
                 env.shield === "YELLOW" ? "주의" :
@@ -1978,7 +1978,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
               }</p>
             </div>
             <div className="rounded-lg p-3 border border-[var(--border)] bg-white">
-              <p className="text-[10px] text-[var(--text-muted)]">현금비중</p>
+              <p className="text-[12px] text-[var(--text-muted)]">현금비중</p>
               <p className="text-lg font-black text-[var(--text-primary)]">{env.cash_pct ?? "-"}%</p>
             </div>
           </div>
@@ -1993,7 +1993,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 2: 시그널 검증 */}
       {sv && sv.signal_summary && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">시그널 검증</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">시그널 검증</h3>
           <div className="bg-white rounded-lg border border-[var(--border)] p-4">
             <div className="space-y-2 mb-4">
               {Object.entries(sv.signal_summary)
@@ -2002,7 +2002,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                   const pct = val.hit_rate;
                   return (
                     <div key={key} className="flex items-center gap-3">
-                      <span className="text-xs text-[var(--text-dim)] w-20 shrink-0 text-right">
+                      <span className="text-sm text-[var(--text-dim)] w-20 shrink-0 text-right">
                         {SIGNAL_NAME_MAP[key] ?? key}
                       </span>
                       <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
@@ -2011,16 +2011,16 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                           style={{ width: `${Math.min(pct, 100)}%` }}
                         />
                       </div>
-                      <span className={`text-xs font-bold w-12 text-right ${pct > 55 ? "text-green-600" : pct > 45 ? "text-amber-600" : "text-gray-500"}`}>
+                      <span className={`text-sm font-bold w-12 text-right ${pct > 55 ? "text-green-600" : pct > 45 ? "text-amber-600" : "text-gray-500"}`}>
                         {pct.toFixed(1)}%
                       </span>
-                      <span className="text-[10px] text-[var(--text-muted)] w-12 text-right">{val.total}건</span>
+                      <span className="text-[12px] text-[var(--text-muted)] w-12 text-right">{val.total}건</span>
                     </div>
                   );
                 })}
             </div>
             {sv.insight && (
-              <div className="bg-blue-50 text-blue-700 text-xs px-3 py-2 rounded-lg border border-blue-200">
+              <div className="bg-blue-50 text-blue-700 text-sm px-3 py-2 rounded-lg border border-blue-200">
                 {sv.insight}
               </div>
             )}
@@ -2031,7 +2031,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 3: 교차검증 TOP */}
       {cross.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">
             교차검증 TOP {cross.length}
           </h3>
           <div className="space-y-3">
@@ -2039,18 +2039,18 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
               <div key={c.ticker} className="bg-white rounded-xl border border-[var(--border)] p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[var(--text-muted)] font-mono">#{c.rank}</span>
+                    <span className="text-sm text-[var(--text-muted)] font-mono">#{c.rank}</span>
                     <span className="text-sm font-black text-[var(--text-primary)]">{c.name}</span>
-                    <span className="text-[10px] text-[var(--text-muted)]">{c.ticker}</span>
+                    <span className="text-[12px] text-[var(--text-muted)]">{c.ticker}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {c.conviction && (
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${CONVICTION_STYLE[c.conviction] ?? CONVICTION_STYLE.LOW}`}>
+                      <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${CONVICTION_STYLE[c.conviction] ?? CONVICTION_STYLE.LOW}`}>
                         {CONVICTION_LABEL[c.conviction] ?? c.conviction}
                       </span>
                     )}
                     {c.action && (
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[c.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
+                      <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[c.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
                         {c.action}
                       </span>
                     )}
@@ -2059,13 +2059,13 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                 {c.matched_from && c.matched_from.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-2">
                     {c.matched_from.map((tag) => (
-                      <span key={tag} className="text-[10px] bg-gray-100 text-[var(--text-dim)] px-1.5 py-0.5 rounded">
+                      <span key={tag} className="text-[12px] bg-gray-100 text-[var(--text-dim)] px-1.5 py-0.5 rounded">
                         {tag}
                       </span>
                     ))}
                   </div>
                 )}
-                <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-dim)]">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-dim)]">
                   {c.signals_matched > 0 && <span>{c.signals_matched}개 시그널 교차</span>}
                   {c.inst_consecutive != null && c.inst_consecutive > 0 && <span>기관 {c.inst_consecutive}일 연속</span>}
                   {c.inst_20d_bil != null && <span>20일 {c.inst_20d_bil > 0 ? "+" : ""}{c.inst_20d_bil.toFixed(0)}억</span>}
@@ -2076,7 +2076,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                   {c.consensus?.dividend != null && c.consensus.dividend > 0 && <span>배당 {c.consensus.dividend.toFixed(1)}%</span>}
                 </div>
                 {(c.entry_price || c.stop_loss || c.target_price) && (
-                  <div className="flex gap-4 mt-2 text-xs font-mono">
+                  <div className="flex gap-4 mt-2 text-sm font-mono">
                     {c.entry_price != null && <span className="text-[var(--text-primary)]">진입 {c.entry_price.toLocaleString()}</span>}
                     {c.stop_loss != null && <span className="text-[var(--down)]">손절 {c.stop_loss.toLocaleString()}</span>}
                     {c.target_price != null && <span className="text-[var(--up)]">목표 {c.target_price.toLocaleString()}</span>}
@@ -2091,24 +2091,24 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 4: ETF 추천 */}
       {etfs.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">ETF 추천</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">ETF 추천</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {etfs.map((e) => (
               <div key={e.ticker} className="bg-white rounded-lg border border-[var(--border)] p-3 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-[var(--text-primary)]">{e.name}</span>
-                    <span className="text-[10px] text-[var(--text-muted)]">{e.ticker}</span>
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{e.name}</span>
+                    <span className="text-[12px] text-[var(--text-muted)]">{e.ticker}</span>
                     {e.category && (
-                      <span className="text-[10px] bg-gray-100 text-[var(--text-dim)] px-1 py-px rounded">{e.category}</span>
+                      <span className="text-[12px] bg-gray-100 text-[var(--text-dim)] px-1 py-px rounded">{e.category}</span>
                     )}
                   </div>
-                  <p className="text-[11px] text-[var(--text-dim)] mt-0.5">{e.signal ?? e.reason ?? ""}</p>
+                  <p className="text-[13px] text-[var(--text-dim)] mt-0.5">{e.signal ?? e.reason ?? ""}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-3">
-                  {e.sizing && <span className="text-[10px] text-[var(--text-muted)]">{e.sizing}</span>}
+                  {e.sizing && <span className="text-[12px] text-[var(--text-muted)]">{e.sizing}</span>}
                   {e.action && (
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[e.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
+                    <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[e.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
                       {e.action === "BUY" ? "매수" : e.action}
                     </span>
                   )}
@@ -2122,16 +2122,16 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 5: 포트폴리오 제안 */}
       {portfolio && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">포트폴리오 제안</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">포트폴리오 제안</h3>
           <div className="bg-white rounded-lg border border-[var(--border)] p-4">
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                <span className="text-xs text-[var(--text-primary)] font-bold">방어 {portfolio.defense_pct ?? 0}%</span>
+                <span className="text-sm text-[var(--text-primary)] font-bold">방어 {portfolio.defense_pct ?? 0}%</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
-                <span className="text-xs text-[var(--text-primary)] font-bold">공격 {portfolio.offense_pct ?? 0}%</span>
+                <span className="text-sm text-[var(--text-primary)] font-bold">공격 {portfolio.offense_pct ?? 0}%</span>
               </div>
               <div className="flex-1 h-3 rounded-full overflow-hidden flex">
                 <div className="bg-blue-500 h-full" style={{ width: `${portfolio.defense_pct ?? 50}%` }} />
@@ -2140,18 +2140,18 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-[10px] text-blue-600 font-bold mb-1 uppercase">방어</p>
+                <p className="text-[12px] text-blue-600 font-bold mb-1 uppercase">방어</p>
                 {(portfolio.defense ?? []).map((d) => (
-                  <div key={d.ticker} className="flex items-center justify-between py-1 text-xs">
+                  <div key={d.ticker} className="flex items-center justify-between py-1 text-sm">
                     <span className="text-[var(--text-primary)]">{d.name}</span>
                     <span className="text-[var(--text-dim)] font-mono">{d.pct}%</span>
                   </div>
                 ))}
               </div>
               <div>
-                <p className="text-[10px] text-red-600 font-bold mb-1 uppercase">공격</p>
+                <p className="text-[12px] text-red-600 font-bold mb-1 uppercase">공격</p>
                 {(portfolio.offense ?? []).map((d) => (
-                  <div key={d.ticker} className="flex items-center justify-between py-1 text-xs">
+                  <div key={d.ticker} className="flex items-center justify-between py-1 text-sm">
                     <span className="text-[var(--text-primary)]">{d.name}</span>
                     <span className="text-[var(--text-dim)] font-mono">{d.pct}%</span>
                   </div>
@@ -2165,7 +2165,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 6: 기관 매집 */}
       {instPicks.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">
             기관 매집 ({instPicks.length}종목)
           </h3>
           <div className="bg-white rounded-lg border border-[var(--border)] overflow-hidden">
@@ -2173,21 +2173,21 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
               {instPicks.map((p) => (
                 <div key={p.ticker} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors">
                   <div className="min-w-[100px]">
-                    <span className="text-xs font-bold text-[var(--text-primary)]">{p.name}</span>
-                    {p.dual_buying && <span className="ml-1 text-amber-500 text-[10px]" title="외인+기관 동반매수">★</span>}
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{p.name}</span>
+                    {p.dual_buying && <span className="ml-1 text-amber-500 text-[12px]" title="외인+기관 동반매수">★</span>}
                   </div>
                   {p.grade && (
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${INST_GRADE_STYLE[p.grade] ?? INST_GRADE_STYLE.WATCH}`}>
+                    <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${INST_GRADE_STYLE[p.grade] ?? INST_GRADE_STYLE.WATCH}`}>
                       {INST_GRADE_LABEL[p.grade] ?? p.grade}
                     </span>
                   )}
                   <div className="flex items-center gap-1">
                     <div className="bg-blue-500 rounded-sm h-2.5" style={{ width: Math.min(p.inst_consecutive * 12, 80) }} />
-                    <span className="text-[10px] text-blue-600 font-bold">{p.inst_consecutive}일</span>
+                    <span className="text-[12px] text-blue-600 font-bold">{p.inst_consecutive}일</span>
                   </div>
-                  <span className="text-[10px] text-[var(--text-dim)] flex-1 truncate">{p.verdict ?? ""}</span>
+                  <span className="text-[12px] text-[var(--text-dim)] flex-1 truncate">{p.verdict ?? ""}</span>
                   {p.inst_20d_bil != null && (
-                    <span className={`text-[10px] font-mono shrink-0 ${p.inst_20d_bil >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
+                    <span className={`text-[12px] font-mono shrink-0 ${p.inst_20d_bil >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                       {p.inst_20d_bil >= 0 ? "+" : ""}{p.inst_20d_bil.toFixed(0)}억
                     </span>
                   )}
@@ -2201,25 +2201,25 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 7: 개인 지지 */}
       {retailPicks.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">
             개인 지지 ({retailPicks.length}종목)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {retailPicks.map((r) => (
               <div key={r.ticker} className="bg-white rounded-lg border border-[var(--border)] p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[var(--text-primary)]">{r.name}</span>
+                  <span className="text-sm font-bold text-[var(--text-primary)]">{r.name}</span>
                   {r.absorb_rate != null && (
-                    <span className={`text-xs font-bold ${r.absorb_rate >= 100 ? "text-green-600" : "text-amber-600"}`}>
+                    <span className={`text-sm font-bold ${r.absorb_rate >= 100 ? "text-green-600" : "text-amber-600"}`}>
                       흡수 {r.absorb_rate}%
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-[var(--text-dim)]">
+                <div className="flex items-center gap-2 text-[12px] text-[var(--text-dim)]">
                   {r.retail_consecutive != null && <span>{r.retail_consecutive}일 연속</span>}
                   {r.retail_net_5d_bil != null && <span>5일 {r.retail_net_5d_bil > 0 ? "+" : ""}{r.retail_net_5d_bil.toFixed(0)}억</span>}
                 </div>
-                {r.verdict && <p className="text-[11px] text-[var(--text-dim)] mt-1">{r.verdict}</p>}
+                {r.verdict && <p className="text-[13px] text-[var(--text-dim)] mt-1">{r.verdict}</p>}
               </div>
             ))}
           </div>
@@ -2229,18 +2229,18 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션: 섹터 분석 */}
       {sectorA && sectorA.top_sectors && sectorA.top_sectors.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">섹터 분석</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">섹터 분석</h3>
           <div className="bg-white rounded-lg border border-[var(--border)] p-4">
             <div className="space-y-2 mb-3">
               {sectorA.top_sectors.map((s) => (
                 <div key={s.sector} className="flex items-center gap-3">
-                  <span className="text-xs text-[var(--text-primary)] font-bold w-16 shrink-0">{s.sector}</span>
+                  <span className="text-sm text-[var(--text-primary)] font-bold w-16 shrink-0">{s.sector}</span>
                   <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
                     <div className="bg-blue-500 h-3 rounded-full" style={{ width: `${Math.min(s.score, 100)}%` }} />
                   </div>
-                  <span className="text-xs text-[var(--text-dim)] font-mono w-10 text-right">{s.score.toFixed(0)}</span>
+                  <span className="text-sm text-[var(--text-dim)] font-mono w-10 text-right">{s.score.toFixed(0)}</span>
                   {s.ret_5d != null && (
-                    <span className={`text-[10px] font-mono w-14 text-right ${s.ret_5d >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
+                    <span className={`text-[12px] font-mono w-14 text-right ${s.ret_5d >= 0 ? "text-[var(--up)]" : "text-[var(--down)]"}`}>
                       {s.ret_5d >= 0 ? "+" : ""}{s.ret_5d.toFixed(1)}%
                     </span>
                   )}
@@ -2248,7 +2248,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
               ))}
             </div>
             {sectorA.money_flow && (
-              <p className="text-xs text-[var(--text-dim)] border-t border-[var(--border)] pt-2">{sectorA.money_flow}</p>
+              <p className="text-sm text-[var(--text-dim)] border-t border-[var(--border)] pt-2">{sectorA.money_flow}</p>
             )}
           </div>
         </section>
@@ -2257,7 +2257,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
       {/* 섹션 8: 딥다이브 */}
       {dives.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-xs font-bold mb-2 uppercase tracking-wider">종목 딥다이브</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">종목 딥다이브</h3>
           <div className="space-y-2">
             {dives.map((d) => {
               const isOpen = openDive === d.ticker;
@@ -2268,32 +2268,32 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-left"
                   >
                     <span className="text-sm font-bold text-[var(--text-primary)]">{d.question ?? d.name}</span>
-                    <span className="text-[var(--text-muted)] text-xs">{isOpen ? "▲" : "▼"}</span>
+                    <span className="text-[var(--text-muted)] text-sm">{isOpen ? "▲" : "▼"}</span>
                   </button>
                   {isOpen && (
                     <div className="px-4 pb-4 space-y-2 border-t border-[var(--border)]">
                       {d.bull_case && (
                         <div className="flex gap-2 pt-2">
-                          <span className="text-green-600 text-xs font-bold shrink-0 w-10">강점</span>
-                          <span className="text-xs text-[var(--text-dim)]">{d.bull_case}</span>
+                          <span className="text-green-600 text-sm font-bold shrink-0 w-10">강점</span>
+                          <span className="text-sm text-[var(--text-dim)]">{d.bull_case}</span>
                         </div>
                       )}
                       {d.bear_case && (
                         <div className="flex gap-2">
-                          <span className="text-red-600 text-xs font-bold shrink-0 w-10">약점</span>
-                          <span className="text-xs text-[var(--text-dim)]">{d.bear_case}</span>
+                          <span className="text-red-600 text-sm font-bold shrink-0 w-10">약점</span>
+                          <span className="text-sm text-[var(--text-dim)]">{d.bear_case}</span>
                         </div>
                       )}
                       {d.verdict && (
                         <div className="flex gap-2">
-                          <span className="text-blue-600 text-xs font-bold shrink-0 w-10">판단</span>
-                          <span className="text-xs text-[var(--text-primary)] font-bold">{d.verdict}</span>
+                          <span className="text-blue-600 text-sm font-bold shrink-0 w-10">판단</span>
+                          <span className="text-sm text-[var(--text-primary)] font-bold">{d.verdict}</span>
                         </div>
                       )}
                       {d.entry_condition && (
                         <div className="flex gap-2">
-                          <span className="text-[var(--text-muted)] text-xs shrink-0 w-10">진입</span>
-                          <span className="text-xs text-[var(--text-dim)]">{d.entry_condition}</span>
+                          <span className="text-[var(--text-muted)] text-sm shrink-0 w-10">진입</span>
+                          <span className="text-sm text-[var(--text-dim)]">{d.entry_condition}</span>
                         </div>
                       )}
                     </div>

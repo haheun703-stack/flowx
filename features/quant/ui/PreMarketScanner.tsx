@@ -68,7 +68,7 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
     >
       {isPlaceholder && (
         <div className="bg-[#F5F3FF] px-4 py-1.5 text-center">
-          <span className="text-[9px] text-[#7C3AED] font-medium">
+          <span className="text-[11px] text-[#7C3AED] font-medium">
             데이터 파이프라인 준비 중 — 예시 데이터
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* 좌: 어젯밤 미국 시장 */}
         <div className="p-5 border-b md:border-b-0 md:border-r border-[var(--border)]">
-          <h3 className="text-[13px] font-bold text-[#1A1A2E] mb-3">
+          <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
             어젯밤 미국
           </h3>
 
@@ -89,13 +89,13 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
               { label: 'VIX', data: d.vix },
             ].map((item) => item.data && (
               <div key={item.label} className="flex justify-between items-center">
-                <span className="text-[11px] text-[#6B7280]">{item.label}</span>
+                <span className="text-[13px] text-[#6B7280]">{item.label}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] font-mono font-bold text-[#1A1A2E] tabular-nums">
+                  <span className="text-[14px] font-mono font-bold text-[#1A1A2E] tabular-nums">
                     {item.label === 'VIX' ? item.data.close.toFixed(1) : item.data.close.toLocaleString()}
                   </span>
                   <span
-                    className="text-[11px] font-bold tabular-nums"
+                    className="text-[13px] font-bold tabular-nums"
                     style={{ color: item.label === 'VIX'
                       ? (item.data.change_pct >= 0 ? '#DC2626' : '#059669')
                       : changeColor(item.data.change_pct)
@@ -111,9 +111,9 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
           {/* 섹터별 핵심 변동 */}
           {d.sector_moves && d.sector_moves.length > 0 && (
             <div className="space-y-1.5 mb-3">
-              <p className="text-[10px] font-bold text-[#7C3AED] uppercase tracking-wider">섹터 변동</p>
+              <p className="text-[12px] font-bold text-[#7C3AED] uppercase tracking-wider">섹터 변동</p>
               {d.sector_moves.map((s) => (
-                <div key={s.sector} className="flex items-center gap-2 text-[11px]">
+                <div key={s.sector} className="flex items-center gap-2 text-[13px]">
                   <span
                     className="font-bold tabular-nums w-[48px]"
                     style={{ color: changeColor(s.change_pct) }}
@@ -129,7 +129,7 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
 
           {/* 요약 한 줄 */}
           {d.summary && (
-            <p className="text-[11px] text-[#4C1D95] font-medium border-l-2 border-[#7C3AED] pl-2 leading-relaxed">
+            <p className="text-[13px] text-[#4C1D95] font-medium border-l-2 border-[#7C3AED] pl-2 leading-relaxed">
               {d.summary}
             </p>
           )}
@@ -138,11 +138,11 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
         {/* 우: 오늘 한국 ETF 전략 + → 화살표 */}
         <div className="p-5 relative">
           {/* 화살표 */}
-          <div className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#7C3AED] text-white items-center justify-center text-[11px] font-bold z-10">
+          <div className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#7C3AED] text-white items-center justify-center text-[13px] font-bold z-10">
             →
           </div>
 
-          <h3 className="text-[13px] font-bold text-[#1A1A2E] mb-3">
+          <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">
             오늘 한국 ETF 전략
           </h3>
 
@@ -153,7 +153,7 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
                 <div key={r.ticker} className="flex items-center gap-2 bg-[#FAFAF8] rounded-lg p-2.5">
                   {/* 매수/대기 뱃지 */}
                   <span
-                    className="text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
                     style={{ backgroundColor: badge.bg, color: badge.text }}
                   >
                     {badge.label}
@@ -162,10 +162,10 @@ export default function PreMarketScanner({ data, etfRelays }: PreMarketScannerPr
                   {/* 종목명 + 비중 */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-[12px] font-bold text-[#1A1A2E] truncate">{r.name}</span>
-                      <span className="text-[10px] text-[#7C3AED] font-bold shrink-0">{r.weight}</span>
+                      <span className="text-[14px] font-bold text-[#1A1A2E] truncate">{r.name}</span>
+                      <span className="text-[12px] text-[#7C3AED] font-bold shrink-0">{r.weight}</span>
                     </div>
-                    <p className="text-[10px] text-[#6B7280] truncate">{r.reason}</p>
+                    <p className="text-[12px] text-[#6B7280] truncate">{r.reason}</p>
                   </div>
                 </div>
               )

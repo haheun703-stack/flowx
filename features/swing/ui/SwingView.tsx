@@ -87,9 +87,9 @@ function Panel({ title, badge, dot, sample, children }: {
         <div className="flex items-center gap-1.5">
           {dot && <span className={`w-2 h-2 rounded-full ${dot} animate-pulse`} />}
           <span className="text-sm font-bold text-[var(--text-primary)] tracking-wider uppercase">{title}</span>
-          {sample && <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-amber-50 text-[var(--yellow)] border border-[var(--yellow)]/30 font-bold ml-1">샘플</span>}
+          {sample && <span className="text-[11px] px-1.5 py-0.5 rounded-sm bg-amber-50 text-[var(--yellow)] border border-[var(--yellow)]/30 font-bold ml-1">샘플</span>}
         </div>
-        {badge && <span className="text-xs text-[var(--text-dim)] font-bold">{badge}</span>}
+        {badge && <span className="text-sm text-[var(--text-dim)] font-bold">{badge}</span>}
       </div>
       {children}
     </div>
@@ -97,7 +97,7 @@ function Panel({ title, badge, dot, sample, children }: {
 }
 
 function EmptyState({ msg = '데이터 없음' }: { msg?: string }) {
-  return <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-xs">{msg}</div>
+  return <div className="flex items-center justify-center h-32 text-[var(--text-muted)] text-sm">{msg}</div>
 }
 
 // ── 데이터 훅 ──
@@ -142,7 +142,7 @@ function Panel1_Recommendations({ stocks, isLoading }: { stocks: ShortSignalItem
 
   return (
     <Panel title="추천종목 + 소스 태그" dot="bg-[#a855f7]" badge={`${stocks.length}종목`}>
-      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[11px] text-[var(--text-dim)] font-bold uppercase"
+      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[13px] text-[var(--text-dim)] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>
         <span className="text-center">신호</span>
         <span>종목</span>
@@ -159,21 +159,21 @@ function Panel1_Recommendations({ stocks, isLoading }: { stocks: ShortSignalItem
             <Link key={s.code} href={`/chart/${s.code}`}
               className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-[var(--bg-row)] cursor-pointer transition-colors ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
               style={{ gridTemplateColumns: COLS }}>
-              <span className={`text-[11px] px-1.5 py-0.5 rounded-sm border text-center whitespace-nowrap font-bold ${GRADE_COLOR[s.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
+              <span className={`text-[13px] px-1.5 py-0.5 rounded-sm border text-center whitespace-nowrap font-bold ${GRADE_COLOR[s.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
                 {SIGNAL_LABEL[s.signal_type] ?? s.grade}
               </span>
               <div className="min-w-0 pl-1">
-                <div className="text-xs text-[var(--text-primary)] font-medium truncate">{s.name}</div>
-                <div className="text-[10px] text-[var(--text-muted)]">{s.code}</div>
+                <div className="text-sm text-[var(--text-primary)] font-medium truncate">{s.name}</div>
+                <div className="text-[12px] text-[var(--text-muted)]">{s.code}</div>
               </div>
-              <span className="text-right text-xs text-[var(--text-primary)] tabular-nums">{s.entry_price?.toLocaleString() ?? '-'}</span>
-              <span className="text-right text-xs text-[#16a34a] tabular-nums font-bold">{s.target_price?.toLocaleString() ?? '-'}</span>
-              <span className="text-right text-xs text-[#dc2626] tabular-nums">{s.stop_loss?.toLocaleString() ?? '-'}</span>
-              <span className="text-right text-xs text-[#f59e0b] font-bold tabular-nums">x{(s.volume_ratio ?? 0).toFixed(1)}</span>
-              <span className={`text-right text-xs font-bold tabular-nums ${
+              <span className="text-right text-sm text-[var(--text-primary)] tabular-nums">{s.entry_price?.toLocaleString() ?? '-'}</span>
+              <span className="text-right text-sm text-[#16a34a] tabular-nums font-bold">{s.target_price?.toLocaleString() ?? '-'}</span>
+              <span className="text-right text-sm text-[#dc2626] tabular-nums">{s.stop_loss?.toLocaleString() ?? '-'}</span>
+              <span className="text-right text-sm text-[#f59e0b] font-bold tabular-nums">x{(s.volume_ratio ?? 0).toFixed(1)}</span>
+              <span className={`text-right text-sm font-bold tabular-nums ${
                 s.total_score >= 80 ? 'text-[#16a34a]' : s.total_score >= 60 ? 'text-[#f59e0b]' : 'text-[var(--text-dim)]'
               }`}>{s.total_score}</span>
-              <span className="text-center text-xs text-[var(--text-dim)] tabular-nums">{s.holding_days}일</span>
+              <span className="text-center text-sm text-[var(--text-dim)] tabular-nums">{s.holding_days}일</span>
             </Link>
           ))
         }
@@ -183,7 +183,7 @@ function Panel1_Recommendations({ stocks, isLoading }: { stocks: ShortSignalItem
         const a = stocks.filter(s => s.grade === 'A').length
         const b = stocks.filter(s => s.grade === 'B').length
         return (
-          <div className="flex gap-3 px-3 py-1.5 border-t border-[var(--border)] text-[11px] font-bold text-[var(--text-dim)]">
+          <div className="flex gap-3 px-3 py-1.5 border-t border-[var(--border)] text-[13px] font-bold text-[var(--text-dim)]">
             <span>AA <span className="text-[#16a34a]">{aa}</span></span>
             <span>A <span className="text-[#15803d]">{a}</span></span>
             <span>B <span className="text-[#2563eb]">{b}</span></span>
@@ -203,7 +203,7 @@ function Panel2_AllSupply({ stocks, isLoading }: { stocks: ShortSignalItem[]; is
 
   return (
     <Panel title="ALL 수급" dot="bg-[#2563eb]" badge={`${filtered.length}종목`}>
-      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[11px] text-[var(--text-dim)] font-bold uppercase"
+      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[13px] text-[var(--text-dim)] font-bold uppercase"
         style={{ gridTemplateColumns: '1fr 72px 72px 72px' }}>
         <span>종목</span>
         <span className="text-right">외국인</span>
@@ -220,12 +220,12 @@ function Panel2_AllSupply({ stocks, isLoading }: { stocks: ShortSignalItem[]; is
             <div key={s.code}
               className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
               style={{ gridTemplateColumns: '1fr 72px 72px 72px' }}>
-              <div className="text-xs text-[var(--text-primary)] truncate">{s.name}</div>
-              <span className={`text-right text-xs font-bold tabular-nums ${foreign > 0 ? 'text-[#dc2626]' : foreign < 0 ? 'text-[#2563eb]' : 'text-[var(--text-dim)]'}`}>
+              <div className="text-sm text-[var(--text-primary)] truncate">{s.name}</div>
+              <span className={`text-right text-sm font-bold tabular-nums ${foreign > 0 ? 'text-[#dc2626]' : foreign < 0 ? 'text-[#2563eb]' : 'text-[var(--text-dim)]'}`}>
                 {foreign > 0 ? '+' : ''}{foreign.toLocaleString()}
               </span>
-              <span className="text-right text-xs text-[var(--text-dim)] tabular-nums">-</span>
-              <span className="text-right text-xs text-[var(--text-dim)] tabular-nums">-</span>
+              <span className="text-right text-sm text-[var(--text-dim)] tabular-nums">-</span>
+              <span className="text-right text-sm text-[var(--text-dim)] tabular-nums">-</span>
             </div>
           )
         })}
@@ -247,10 +247,10 @@ function Panel3_Analysis({ stocks, isLoading }: { stocks: ShortSignalItem[]; isL
           top5.map((s, i) => (
             <div key={s.code} className={`px-3 py-2 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-sm border font-bold ${GRADE_COLOR[s.grade] ?? ''}`}>{s.grade}</span>
-                <span className="text-xs text-[var(--text-primary)] font-bold">{s.name}</span>
-                <span className="text-[10px] text-[var(--text-muted)]">{s.code}</span>
-                <span className={`ml-auto text-[10px] font-bold ${SIGNAL_COLOR[s.signal_type] ?? ''}`}>{SIGNAL_LABEL[s.signal_type]}</span>
+                <span className={`text-[12px] px-1.5 py-0.5 rounded-sm border font-bold ${GRADE_COLOR[s.grade] ?? ''}`}>{s.grade}</span>
+                <span className="text-sm text-[var(--text-primary)] font-bold">{s.name}</span>
+                <span className="text-[12px] text-[var(--text-muted)]">{s.code}</span>
+                <span className={`ml-auto text-[12px] font-bold ${SIGNAL_COLOR[s.signal_type] ?? ''}`}>{SIGNAL_LABEL[s.signal_type]}</span>
               </div>
               <div className="flex gap-1">
                 {STEP_KEYS.map((key, idx) => {
@@ -258,7 +258,7 @@ function Panel3_Analysis({ stocks, isLoading }: { stocks: ShortSignalItem[]; isL
                   const pct = Math.min(100, Math.max(20, score))
                   return (
                     <div key={key} className="flex-1">
-                      <div className="text-[9px] text-[var(--text-muted)] text-center mb-0.5">{STEP_LABELS[key]}</div>
+                      <div className="text-[11px] text-[var(--text-muted)] text-center mb-0.5">{STEP_LABELS[key]}</div>
                       <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div className="h-full rounded-full" style={{
                           width: `${pct}%`,
@@ -270,7 +270,7 @@ function Panel3_Analysis({ stocks, isLoading }: { stocks: ShortSignalItem[]; isL
                 })}
               </div>
               {s.total_score < 65 && (
-                <div className="mt-1 text-[9px] text-[#dc2626]">
+                <div className="mt-1 text-[11px] text-[#dc2626]">
                   !! 위험요소: 점수 {s.total_score} (기준 65 미달)
                 </div>
               )}
@@ -291,7 +291,7 @@ function Panel4_NationalSupply({ stocks, isLoading }: { stocks: ShortSignalItem[
 
   return (
     <Panel title="국적별 수급" dot="bg-[#f59e0b]" badge="국가별 상세">
-      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[11px] text-[var(--text-dim)] font-bold"
+      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[13px] text-[var(--text-dim)] font-bold"
         style={{ gridTemplateColumns: `1fr ${countries.map(() => '56px').join(' ')}` }}>
         <span>종목</span>
         {countries.map(c => <span key={c} className="text-right">{c}</span>)}
@@ -305,11 +305,11 @@ function Panel4_NationalSupply({ stocks, isLoading }: { stocks: ShortSignalItem[
             <div key={s.code}
               className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
               style={{ gridTemplateColumns: `1fr ${countries.map(() => '56px').join(' ')}` }}>
-              <span className="text-xs text-[var(--text-primary)] truncate">{s.name}</span>
+              <span className="text-sm text-[var(--text-primary)] truncate">{s.name}</span>
               {countries.map(c => {
                 const val = fd[c] ?? 0
                 return (
-                  <span key={c} className={`text-right text-[11px] tabular-nums font-bold ${
+                  <span key={c} className={`text-right text-[13px] tabular-nums font-bold ${
                     val > 0 ? 'text-[#dc2626]' : val < 0 ? 'text-[#2563eb]' : 'text-[var(--text-muted)]'
                   }`}>
                     {val === 0 ? '-' : val > 0 ? `+${val}` : val}
@@ -339,7 +339,7 @@ function Panel5_AccumulationRadar() {
 
   return (
     <Panel title="매집 감지 레이더" dot="bg-[#dc2626]" badge={`${whales.length}건`}>
-      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[11px] text-[var(--text-dim)] font-bold uppercase"
+      <div className="grid px-2 py-1 border-b border-[var(--border)] text-[13px] text-[var(--text-dim)] font-bold uppercase"
         style={{ gridTemplateColumns: '72px 1fr 64px 64px 56px' }}>
         <span className="text-center">상태</span>
         <span>종목</span>
@@ -354,21 +354,21 @@ function Panel5_AccumulationRadar() {
           <div key={w.ticker || i}
             className={`grid items-center px-2 py-1.5 border-b border-[var(--border)]/30 hover:bg-[var(--bg-row)] ${i % 2 === 1 ? 'bg-gray-50' : ''}`}
             style={{ gridTemplateColumns: '72px 1fr 64px 64px 56px' }}>
-            <span className={`text-[9px] px-1 py-0.5 rounded-sm border text-center font-bold ${WHALE_STATUS_COLOR[w.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
+            <span className={`text-[11px] px-1 py-0.5 rounded-sm border text-center font-bold ${WHALE_STATUS_COLOR[w.grade] ?? 'text-[var(--text-dim)] border-[#334155]'}`}>
               {w.grade ?? 'QUIET'}
             </span>
             <div className="min-w-0 pl-1">
-              <span className="text-xs text-[var(--text-primary)] truncate block">{w.name}</span>
+              <span className="text-sm text-[var(--text-primary)] truncate block">{w.name}</span>
             </div>
-            <span className="text-right text-xs text-[#f59e0b] font-bold tabular-nums">
+            <span className="text-right text-sm text-[#f59e0b] font-bold tabular-nums">
               x{(w.volume_surge_ratio ?? 1).toFixed(1)}
             </span>
-            <span className={`text-right text-xs font-bold tabular-nums ${
+            <span className={`text-right text-sm font-bold tabular-nums ${
               (w.price_change ?? 0) > 0 ? 'text-[#dc2626]' : (w.price_change ?? 0) < 0 ? 'text-[#2563eb]' : 'text-[var(--text-dim)]'
             }`}>
               {(w.price_change ?? 0) > 0 ? '+' : ''}{((w.price_change ?? 0) * 100).toFixed(1)}%
             </span>
-            <span className={`text-center text-xs font-bold ${
+            <span className={`text-center text-sm font-bold ${
               w.strength === 'STRONG' ? 'text-[#dc2626]' :
               w.strength === 'MODERATE' ? 'text-[#f59e0b]' : 'text-[var(--text-dim)]'
             }`}>
@@ -377,7 +377,7 @@ function Panel5_AccumulationRadar() {
           </div>
         ))}
       </div>
-      <div className="flex gap-3 px-3 py-1.5 border-t border-[var(--border)] text-[11px] font-bold text-[var(--text-dim)]">
+      <div className="flex gap-3 px-3 py-1.5 border-t border-[var(--border)] text-[13px] font-bold text-[var(--text-dim)]">
         <span>세력포착 <span className="text-[#dc2626]">{whales.filter(w => w.grade === '세력포착').length}</span></span>
         <span>매집의심 <span className="text-[#f59e0b]">{whales.filter(w => w.grade === '매집의심').length}</span></span>
         <span>이상감지 <span className="text-[#2563eb]">{whales.filter(w => w.grade === '이상감지').length}</span></span>
@@ -415,22 +415,22 @@ function Panel6_RelayChain() {
         {sectors.map((s, i) => (
           <div key={s.sector}
             className={`flex items-center gap-2 px-3 py-2 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}>
-            <span className={`text-[9px] px-1.5 py-0.5 rounded-sm border font-bold ${STATUS_STYLE[s.status] ?? STATUS_STYLE.CLUSTER}`}>
+            <span className={`text-[11px] px-1.5 py-0.5 rounded-sm border font-bold ${STATUS_STYLE[s.status] ?? STATUS_STYLE.CLUSTER}`}>
               {s.status}
             </span>
-            <span className="text-xs text-[var(--text-primary)] font-bold flex-1">{s.sector}</span>
-            <span className={`text-xs font-bold tabular-nums ${
+            <span className="text-sm text-[var(--text-primary)] font-bold flex-1">{s.sector}</span>
+            <span className={`text-sm font-bold tabular-nums ${
               s.change?.startsWith('+') ? 'text-[#dc2626]' : s.change?.startsWith('-') ? 'text-[#2563eb]' : 'text-[var(--text-dim)]'
             }`}>{s.change ?? '-'}</span>
             {i < sectors.length - 1 && (
-              <span className="text-[10px] text-[var(--text-muted)]">&rarr;</span>
+              <span className="text-[12px] text-[var(--text-muted)]">&rarr;</span>
             )}
           </div>
         ))}
 
         <div className="px-3 py-2 border-t border-[var(--border)]">
-          <div className="text-[10px] text-[var(--text-muted)] font-bold mb-1">원자재 연동</div>
-          <div className="flex gap-3 text-[11px]">
+          <div className="text-[12px] text-[var(--text-muted)] font-bold mb-1">원자재 연동</div>
+          <div className="flex gap-3 text-[13px]">
             {(relay?.commodities ?? [
               { name: 'WTI 원유', change: '+0.0%' },
               { name: '금', change: '+0.0%' },
@@ -476,15 +476,15 @@ function Panel7_HitRate() {
             <div className="text-3xl font-bold tabular-nums" style={{
               color: overall >= 75 ? '#16a34a' : overall >= 60 ? '#f59e0b' : '#dc2626'
             }}>{overall}%</div>
-            <div className="text-[10px] text-[var(--text-muted)] font-bold">전체 적중률</div>
+            <div className="text-[12px] text-[var(--text-muted)] font-bold">전체 적중률</div>
           </div>
 
           <div className="space-y-2">
             {sources.map((src) => (
               <div key={src.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-[11px] text-[var(--text-dim)] font-bold">{src.name}</span>
-                  <span className="text-[11px] text-[var(--text-primary)] font-bold tabular-nums">
+                  <span className="text-[13px] text-[var(--text-dim)] font-bold">{src.name}</span>
+                  <span className="text-[13px] text-[var(--text-primary)] font-bold tabular-nums">
                     {src.hit}/{src.total} ({src.rate}%)
                   </span>
                 </div>
@@ -537,12 +537,12 @@ function Panel8_InflectionAlerts() {
               className={`px-3 py-2.5 border-b border-[var(--border)]/30 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}>
               <div className="flex items-center gap-2 mb-1">
                 <span className={`w-2 h-2 rounded-full ${SEV_DOT[a.severity] ?? 'bg-[#64748b]'}`} />
-                <span className={`text-[9px] px-1.5 py-0.5 rounded-sm border font-bold ${TYPE_STYLE[a.type] ?? TYPE_STYLE.REDUCE}`}>
+                <span className={`text-[11px] px-1.5 py-0.5 rounded-sm border font-bold ${TYPE_STYLE[a.type] ?? TYPE_STYLE.REDUCE}`}>
                   {a.type}
                 </span>
-                <span className="text-xs text-[var(--text-primary)] font-bold">{a.ticker}</span>
+                <span className="text-sm text-[var(--text-primary)] font-bold">{a.ticker}</span>
               </div>
-              <div className="text-[11px] text-[var(--text-dim)] ml-4">{a.reason}</div>
+              <div className="text-[13px] text-[var(--text-dim)] ml-4">{a.reason}</div>
             </div>
           ))
         }
@@ -563,9 +563,9 @@ export function SwingView() {
       <div className="border-b border-[var(--border)] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold text-[var(--text-primary)] tracking-wider uppercase">스윙시스템</h1>
-          <span className="text-[10px] px-2 py-0.5 rounded-sm border border-[#a855f7] text-white bg-[#a855f7] font-bold">VIP</span>
+          <span className="text-[12px] px-2 py-0.5 rounded-sm border border-[#a855f7] text-white bg-[#a855f7] font-bold">VIP</span>
         </div>
-        <span className="text-xs text-[var(--text-dim)] font-bold">50,000/월</span>
+        <span className="text-sm text-[var(--text-dim)] font-bold">50,000/월</span>
       </div>
 
       <div className="p-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
