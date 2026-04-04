@@ -58,7 +58,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </div>
 
       {/* SVG Gauge */}
-      <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
+      <svg viewBox="0 0 200 155" className="w-full max-w-[220px]">
         {/* Background arc */}
         <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
         {/* Colored segments */}
@@ -70,28 +70,30 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
         {/* Center dot */}
         <circle cx={CX} cy={CY} r={5} fill={color} />
         <circle cx={CX} cy={CY} r={2.5} fill="white" />
-        {/* Current price */}
-        <text x={CX} y={CY - 24} textAnchor="middle" fill="#111827" fontSize="15" fontWeight="bold"
+
+        {/* ── 가격 + % : 바늘 아래 ── */}
+        <text x={CX} y={CY + 22} textAnchor="middle" fill="#111827" fontSize="16" fontWeight="900"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.current_price?.toLocaleString('ko-KR') ?? '—'}
         </text>
-        {/* Position % */}
-        <text x={CX} y={CY - 10} textAnchor="middle" fill={color} fontSize="12" fontWeight="bold">
+        <text x={CX} y={CY + 38} textAnchor="middle" fill={color} fontSize="13" fontWeight="800">
           {pct.toFixed(0)}%
         </text>
-        {/* Floor label (left) */}
-        <text x={CX - R} y={CY + 15} textAnchor="start" fill="#9ca3af" fontSize="9">
+
+        {/* ── 좌: 바닥 (크고 진하게) ── */}
+        <text x={CX - R - 2} y={CY + 4} textAnchor="start" fill="#22c55e" fontSize="12" fontWeight="800">
           {item.floor_name ?? '바닥'}
         </text>
-        <text x={CX - R} y={CY + 27} textAnchor="start" fill="#6b7280" fontSize="10" fontWeight="bold"
+        <text x={CX - R - 2} y={CY + 18} textAnchor="start" fill="#22c55e" fontSize="13" fontWeight="900"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.floor_price.toLocaleString('ko-KR')}
         </text>
-        {/* Ceiling label (right) */}
-        <text x={CX + R} y={CY + 15} textAnchor="end" fill="#9ca3af" fontSize="9">
+
+        {/* ── 우: 천장 (크고 진하게) ── */}
+        <text x={CX + R + 2} y={CY + 4} textAnchor="end" fill="#ef4444" fontSize="12" fontWeight="800">
           {item.ceiling_name ?? '천장'}
         </text>
-        <text x={CX + R} y={CY + 27} textAnchor="end" fill="#6b7280" fontSize="10" fontWeight="bold"
+        <text x={CX + R + 2} y={CY + 18} textAnchor="end" fill="#ef4444" fontSize="13" fontWeight="900"
           style={{ fontVariantNumeric: 'tabular-nums' }}>
           {item.ceiling_price.toLocaleString('ko-KR')}
         </text>

@@ -7,14 +7,13 @@ const CX = 100, CY = 100, R = 75, SW = 12
 
 /* 공포→탐욕: 왼쪽(0)=빨강, 오른쪽(100)=초록 */
 const ARCS = [
-  { from: 180, to: 144, color: '#ef4444' },  // 극단적 공포 (빨강)
-  { from: 144, to: 108, color: '#f97316' },  // 공포 (주황)
-  { from: 108, to: 72,  color: '#eab308' },  // 중립 (노랑)
-  { from: 72,  to: 36,  color: '#84cc16' },  // 탐욕 (연두)
-  { from: 36,  to: 0,   color: '#22c55e' },  // 극단적 탐욕 (초록)
+  { from: 180, to: 144, color: '#ef4444' },
+  { from: 144, to: 108, color: '#f97316' },
+  { from: 108, to: 72,  color: '#eab308' },
+  { from: 72,  to: 36,  color: '#84cc16' },
+  { from: 36,  to: 0,   color: '#22c55e' },
 ]
 
-/** 0~100 값을 공포/탐욕 라벨로 */
 function getLabel(value: number): { text: string; color: string } {
   if (value <= 20) return { text: '극단적 공포', color: '#ef4444' }
   if (value <= 40) return { text: '공포', color: '#f97316' }
@@ -23,13 +22,11 @@ function getLabel(value: number): { text: string; color: string } {
   return { text: '극단적 탐욕', color: '#22c55e' }
 }
 
-/** polar → cartesian (SVG y-down) */
 function toXY(deg: number, r = R) {
   const rad = (deg * Math.PI) / 180
   return [CX + r * Math.cos(rad), CY - r * Math.sin(rad)] as const
 }
 
-/** SVG arc path */
 function arcD(from: number, to: number) {
   const [x1, y1] = toXY(from)
   const [x2, y2] = toXY(to)
@@ -61,13 +58,11 @@ export function FearGreedGauge() {
   const vixAlert = vixValue >= 25
   const label = getLabel(fgValue)
 
-  // 바늘 각도: 0→180°(왼쪽), 100→0°(오른쪽)
   const needleDeg = 180 - (fgValue * 180) / 100
   const [nx, ny] = toXY(needleDeg, R - SW / 2 - 8)
 
   return (
     <div className="bg-white rounded-xl overflow-hidden">
-      {/* 헤더 */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--border)]/50">
         <span className="text-lg">😱</span>
         <span className="text-lg font-bold" style={{ color: '#ef4444' }}>공포 & 탐욕</span>
@@ -76,7 +71,7 @@ export function FearGreedGauge() {
       <div className="p-3">
         {fgItem ? (
           <div className="flex flex-col items-center gap-1">
-            <svg viewBox="0 0 200 130" className="w-full max-w-[200px]">
+            <svg viewBox="0 0 200 155" className="w-full max-w-[220px]">
               {/* 배경 호 */}
               <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
               {/* 색상 세그먼트 */}
@@ -88,21 +83,25 @@ export function FearGreedGauge() {
               {/* 중심 점 */}
               <circle cx={CX} cy={CY} r={5} fill={label.color} />
               <circle cx={CX} cy={CY} r={2.5} fill="white" />
-              {/* 값 */}
-              <text x={CX} y={CY - 24} textAnchor="middle" fill={label.color} fontSize="26" fontWeight="900"
+
+              {/* ── 값 + 라벨: 바늘 아래 ── */}
+              <text x={CX} y={CY + 22} textAnchor="middle" fill={label.color} fontSize="28" fontWeight="900"
                 style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {Math.round(fgValue)}
               </text>
-              {/* 라벨 */}
-              <text x={CX} y={CY - 8} textAnchor="middle" fill={label.color} fontSize="11" fontWeight="700">
+              <text x={CX} y={CY + 38} textAnchor="middle" fill={label.color} fontSize="12" fontWeight="800">
                 {label.text}
               </text>
-              {/* 좌: 공포 */}
-              <text x={CX - R} y={CY + 15} textAnchor="start" fill="#9ca3af" fontSize="9">공포</text>
-              <text x={CX - R} y={CY + 27} textAnchor="start" fill="#ef4444" fontSize="10" fontWeight="bold">0</text>
-              {/* 우: 탐욕 */}
-              <text x={CX + R} y={CY + 15} textAnchor="end" fill="#9ca3af" fontSize="9">탐욕</text>
-              <text x={CX + R} y={CY + 27} textAnchor="end" fill="#22c55e" fontSize="10" fontWeight="bold">100</text>
+
+              {/* ── 좌: 공포 (크고 진하게) ── */}
+              <text x={CX - R - 2} y={CY + 4} textAnchor="start" fill="#ef4444" fontSize="12" fontWeight="800">공포</text>
+              <text x={CX - R - 2} y={CY + 18} textAnchor="start" fill="#ef4444" fontSize="13" fontWeight="900"
+                style={{ fontVariantNumeric: 'tabular-nums' }}>0</text>
+
+              {/* ── 우: 탐욕 (크고 진하게) ── */}
+              <text x={CX + R + 2} y={CY + 4} textAnchor="end" fill="#22c55e" fontSize="12" fontWeight="800">탐욕</text>
+              <text x={CX + R + 2} y={CY + 18} textAnchor="end" fill="#22c55e" fontSize="13" fontWeight="900"
+                style={{ fontVariantNumeric: 'tabular-nums' }}>100</text>
             </svg>
           </div>
         ) : (
