@@ -46,6 +46,8 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   // bonds
   US10Y: { name_ko: '미국 10년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   US2Y:  { name_ko: '미국 2년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
+  BOK_RATE: { name_ko: '한국 기준금리', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
+  FED_RATE: { name_ko: '미국 기준금리', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   // sentiment
   VIX: { name_ko: 'VIX', category: 'sentiment', unit: null, alert_threshold: 25, alert_direction: 'above' },
   FNG: { name_ko: '공포탐욕지수', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },

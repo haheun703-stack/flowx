@@ -126,7 +126,7 @@ export function MacroGaugePanel() {
   const fng = sentimentItems.find(i => i.symbol === 'FNG' || i.symbol === 'FEAR_GREED')
   const vix = sentimentItems.find(i => i.symbol === 'VIX') ?? data?.items?.find(i => i.symbol === 'VIX')
   const usdkrw = forexItems.find(i => i.symbol === 'USDKRW') ?? data?.items?.find(i => i.symbol === 'USDKRW')
-  const baseRate = rateItems.find(i => i.symbol === 'BASE_RATE') ?? data?.items?.find(i => i.symbol === 'BASE_RATE')
+  const baseRate = rateItems.find(i => i.symbol === 'BOK_RATE') ?? rateItems.find(i => i.symbol === 'BASE_RATE') ?? data?.items?.find(i => i.symbol === 'BOK_RATE') ?? data?.items?.find(i => i.symbol === 'BASE_RATE')
 
   const gauges = [
     { subtitle: '시장 심리', symbol: 'FNG', item: fng },
