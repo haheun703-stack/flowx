@@ -63,7 +63,7 @@ function getLegend(beneficiaries: Beneficiary[]): { color: string; label: string
   return Array.from(seen.entries()).map(([color, label]) => ({ color, label }))
 }
 
-const CHART_H = 220
+const CHART_H = 260
 
 /* ── 메인 컴포넌트 ── */
 export default function BeneficiaryVerticalBarChart({ beneficiaries }: { beneficiaries: Beneficiary[] }) {
@@ -83,7 +83,7 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
 
   return (
     <div>
-      <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-4">
+      <h3 className="text-[17px] font-black text-[#1A1A2E] mb-5">
         수혜자별 이익 (단위: 10억 달러, $B)
       </h3>
 
@@ -92,7 +92,7 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
         {/* Y축 라벨 */}
         <div className="shrink-0 flex flex-col justify-between pr-2" style={{ height: CHART_H }}>
           {[...ticks].reverse().map((t) => (
-            <span key={t} className="text-[9px] text-[#9CA3AF] tabular-nums text-right w-[40px] leading-none">
+            <span key={t} className="text-[11px] text-[#9CA3AF] font-bold tabular-nums text-right w-[48px] leading-none">
               {fmtBil(t)}
             </span>
           ))}
@@ -112,21 +112,21 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
             )
           })}
 
-          {/* 막대들 */}
-          <div className="absolute inset-0 flex items-end justify-around px-2 gap-1">
+          {/* 막대들 — 픽셀 기반 높이 (% 해소 안 되는 버그 수정) */}
+          <div className="absolute inset-0 flex items-end justify-around px-3 gap-2">
             {sorted.map((b, i) => {
-              const heightPct = axisMax > 0 ? Math.max((b.earned_bil / axisMax) * 100, 1) : 1
+              const barPx = axisMax > 0 ? Math.max((b.earned_bil / axisMax) * CHART_H, 6) : 6
               const color = getColor(b.type, i)
 
               return (
                 <div
                   key={b.name}
                   className="flex flex-col items-center flex-1"
-                  style={{ maxWidth: 64 }}
+                  style={{ maxWidth: 80 }}
                 >
                   {/* 금액 (막대 위) */}
                   <span
-                    className="text-[10px] font-bold tabular-nums mb-0.5"
+                    className="text-[13px] font-black tabular-nums mb-1"
                     style={{ color }}
                   >
                     {fmtBil(b.earned_bil)}
@@ -134,12 +134,11 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
 
                   {/* 막대 */}
                   <div
-                    className="w-full rounded-t-md"
+                    className="w-full rounded-t-lg"
                     style={{
-                      height: `${heightPct}%`,
+                      height: barPx,
                       backgroundColor: color,
                       opacity: 0.85,
-                      minHeight: 4,
                       transition: 'height 0.5s ease-out',
                     }}
                   />
@@ -151,30 +150,30 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
       </div>
 
       {/* X축 라벨 (카테고리명) */}
-      <div className="flex ml-[48px]">
-        <div className="flex-1 flex justify-around px-2 gap-1">
+      <div className="flex ml-[56px]">
+        <div className="flex-1 flex justify-around px-3 gap-2">
           {sorted.map((b) => (
-            <div key={b.name} className="flex-1 text-center" style={{ maxWidth: 64 }}>
-              <p className="text-[9px] font-bold text-[#1A1A2E] mt-1 truncate">{b.name}</p>
+            <div key={b.name} className="flex-1 text-center" style={{ maxWidth: 80 }}>
+              <p className="text-[12px] font-bold text-[#1A1A2E] mt-1.5 truncate">{b.name}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* 범례 */}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4">
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 mt-5">
         {legend.map((l) => (
           <div key={l.label} className="flex items-center gap-1.5">
-            <span className="w-3 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: l.color }} />
-            <span className="text-[10px] text-[#6B7280]">{l.label}</span>
+            <span className="w-3.5 h-3 rounded-sm shrink-0" style={{ backgroundColor: l.color }} />
+            <span className="text-[12px] font-medium text-[#6B7280]">{l.label}</span>
           </div>
         ))}
       </div>
 
       {/* 핵심 인사이트 박스 */}
       {noStopCount >= 2 && (
-        <div className="mt-4 rounded-lg p-3 text-center" style={{ backgroundColor: '#FEF2F2' }}>
-          <p className="text-[12px] font-bold" style={{ color: '#991B1B' }}>
+        <div className="mt-5 rounded-lg p-4 text-center" style={{ backgroundColor: '#FEF2F2' }}>
+          <p className="text-[13px] font-bold" style={{ color: '#991B1B' }}>
             전쟁을 끝낼 수 있는 자들이 전쟁에서 가장 큰 이익을 본다 → 전쟁 장기화 가능성 높음
           </p>
         </div>

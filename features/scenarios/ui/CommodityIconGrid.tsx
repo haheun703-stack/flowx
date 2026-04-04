@@ -233,10 +233,10 @@ export default function CommodityIconGrid({ commodities }: { commodities: Commod
       </div>
 
       {/* 하단 범례 */}
-      <div className="flex flex-wrap gap-5 justify-center mt-4 text-[12px] text-[#6B7280]">
-        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#DCFCE7' }} />매수구간(&lt;20%)</span>
-        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#FEF3C7' }} />관찰/보유(20~80%)</span>
-        <span><span className="inline-block w-2.5 h-2.5 rounded-full mr-1" style={{ backgroundColor: '#FEE2E2' }} />과열(80%+)</span>
+      <div className="flex flex-wrap gap-6 justify-center mt-5 text-[12px] font-medium text-[#6B7280]">
+        <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#DCFCE7', border: '1px solid #BBF7D0' }} />매수구간(&lt;20%)</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#FEF3C7', border: '1px solid #FDE68A' }} />관찰/보유(20~80%)</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#FEE2E2', border: '1px solid #FECACA' }} />과열(80%+)</span>
       </div>
     </div>
   )

@@ -64,12 +64,12 @@ function SectorBadges({ hot, cold }: { hot: string[]; cold: string[] }) {
   return (
     <div className="flex flex-wrap gap-1.5 mt-3">
       {hot.map(s => (
-        <span key={s} className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
+        <span key={s} className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-red-50 text-[#DC2626] border border-red-200">
           HOT {s}
         </span>
       ))}
       {cold.map(s => (
-        <span key={s} className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
+        <span key={s} className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
           COLD {s}
         </span>
       ))}

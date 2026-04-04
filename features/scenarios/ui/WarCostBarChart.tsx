@@ -38,7 +38,7 @@ function getAxisTicks(maxVal: number): number[] {
   return ticks
 }
 
-const CHART_H = 220
+const CHART_H = 260
 
 export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<string, number> }) {
   if (!keyNumbers) return null
@@ -66,7 +66,7 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
 
   return (
     <div>
-      <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-4">
+      <h3 className="text-[17px] font-black text-[#1A1A2E] mb-5">
         전쟁 비용 / 피해 (단위: 10억 달러, $B)
       </h3>
 
@@ -75,7 +75,7 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
         {/* Y축 라벨 */}
         <div className="shrink-0 flex flex-col justify-between pr-2" style={{ height: CHART_H }}>
           {[...ticks].reverse().map((t) => (
-            <span key={t} className="text-[9px] text-[#9CA3AF] tabular-nums text-right w-[40px] leading-none">
+            <span key={t} className="text-[11px] text-[#9CA3AF] font-bold tabular-nums text-right w-[48px] leading-none">
               {fmtBil(t)}
             </span>
           ))}
@@ -95,20 +95,20 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
             )
           })}
 
-          {/* 막대들 */}
-          <div className="absolute inset-0 flex items-end justify-around px-2 gap-1">
+          {/* 막대들 — 픽셀 기반 높이 (% 해소 안 되는 버그 수정) */}
+          <div className="absolute inset-0 flex items-end justify-around px-3 gap-2">
             {items.map((item) => {
-              const heightPct = axisMax > 0 ? Math.max((item.value / axisMax) * 100, 1) : 1
+              const barPx = axisMax > 0 ? Math.max((item.value / axisMax) * CHART_H, 6) : 6
 
               return (
                 <div
                   key={item.key}
                   className="flex flex-col items-center flex-1"
-                  style={{ maxWidth: 64 }}
+                  style={{ maxWidth: 80 }}
                 >
                   {/* 금액 (막대 위) */}
                   <span
-                    className="text-[10px] font-bold tabular-nums mb-0.5"
+                    className="text-[13px] font-black tabular-nums mb-1"
                     style={{ color: item.color }}
                   >
                     {fmtBil(item.value)}
@@ -116,12 +116,11 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
 
                   {/* 막대 */}
                   <div
-                    className="w-full rounded-t-md"
+                    className="w-full rounded-t-lg"
                     style={{
-                      height: `${heightPct}%`,
+                      height: barPx,
                       backgroundColor: item.color,
                       opacity: 0.85,
-                      minHeight: 4,
                       transition: 'height 0.5s ease-out',
                     }}
                   />
@@ -133,11 +132,11 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
       </div>
 
       {/* X축 라벨 */}
-      <div className="flex ml-[48px]">
-        <div className="flex-1 flex justify-around px-2 gap-1">
+      <div className="flex ml-[56px]">
+        <div className="flex-1 flex justify-around px-3 gap-2">
           {items.map((item) => (
-            <div key={item.key} className="flex-1 text-center" style={{ maxWidth: 64 }}>
-              <p className="text-[9px] font-bold text-[#1A1A2E] mt-1 whitespace-pre-line leading-tight">
+            <div key={item.key} className="flex-1 text-center" style={{ maxWidth: 80 }}>
+              <p className="text-[11px] font-bold text-[#1A1A2E] mt-1.5 whitespace-pre-line leading-tight">
                 {item.label}
               </p>
             </div>
@@ -146,11 +145,11 @@ export default function WarCostBarChart({ keyNumbers }: { keyNumbers: Record<str
       </div>
 
       {/* 범례 */}
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-4">
+      <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 mt-5">
         {legend.map((l) => (
           <div key={l.label} className="flex items-center gap-1.5">
-            <span className="w-3 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: l.color }} />
-            <span className="text-[10px] text-[#6B7280]">{l.label}</span>
+            <span className="w-3.5 h-3 rounded-sm shrink-0" style={{ backgroundColor: l.color }} />
+            <span className="text-[12px] font-medium text-[#6B7280]">{l.label}</span>
           </div>
         ))}
       </div>

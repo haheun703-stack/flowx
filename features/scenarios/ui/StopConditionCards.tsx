@@ -38,7 +38,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
 
   return (
     <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-      <h3 className="text-sm font-bold text-[var(--text-primary)] mb-4">
+      <h3 className="text-[15px] font-black text-[var(--text-primary)] mb-4">
         멈출 조건 체크
       </h3>
 
@@ -46,7 +46,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
         {conditions.map((c, i) => (
           <div
             key={i}
-            className="rounded-lg p-3"
+            className="rounded-lg p-3.5"
             style={{
               backgroundColor: c.hasStop ? '#FFFBEB' : '#FEF2F2',
               border: `1px solid ${c.hasStop ? '#FDE68A' : '#FECACA'}`,
@@ -54,15 +54,15 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-xs font-bold text-[var(--text-primary)] leading-snug">
+                <p className="text-[13px] font-bold text-[var(--text-primary)] leading-snug">
                   {c.name}
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)] mt-1">
+                <p className="text-[11px] text-[var(--text-muted)] mt-1">
                   관련: {c.beneficiary}
                 </p>
               </div>
               <span
-                className="shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full"
+                className="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full"
                 style={{
                   backgroundColor: c.hasStop ? '#FEF9C3' : '#FEE2E2',
                   color: c.hasStop ? '#92400E' : '#991B1B',
@@ -77,10 +77,10 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
 
       {/* 하단 경고 */}
       <div className="mt-4 rounded-md p-3 text-center" style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A' }}>
-        <p className="text-[10px] font-medium" style={{ color: '#92400E' }}>
+        <p className="text-[12px] font-bold" style={{ color: '#92400E' }}>
           {allNoStop
-            ? '⚠ 주요 수혜자에 멈출 조건이 없습니다 — 시나리오 장기화 가능성이 높습니다'
-            : '⚠ 멈출 조건이 하나라도 충족되면 시나리오 점수가 하락하고 종목 포지션 재검토가 필요합니다'
+            ? '주요 수혜자에 멈출 조건이 없습니다 — 시나리오 장기화 가능성이 높습니다'
+            : '멈출 조건이 하나라도 충족되면 시나리오 점수가 하락하고 종목 포지션 재검토가 필요합니다'
           }
         </p>
       </div>
