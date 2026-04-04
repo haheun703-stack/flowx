@@ -4,7 +4,7 @@ import { MobileGate } from '@/shared/ui/MobileGate'
 export default function SectorsLayout({ children }: { children: React.ReactNode }) {
   return (
     <MobileGate>
-      <div style={{ zoom: 1.25, background: 'var(--bg-base)', minHeight: '100vh' }}>
+      <div className="responsive-zoom" style={{ background: 'var(--bg-base)', minHeight: '100vh' }}>
         <Navbar />
         {children}
       </div>

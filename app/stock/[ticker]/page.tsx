@@ -14,7 +14,7 @@ export default async function StockDetailPage({
   const { ticker } = await params
 
   return (
-    <div className={PAGE} style={{ zoom: 1.25 }}>
+    <div className={`${PAGE} responsive-zoom`}>
       <div className={PAGE_HEADER}>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-wider uppercase text-[var(--text-primary)]">Stock Detail</h1>

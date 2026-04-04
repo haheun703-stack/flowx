@@ -282,3 +282,13 @@ a[href*="tradingview.com"] img,
   from { opacity: 0; max-height: 0; transform: translateY(-10px); }
   to { opacity: 1; max-height: 800px; transform: translateY(0); }
 }
+
+/* 반응형 zoom: 데스크톱 1.25, 모바일 1 */
+.responsive-zoom {
+  zoom: 1;
+}
+@media (min-width: 768px) {
+  .responsive-zoom {
+    zoom: 1.25;
+  }
+}
