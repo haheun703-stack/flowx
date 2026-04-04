@@ -156,17 +156,17 @@ export default function SystemPage() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors whitespace-nowrap ${
+            className={`px-5 py-2.5 rounded-lg text-[15px] font-bold transition-colors whitespace-nowrap ${
               tab === t
-                ? 'bg-[#1A1A2E] text-white'
+                ? 'bg-[#00FF88] text-[#1A1A2E]'
                 : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
             }`}
           >
-            {t === 'quant' ? 'Quant System' : 'Swing Trade'}
+            {t === 'quant' ? '퀀트시스템' : ''}
           </button>
         ))}
         {data?.date && (
-          <span className="text-[12px] text-[#9CA3AF] ml-3">
+          <span className="text-[13px] text-[#9CA3AF] ml-3">
             {data.date}
           </span>
         )}
