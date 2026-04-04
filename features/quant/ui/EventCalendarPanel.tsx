@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 // ─── Row 4 좌: 이벤트 캘린더 미니 달력 (스펙 §7-5) ───
 // 미니 월별 달력 + 날짜 클릭 → 디테일 카드 펼침
@@ -22,55 +22,33 @@ const CATEGORY_COLOR: Record<string, { bg: string; text: string; label: string }
   dividend:  { bg: '#16A34A', text: '#FFF', label: '배당/IPO' },
 }
 
-// ─── 플레이스홀더 이벤트 (향후 event_calendar 테이블 연동) ───
-const STATIC_EVENTS: CalendarEvent[] = [
-  {
-    date: '2026-04-07', name: 'FOMC 금리 결정', category: 'urgent',
-    description: '미국 연방준비제도 금리 결정. 시장 예상: 동결 (85%).',
-    historical_pattern: '금리 동결 시 역사적으로 KOSPI +0.8% 패턴.',
-    ai_strategy: '전략: 동결 예상 → FOMC 전 레버리지 소량 진입 검토. 인상 시 인버스 즉시 전환.',
-  },
-  {
-    date: '2026-04-10', name: 'CPI 발표', category: 'important',
-    description: '미국 소비자물가지수 발표. 전월 대비 +0.2% 예상.',
-    historical_pattern: 'CPI 예상 이하 시 나스닥 +1.2% 평균 반응.',
-    ai_strategy: '전략: CPI 하락 → 기술주 ETF 매수. 상승 → 금 ETF 비중 확대.',
-  },
-  {
-    date: '2026-04-14', name: '삼성전자 실적', category: 'earnings',
-    description: '삼성전자 2026 Q1 실적 발표. 영업이익 12조 전망.',
-    historical_pattern: '실적 서프라이즈 시 반도체 섹터 +3~5% 급등 패턴.',
-    ai_strategy: '전략: 실적 발표 전 TIGER 반도체 소량 선진입. 미달 시 손절.',
-  },
-  {
-    date: '2026-04-17', name: '한국은행 금리', category: 'urgent',
-    description: '한국은행 기준금리 결정. 현재 3.00%, 동결 예상.',
-    historical_pattern: '인하 시 부동산/건설 섹터 +2.5% 반응.',
-    ai_strategy: '전략: 동결 시 현 포지션 유지. 인하 깜짝 시 리츠 ETF 매수.',
-  },
-  {
-    date: '2026-04-22', name: 'PCE 물가', category: 'important',
-    description: '미국 개인소비지출 물가지수. Fed 선호 물가 지표.',
-    ai_strategy: '전략: PCE 둔화 시 금리 인하 기대 → 성장주 비중 확대.',
-  },
-  {
-    date: '2026-04-25', name: 'SK하이닉스 실적', category: 'earnings',
-    description: 'SK하이닉스 2026 Q1 실적 발표.',
-    historical_pattern: 'HBM 수주 확대 시 반도체 랠리 지속.',
-    ai_strategy: '전략: 실적 서프라이즈 → 반도체 ETF 추가 매수.',
-  },
-  {
-    date: '2026-04-04', name: '실업률 발표', category: 'important',
-    description: '미국 비농업 고용 + 실업률 발표.',
-    historical_pattern: '고용 호조 시 금리 인하 기대 후퇴 → 시장 혼조.',
-    ai_strategy: '전략: 고용 강세 → 인버스 소량. 약세 → 레버리지 소량 진입.',
-  },
-  {
-    date: '2026-04-24', name: '배당락일 (주요)', category: 'dividend',
-    description: '주요 고배당주 배당락일.',
-    ai_strategy: '전략: 배당 투자자는 전일까지 매수. 배당락 후 하락 시 재진입 검토.',
-  },
+// ─── 폴백 이벤트 (API 실패 시) ───
+const FALLBACK_EVENTS: CalendarEvent[] = [
+  { date: '2026-04-07', name: '삼성전자 1Q 잠정실적', category: 'earnings', description: '삼성전자 2026 Q1 잠정실적 발표.' },
+  { date: '2026-04-10', name: '금통위 + 미국 CPI', category: 'urgent', description: '한국은행 금융통화위원회 + 미국 CPI 동시 발표.' },
+  { date: '2026-04-14', name: '미국 어닝시즌 + PPI', category: 'earnings', description: '미국 주요 기업 어닝시즌 시작 + PPI 발표.' },
 ]
+
+// ─── 퀀트봇 데이터 → CalendarEvent 매핑 ───
+const VALID_CATEGORIES = new Set(['urgent', 'important', 'earnings', 'dividend'])
+
+function mapToCalendarEvent(raw: Record<string, unknown>): CalendarEvent | null {
+  const date = String(raw.date ?? '')
+  const name = String(raw.name ?? raw.event ?? raw.title ?? '')
+  if (!date || !name) return null
+
+  let category = String(raw.category ?? raw.type ?? 'important')
+  if (!VALID_CATEGORIES.has(category)) category = 'important'
+
+  return {
+    date,
+    name,
+    category: category as CalendarEvent['category'],
+    description: raw.description ? String(raw.description) : undefined,
+    historical_pattern: raw.historical_pattern ? String(raw.historical_pattern) : undefined,
+    ai_strategy: (raw.ai_strategy ?? raw.strategy) ? String(raw.ai_strategy ?? raw.strategy) : undefined,
+  }
+}
 
 // ─── 유틸 ───
 
@@ -104,6 +82,28 @@ function diffDays(dateStr: string) {
 export default function EventCalendarPanel() {
   const [currentMonth, setCurrentMonth] = useState(() => new Date())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [events, setEvents] = useState<CalendarEvent[]>(FALLBACK_EVENTS)
+
+  // /api/scenarios에서 event_calendar 가져오기
+  useEffect(() => {
+    const controller = new AbortController()
+    async function load() {
+      try {
+        const res = await fetch('/api/scenarios', { signal: controller.signal })
+        if (!res.ok) return
+        const json = await res.json()
+        const raw = json?.event_calendar
+        if (Array.isArray(raw) && raw.length > 0) {
+          const mapped = raw.map((r: Record<string, unknown>) => mapToCalendarEvent(r)).filter(Boolean) as CalendarEvent[]
+          if (mapped.length > 0) setEvents(mapped)
+        }
+      } catch {
+        // 폴백 유지
+      }
+    }
+    load()
+    return () => controller.abort()
+  }, [])
 
   const year = currentMonth.getFullYear()
   const month = currentMonth.getMonth()
@@ -112,12 +112,12 @@ export default function EventCalendarPanel() {
   // 이벤트 맵: date → events
   const eventMap = useMemo(() => {
     const map: Record<string, CalendarEvent[]> = {}
-    for (const ev of STATIC_EVENTS) {
+    for (const ev of events) {
       if (!map[ev.date]) map[ev.date] = []
       map[ev.date].push(ev)
     }
     return map
-  }, [])
+  }, [events])
 
   // 달력 그리드 데이터
   const calendarDays = useMemo(() => {
@@ -171,20 +171,20 @@ export default function EventCalendarPanel() {
   // 이벤트 날짜에서 가장 높은 우선순위 카테고리
   function getDateStyle(dateKey: string, isCurrentMonth: boolean) {
     const isToday = dateKey === today
-    const events = eventMap[dateKey]
+    const evts = eventMap[dateKey]
 
-    if (isToday && !events) {
+    if (isToday && !evts) {
       return { bg: '#7C3AED', text: '#FFF', cursor: 'default', fontWeight: 700 }
     }
 
-    if (events && events.length > 0) {
+    if (evts && evts.length > 0) {
       // 우선순위: urgent > important > earnings > dividend
       const priority = ['urgent', 'important', 'earnings', 'dividend']
-      const topCat = events.reduce((best, ev) => {
+      const topCat = evts.reduce((best, ev) => {
         const idx = priority.indexOf(ev.category)
         const bestIdx = priority.indexOf(best)
         return idx < bestIdx ? ev.category : best
-      }, events[0].category)
+      }, evts[0].category)
 
       const cat = CATEGORY_COLOR[topCat]
 
