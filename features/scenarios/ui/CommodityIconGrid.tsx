@@ -144,7 +144,8 @@ function getStatusBadge(gapPct: number): { label: string; bg: string; text: stri
 }
 
 function calculateFillHeight(gapPercent: number, maxHeight: number): number {
-  const normalized = Math.min(Math.max(gapPercent, 0) / 300, 1)
+  // 150%가 100% 채움. 80%+ → 50%+ 채움으로 직관적 표현
+  const normalized = Math.min(Math.max(gapPercent, 0) / 150, 1)
   return normalized * maxHeight
 }
 
@@ -158,6 +159,8 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
 
   const svgH = 80
   const fillH = calculateFillHeight(commodity.gap_pct, svgH)
+  const isOverflow = commodity.gap_pct >= 100
+  const fillOpacity = commodity.gap_pct >= 80 ? 0.85 : commodity.gap_pct >= 40 ? 0.7 : 0.5
 
   return (
     <div className="flex flex-col items-center text-center min-w-[100px]">
@@ -173,12 +176,22 @@ function CommodityIcon({ commodity }: { commodity: CommodityInfo }) {
         <rect
           x="0" y={80 - fillH} width="60" height={fillH}
           fill={iconMeta.fill}
-          opacity={0.6}
+          opacity={fillOpacity}
           clipPath={`url(#clip-${id})`}
         />
 
+        {/* 과열 넘침 표시: 100%+ 이면 상단에 빨간 점선 */}
+        {isOverflow && (
+          <line x1="5" y1="12" x2="55" y2="12" stroke="#DC2626" strokeWidth="1.5" strokeDasharray="3 2" opacity="0.7" />
+        )}
+
         {/* 중앙 갭% 텍스트 */}
-        <text x="30" y="48" textAnchor="middle" fontSize="9" fontWeight="700" fill="#1A1A2E">
+        <text
+          x="30" y="48" textAnchor="middle" fontSize="11" fontWeight="800"
+          fill={commodity.gap_pct >= 80 ? '#FFF' : '#1A1A2E'}
+          stroke={commodity.gap_pct >= 80 ? '#00000030' : 'none'}
+          strokeWidth={commodity.gap_pct >= 80 ? 0.5 : 0}
+        >
           {commodity.gap_pct.toFixed(0)}%
         </text>
       </svg>
