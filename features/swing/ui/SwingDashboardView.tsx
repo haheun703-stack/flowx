@@ -619,8 +619,8 @@ export default function SwingDashboardView() {
                 <div className="space-y-2">
                   {Object.entries(analysisCards.rest).map(([key, value]) => (
                     <div key={key} className="bg-white rounded-lg border border-[var(--border)] p-3">
-                      <p className="text-[12px] font-bold text-[#6B7280] mb-1">{formatAnalysisKey(key)}</p>
-                      <p className="text-[13px] text-[#1A1A2E] whitespace-pre-wrap">{value}</p>
+                      <p className="text-[13px] font-black text-[#6B7280] mb-1">{formatAnalysisKey(key)}</p>
+                      <p className="text-[14px] font-medium text-[#1A1A2E] whitespace-pre-wrap">{value}</p>
                     </div>
                   ))}
                 </div>
@@ -631,8 +631,8 @@ export default function SwingDashboardView() {
           {/* 마켓 코멘트 */}
           {data.market_comment && (
             <div className="mt-3 bg-white rounded-lg border border-[var(--border)] p-4">
-              <p className="text-[12px] font-bold text-[#6B7280] mb-1">마켓 코멘트</p>
-              <p className="text-[13px] text-[#1A1A2E] whitespace-pre-wrap">{data.market_comment}</p>
+              <p className="text-[13px] font-black text-[#6B7280] mb-1">마켓 코멘트</p>
+              <p className="text-[14px] font-medium text-[#1A1A2E] whitespace-pre-wrap">{data.market_comment}</p>
             </div>
           )}
         </section>
@@ -709,8 +709,8 @@ function ReportCard({ title, content, bg, lineColor }: { title: string; content:
         borderRadius: lineColor ? '0 8px 8px 0' : '8px',
       }}
     >
-      <p className="text-[13px] font-bold text-[#1A1A2E] mb-1">{title}</p>
-      <p className="text-[13px] text-[#374151] whitespace-pre-wrap leading-relaxed">{content}</p>
+      <p className="text-[15px] font-black text-[#1A1A2E] mb-1.5">{title}</p>
+      <p className="text-[14px] font-medium text-[#374151] whitespace-pre-wrap leading-relaxed">{content}</p>
     </div>
   )
 }
