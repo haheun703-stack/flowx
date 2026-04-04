@@ -7,6 +7,7 @@ import PowerScoreTop10 from './PowerScoreTop10'
 import EventCalendarPanel from './EventCalendarPanel'
 import BottomFishingPanel from './BottomFishingPanel'
 import SmartMoneyTracking from './SmartMoneyTracking'
+import CrashBounceView from './CrashBounceView'
 
 // ─── 타입 (JarvisControlTower에서 필요한 부분만) ───
 
@@ -162,7 +163,7 @@ export default function SystemPage() {
                 : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
             }`}
           >
-            {t === 'quant' ? '퀀트시스템' : ''}
+            {t === 'quant' ? '퀀트시스템' : '급락반등'}
           </button>
         ))}
         {data?.date && (
@@ -172,56 +173,61 @@ export default function SystemPage() {
         )}
       </div>
 
-      {/* Row 1: 오늘의 작전 — 퀀트 히어로 */}
-      <section>
-        <QuantHeroCard
-          verdict={verdict}
-          regime={regime}
-          recommendation={recommendation}
-          vix={vix}
-          vixGrade={vixGrade}
-          cashPct={cashPct}
-          dangerMode={dangerMode}
-          brainScore={(data?.brain as Record<string, unknown>)?.score as number | undefined}
-          hotSectors={hotSectors}
-          coldSectors={coldSectors}
-          date={data?.date}
-        />
-      </section>
+      {/* 급락반등 탭 */}
+      {tab === 'swing' && <CrashBounceView />}
 
-      {/* Row 2: 미국장 → 한국장 릴레이 */}
-      <section>
-        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">미국장 → 한국장 릴레이</h2>
-        <PreMarketScanner />
-      </section>
+      {/* 퀀트시스템 탭 */}
+      {tab === 'quant' && (
+        <>
+          {/* Row 1: 오늘의 작전 — 퀀트 히어로 */}
+          <section>
+            <QuantHeroCard
+              verdict={verdict}
+              regime={regime}
+              recommendation={recommendation}
+              vix={vix}
+              vixGrade={vixGrade}
+              cashPct={cashPct}
+              dangerMode={dangerMode}
+              brainScore={(data?.brain as Record<string, unknown>)?.score as number | undefined}
+              hotSectors={hotSectors}
+              coldSectors={coldSectors}
+              date={data?.date}
+            />
+          </section>
 
-      {/* Row 3: FlowX 파워 스코어 TOP 10 */}
-      {picks.length > 0 && (
-        <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">FlowX 파워 스코어 TOP 10</h2>
-          <PowerScoreTop10 picks={picks} />
-        </section>
-      )}
+          {/* Row 2: 미국장 → 한국장 릴레이 */}
+          <section>
+            <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">미국장 → 한국장 릴레이</h2>
+            <PreMarketScanner />
+          </section>
 
-      {/* Row 4: 이벤트 캘린더 + 저점 사냥기 */}
-      <section>
-        <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">이벤트 캘린더 & 저점 사냥기</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <EventCalendarPanel />
-          <BottomFishingPanel />
-        </div>
-      </section>
+          {/* Row 3: FlowX 파워 스코어 TOP 10 */}
+          {picks.length > 0 && (
+            <section>
+              <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">FlowX 파워 스코어 TOP 10</h2>
+              <PowerScoreTop10 picks={picks} />
+            </section>
+          )}
 
-      {/* Row 5: 스마트 머니 추적 */}
-      {picks.length > 0 && (
-        <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">스마트 머니 추적</h2>
-          <SmartMoneyTracking picks={picks} />
-        </section>
-      )}
+          {/* Row 4: 이벤트 캘린더 + 저점 사냥기 */}
+          <section>
+            <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">이벤트 캘린더 & 저점 사냥기</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <EventCalendarPanel />
+              <BottomFishingPanel />
+            </div>
+          </section>
 
-      {/* Row 6: 포트폴리오 배분 + 섹터 온도 */}
-      {(etf || portfolio || hotSectors.length > 0 || coldSectors.length > 0) && (
+          {/* Row 5: 스마트 머니 추적 */}
+          {picks.length > 0 && (
+            <section>
+              <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">스마트 머니 추적</h2>
+              <SmartMoneyTracking picks={picks} />
+            </section>
+          )}
+          {/* Row 6: 포트폴리오 배분 + 섹터 온도 */}
+          {(etf || portfolio || hotSectors.length > 0 || coldSectors.length > 0) && (
         <section>
           <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">포트폴리오 배분 & 섹터 온도</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -339,7 +345,9 @@ export default function SystemPage() {
               )}
             </div>
           </div>
-        </section>
+          </section>
+          )}
+        </>
       )}
     </div>
   )
