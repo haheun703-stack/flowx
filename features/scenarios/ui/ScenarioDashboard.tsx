@@ -9,6 +9,7 @@ import FanChartPanel from './FanChartPanel'
 import CommodityIconGrid from './CommodityIconGrid'
 import BeneficiaryVerticalBarChart from './BeneficiaryBarChart'
 import KeyNumbersGrid from './KeyNumbersGrid'
+import WarCostBarChart from './WarCostBarChart'
 import StopConditionCards from './StopConditionCards'
 
 // ─── 아코디언 공통 컴포넌트 ───
@@ -175,7 +176,14 @@ export default function ScenarioDashboardView() {
           </Accordion>
         ) : null}
 
-        {/* Row 7: 핵심 숫자 */}
+        {/* Row 7: 전쟁 비용/피해 */}
+        {firstAnalysis?.key_numbers && Object.keys(firstAnalysis.key_numbers).length > 0 && (
+          <Accordion id="warcost" title="전쟁 비용 / 피해 — 얼마를 쓰고 있나?" openSection={openSection} onToggle={toggleSection}>
+            <WarCostBarChart keyNumbers={firstAnalysis.key_numbers} />
+          </Accordion>
+        )}
+
+        {/* Row 8: 핵심 숫자 */}
         {firstAnalysis?.key_numbers && Object.keys(firstAnalysis.key_numbers).length > 0 && (
           <Accordion id="keynumbers" title="핵심 숫자 — 전쟁 전 vs 지금" openSection={openSection} onToggle={toggleSection}>
             <KeyNumbersGrid keyNumbers={firstAnalysis.key_numbers} />
