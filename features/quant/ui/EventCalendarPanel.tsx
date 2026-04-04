@@ -231,7 +231,7 @@ export default function EventCalendarPanel() {
           {WEEKDAYS.map((w, i) => (
             <span
               key={w}
-              className="text-[11px] font-bold py-1"
+              className="text-[12px] font-bold py-1"
               style={{ color: i >= 5 ? '#3B82F6' : '#6B7280' }}
             >
               {w}
@@ -252,7 +252,7 @@ export default function EventCalendarPanel() {
                   backgroundColor: style.bg,
                   color: style.text,
                   fontWeight: style.fontWeight,
-                  fontSize: '10px',
+                  fontSize: '11px',
                   cursor: style.cursor,
                   border: (style as { border?: string }).border ?? (isSelected ? '2px solid #7C3AED' : '2px solid transparent'),
                   lineHeight: '18px',
@@ -262,7 +262,7 @@ export default function EventCalendarPanel() {
                 {day}
                 {/* 이벤트 라벨 (D-5 이내 배경 채움일 때) */}
                 {eventMap[dateKey] && style.bg !== 'transparent' && (
-                  <div className="text-[9px] leading-none truncate px-0.5" style={{ color: style.text }}>
+                  <div className="text-[10px] leading-none truncate px-0.5" style={{ color: style.text }}>
                     {eventMap[dateKey][0].name.length > 4 ? eventMap[dateKey][0].name.slice(0, 4) : eventMap[dateKey][0].name}
                   </div>
                 )}
@@ -283,7 +283,7 @@ export default function EventCalendarPanel() {
           {Object.entries(CATEGORY_COLOR).map(([key, val]) => (
             <span key={key} className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: val.bg }} />
-              <span className="text-[8px] text-[#6B7280]">{val.label}</span>
+              <span className="text-[10px] text-[#6B7280]">{val.label}</span>
             </span>
           ))}
         </div>
@@ -316,15 +316,15 @@ export default function EventCalendarPanel() {
                   </div>
                   {/* 설명 */}
                   {ev.description && (
-                    <p className="text-[12px] text-[#374151] mb-1 leading-relaxed">{ev.description}</p>
+                    <p className="text-[13px] text-[#374151] mb-1 leading-relaxed">{ev.description}</p>
                   )}
                   {/* 역사적 패턴 */}
                   {ev.historical_pattern && (
-                    <p className="text-[12px] text-[#6B7280] mb-1">{ev.historical_pattern}</p>
+                    <p className="text-[13px] text-[#6B7280] mb-1">{ev.historical_pattern}</p>
                   )}
                   {/* AI 전략 */}
                   {ev.ai_strategy && (
-                    <p className="text-[12px] font-medium text-[#4C1D95] leading-relaxed">{ev.ai_strategy}</p>
+                    <p className="text-[13px] font-bold text-[#4C1D95] leading-relaxed">{ev.ai_strategy}</p>
                   )}
                 </div>
               )

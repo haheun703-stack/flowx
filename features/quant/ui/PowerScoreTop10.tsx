@@ -70,26 +70,26 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
     <div className="bg-white rounded-r-xl shadow-sm overflow-hidden" style={{ border: '1px solid var(--border)', borderLeft: '3px solid #059669' }}>
       {/* 헤더 */}
       <div className="px-5 py-3 border-b border-[var(--border)]/50 flex items-center justify-between">
-        <h3 className="text-[17px] font-bold text-[var(--text-primary)]">
+        <h3 className="text-[17px] font-bold text-[#1A1A2E]">
           FlowX Power Score TOP 10
         </h3>
-        <span className="text-[12px] text-[var(--text-muted)]">
+        <span className="text-[13px] font-bold text-[#1A1A2E]">
           교차검증 기반 종합 점수
         </span>
       </div>
 
       {/* 테이블 */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-[14px]">
           <thead>
-            <tr className="bg-gray-50 text-[var(--text-muted)]">
-              <th className="px-3 py-2 text-left w-[40px]">#</th>
-              <th className="px-3 py-2 text-left">종목</th>
-              <th className="px-3 py-2 text-left w-[200px]">Power Score</th>
-              <th className="px-3 py-2 text-center">신호</th>
-              <th className="px-3 py-2 text-center">등급</th>
-              <th className="px-3 py-2 text-right">현재가</th>
-              <th className="px-3 py-2 text-right">기대수익</th>
+            <tr className="bg-gray-50">
+              <th className="px-3 py-2.5 text-left w-[40px] text-[13px] font-bold text-[#1A1A2E]">#</th>
+              <th className="px-3 py-2.5 text-left text-[13px] font-bold text-[#1A1A2E]">종목</th>
+              <th className="px-3 py-2.5 text-left w-[200px] text-[13px] font-bold text-[#1A1A2E]">Power Score</th>
+              <th className="px-3 py-2.5 text-center text-[13px] font-bold text-[#1A1A2E]">신호</th>
+              <th className="px-3 py-2.5 text-center text-[13px] font-bold text-[#1A1A2E]">등급</th>
+              <th className="px-3 py-2.5 text-right text-[13px] font-bold text-[#1A1A2E]">현재가</th>
+              <th className="px-3 py-2.5 text-right text-[13px] font-bold text-[#1A1A2E]">기대수익</th>
             </tr>
           </thead>
           <tbody>
@@ -104,7 +104,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   className="border-b border-[var(--border)]/30 hover:bg-gray-50/50 transition-colors"
                 >
                   {/* 순위 */}
-                  <td className="px-3 py-2.5">
+                  <td className="px-3 py-3">
                     <div
                       className="w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-bold"
                       style={{
@@ -117,22 +117,22 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   </td>
 
                   {/* 종목명 + 소스 태그 */}
-                  <td className="px-3 py-2.5">
+                  <td className="px-3 py-3">
                     <div>
-                      <span className="font-bold text-[var(--text-primary)]">{pick.name}</span>
-                      <span className="text-[var(--text-muted)] ml-1.5">{pick.ticker}</span>
+                      <span className="font-bold text-[#1A1A2E]">{pick.name}</span>
+                      <span className="text-[#9CA3AF] ml-1.5">{pick.ticker}</span>
                     </div>
                     <div className="flex gap-1 mt-1 flex-wrap">
                       {pick.sources.slice(0, 3).map((s) => (
                         <span
                           key={s}
-                          className="text-[11px] px-1.5 py-0.5 rounded bg-gray-100 text-[var(--text-muted)]"
+                          className="text-[12px] px-1.5 py-0.5 rounded bg-gray-100 text-[#6B7280]"
                         >
                           {s}
                         </span>
                       ))}
                       {pick.sources.length > 3 && (
-                        <span className="text-[11px] text-[var(--text-muted)]">
+                        <span className="text-[12px] text-[#6B7280]">
                           +{pick.sources.length - 3}
                         </span>
                       )}
@@ -140,7 +140,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   </td>
 
                   {/* Power Score 바 */}
-                  <td className="px-3 py-2.5">
+                  <td className="px-3 py-3">
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-5 bg-gray-100 rounded-full overflow-hidden relative">
                         <div
@@ -151,22 +151,22 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                           }}
                         />
                       </div>
-                      <span className="text-sm font-bold text-[var(--text-primary)] tabular-nums w-[36px] text-right">
+                      <span className="text-[14px] font-bold text-[#1A1A2E] tabular-nums w-[36px] text-right">
                         {pick.total_score.toFixed(0)}
                       </span>
                     </div>
                   </td>
 
                   {/* 신호 개수 */}
-                  <td className="px-3 py-2.5 text-center">
-                    <span className="font-bold text-[var(--text-primary)]">{pick.n_sources}</span>
-                    <span className="text-[var(--text-muted)]">개</span>
+                  <td className="px-3 py-3 text-center">
+                    <span className="font-bold text-[#1A1A2E]">{pick.n_sources}</span>
+                    <span className="text-[#6B7280]">개</span>
                   </td>
 
                   {/* 등급 뱃지 */}
-                  <td className="px-3 py-2.5 text-center">
+                  <td className="px-3 py-3 text-center">
                     <span
-                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[12px] font-bold px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: gs.bg, color: gs.text }}
                     >
                       {gs.label}
@@ -174,16 +174,16 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
                   </td>
 
                   {/* 현재가 */}
-                  <td className="px-3 py-2.5 text-right font-mono text-[var(--text-primary)]">
+                  <td className="px-3 py-3 text-right font-mono text-[#1A1A2E] tabular-nums">
                     {formatKRW(pick.close)}
                   </td>
 
                   {/* 기대수익률 */}
-                  <td className="px-3 py-2.5 text-right">
+                  <td className="px-3 py-3 text-right">
                     {ret ? (
                       <span className="font-bold text-[#059669]">{ret}</span>
                     ) : (
-                      <span className="text-[var(--text-muted)]">-</span>
+                      <span className="text-[#9CA3AF]">-</span>
                     )}
                   </td>
                 </tr>

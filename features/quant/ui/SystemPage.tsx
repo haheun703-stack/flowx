@@ -239,13 +239,13 @@ export default function SystemPage() {
                   {/* 방어/공격 가로 바 */}
                   <div className="flex h-5 rounded-full overflow-hidden mb-3">
                     <div
-                      className="bg-[#059669] flex items-center justify-center text-[11px] font-bold text-white"
+                      className="bg-[#059669] flex items-center justify-center text-[12px] font-bold text-white"
                       style={{ width: `${portfolio.defense_pct ?? 50}%` }}
                     >
                       방어 {portfolio.defense_pct ?? 0}%
                     </div>
                     <div
-                      className="bg-[#DC2626] flex items-center justify-center text-[11px] font-bold text-white"
+                      className="bg-[#DC2626] flex items-center justify-center text-[12px] font-bold text-white"
                       style={{ width: `${portfolio.offense_pct ?? 50}%` }}
                     >
                       공격 {portfolio.offense_pct ?? 0}%
@@ -253,14 +253,14 @@ export default function SystemPage() {
                   </div>
                   <div className="space-y-1">
                     {portfolio.defense?.map((d) => (
-                      <div key={d.ticker} className="flex justify-between text-[13px]">
-                        <span className="text-[#1A1A2E]">{d.name}</span>
+                      <div key={d.ticker} className="flex justify-between text-[14px]">
+                        <span className="font-bold text-[#1A1A2E]">{d.name}</span>
                         <span className="text-[#059669] font-bold tabular-nums">{d.pct}%</span>
                       </div>
                     ))}
                     {portfolio.offense?.map((o) => (
-                      <div key={o.ticker} className="flex justify-between text-[13px]">
-                        <span className="text-[#1A1A2E]">{o.name}</span>
+                      <div key={o.ticker} className="flex justify-between text-[14px]">
+                        <span className="font-bold text-[#1A1A2E]">{o.name}</span>
                         <span className="text-[#DC2626] font-bold tabular-nums">{o.pct}%</span>
                       </div>
                     ))}
@@ -274,14 +274,14 @@ export default function SystemPage() {
                   <div className="space-y-2">
                     {Object.entries(etf.allocation).map(([k, v]) => (
                       <div key={k} className="flex items-center gap-3">
-                        <span className="text-[13px] text-[#6B7280] w-[80px] truncate">{k}</span>
+                        <span className="text-[14px] font-bold text-[#1A1A2E] w-[80px] truncate">{k}</span>
                         <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full bg-[#7C3AED]"
                             style={{ width: `${Math.min(v, 100)}%` }}
                           />
                         </div>
-                        <span className="text-[13px] font-bold text-[#1A1A2E] w-[36px] text-right tabular-nums">
+                        <span className="text-[14px] font-bold text-[#1A1A2E] w-[36px] text-right tabular-nums">
                           {v}%
                         </span>
                       </div>
@@ -295,7 +295,7 @@ export default function SystemPage() {
 
             {/* 우: 섹터 온도 */}
             <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-              <h4 className="text-[14px] font-bold text-[#1A1A2E] mb-3">섹터 온도</h4>
+              <h4 className="text-[15px] font-bold text-[#1A1A2E] mb-3">섹터 온도</h4>
               {etf?.accelerations && etf.accelerations.length > 0 ? (
                 <div className="space-y-2">
                   {etf.accelerations.map((a) => {
@@ -304,19 +304,19 @@ export default function SystemPage() {
                     return (
                       <div key={a.sector} className="flex items-center gap-2">
                         <span
-                          className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                          className="text-[12px] font-bold px-2 py-0.5 rounded-full shrink-0"
                           style={{ backgroundColor: `${tempColor}15`, color: tempColor }}
                         >
                           {temp}
                         </span>
-                        <span className="text-[13px] font-bold text-[#1A1A2E] flex-1 truncate">{a.sector}</span>
+                        <span className="text-[14px] font-bold text-[#1A1A2E] flex-1 truncate">{a.sector}</span>
                         <span
-                          className="text-[13px] font-bold tabular-nums"
+                          className="text-[14px] font-bold tabular-nums"
                           style={{ color: a.ret_5d >= 0 ? '#059669' : '#DC2626' }}
                         >
                           {a.ret_5d >= 0 ? '+' : ''}{a.ret_5d.toFixed(1)}%
                         </span>
-                        <span className="text-[12px] text-[#6B7280] tabular-nums">
+                        <span className="text-[13px] text-[#6B7280] tabular-nums">
                           점수 {a.score.toFixed(0)}
                         </span>
                       </div>
@@ -327,16 +327,16 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   {hotSectors.map((s) => (
                     <div key={s.sector} className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] shrink-0">HOT</span>
-                      <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
-                      <span className="text-[13px] font-bold text-[#059669] tabular-nums">+{s.ret_5.toFixed(1)}%</span>
+                      <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] shrink-0">HOT</span>
+                      <span className="text-[14px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
+                      <span className="text-[14px] font-bold text-[#059669] tabular-nums">+{s.ret_5.toFixed(1)}%</span>
                     </div>
                   ))}
                   {coldSectors.map((s) => (
                     <div key={s.sector} className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#3B82F6] shrink-0">COLD</span>
-                      <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
-                      <span className="text-[13px] font-bold text-[#DC2626] tabular-nums">{s.ret_5.toFixed(1)}%</span>
+                      <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#3B82F6] shrink-0">COLD</span>
+                      <span className="text-[14px] font-bold text-[#1A1A2E] flex-1">{s.sector}</span>
+                      <span className="text-[14px] font-bold text-[#DC2626] tabular-nums">{s.ret_5.toFixed(1)}%</span>
                     </div>
                   ))}
                 </div>

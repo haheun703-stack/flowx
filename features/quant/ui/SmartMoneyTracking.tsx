@@ -84,14 +84,14 @@ export default function SmartMoneyTracking({ picks }: SmartMoneyTrackingProps) {
         >
           {/* 헤더 */}
           <div
-            className="px-4 py-2.5 flex items-center justify-between"
+            className="px-4 py-3 flex items-center justify-between"
             style={{ backgroundColor: box.bg }}
           >
-            <h4 className="text-sm font-bold" style={{ color: box.color }}>
+            <h4 className="text-[15px] font-bold" style={{ color: box.color }}>
               {box.title}
             </h4>
             <span
-              className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+              className="text-[12px] font-bold px-2 py-0.5 rounded-full"
               style={{ backgroundColor: `${box.color}15`, color: box.color }}
             >
               {box.badge}
@@ -101,20 +101,20 @@ export default function SmartMoneyTracking({ picks }: SmartMoneyTrackingProps) {
           {/* 종목 리스트 */}
           <div className="bg-white divide-y divide-[var(--border)]/30">
             {box.items.length === 0 ? (
-              <p className="text-[var(--text-muted)] text-sm p-4 text-center">해당 종목 없음</p>
+              <p className="text-[#9CA3AF] text-[14px] p-4 text-center">해당 종목 없음</p>
             ) : (
               box.items.map((p) => (
-                <div key={p.ticker} className="px-4 py-2.5 flex items-center justify-between">
+                <div key={p.ticker} className="px-4 py-3 flex items-center justify-between">
                   <div>
-                    <span className="text-sm font-bold text-[var(--text-primary)]">{p.name}</span>
-                    <span className="text-[12px] text-[var(--text-muted)] ml-1">{p.ticker}</span>
+                    <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
+                    <span className="text-[13px] text-[#9CA3AF] ml-1">{p.ticker}</span>
                   </div>
                   <div className="text-right">
-                    <div className="flex gap-2 text-[12px]">
-                      <span className={p.foreign_5d > 0 ? 'text-[#059669] font-bold' : 'text-[var(--text-muted)]'}>
+                    <div className="flex gap-2 text-[13px]">
+                      <span className={p.foreign_5d > 0 ? 'text-[#059669] font-bold' : 'text-[#9CA3AF]'}>
                         외{formatBil(p.foreign_5d)}
                       </span>
-                      <span className={p.inst_5d > 0 ? 'text-[#D97706] font-bold' : 'text-[var(--text-muted)]'}>
+                      <span className={p.inst_5d > 0 ? 'text-[#D97706] font-bold' : 'text-[#9CA3AF]'}>
                         기{formatBil(p.inst_5d)}
                       </span>
                     </div>

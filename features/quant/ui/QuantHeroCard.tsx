@@ -151,11 +151,11 @@ export default function QuantHeroCard(props: QuantHeroCardProps) {
               className="rounded-xl p-3 text-center"
               style={{ backgroundColor: s.bg, border: `1px solid ${s.border}` }}
             >
-              <p className="text-[13px] font-bold text-[#6B7280] mb-1">{a.label}</p>
+              <p className="text-[14px] font-bold text-[#1A1A2E] mb-1">{a.label}</p>
               <p className="text-[24px] font-bold leading-none mb-1" style={{ color: s.text }}>
                 {LEVEL_LABEL[a.level]}
               </p>
-              <p className="text-[12px] font-medium" style={{ color: s.text }}>
+              <p className="text-[13px] font-bold" style={{ color: s.text }}>
                 {a.reason}
               </p>
             </div>
@@ -168,11 +168,11 @@ export default function QuantHeroCard(props: QuantHeroCardProps) {
         <div className="flex flex-wrap gap-4 mt-4">
           {hotSectors && hotSectors.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[12px] font-bold text-[#059669]">HOT</span>
+              <span className="text-[13px] font-bold text-[#059669]">HOT</span>
               {hotSectors.slice(0, 5).map((s) => (
                 <span
                   key={s.sector}
-                  className="text-[12px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-medium"
+                  className="text-[13px] px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] font-bold"
                 >
                   {s.sector} +{s.ret_5.toFixed(1)}%
                 </span>
@@ -181,11 +181,11 @@ export default function QuantHeroCard(props: QuantHeroCardProps) {
           )}
           {coldSectors && coldSectors.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[12px] font-bold text-[#DC2626]">COLD</span>
+              <span className="text-[13px] font-bold text-[#DC2626]">COLD</span>
               {coldSectors.slice(0, 5).map((s) => (
                 <span
                   key={s.sector}
-                  className="text-[12px] px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] font-medium"
+                  className="text-[13px] px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] font-bold"
                 >
                   {s.sector} {s.ret_5.toFixed(1)}%
                 </span>
