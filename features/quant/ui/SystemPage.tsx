@@ -151,24 +151,22 @@ export default function SystemPage() {
       />
 
       {/* Quant / Swing 서브탭 */}
-      <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
         {(['quant', 'swing'] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className="px-5 py-2 rounded-md text-sm font-bold transition-all"
-            style={{
-              backgroundColor: tab === t
-                ? (t === 'quant' ? '#7C3AED' : '#059669')
-                : 'transparent',
-              color: tab === t ? '#fff' : '#6B7280',
-            }}
+            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors whitespace-nowrap ${
+              tab === t
+                ? 'bg-[#1A1A2E] text-white'
+                : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
+            }`}
           >
             {t === 'quant' ? 'Quant System' : 'Swing Trade'}
           </button>
         ))}
         {data?.date && (
-          <span className="text-[12px] text-[var(--text-muted)] ml-3">
+          <span className="text-[12px] text-[#9CA3AF] ml-3">
             {data.date}
           </span>
         )}

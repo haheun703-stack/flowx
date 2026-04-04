@@ -20,15 +20,15 @@ export function SwingTabsView() {
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* 탭 바 */}
       <div className="max-w-[1400px] mx-auto px-6 pt-6">
-        <nav className="flex gap-1 bg-[var(--bg-row)] rounded-xl p-1 border border-[var(--border)] overflow-x-auto">
+        <nav className="flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              className={`shrink-0 py-2 px-4 rounded-lg text-sm font-bold transition-colors whitespace-nowrap ${
                 tab === t.key
-                  ? "bg-[var(--text-primary)] text-white"
-                  : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-white"
+                  ? "bg-[#1A1A2E] text-white"
+                  : "text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white"
               }`}
             >
               {t.label}
