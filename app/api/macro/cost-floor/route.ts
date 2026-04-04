@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * cost_floor 테이블 실제 컬럼:
  *   name, category, ticker, floor_name, floor_price, ceiling_name, ceiling_price,

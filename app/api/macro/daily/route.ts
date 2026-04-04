@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * macro_data 테이블 (JSONB 구조) → 프론트엔드 TALL 구조로 변환
  * 봇이 indices/commodities/forex/crypto/bonds/vix JSONB로 저장
