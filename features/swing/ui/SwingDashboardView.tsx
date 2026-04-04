@@ -550,7 +550,7 @@ export default function SwingDashboardView() {
                   ].filter(a => a.pct > 0).map((a) => (
                     <div
                       key={a.label}
-                      className="flex items-center justify-center text-[8px] font-bold text-white"
+                      className="flex items-center justify-center text-[10px] font-bold text-white"
                       style={{ width: `${a.pct}%`, backgroundColor: a.color, minWidth: a.pct > 5 ? undefined : '2px' }}
                       title={`${a.label} ${a.pct}%`}
                     >
@@ -567,9 +567,9 @@ export default function SwingDashboardView() {
                     { label: '소형주', pct: data.alloc_small_cap, color: '#7C3AED' },
                     { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
                   ].map((a) => (
-                    <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2">
-                      <p className="text-[11px] text-[#6B7280]">{a.label}</p>
-                      <p className="text-[16px] font-bold tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
+                    <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2.5">
+                      <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{a.label}</p>
+                      <p className="text-[17px] font-black tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
                     </div>
                   ))}
                 </div>
@@ -692,8 +692,8 @@ function PriceCell({ label, value, bg, sub, subColor, isRatio, isDays }: {
 function MetricCard({ label, value, color, bg }: { label: string; value: string; color: string; bg?: string }) {
   return (
     <div className="rounded-lg p-2.5 text-center" style={{ backgroundColor: bg ?? '#F5F4F0' }}>
-      <p className="text-[11px] text-[#6B7280]">{label}</p>
-      <p className="text-[16px] font-bold font-mono tabular-nums" style={{ color }}>{value}</p>
+      <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{label}</p>
+      <p className="text-[17px] font-black font-mono tabular-nums" style={{ color }}>{value}</p>
     </div>
   )
 }
