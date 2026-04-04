@@ -128,7 +128,7 @@ export default function FibStocksView() {
           <h2 className="text-[17px] font-bold text-[#1A1A2E]">
             피보나치 눌림목 — 바닥 매수 후보
           </h2>
-          <p className="text-[12px] text-[#6B7280] mt-0.5">
+          <p className="text-[13px] text-[#6B7280] mt-0.5">
             52주 고점 대비 크게 하락한 우량주 {stocks.length}종목 · 시총 3조원+ · 피보나치 되돌림 기준
             {date && <span className="ml-2">· {date} 기준</span>}
           </p>
@@ -138,7 +138,7 @@ export default function FibStocksView() {
             <button
               key={opt.key}
               onClick={() => setSortKey(opt.key)}
-              className="text-[11px] font-bold px-2 py-1 rounded-md transition-colors"
+              className="text-[12px] font-bold px-2.5 py-1 rounded-md transition-colors"
               style={{
                 backgroundColor: sortKey === opt.key ? '#F0EDE8' : 'transparent',
                 color: sortKey === opt.key ? '#1A1A2E' : '#9CA3AF',
@@ -157,7 +157,7 @@ export default function FibStocksView() {
           return (
             <div
               key={zone}
-              className="flex items-center gap-1.5 text-[12px] font-bold px-2.5 py-1 rounded-full"
+              className="flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-full"
               style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}
             >
               <span>{cfg.icon}</span>
@@ -174,26 +174,26 @@ export default function FibStocksView() {
         return (
           <div key={zone}>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[14px]">{cfg.icon}</span>
-              <span className="text-[14px] font-black" style={{ color: cfg.color }}>
+              <span className="text-[15px]">{cfg.icon}</span>
+              <span className="text-[15px] font-black" style={{ color: cfg.color }}>
                 {cfg.label}
               </span>
-              <span className="text-[12px] text-[#6B7280]">— {items.length}종목</span>
+              <span className="text-[13px] text-[#6B7280]">— {items.length}종목</span>
             </div>
 
             <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${cfg.border}` }}>
-              <table className="w-full text-[13px]">
+              <table className="w-full text-[14px]">
                 <thead>
                   <tr style={{ backgroundColor: cfg.bg }}>
-                    <th className="text-left py-2 px-3 text-[11px] font-bold text-[#6B7280]">종목</th>
-                    <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280]">섹터</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">시총</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">현재가</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">하락률</th>
-                    <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280] min-w-[100px]">피보나치 위치</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">상승여력</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">PER</th>
-                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">외국인</th>
+                    <th className="text-left py-2 px-3 text-[12px] font-bold text-[#6B7280]">종목</th>
+                    <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280]">섹터</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">시총</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">현재가</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">하락률</th>
+                    <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280] min-w-[100px]">피보나치 위치</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">상승여력</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">PER</th>
+                    <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">외국인</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -210,7 +210,7 @@ export default function FibStocksView() {
                       </td>
                       <td className="py-2.5 px-2">
                         <FibMiniGauge stock={s} />
-                        <p className="text-[10px] text-[#6B7280] text-center mt-0.5">{s.fib_status}</p>
+                        <p className="text-[11px] text-[#6B7280] text-center mt-0.5">{s.fib_status}</p>
                       </td>
                       <td className="text-right py-2.5 px-2 font-bold tabular-nums" style={{ color: '#16A34A' }}>
                         +{(s.upside ?? 0).toFixed(1)}%
@@ -231,8 +231,8 @@ export default function FibStocksView() {
         <div className="flex items-start gap-3">
           <span className="text-[16px] shrink-0">📐</span>
           <div>
-            <p className="text-[12px] font-bold text-white mb-1">피보나치 되돌림 읽는 법</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-[#A5B4C3]">
+            <p className="text-[13px] font-bold text-white mb-1">피보나치 되돌림 읽는 법</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] text-[#A5B4C3]">
               <span><strong className="text-white">38.2%</strong> — 약한 되돌림. 여기서 반등 = 강한 추세</span>
               <span><strong className="text-white">50.0%</strong> — 중간 되돌림. 가장 많이 쓰는 지지선</span>
               <span><strong className="text-white">61.8%</strong> — 황금비율. 여기 깨면 추세 전환</span>

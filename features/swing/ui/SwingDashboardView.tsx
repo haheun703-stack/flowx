@@ -433,12 +433,12 @@ export default function SwingDashboardView() {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <span
-                        className="text-[14px] font-black px-3 py-1.5 rounded-lg"
+                        className="text-[15px] font-black px-3.5 py-1.5 rounded-lg"
                         style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
                       >
                         종합: {rat.verdict}
                       </span>
-                      <div className="flex items-center gap-2 text-[13px] font-bold">
+                      <div className="flex items-center gap-2.5 text-[14px] font-bold tabular-nums">
                         <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
                         <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
                         <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
@@ -446,7 +446,7 @@ export default function SwingDashboardView() {
                       </div>
                     </div>
                     {rat.timestamp && (
-                      <span className="text-[11px] text-[#9CA3AF]">
+                      <span className="text-[13px] text-[#9CA3AF]">
                         기준: {rat.timestamp.slice(0, 16)}
                       </span>
                     )}
@@ -459,23 +459,23 @@ export default function SwingDashboardView() {
                       return (
                         <div
                           key={ind.key}
-                          className="flex items-center gap-3 rounded-lg px-3 py-2"
+                          className="flex items-center gap-3 rounded-lg px-4 py-2.5"
                           style={{ backgroundColor: ss.bg }}
                         >
                           <span
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: ss.dot }}
                           />
-                          <span className="text-[13px] font-bold text-[#1A1A2E] w-[130px] shrink-0">
+                          <span className="text-[14px] font-bold text-[#1A1A2E] min-w-[140px] shrink-0">
                             {ind.name}
                           </span>
                           <span
-                            className="text-[12px] font-bold w-[40px] shrink-0 text-center"
+                            className="text-[13px] font-black min-w-[48px] shrink-0 text-center"
                             style={{ color: ss.text }}
                           >
                             {ind.signal_label}
                           </span>
-                          <span className="text-[12px] text-[#6B7280] flex-1 truncate">
+                          <span className="text-[13px] text-[#6B7280] tabular-nums flex-1 truncate">
                             {ind.detail}
                           </span>
                         </div>

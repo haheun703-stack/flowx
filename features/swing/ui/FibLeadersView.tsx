@@ -130,7 +130,7 @@ export default function FibLeadersView() {
           <h2 className="text-[17px] font-bold text-[#1A1A2E]">
             대형주 피보나치 — 시총 상위 대장주
           </h2>
-          <p className="text-[12px] text-[#6B7280] mt-0.5">
+          <p className="text-[13px] text-[#6B7280] mt-0.5">
             시총 상위 {stocks.length}종목 · 하락률 무관 · 피보나치 되돌림 분석
             {date && <span className="ml-2">· {date} 기준</span>}
           </p>
@@ -140,7 +140,7 @@ export default function FibLeadersView() {
             <button
               key={opt.key}
               onClick={() => setSortKey(opt.key)}
-              className="text-[11px] font-bold px-2 py-1 rounded-md transition-colors"
+              className="text-[12px] font-bold px-2.5 py-1 rounded-md transition-colors"
               style={{
                 backgroundColor: sortKey === opt.key ? '#F0EDE8' : 'transparent',
                 color: sortKey === opt.key ? '#1A1A2E' : '#9CA3AF',
@@ -159,7 +159,7 @@ export default function FibLeadersView() {
           return (
             <div
               key={zone}
-              className="flex items-center gap-1.5 text-[12px] font-bold px-2.5 py-1 rounded-full"
+              className="flex items-center gap-1.5 text-[13px] font-bold px-3 py-1.5 rounded-full"
               style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}
             >
               <span>{cfg.icon}</span>
@@ -172,20 +172,20 @@ export default function FibLeadersView() {
 
       {/* 단일 테이블 (시총순 기본) */}
       <div className="rounded-xl overflow-hidden border border-[#E8E6E0]">
-        <table className="w-full text-[13px]">
+        <table className="w-full text-[14px]">
           <thead>
             <tr style={{ backgroundColor: '#F5F4F0' }}>
-              <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280] w-8">#</th>
-              <th className="text-left py-2 px-3 text-[11px] font-bold text-[#6B7280]">종목</th>
-              <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280]">섹터</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">시총</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">현재가</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">하락률</th>
-              <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280]">구간</th>
-              <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280] min-w-[100px]">피보나치 위치</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">상승여력</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">PER</th>
-              <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">외국인</th>
+              <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280] w-8">#</th>
+              <th className="text-left py-2 px-3 text-[12px] font-bold text-[#6B7280]">종목</th>
+              <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280]">섹터</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">시총</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">현재가</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">하락률</th>
+              <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280]">구간</th>
+              <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280] min-w-[100px]">피보나치 위치</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">상승여력</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">PER</th>
+              <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">외국인</th>
             </tr>
           </thead>
           <tbody>
@@ -193,7 +193,7 @@ export default function FibLeadersView() {
               const cfg = ZONE_CONFIG[s.fib_zone] ?? ZONE_CONFIG.MILD
               return (
                 <tr key={s.code} className="border-t border-[#E8E6E0]/50 hover:bg-[#F9F8F6]">
-                  <td className="text-center py-2.5 px-2 text-[12px] text-[#9CA3AF] tabular-nums">{i + 1}</td>
+                  <td className="text-center py-2.5 px-2 text-[13px] text-[#9CA3AF] tabular-nums">{i + 1}</td>
                   <td className="py-2.5 px-3">
                     <span className="font-bold text-[#1A1A2E]">{s.name}</span>
                   </td>
@@ -205,7 +205,7 @@ export default function FibLeadersView() {
                   </td>
                   <td className="text-center py-2.5 px-2">
                     <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}
                     >
                       {cfg.icon} {s.fib_zone ?? '-'}
@@ -213,7 +213,7 @@ export default function FibLeadersView() {
                   </td>
                   <td className="py-2.5 px-2">
                     <FibMiniGauge stock={s} />
-                    <p className="text-[10px] text-[#6B7280] text-center mt-0.5">{s.fib_status ?? '-'}</p>
+                    <p className="text-[11px] text-[#6B7280] text-center mt-0.5">{s.fib_status ?? '-'}</p>
                   </td>
                   <td className="text-right py-2.5 px-2 font-bold tabular-nums" style={{ color: '#16A34A' }}>
                     +{(s.upside ?? 0).toFixed(1)}%
@@ -232,8 +232,8 @@ export default function FibLeadersView() {
         <div className="flex items-start gap-3">
           <span className="text-[16px] shrink-0">📐</span>
           <div>
-            <p className="text-[12px] font-bold text-white mb-1">피보나치 되돌림 읽는 법</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-[#A5B4C3]">
+            <p className="text-[13px] font-bold text-white mb-1">피보나치 되돌림 읽는 법</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] text-[#A5B4C3]">
               <span><strong className="text-white">38.2%</strong> — 약한 되돌림. 여기서 반등 = 강한 추세</span>
               <span><strong className="text-white">50.0%</strong> — 중간 되돌림. 가장 많이 쓰는 지지선</span>
               <span><strong className="text-white">61.8%</strong> — 황금비율. 여기 깨면 추세 전환</span>
