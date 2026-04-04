@@ -109,7 +109,14 @@ export function BloombergDashboard() {
               />
 
               {/* 1일 바 차트 */}
-              {flowPeriod === '1D' && flowData && flowData.length > 0 && (() => {
+              {flowPeriod === '1D' && (() => {
+                if (!flowData || flowData.length === 0) {
+                  return (
+                    <div className="mt-4 bg-[#FAFAF8] rounded-xl p-6 flex items-center justify-center" style={{ height: 200 }}>
+                      <span className="text-[14px] text-[#9CA3AF]">수급 데이터 로딩 중...</span>
+                    </div>
+                  )
+                }
                 const latest = flowData[flowData.length - 1]
                 const toEok = (v: number) => Math.round(v / 100)
                 const items = [
@@ -119,38 +126,40 @@ export function BloombergDashboard() {
                 ]
                 const maxAbs = Math.max(...items.map(i => Math.abs(i.value)), 1)
                 return (
-                  <div className="mt-3 flex items-end justify-center gap-8" style={{ height: 160 }}>
-                    {items.map(item => {
-                      const pct = Math.abs(item.value) / maxAbs * 100
-                      const isPos = item.value >= 0
-                      return (
-                        <div key={item.label} className="flex flex-col items-center" style={{ height: '100%' }}>
-                          {/* 값 */}
-                          <span className="text-[13px] font-bold tabular-nums mb-1" style={{ color: item.color }}>
-                            {item.value >= 0 ? '+' : ''}{item.value.toLocaleString()}억
-                          </span>
-                          {/* 바 컨테이너: 위=양수, 아래=음수 */}
-                          <div className="flex-1 flex flex-col justify-center w-14 relative">
-                            {/* 0 기준선 */}
-                            <div className="absolute left-0 right-0 top-1/2 h-px bg-[#E8E6E0]" />
-                            {isPos ? (
-                              <div className="flex flex-col justify-end items-center" style={{ height: '50%' }}>
-                                <div className="w-10 rounded-t" style={{ height: `${pct}%`, minHeight: 4, backgroundColor: item.color, opacity: 0.85 }} />
-                              </div>
-                            ) : (
-                              <>
-                                <div style={{ height: '50%' }} />
-                                <div className="flex flex-col justify-start items-center" style={{ height: '50%' }}>
-                                  <div className="w-10 rounded-b" style={{ height: `${pct}%`, minHeight: 4, backgroundColor: item.color, opacity: 0.85 }} />
+                  <div className="mt-4 bg-[#FAFAF8] rounded-xl p-5">
+                    <div className="text-[13px] font-bold text-[#6B7280] mb-3">
+                      {latest.date} 투자자 순매수
+                    </div>
+                    <div className="flex justify-center gap-12" style={{ height: 180 }}>
+                      {items.map(item => {
+                        const pct = Math.abs(item.value) / maxAbs * 100
+                        const isPos = item.value >= 0
+                        return (
+                          <div key={item.label} className="flex flex-col items-center" style={{ height: '100%' }}>
+                            {/* 값 */}
+                            <span className="text-[16px] font-black tabular-nums mb-2" style={{ color: item.color }}>
+                              {item.value >= 0 ? '+' : ''}{item.value.toLocaleString()}억
+                            </span>
+                            {/* 바 컨테이너 */}
+                            <div className="flex-1 w-16 relative">
+                              {/* 0 기준선 */}
+                              <div className="absolute left-0 right-0 top-1/2 h-px bg-[#D1D5DB]" />
+                              {isPos ? (
+                                <div className="absolute left-0 right-0 bottom-1/2 flex flex-col justify-end items-center">
+                                  <div className="w-12 rounded-t-md" style={{ height: `${pct * 0.8}px`, minHeight: 6, maxHeight: 60, backgroundColor: item.color, opacity: 0.85 }} />
                                 </div>
-                              </>
-                            )}
+                              ) : (
+                                <div className="absolute left-0 right-0 top-1/2 flex flex-col justify-start items-center">
+                                  <div className="w-12 rounded-b-md" style={{ height: `${pct * 0.8}px`, minHeight: 6, maxHeight: 60, backgroundColor: item.color, opacity: 0.85 }} />
+                                </div>
+                              )}
+                            </div>
+                            {/* 라벨 */}
+                            <span className="text-[13px] font-bold mt-2" style={{ color: item.color }}>{item.label}</span>
                           </div>
-                          {/* 라벨 */}
-                          <span className="text-[12px] font-semibold text-[#6B7280] mt-1">{item.label}</span>
-                        </div>
-                      )
-                    })}
+                        )
+                      })}
+                    </div>
                   </div>
                 )
               })()}
