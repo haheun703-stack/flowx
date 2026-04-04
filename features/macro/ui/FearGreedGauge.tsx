@@ -71,7 +71,7 @@ export function FearGreedGauge() {
       <div className="p-3">
         {fgItem ? (
           <div className="flex flex-col items-center">
-            <svg viewBox="0 10 200 98" className="w-full max-w-[220px]">
+            <svg viewBox="0 14 200 92" className="w-full max-w-[220px]">
               {/* 배경 호 */}
               <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
               {/* 색상 세그먼트 */}
@@ -86,7 +86,7 @@ export function FearGreedGauge() {
             </svg>
 
             {/* ── 값 + 라벨: SVG 아래 HTML ── */}
-            <div className="text-center -mt-1">
+            <div className="text-center -mt-3">
               <p className="text-[28px] font-black tabular-nums" style={{ color: label.color }}>{Math.round(fgValue)}</p>
               <p className="text-[12px] font-extrabold" style={{ color: label.color }}>{label.text}</p>
             </div>

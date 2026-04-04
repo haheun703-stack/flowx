@@ -58,7 +58,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </div>
 
       {/* SVG Gauge */}
-      <svg viewBox="0 10 200 98" className="w-full max-w-[200px]">
+      <svg viewBox="0 14 200 92" className="w-full max-w-[200px]">
         {/* Background arc */}
         <path d={arcD(180, 0.1)} fill="none" stroke="#e5e7eb" strokeWidth={SW + 2} strokeLinecap="round" />
         {/* Colored segments */}
@@ -73,7 +73,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </svg>
 
       {/* ── 가격 + % : SVG 아래 HTML ── */}
-      <div className="text-center -mt-1">
+      <div className="text-center -mt-3">
         <p className="text-[15px] font-black text-[#111827] tabular-nums">{item.current_price?.toLocaleString('ko-KR') ?? '—'}</p>
         <p className="text-[12px] font-bold" style={{ color }}>{pct.toFixed(0)}%</p>
       </div>
