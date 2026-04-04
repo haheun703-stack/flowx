@@ -28,8 +28,8 @@ export async function GET() {
       name: r.name as string,
       price: Number(r.price ?? 0),
       changePercent: Number(r.change_pct ?? 0),
-      foreignNet: Math.round(Number(r.foreign_net ?? 0) / 1e8),
-      instNet: Math.round(Number(r.institution_net ?? 0) / 1e8),
+      foreignNet: Math.round(Number(r.foreign_net ?? 0) / 100),
+      instNet: Math.round(Number(r.institution_net ?? 0) / 100),
     })
 
     return NextResponse.json({

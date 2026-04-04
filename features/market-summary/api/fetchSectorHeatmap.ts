@@ -32,7 +32,7 @@ export async function fetchSectorHeatmap(): Promise<SectorData[]> {
       .slice(0, 9)
       .map((s: Record<string, unknown>) => ({
         name: (s.sector ?? '') as string,
-        changePercent: Number(s.ret_5 ?? 0),
+        changePercent: Number(s.ret_5d ?? 0),
         count: 0,
       }))
   } catch {

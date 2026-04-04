@@ -28,7 +28,7 @@ interface MarketOverviewData {
 }
 
 function formatBil(n: number) {
-  const bil = n / 1_0000
+  const bil = n / 100   // 백만원 → 억원
   if (Math.abs(bil) >= 10000) return `${bil >= 0 ? '+' : ''}${(bil / 10000).toFixed(1)}조`
   if (Math.abs(bil) >= 1) return `${bil >= 0 ? '+' : ''}${bil.toFixed(0)}억`
   return `${bil >= 0 ? '+' : ''}${bil.toFixed(1)}억`
