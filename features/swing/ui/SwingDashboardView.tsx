@@ -680,10 +680,10 @@ function PriceCell({ label, value, bg, sub, subColor, isRatio, isDays }: {
       : value?.toLocaleString() ?? '-'
 
   return (
-    <div className="rounded-md p-1.5 text-center" style={{ backgroundColor: bg ?? '#FFF' }}>
-      <p className="text-[8px] text-[#9CA3AF]">{label}</p>
-      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{display}</p>
-      {sub && <p className="text-[11px] font-bold tabular-nums" style={{ color: subColor ?? '#6B7280' }}>{sub}</p>}
+    <div className="rounded-md p-2.5 text-center" style={{ backgroundColor: bg ?? '#F9FAFB' }}>
+      <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{label}</p>
+      <p className="text-[17px] font-black text-[#1A1A2E] tabular-nums">{display}</p>
+      {sub && <p className="text-[12px] font-bold tabular-nums mt-0.5" style={{ color: subColor ?? '#6B7280' }}>{sub}</p>}
     </div>
   )
 }
