@@ -79,7 +79,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       </div>
 
       {/* ── 바닥 / 천장 라벨 ── */}
-      <div className="flex justify-between w-full max-w-[200px] -mt-8 px-[17px]">
+      <div className="flex justify-between w-full max-w-[200px] -mt-8 px-[5px]">
         <div className="text-left">
           <p className="text-[9px] font-bold text-[#22c55e] truncate max-w-[80px]">{item.floor_name ?? '바닥'}</p>
           <p className="text-[11px] font-black text-[#22c55e] tabular-nums">{item.floor_price.toLocaleString('ko-KR')}</p>
