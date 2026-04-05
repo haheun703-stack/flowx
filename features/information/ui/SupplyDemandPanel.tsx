@@ -166,7 +166,7 @@ function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
       <div className="text-sm text-[var(--text-dim)] font-bold mb-3">📈 수급 누적흐름 ({cumData.length}일)</div>
       <div className="relative">
         <span className="absolute left-[70px] top-[8px] text-[11px] font-bold text-[#16a34a] opacity-50 z-10">순매수 ↑</span>
-        <span className="absolute left-[70px] bottom-[30px] text-[11px] font-bold text-[#dc2626] opacity-50 z-10">순매도 ↓</span>
+        <span className="absolute left-[70px] bottom-[60px] text-[11px] font-bold text-[#dc2626] opacity-50 z-10">순매도 ↓</span>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={cumData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e5ea" vertical={false} />
