@@ -97,6 +97,11 @@ export function AiSignalScorecard() {
     )
   }
 
+  const accuracy = data.accuracy_pct ?? 0
+  const paperReturn = data.paper_return_pct ?? 0
+  const winRate = data.paper_win_rate_pct ?? 0
+  const recent7d = data.recent_7d_accuracy_pct ?? 0
+
   const byType = data.by_type ?? {}
   const dailyStats: AiScorecardDailyStat[] = Array.isArray(data.daily_stats) ? data.daily_stats.slice(0, 7) : []
   const paperReturns: AiScorecardDailyReturn[] = Array.isArray(data.paper_daily_returns) ? data.paper_daily_returns.slice(0, 7) : []
@@ -114,20 +119,20 @@ export function AiSignalScorecard() {
       {/* ① 핵심 지표 3개 */}
       <div className="grid grid-cols-3 gap-3">
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(data.accuracy_pct) }}>
-            {data.accuracy_pct.toFixed(1)}%
+          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(accuracy) }}>
+            {accuracy.toFixed(1)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">AI 적중률</p>
         </div>
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: returnColor(data.paper_return_pct) }}>
-            {data.paper_return_pct >= 0 ? '+' : ''}{data.paper_return_pct.toFixed(2)}%
+          <p className="text-[22px] font-black tabular-nums" style={{ color: returnColor(paperReturn) }}>
+            {paperReturn >= 0 ? '+' : ''}{paperReturn.toFixed(2)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">페이퍼 수익률</p>
         </div>
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(data.paper_win_rate_pct) }}>
-            {data.paper_win_rate_pct.toFixed(1)}%
+          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(winRate) }}>
+            {winRate.toFixed(1)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">승률</p>
         </div>
@@ -135,11 +140,11 @@ export function AiSignalScorecard() {
 
       {/* ② 상세 정보 */}
       <div className="text-[13px] text-[#6B7280] flex flex-wrap gap-x-4 gap-y-1">
-        <span>전체 예측 <strong className="text-[#1A1A2E]">{data.total_predictions}</strong>건</span>
-        <span>검증완료 <strong className="text-[#1A1A2E]">{data.verified}</strong>건</span>
-        <span>최근 7일 <strong style={{ color: accuracyColor(data.recent_7d_accuracy_pct) }}>{data.recent_7d_accuracy_pct.toFixed(1)}%</strong></span>
-        <span>트레이드 <strong className="text-[#1A1A2E]">{data.paper_total_trades}</strong>건</span>
-        <span><strong className="text-[#1A1A2E]">{data.paper_trading_days}</strong>거래일</span>
+        <span>전체 예측 <strong className="text-[#1A1A2E]">{data.total_predictions ?? 0}</strong>건</span>
+        <span>검증완료 <strong className="text-[#1A1A2E]">{data.verified ?? 0}</strong>건</span>
+        <span>최근 7일 <strong style={{ color: accuracyColor(recent7d) }}>{recent7d.toFixed(1)}%</strong></span>
+        <span>트레이드 <strong className="text-[#1A1A2E]">{data.paper_total_trades ?? 0}</strong>건</span>
+        <span><strong className="text-[#1A1A2E]">{data.paper_trading_days ?? 0}</strong>거래일</span>
       </div>
 
       {/* ③ 유형별 적중률 */}
@@ -148,10 +153,10 @@ export function AiSignalScorecard() {
           {Object.entries(byType).map(([type, stat]) => (
             <div key={type} className="flex items-center gap-2">
               <span className="text-[13px] font-bold text-[#1A1A2E]">{type === 'index' ? '지수' : type === 'stock' ? '종목' : type}</span>
-              <span className="text-[13px] tabular-nums" style={{ color: accuracyColor(stat.accuracy_pct) }}>
-                {stat.accuracy_pct.toFixed(1)}%
+              <span className="text-[13px] tabular-nums" style={{ color: accuracyColor(stat.accuracy_pct ?? 0) }}>
+                {(stat.accuracy_pct ?? 0).toFixed(1)}%
               </span>
-              <span className="text-[12px] text-[#9CA3AF]">({stat.hit}/{stat.total})</span>
+              <span className="text-[12px] text-[#9CA3AF]">({stat.hit ?? 0}/{stat.total ?? 0})</span>
             </div>
           ))}
         </div>
@@ -163,13 +168,13 @@ export function AiSignalScorecard() {
           {dailyStats.length > 0 && (
             <div>
               <p className="text-[12px] font-bold text-[#6B7280] mb-2">일별 적중률</p>
-              <MiniBarChart items={[...dailyStats].reverse().map(d => ({ date: d.date, value: d.accuracy_pct }))} height={80} />
+              <MiniBarChart items={[...dailyStats].reverse().map(d => ({ date: d.date, value: d.accuracy_pct ?? 0 }))} height={80} />
             </div>
           )}
           {paperReturns.length > 0 && (
             <div>
               <p className="text-[12px] font-bold text-[#6B7280] mb-2">일별 수익률</p>
-              <MiniBarChart items={[...paperReturns].reverse().map(d => ({ date: d.date, value: d.avg_return_pct }))} height={80} />
+              <MiniBarChart items={[...paperReturns].reverse().map(d => ({ date: d.date, value: d.avg_return_pct ?? 0 }))} height={80} />
             </div>
           )}
         </div>
@@ -184,7 +189,7 @@ export function AiSignalScorecard() {
               {topPicks.map((p, i) => (
                 <p key={i} className="text-[13px] text-[#1A1A2E] truncate">
                   <span className="text-[#16A34A] mr-1">&#10003;</span>
-                  {p.name} <span className="text-[#9CA3AF]">({(p.prob_up * 100).toFixed(0)}%)</span>
+                  {p.name} <span className="text-[#9CA3AF]">({((p.prob_up ?? 0) * 100).toFixed(0)}%)</span>
                 </p>
               ))}
             </div>
@@ -195,7 +200,7 @@ export function AiSignalScorecard() {
               {worstPicks.map((p, i) => (
                 <p key={i} className="text-[13px] text-[#1A1A2E] truncate">
                   <span className="text-[#DC2626] mr-1">&#10007;</span>
-                  {p.name} <span className="text-[#9CA3AF]">({(p.prob_up * 100).toFixed(0)}%)</span>
+                  {p.name} <span className="text-[#9CA3AF]">({((p.prob_up ?? 0) * 100).toFixed(0)}%)</span>
                 </p>
               ))}
             </div>
