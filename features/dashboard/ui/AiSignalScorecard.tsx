@@ -148,19 +148,27 @@ export function AiSignalScorecard() {
       </div>
 
       {/* ③ 유형별 적중률 */}
-      {Object.keys(byType).length > 0 && (
-        <div className="flex gap-4">
-          {Object.entries(byType).map(([type, stat]) => (
-            <div key={type} className="flex items-center gap-2">
-              <span className="text-[13px] font-bold text-[#1A1A2E]">{type === 'index' ? '지수' : type === 'stock' ? '종목' : type}</span>
-              <span className="text-[13px] tabular-nums" style={{ color: accuracyColor(stat.accuracy_pct ?? 0) }}>
-                {(stat.accuracy_pct ?? 0).toFixed(1)}%
-              </span>
-              <span className="text-[12px] text-[#9CA3AF]">({stat.hit ?? 0}/{stat.total ?? 0})</span>
-            </div>
-          ))}
-        </div>
-      )}
+      {(() => {
+        // by_type이 배열일 수도 있고 객체일 수도 있음
+        const entries: [string, { accuracy_pct?: number; hit?: number; total?: number }][] =
+          Array.isArray(byType)
+            ? byType.map((item: { type?: string; accuracy_pct?: number; hit?: number; total?: number }) => [item.type ?? '기타', item] as [string, typeof item])
+            : Object.entries(byType)
+        const typeLabel = (t: string) => t === 'index' ? '지수' : t === 'stock' ? '종목' : t
+        return entries.length > 0 ? (
+          <div className="flex flex-wrap gap-4">
+            {entries.slice(0, 5).map(([type, stat]) => (
+              <div key={type} className="flex items-center gap-2">
+                <span className="text-[13px] font-bold text-[#1A1A2E]">{typeLabel(type)}</span>
+                <span className="text-[13px] tabular-nums" style={{ color: accuracyColor(stat.accuracy_pct ?? 0) }}>
+                  {(stat.accuracy_pct ?? 0).toFixed(1)}%
+                </span>
+                <span className="text-[12px] text-[#9CA3AF]">({stat.hit ?? 0}/{stat.total ?? 0})</span>
+              </div>
+            ))}
+          </div>
+        ) : null
+      })()}
 
       {/* ④ 일별 적중률 + 수익률 차트 (나란히) */}
       {(dailyStats.length > 0 || paperReturns.length > 0) && (
