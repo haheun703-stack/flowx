@@ -15,7 +15,7 @@ const PLANS = [
     features: [
       '수급 X-Ray 차트',
       '실시간 대시보드 기본',
-      'AI 종목 추천 (Claude + Perplexity)',
+      'AI 종목 스크리닝 (Claude + Perplexity)',
       'KOSPI 30일 종가 차트',
       '글로벌 지수 6개 실시간',
     ],

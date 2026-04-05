@@ -135,13 +135,13 @@ function useVipContent() {
 }
 
 // ══════════════════════════════════════
-// Panel 1: 추천종목 + 소스 태그
+// Panel 1: 주목종목 + 소스 태그
 // ══════════════════════════════════════
 function Panel1_Recommendations({ stocks, isLoading }: { stocks: ShortSignalItem[]; isLoading: boolean }) {
   const COLS = '72px 1fr 76px 72px 72px 52px 48px 48px'
 
   return (
-    <Panel title="추천종목 + 소스 태그" dot="bg-[#a855f7]" badge={`${stocks.length}종목`}>
+    <Panel title="주목종목 + 소스 태그" dot="bg-[#a855f7]" badge={`${stocks.length}종목`}>
       <div className="grid px-2 py-1 border-b border-[var(--border)] text-[13px] text-[var(--text-dim)] font-bold uppercase"
         style={{ gridTemplateColumns: COLS }}>
         <span className="text-center">신호</span>
@@ -235,13 +235,13 @@ function Panel2_AllSupply({ stocks, isLoading }: { stocks: ShortSignalItem[]; is
 }
 
 // ══════════════════════════════════════
-// Panel 3: 추천 근거 (5단계 분석)
+// Panel 3: 분석 근거 (5단계 분석)
 // ══════════════════════════════════════
 function Panel3_Analysis({ stocks, isLoading }: { stocks: ShortSignalItem[]; isLoading: boolean }) {
   const top5 = stocks.slice(0, 5)
 
   return (
-    <Panel title="추천 근거" dot="bg-[#16a34a]" badge="5단계 분석">
+    <Panel title="분석 근거" dot="bg-[#16a34a]" badge="5단계 분석">
       <div className="flex-1 overflow-y-auto" style={{ maxHeight: 360 }}>
         {isLoading ? <Skeleton /> : top5.length === 0 ? <EmptyState /> :
           top5.map((s, i) => (
@@ -569,7 +569,7 @@ export function SwingView() {
       </div>
 
       <div className="p-2 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-        {/* Row 1: 추천종목 (2칸) + ALL수급 + 추천근거 */}
+        {/* Row 1: 주목종목 (2칸) + ALL수급 + 분석근거 */}
         <div className="lg:col-span-2">
           <Panel1_Recommendations stocks={stocks} isLoading={isLoading} />
         </div>

@@ -195,7 +195,7 @@ export function BloombergDashboard() {
             <AiSignalScorecard />
           </div>
 
-          {/* ── 3행: AI 추천(2/3) + 오늘의 브리핑(1/3) ── */}
+          {/* ── 3행: AI 인사이트(2/3) + 오늘의 브리핑(1/3) ── */}
           <div className="flex gap-3">
             <div className="w-2/3 fx-card-green min-h-[360px]">
               <AIRecommendPanel />

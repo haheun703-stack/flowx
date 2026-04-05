@@ -35,7 +35,7 @@ export function AIRecommendPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
-        <span className="fx-card-title mb-0">AI 추천 종목 (매수 시그널)</span>
+        <span className="fx-card-title mb-0">AI 선별 종목 (매수 시그널)</span>
         <div className="flex items-center gap-2">
           {rel && (
             <span className={`text-[14px] font-bold ${rel.daysAgo === 0 ? 'text-[#00CC6A]' : 'text-[#B0ADA6]'}`}>
@@ -65,7 +65,7 @@ export function AIRecommendPanel() {
           ))
         ) : stocks.length === 0 ? (
           <div className="flex items-center justify-center h-full text-[15px] font-semibold text-[#C4C1BA]">
-            현재 AI가 추천하는 종목이 없습니다. 시장 상황을 분석 중이에요.
+            현재 AI가 선별한 종목이 없습니다. 시장 상황을 분석 중이에요.
           </div>
         ) : (
           stocks.map((stock, i) => (

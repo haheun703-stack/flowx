@@ -35,7 +35,7 @@ export function TopPicksCard() {
 
   return (
     <DashboardCard
-      title={`AI 추천 — ${data.target_date_label}`}
+      title={`AI 인사이트 — ${data.target_date_label}`}
       icon="🎯"
       updatedAt={data.generated_at}
       className="col-span-2"

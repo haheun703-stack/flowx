@@ -10,7 +10,7 @@ export function FooterCTASection() {
           내일 아침부터 달라집니다
         </h2>
         <p className="text-[#9CA3AF] mb-10 max-w-md mx-auto">
-          매일 아침 8시, AI가 분석한 오늘의 시장과 추천 종목을 받아보세요.
+          매일 아침 8시, AI가 분석한 오늘의 시장 인사이트를 받아보세요.
           베타 기간 중 모든 기능 무료.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

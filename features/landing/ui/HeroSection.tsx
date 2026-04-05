@@ -24,7 +24,7 @@ export function HeroSection() {
 
         {/* 서브 카피 */}
         <p className="text-center text-[var(--landing-text-sub)] text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-          외국인·기관 수급 추적, AI 종목 추천, 세력 포착까지
+          외국인·기관 수급 추적, AI 종목 스크리닝, 세력 포착까지
           <br className="hidden sm:block" />
           한국 주식에 특화된 실시간 대시보드
         </p>

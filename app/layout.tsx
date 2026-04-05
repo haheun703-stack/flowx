@@ -29,14 +29,14 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'FLOWX — 한국 주식 수급 레이더',
-  description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요. AI 종목추천, 세력 포착, 섹터 모멘텀, ETF 시그널까지.',
+  description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요. AI 종목 스크리닝, 세력 포착, 섹터 모멘텀, ETF 시그널까지.',
   metadataBase: new URL('https://flowx.kr'),
   icons: {
     icon: '/favicon.svg',
   },
   openGraph: {
     title: 'FLOWX — 한국 주식 수급 레이더',
-    description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요. AI 종목추천, 세력 포착, 섹터 모멘텀, ETF 시그널까지.',
+    description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요. AI 종목 스크리닝, 세력 포착, 섹터 모멘텀, ETF 시그널까지.',
     url: 'https://flowx.kr',
     siteName: 'FLOWX',
     locale: 'ko_KR',

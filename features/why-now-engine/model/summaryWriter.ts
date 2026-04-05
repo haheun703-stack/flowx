@@ -10,7 +10,7 @@ export function writeSummary(items: ScoreItem[], grade: SignalGrade): string {
 
   // 패턴 조합에 따른 자연어 요약 생성
   if (hasPanicReversal) {
-    return '개인이 공황 매도하는 동안 외국인·기관이 받아내고 있음. 역발상 관점에서 강한 매수 신호.'
+    return '개인이 공황 매도하는 동안 외국인·기관이 받아내고 있음. 역발상 관점에서 강한 매수 흐름 포착.'
   }
   if (hasDoubleBuy && hasAccum) {
     return '외국인·기관이 조용히 담는 동안 개인이 팔고 있는 전형적인 매집 구간. 스마트머니 방향으로 접근.'

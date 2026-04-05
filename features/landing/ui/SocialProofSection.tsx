@@ -25,7 +25,7 @@ const STATS = [
   { value: 1400, suffix: '+', label: 'KOSPI·KOSDAQ 종목 분석' },
   { value: 13, suffix: '개', label: '섹터 실시간 추적' },
   { value: 8, suffix: '시', label: '매일 아침 브리핑' },
-  { value: 350, suffix: '+', label: 'AI 추천 종목 풀' },
+  { value: 350, suffix: '+', label: 'AI 분석 종목 풀' },
 ]
 
 export function SocialProofSection() {

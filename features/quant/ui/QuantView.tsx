@@ -49,7 +49,7 @@ function Skeleton() {
    ════════════════════════════════════════ */
 function TrustBar({ z6, shield }: { z6: QuantDashboardState['zone6']; shield: string }) {
   const items = [
-    { label: 'AI추천', val: z6.tomorrow_picks },
+    { label: 'AI분석', val: z6.tomorrow_picks },
     { label: '세력탐지', val: z6.whale_detect },
     { label: '거래량적중', val: z6.volume_spike },
     { label: 'AI브레인', val: z6.brain },
@@ -262,7 +262,7 @@ function Tags({ a }: { a: Zone2Item }) {
 
 function ActionZone({ z2 }: { z2: Zone2Item[] }) {
   return (
-    <Zone label="종목 추천" title="기술지표 · 수급 · 매집 전체 공개">
+    <Zone label="종목 스크리닝" title="기술지표 · 수급 · 매집 전체 공개">
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 700, overflowY: 'auto' }}>
         {z2.length === 0 ? <div style={{ padding: 12, color: C.muted }}>오늘 액션 없음</div> :
           z2.map(a => <StockCard key={a.ticker} a={a} />)
@@ -416,7 +416,7 @@ function SupplyZone({ z5 }: { z5: QuantDashboardState['zone5'] }) {
 }
 
 /* ════════════════════════════════════════
-   Zone 7: ETF 추천 (신규)
+   Zone 7: ETF 인사이트 (신규)
    ════════════════════════════════════════ */
 function isMarketHeader(item: Zone7MarketHeader | Zone7EtfItem): item is Zone7MarketHeader {
   return '_market_direction' in item
@@ -438,7 +438,7 @@ function EtfZone({ z7 }: { z7: (Zone7MarketHeader | Zone7EtfItem)[] }) {
   const catStyle = (cat: string) => cat === '섹터' ? { bg: C.blue2, color: C.blue } : cat === '매크로' ? { bg: C.purple2, color: C.purple } : { bg: C.amber2, color: C.amber }
 
   return (
-    <Zone label="ETF 추천" title="매크로 · 섹터 · 테마별 ETF">
+    <Zone label="ETF 인사이트" title="매크로 · 섹터 · 테마별 ETF">
       <div style={{ padding: 16 }}>
         {/* 시장 방향 헤더 */}
         {marketHeader && (
@@ -452,7 +452,7 @@ function EtfZone({ z7 }: { z7: (Zone7MarketHeader | Zone7EtfItem)[] }) {
 
         {/* ETF 카드 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {etfs.length === 0 ? <div style={{ padding: 12, color: C.muted }}>ETF 추천 없음</div> :
+          {etfs.length === 0 ? <div style={{ padding: 12, color: C.muted }}>ETF 인사이트 없음</div> :
             etfs.map(e => {
               const cs = catStyle(e.category)
               const details: string[] = []

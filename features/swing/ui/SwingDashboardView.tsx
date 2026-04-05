@@ -214,11 +214,11 @@ export default function SwingDashboardView() {
         )}
       </section>
 
-      {/* ═══ 2행: 추천 종목 카드 (접힌/펼침) ═══ */}
+      {/* ═══ 2행: 주목 종목 카드 (접힌/펼침) ═══ */}
       {krxPicks?.length > 0 && (
         <section>
           <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">
-            추천 종목 — 클릭하면 AI 분석 근거가 펼쳐져요
+            주목 종목 — 클릭하면 AI 분석 근거가 펼쳐져요
           </h2>
           <div
             className="rounded-r-xl p-4 space-y-2"
@@ -492,7 +492,7 @@ export default function SwingDashboardView() {
       {/* NXT 야간매매 종목 */}
       {nxtPicks.length > 0 && (
         <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">추천 종목 — 야간 매매 (NXT)</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">주목 종목 — 야간 매매 (NXT)</h2>
           <div
             className="rounded-r-xl p-4 space-y-2"
             style={{ border: '1px solid var(--border)', borderLeft: '3px solid #7C3AED' }}
@@ -569,10 +569,10 @@ export default function SwingDashboardView() {
         </div>
       </section>
 
-      {/* ═══ 4행: ETF 추천 ═══ */}
+      {/* ═══ 4행: ETF 인사이트 ═══ */}
       {data.etf_picks?.length > 0 && (
         <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">ETF 추천</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">ETF 인사이트</h2>
           <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>

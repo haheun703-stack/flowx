@@ -358,7 +358,7 @@ export default function CrashBounceView() {
                 <div><strong className="text-[#1A1A2E]">이격도</strong> <span className="text-[#6B7280]">— 현재 주가가 20일 이동평균선에서 얼마나 떨어져 있는지. -15%면 평균보다 15% 싸다는 뜻.</span></div>
                 <div><strong className="text-[#1A1A2E]">볼린저밴드</strong> <span className="text-[#6B7280]">— 주가의 통계적 상하한선. 하단 이탈은 &apos;통계적으로 비정상적인 낙폭&apos;을 의미.</span></div>
                 <div><strong className="text-[#1A1A2E]">거래량 배수</strong> <span className="text-[#6B7280]">— 최근 20일 평균 거래량 대비 오늘 거래량의 배수. 3배면 평소의 3배 거래.</span></div>
-                <div><strong className="text-[#1A1A2E]">쌍끌이</strong> <span className="text-[#6B7280]">— 기관과 외국인이 같은 날 동시에 순매수한 상태. 강력한 매수 신호.</span></div>
+                <div><strong className="text-[#1A1A2E]">쌍끌이</strong> <span className="text-[#6B7280]">— 기관과 외국인이 같은 날 동시에 순매수한 상태. 강한 매수 흐름 포착.</span></div>
                 <div><strong className="text-[#1A1A2E]">승률</strong> <span className="text-[#6B7280]">— 이 조건으로 매수 후 5일 안에 수익이 난 비율.</span></div>
                 <div><strong className="text-[#1A1A2E]">손익비</strong> <span className="text-[#6B7280]">— 이익 총합 ÷ 손실 총합. 2.64면 잃는 것보다 2.64배 더 벌었다는 뜻.</span></div>
               </div>

@@ -7,7 +7,7 @@ const COLUMNS = [
     links: [
       { label: '대시보드', href: '/dashboard' },
       { label: '시장 현황', href: '/market' },
-      { label: 'AI 추천', href: '/quant' },
+      { label: 'AI 인사이트', href: '/quant' },
       { label: '시나리오', href: '/scenario' },
     ],
   },
@@ -70,9 +70,9 @@ export function LandingFooter() {
         {/* 투자 면책 */}
         <div className="border-t border-white/10 pt-6 mb-6">
           <p className="text-xs text-white/30 leading-relaxed max-w-3xl">
-            투자 유의사항: FlowX에서 제공하는 모든 정보(AI 시그널, 종목 추천, 데이터 분석 등)는
-            투자 참고 자료이며, 투자 권유가 아닙니다. 모든 투자 판단과 그에 따른 손익의 책임은
-            투자자 본인에게 있습니다. 과거 수익률이 미래 수익률을 보장하지 않습니다.
+            FLOWX는 데이터 기반 정보 제공 서비스이며, 투자 권유 또는 자문이 아닙니다.
+            모든 투자 판단과 그에 따른 손익의 책임은 투자자 본인에게 있습니다.
+            과거 수익률이 미래 수익률을 보장하지 않습니다.
           </p>
         </div>
 

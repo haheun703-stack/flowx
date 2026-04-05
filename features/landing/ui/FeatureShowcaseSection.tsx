@@ -9,8 +9,8 @@ const SHOWCASES = [
     variant: 'investor' as const,
   },
   {
-    title: 'AI 종목 추천 시스템',
-    desc: '머신러닝 모델이 매일 아침 8시에 추천 종목을 업데이트. 적중률, 수익률, 추천 근거를 투명하게 공개합니다.',
+    title: 'AI 종목 스크리닝 시스템',
+    desc: '머신러닝 모델이 매일 아침 8시에 선별 종목을 업데이트. 적중률, 수익률, 분석 근거를 투명하게 공개합니다.',
     variant: 'ai-recommend' as const,
   },
   {
@@ -136,7 +136,7 @@ function InvestorMock() {
   )
 }
 
-/* 2) AI 추천 */
+/* 2) AI 스크리닝 */
 function AIRecommendMock() {
   const stocks = [
     { rank: 1, name: '삼성전자', score: 87, signal: '적극매수', price: '72,400', target: '85,000' },
@@ -149,7 +149,7 @@ function AIRecommendMock() {
   return (
     <BrowserFrame>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">AI 추천 종목 (매수 시그널)</span>
+        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">AI 선별 종목 (매수 시그널)</span>
         <span className="text-[9px] text-[#1A1A2E]/40 font-mono">2026-03-28</span>
       </div>
       <div className="grid text-[8px] text-[#1A1A2E]/40 font-mono pb-1 border-b border-[#B8E8CC] mb-1"

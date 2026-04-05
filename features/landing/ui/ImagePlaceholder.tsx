@@ -71,7 +71,7 @@ export function ImagePlaceholder({
 
           {/* 우측: 종목 리스트 */}
           <div className="flex-1 bg-white rounded-lg border border-[#B8E8CC] p-3">
-            <div className="text-[10px] text-[#6B7280] font-mono font-bold mb-2">AI 추천 TOP</div>
+            <div className="text-[10px] text-[#6B7280] font-mono font-bold mb-2">AI 인사이트 TOP</div>
             <div className="space-y-1.5">
               {[
                 { name: '삼성전자', score: 'A+', chg: '+2.1%', up: true },

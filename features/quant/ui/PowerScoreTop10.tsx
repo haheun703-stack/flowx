@@ -59,7 +59,7 @@ function expectedReturn(pick: PickItem): string | null {
 
 export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
   if (!picks?.length) {
-    return <p className="text-[var(--text-muted)] text-sm">추천 종목 데이터가 없습니다.</p>
+    return <p className="text-[var(--text-muted)] text-sm">분석 종목 데이터가 없습니다.</p>
   }
 
   const sorted = [...picks]

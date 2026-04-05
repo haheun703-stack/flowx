@@ -548,7 +548,7 @@ export default function JarvisControlTower() {
           sub={shield?.max_drawdown ? `최대낙폭 ${shield.max_drawdown.toFixed(1)}%` : undefined} />
         <StatusCard label="현금 비중" value={brain?.cash_ratio ? `${brain.cash_ratio}%` : "-"}
           icon="💰" color="text-[var(--down)]" />
-        <StatusCard label="추천 대상일" value={picks?.target_date_label ?? "-"}
+        <StatusCard label="분석 대상일" value={picks?.target_date_label ?? "-"}
           icon="📅" color="text-[var(--text-primary)]" sub={picks?.mode_label} />
       </section>
 
@@ -581,7 +581,7 @@ export default function JarvisControlTower() {
           <section>
             <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">
               {buyable.length > 0
-                ? `개별종목 추천 (${buyable.length}건)`
+                ? `개별종목 스크리닝 (${buyable.length}건)`
                 : "전체 관망 — 조건 강화 대기"}
             </h2>
             {buyable.length > 0 ? (
@@ -1858,7 +1858,7 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
 /* ─── 킬러픽 탭 ─── */
 
 const SIGNAL_NAME_MAP: Record<string, string> = {
-  tomorrow_picks: "종합추천",
+  tomorrow_picks: "종합분석",
   pullback_scan: "눌림목",
   accumulation_tracker: "매집추적",
   whale_detect: "세력감지",
@@ -2088,10 +2088,10 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
         </section>
       )}
 
-      {/* 섹션 4: ETF 추천 */}
+      {/* 섹션 4: ETF 인사이트 */}
       {etfs.length > 0 && (
         <section>
-          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">ETF 추천</h3>
+          <h3 className="text-[var(--text-dim)] text-sm font-bold mb-2 uppercase tracking-wider">ETF 인사이트</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {etfs.map((e) => (
               <div key={e.ticker} className="bg-white rounded-lg border border-[var(--border)] p-3 flex items-center justify-between">

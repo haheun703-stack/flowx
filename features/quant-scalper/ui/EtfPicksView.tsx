@@ -79,7 +79,7 @@ export function EtfPicksView() {
       <div className="bg-white rounded-xl p-5 border border-[var(--border)]">
         <div className="flex items-center gap-4">
           <span className="text-sm text-[var(--text-dim)]">{data.date}</span>
-          <span className="text-sm text-[var(--text-primary)] font-bold">오늘의 ETF 추천 {data.pick_count}건</span>
+          <span className="text-sm text-[var(--text-primary)] font-bold">오늘의 ETF 인사이트 {data.pick_count}건</span>
           <div className="flex gap-2">
             {data.has_directional && <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-[var(--down)] border border-blue-500/30">방향성</span>}
             {data.has_commodity && <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-[var(--yellow)] border border-yellow-500/30">원자재</span>}
@@ -88,7 +88,7 @@ export function EtfPicksView() {
         </div>
       </div>
 
-      {/* 추천 카드들 */}
+      {/* 인사이트 카드들 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {picks.map((p, i) => (
           <div key={i} className="bg-white rounded-xl p-5 border border-[var(--border)] space-y-4">

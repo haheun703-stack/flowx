@@ -56,7 +56,7 @@ export default function MarketEnv4Box({ verdict, riskLevel, cashPct, recommendat
       color: boxColor('cash', cashPct),
     },
     {
-      label: '추천 전략',
+      label: '분석 전략',
       value: recommendation ?? '-',
       sub: undefined,
       color: '#6B7280',

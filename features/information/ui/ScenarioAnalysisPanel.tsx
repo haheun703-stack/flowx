@@ -244,7 +244,7 @@ function ActionGuidePanel({ item }: { item: ScenarioItem }) {
       </div>
       <div className="p-3 rounded-lg bg-[#FFFBEB] border border-amber-200">
         <div className="text-[11px] font-bold text-amber-700 mb-1">💵 현금 비중</div>
-        <div className="text-[10px] text-[var(--text-primary)] leading-relaxed">추천 현금 비중: {cashRatio}</div>
+        <div className="text-[10px] text-[var(--text-primary)] leading-relaxed">분석 현금 비중: {cashRatio}</div>
       </div>
       <div className="p-3 rounded-lg bg-[#FEF2F2] border border-red-200">
         <div className="text-[11px] font-bold text-red-700 mb-1">📌 주목 종목</div>
