@@ -29,16 +29,25 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   KOSPI: { name_ko: 'KOSPI', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
   KOSDAQ:{ name_ko: 'KOSDAQ', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
   STOXX: { name_ko: 'STOXX600', category: 'index', unit: 'pt', alert_threshold: null, alert_direction: null },
-  // commodities
+  // commodities — 에너지
   WTI:    { name_ko: 'WTI유', category: 'commodity', unit: 'USD/bbl', alert_threshold: null, alert_direction: null },
+  BRENT:  { name_ko: '브렌트유', category: 'commodity', unit: 'USD/bbl', alert_threshold: null, alert_direction: null },
+  NG:     { name_ko: '천연가스', category: 'commodity', unit: 'USD/MMBtu', alert_threshold: null, alert_direction: null },
+  // commodities — 귀금속
   GOLD:   { name_ko: '금', category: 'commodity', unit: 'USD/oz', alert_threshold: null, alert_direction: null },
   SILVER: { name_ko: '은', category: 'commodity', unit: 'USD/oz', alert_threshold: null, alert_direction: null },
+  // commodities — 산업금속
   COPPER: { name_ko: '구리', category: 'commodity', unit: 'USD/lb', alert_threshold: null, alert_direction: null },
+  // commodities — 농산물
+  CORN:    { name_ko: '옥수수', category: 'grain', unit: 'USd/bu', alert_threshold: null, alert_direction: null },
+  SOYBEAN: { name_ko: '대두', category: 'grain', unit: 'USd/bu', alert_threshold: null, alert_direction: null },
+  WHEAT:   { name_ko: '밀', category: 'grain', unit: 'USd/bu', alert_threshold: null, alert_direction: null },
   // forex
   USDKRW: { name_ko: '원/달러', category: 'forex', unit: 'KRW', alert_threshold: 1400, alert_direction: 'above' },
   DXY:    { name_ko: '달러인덱스', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
   USDJPY: { name_ko: '엔/달러', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
   EURUSD: { name_ko: '유로/달러', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
+  USDCNY: { name_ko: '위안/달러', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
   // crypto
   BTC: { name_ko: '비트코인', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
   ETH: { name_ko: '이더리움', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
@@ -48,13 +57,18 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   US2Y:  { name_ko: '미국 2년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   BOK_RATE: { name_ko: '한국 기준금리', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   FED_RATE: { name_ko: '미국 기준금리', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
+  SPREAD_10Y2Y: { name_ko: '장단기 금리차', category: 'rate', unit: '%p', alert_threshold: 0, alert_direction: 'below' },
+  HY_SPREAD:    { name_ko: '회사채 위험도', category: 'rate', unit: '%p', alert_threshold: 5, alert_direction: 'above' },
+  BEI_5Y:       { name_ko: '기대 인플레', category: 'rate', unit: '%', alert_threshold: 3, alert_direction: 'above' },
   // sentiment
   VIX: { name_ko: 'VIX', category: 'sentiment', unit: null, alert_threshold: 25, alert_direction: 'above' },
   FNG: { name_ko: '공포탐욕지수', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
   FEAR_GREED: { name_ko: '공포탐욕지수', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
+  ERP:    { name_ko: '주식 매력도', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
+  ALERTS: { name_ko: '위험 신호등', category: 'sentiment', unit: null, alert_threshold: null, alert_direction: null },
 }
 
-interface JsonbItem { symbol: string; name?: string; price: number; change: number }
+interface JsonbItem { symbol: string; name?: string; price: number; change: number; label?: string; signals?: string[] }
 
 export async function GET() {
   try {
@@ -80,10 +94,11 @@ export async function GET() {
       name_ko: string; value: number; change_pct: number;
       unit: string | null; alert_threshold: number | null;
       alert_direction: string | null; alert_active: boolean;
+      label?: string; signals?: string[];
     }[] = []
 
     // JSONB 배열 카테고리 처리
-    const jsonbFields: (keyof typeof row)[] = ['indices', 'commodities', 'forex', 'crypto', 'bonds']
+    const jsonbFields: (keyof typeof row)[] = ['indices', 'commodities', 'forex', 'crypto', 'bonds', 'sentiment']
     for (const field of jsonbFields) {
       const arr = row[field]
       if (!Array.isArray(arr)) continue
@@ -108,6 +123,8 @@ export async function GET() {
           alert_threshold: meta.alert_threshold,
           alert_direction: meta.alert_direction,
           alert_active,
+          ...(item.label ? { label: item.label } : {}),
+          ...(item.signals ? { signals: item.signals } : {}),
         })
       }
     }

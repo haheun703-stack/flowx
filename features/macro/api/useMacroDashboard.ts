@@ -17,6 +17,8 @@ export interface MacroItem {
   alert_threshold: number | null
   alert_direction: 'above' | 'below' | null
   alert_active: boolean
+  label?: string
+  signals?: string[]
 }
 
 export interface CostFloorItem {
