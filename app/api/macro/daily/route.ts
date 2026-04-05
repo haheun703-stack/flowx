@@ -49,9 +49,13 @@ const SYMBOL_META: Record<string, SymbolMeta> = {
   EURUSD: { name_ko: '유로/달러', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
   USDCNY: { name_ko: '위안/달러', category: 'forex', unit: null, alert_threshold: null, alert_direction: null },
   // crypto
-  BTC: { name_ko: '비트코인', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
-  ETH: { name_ko: '이더리움', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
-  SOL: { name_ko: '솔라나', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  BTC:  { name_ko: '비트코인', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  ETH:  { name_ko: '이더리움', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  SOL:  { name_ko: '솔라나', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  XRP:  { name_ko: '리플', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  DOGE: { name_ko: '도지코인', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  ADA:  { name_ko: '에이다', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
+  AVAX: { name_ko: '아발란체', category: 'crypto', unit: 'USD', alert_threshold: null, alert_direction: null },
   // bonds
   US10Y: { name_ko: '미국 10년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
   US2Y:  { name_ko: '미국 2년물', category: 'rate', unit: '%', alert_threshold: null, alert_direction: null },
