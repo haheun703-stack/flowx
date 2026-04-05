@@ -149,11 +149,12 @@ export function AiSignalScorecard() {
 
       {/* ③ 유형별 적중률 */}
       {(() => {
-        // by_type이 배열일 수도 있고 객체일 수도 있음
-        const entries: [string, { accuracy_pct?: number; hit?: number; total?: number }][] =
+        type ByStat = { type?: string; accuracy_pct?: number; hit?: number; total?: number }
+        const entries: [string, ByStat][] = (
           Array.isArray(byType)
-            ? byType.map((item: { type?: string; accuracy_pct?: number; hit?: number; total?: number }) => [item.type ?? '기타', item] as [string, typeof item])
-            : Object.entries(byType)
+            ? byType.map((item: ByStat) => [item.type ?? '기타', item] as [string, ByStat])
+            : Object.entries(byType) as [string, ByStat][]
+        ).filter(([, stat]) => (stat.total ?? 0) > 0)
         const typeLabel = (t: string) => t === 'index' ? '지수' : t === 'stock' ? '종목' : t
         return entries.length > 0 ? (
           <div className="flex flex-wrap gap-4">
