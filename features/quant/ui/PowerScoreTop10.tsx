@@ -80,7 +80,7 @@ export default function PowerScoreTop10({ picks }: PowerScoreTop10Props) {
 
       {/* 테이블 */}
       <div className="overflow-x-auto">
-        <table className="w-full text-[14px]">
+        <table className="w-full text-[14px] min-w-[700px]">
           <thead>
             <tr className="bg-gray-50">
               <th className="px-3 py-2.5 text-left w-[40px] text-[13px] font-bold text-[#1A1A2E]">#</th>
