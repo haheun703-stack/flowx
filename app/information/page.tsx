@@ -16,7 +16,7 @@ export default function InformationPage() {
       <MarketVerdictHero />
 
       {/* 2. 뉴스 TOP 3 (70%) + 매크로 게이지 (30%) */}
-      <div className="grid gap-3" style={{ gridTemplateColumns: '7fr 3fr' }}>
+      <div className="grid grid-cols-1 md:grid-cols-[7fr_3fr] gap-3">
         <NewsTop3Panel />
         <MacroGaugePanel />
       </div>
