@@ -293,20 +293,20 @@ export function MacroRadarPanel() {
           )}
         </div>
 
-        {/* Column 3: 금리 + 지수 */}
+        {/* Column 3: 금리 + 센티먼트 */}
         <div className="space-y-3">
           {rateItems.length > 0 && (
             <CategoryCard title="금리" icon="📊" accentColor="#8b5cf6" items={rateItems} />
           )}
-          {indexItems.length > 0 && (
-            <CategoryCard title="지수" icon="📈" accentColor="#10b981" items={indexItems} />
+          {sentimentItems.length > 0 && (
+            <SentimentCard items={sentimentItems} />
           )}
         </div>
 
-        {/* Column 4: 센티먼트 (FNG+VIX는 위 게이지, ERP+ALERTS 신규) */}
+        {/* Column 4: 지수 */}
         <div className="space-y-3">
-          {sentimentItems.length > 0 && (
-            <SentimentCard items={sentimentItems} />
+          {indexItems.length > 0 && (
+            <CategoryCard title="지수" icon="📈" accentColor="#10b981" items={indexItems} />
           )}
         </div>
       </div>
