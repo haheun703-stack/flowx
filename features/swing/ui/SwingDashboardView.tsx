@@ -54,22 +54,6 @@ interface FxMonitor {
   verdict: { text: string; color: string; bullish: number; bearish: number; score: number }
 }
 
-interface SectorItem {
-  sector: string; count: number; total_score: number
-  momentum: number; flow_score: number; dual_bonus: number
-  avg_chg: number; avg_drop: number; avg_upside: number
-  net_flow_억: number; dual_buy_3d: number
-  up_count: number; down_count: number
-  deep: number; mid: number; mild: number; shallow: number
-  cap_조: number; cap_억: number
-  stage: string; stage_num: number; stage_color: string; warning: string
-}
-
-interface SectorRotation {
-  timestamp: string; total_sectors: number; total_stocks: number
-  sectors: SectorItem[]
-}
-
 interface SwingData {
   date: string
   brain_verdict: string; brain_pct: number; brain_reason: string
@@ -86,7 +70,6 @@ interface SwingData {
   }
   fib_stocks?: FibStock[]
   fx_monitor?: FxMonitor
-  sector_rotation?: SectorRotation
   vix: number; nasdaq_pct: number; usdkrw: number
   oil_pct: number; gold_pct: number; silver_pct: number
   analysis: Record<string, string>; portfolio: Record<string, number>

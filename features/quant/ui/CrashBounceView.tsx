@@ -105,9 +105,14 @@ export default function CrashBounceView() {
     )
   }
 
+  const GRADE_ALIAS: Record<string, string[]> = {
+    '강력 포착': ['강력 포착', '적극매수'],
+    '포착': ['포착', '매수'],
+    '관심': ['관심', '관심매수'],
+  }
   const filtered = gradeFilter === '전체'
     ? items
-    : items.filter(i => i.grade === gradeFilter)
+    : items.filter(i => (GRADE_ALIAS[gradeFilter] ?? [gradeFilter]).includes(i.grade))
 
   const cardItems = filtered.filter(i => ['적극매수', '매수', '강력 포착', '포착'].includes(i.grade))
   const watchItems = filtered.filter(i => i.grade === '관심')
