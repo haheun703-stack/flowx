@@ -808,3 +808,62 @@ export function useQuantDashboard() {
     refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 30),
   })
 }
+
+// --- AI 시그널 성적표 (Supabase: ai_signal_scorecard) ---
+export interface AiScorecardByType {
+  total: number
+  hit: number
+  accuracy_pct: number
+}
+
+export interface AiScorecardDailyStat {
+  date: string
+  total: number
+  verified: number
+  hit: number
+  miss: number
+  accuracy_pct: number
+}
+
+export interface AiScorecardDailyReturn {
+  date: string
+  trades: number
+  avg_return_pct: number
+  best: number
+  worst: number
+}
+
+export interface AiScorecardPick {
+  date: string
+  code: string
+  name: string
+  prob_up: number
+  actual: string
+}
+
+export interface AiScorecardData {
+  date: string
+  total_predictions: number
+  verified: number
+  accuracy_pct: number
+  recent_7d_accuracy_pct: number
+  paper_return_pct: number
+  paper_win_rate_pct: number
+  paper_total_trades: number
+  paper_trading_days: number
+  by_type: Record<string, AiScorecardByType>
+  daily_stats: AiScorecardDailyStat[]
+  paper_daily_returns: AiScorecardDailyReturn[]
+  top_picks: AiScorecardPick[]
+  worst_picks: AiScorecardPick[]
+  updated_at: string
+}
+
+export function useAiScorecard() {
+  return useQuery<AiScorecardData>({
+    queryKey: ['ai-scorecard'],
+    queryFn: () => fetchJson('/api/dashboard/ai-scorecard'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 30,
+  })
+}

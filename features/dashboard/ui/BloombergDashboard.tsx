@@ -9,6 +9,7 @@ import { ChinaMoneyPanel } from './ChinaMoneyPanel'
 import { EtfSignalPanel } from './EtfSignalPanel'
 import { MorningNewsPanel } from './MorningNewsPanel'
 import { MarketJudgmentCard } from './MarketJudgmentCard'
+import { AiSignalScorecard } from './AiSignalScorecard'
 import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvestorFlowKosdaq } from '../api/useDashboard'
 
 type FlowPeriod = '1D' | '5D' | '30D'
@@ -187,6 +188,11 @@ export function BloombergDashboard() {
           {/* ── 2행: AI 시그널 성적표 (풀너비, 녹색 라인) ── */}
           <div className="fx-card-green">
             <SignalScoreboard />
+          </div>
+
+          {/* ── 2.5행: AI 시그널 성적표 + 페이퍼 트레이딩 ── */}
+          <div className="fx-card-green">
+            <AiSignalScorecard />
           </div>
 
           {/* ── 3행: AI 추천(2/3) + 오늘의 브리핑(1/3) ── */}
