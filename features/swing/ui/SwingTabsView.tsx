@@ -2,13 +2,15 @@
 
 import { useState } from "react"
 import SwingDashboardView from "./SwingDashboardView"
-import FibStocksView from "./FibStocksView"
 import FibLeadersView from "./FibLeadersView"
+import FibStocksView from "./FibStocksView"
+import SectorRotationView from "./SectorRotationView"
 
 const TABS = [
   { key: "dashboard", label: "대시보드" },
-  { key: "fib-stocks", label: "피보나치 눌림목" },
-  { key: "fib-leaders", label: "대형주" },
+  { key: "fib-leaders", label: "대형주 피보나치" },
+  { key: "fib-stocks", label: "피보나치 전체" },
+  { key: "sector-rotation", label: "섹터 로테이션" },
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
@@ -39,8 +41,9 @@ export function SwingTabsView() {
 
       {/* 탭 콘텐츠 */}
       {tab === "dashboard" && <SwingDashboardView />}
-      {tab === "fib-stocks" && <FibStocksView />}
       {tab === "fib-leaders" && <FibLeadersView />}
+      {tab === "fib-stocks" && <FibStocksView />}
+      {tab === "sector-rotation" && <SectorRotationView />}
     </div>
   )
 }
