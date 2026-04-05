@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { FibStock } from './FibShared'
 
 /* ── 타입 ── */
 interface Pick {
@@ -30,15 +31,6 @@ interface WatchItem {
 interface NxtTarget {
   code: string; name: string; sector: string; tier: string
   priority: number; supply_score: number; is_etf: boolean
-}
-
-interface FibStock {
-  code: string; name: string; sector: string; cap: number
-  price: number; w52h: number; w52l: number; drop: number
-  fib_zone: string; fib_zone_label: string
-  fib_382: number; fib_500: number; fib_618: number
-  fib_status: string; target: number; upside: number
-  per: number; pbr: number; frgn: number
 }
 
 interface FxMonitor {
@@ -338,7 +330,7 @@ export default function SwingDashboardView() {
   const hasCategory = data.picks?.some(p => p.category)
   const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
   const nxtPicks = hasCategory ? data.picks.filter(p => p.category === 'NXT') : []
-  const analysisCards = data.analysis ? classifyAnalysis(data.analysis) : null
+  const analysisCards = useMemo(() => data.analysis ? classifyAnalysis(data.analysis) : null, [data.analysis])
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">

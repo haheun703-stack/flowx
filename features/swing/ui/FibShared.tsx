@@ -1,0 +1,67 @@
+/* ── 피보나치 공통 타입/상수/컴포넌트 ── */
+
+export interface FibStock {
+  code: string; name: string; sector: string; cap: number
+  price: number; w52h: number; w52l: number; drop: number
+  fib_zone: string; fib_zone_label: string
+  fib_382: number; fib_500: number; fib_618: number
+  fib_status: string; target: number; upside: number
+  per: number; pbr: number; frgn: number
+}
+
+export const ZONE_ORDER = ['DEEP', 'MID', 'MILD', 'SHALLOW'] as const
+
+export const ZONE_CONFIG: Record<string, { icon: string; color: string; bg: string; border: string; label: string }> = {
+  DEEP: { icon: '🔴', color: '#DC2626', bg: '#FEF2F2', border: '#FECACA', label: '50%+ 하락 (바닥 매수 구간)' },
+  MID: { icon: '🟠', color: '#EA580C', bg: '#FFF7ED', border: '#FED7AA', label: '40~50% 하락 (중간 눌림)' },
+  MILD: { icon: '🟡', color: '#CA8A04', bg: '#FFFBEB', border: '#FDE68A', label: '30~40% 하락 (1차 눌림)' },
+  SHALLOW: { icon: '🟢', color: '#65A30D', bg: '#F7FEE7', border: '#D9F99D', label: '15~30% 하락 (얕은 조정)' },
+}
+
+export function fmtCap(cap: number): string {
+  if (cap >= 10000) return `${(cap / 10000).toFixed(1)}조`
+  return `${cap.toLocaleString()}억`
+}
+
+export function FibMiniGauge({ stock }: { stock: FibStock }) {
+  const range = stock.w52h - stock.w52l
+  if (range <= 0) return null
+  const pricePct = ((stock.price - stock.w52l) / range) * 100
+  const f382 = ((stock.fib_382 - stock.w52l) / range) * 100
+  const f500 = ((stock.fib_500 - stock.w52l) / range) * 100
+  const f618 = ((stock.fib_618 - stock.w52l) / range) * 100
+
+  return (
+    <div className="relative h-3 bg-[#E8E6E0] rounded-full overflow-hidden">
+      {[f382, f500, f618].map((pos, i) => (
+        <div key={i} className="absolute top-0 h-full w-[1px] bg-[#9CA3AF]/50" style={{ left: `${pos}%` }} />
+      ))}
+      <div
+        className="absolute top-0 h-full w-[6px] rounded-full"
+        style={{
+          left: `${Math.max(Math.min(pricePct, 98), 2)}%`,
+          backgroundColor: pricePct < f382 ? '#DC2626' : pricePct < f500 ? '#EA580C' : pricePct < f618 ? '#CA8A04' : '#16A34A',
+          transform: 'translateX(-50%)',
+        }}
+      />
+    </div>
+  )
+}
+
+export function FibLegend() {
+  return (
+    <div className="rounded-xl p-3" style={{ backgroundColor: '#1A1A2E' }}>
+      <div className="flex items-start gap-3">
+        <span className="text-[16px] shrink-0">📐</span>
+        <div>
+          <p className="text-[13px] font-bold text-white mb-1">피보나치 되돌림 읽는 법</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] text-[#A5B4C3]">
+            <span><strong className="text-white">38.2%</strong> — 약한 되돌림. 여기서 반등 = 강한 추세</span>
+            <span><strong className="text-white">50.0%</strong> — 중간 되돌림. 가장 많이 쓰는 지지선</span>
+            <span><strong className="text-white">61.8%</strong> — 황금비율. 여기 깨면 추세 전환</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
