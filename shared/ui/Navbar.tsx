@@ -140,7 +140,7 @@ export function Navbar() {
 
       {/* 모바일: 드롭다운 메뉴 */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-b border-[#E8E6E0] shadow-lg z-50 relative max-h-[calc(100dvh-3.5rem)] overflow-y-auto">
+        <div className="md:hidden bg-white border-b border-[#E8E6E0] shadow-lg z-50 relative max-h-[calc(100dvh-3.5rem)] overflow-y-auto pb-20">
           {NAV_TABS.map((tab) => {
             const active = tab.match(pathname)
             return (
