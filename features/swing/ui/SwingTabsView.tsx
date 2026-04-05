@@ -9,7 +9,7 @@ import SectorRotationView from "./SectorRotationView"
 const TABS = [
   { key: "dashboard", label: "대시보드" },
   { key: "fib-leaders", label: "대형주 피보나치" },
-  { key: "fib-stocks", label: "피보나치 전체" },
+  { key: "fib-stocks", label: "전체 피보나치" },
   { key: "sector-rotation", label: "섹터 로테이션" },
 ] as const
 
