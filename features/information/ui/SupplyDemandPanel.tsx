@@ -126,9 +126,10 @@ function calcCumulative(rows: SupplyDemandData[]): CumulativePoint[] {
   const sorted = [...rows].reverse()
   let foreignCum = 0, instCum = 0, indivCum = 0
   return sorted.map(r => {
-    foreignCum += r.foreign_net
-    instCum += r.inst_net
-    indivCum += r.individual_net
+    // 백만원 → 억원 (÷100)
+    foreignCum += Math.round((r.foreign_net ?? 0) / 100)
+    instCum += Math.round((r.inst_net ?? 0) / 100)
+    indivCum += Math.round((r.individual_net ?? 0) / 100)
     const d = r.date
     const mm = d.slice(5, 7)
     const dd = d.slice(8, 10)
@@ -140,6 +141,13 @@ function calcCumulative(rows: SupplyDemandData[]): CumulativePoint[] {
       individual: indivCum,
     }
   })
+}
+
+function yAxisFormatter(v: number): string {
+  const abs = Math.abs(v)
+  const sign = v > 0 ? '+' : v < 0 ? '-' : ''
+  if (abs >= 10000) return `${sign}${(abs / 10000).toFixed(1)}조`
+  return `${sign}${abs.toLocaleString()}억`
 }
 
 function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
@@ -156,6 +164,9 @@ function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
   return (
     <div>
       <div className="text-sm text-[var(--text-dim)] font-bold mb-3">📈 수급 누적흐름 ({cumData.length}일)</div>
+      <div className="relative">
+        <span className="absolute left-2 top-2 text-[11px] font-bold text-[#16a34a] opacity-60 z-10">순매수 ↑</span>
+        <span className="absolute left-2 bottom-8 text-[11px] font-bold text-[#dc2626] opacity-60 z-10">순매도 ↓</span>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={cumData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e5ea" vertical={false} />
@@ -168,16 +179,18 @@ function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
           />
           <YAxis
             tick={{ fill: '#9ca3af', fontSize: 11 }}
-            tickFormatter={(v: number) => `${v >= 0 ? '+' : ''}${Math.round(v).toLocaleString()}`}
+            tickFormatter={yAxisFormatter}
             axisLine={false}
             tickLine={false}
           />
-          <ReferenceLine y={0} stroke="#9ca3af" strokeDasharray="4 3" />
+          <ReferenceLine y={0} stroke="#6B7280" strokeDasharray="4 3" strokeWidth={1.5} />
           <Tooltip
             formatter={(value, name) => {
               const v = Number(value) || 0
+              const abs = Math.abs(v)
+              const action = v >= 0 ? '순매수' : '순매도'
               return [
-                `${v >= 0 ? '+' : ''}${Math.round(v).toLocaleString()}억`,
+                `${action} ${abs.toLocaleString()}억`,
                 name === 'foreign' ? '외국인' : name === 'institution' ? '기관' : '개인'
               ]
             }}
@@ -195,6 +208,7 @@ function CumulativeSupplyFlow({ history }: { history: SupplyDemandData[] }) {
           <Line type="monotone" dataKey="individual" stroke="#10B981" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
+      </div>
     </div>
   )
 }
