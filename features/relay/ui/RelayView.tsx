@@ -17,7 +17,9 @@ interface RelayItem {
 
 const SIGNAL_STYLE: Record<string, { color: string; bg: string }> = {
   '강한 매수 기회': { color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
+  '강한 포착 기회': { color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
   '매수 기회': { color: 'text-[var(--yellow)]', bg: 'bg-amber-50 border-amber-200' },
+  '포착 기회': { color: 'text-[var(--yellow)]', bg: 'bg-amber-50 border-amber-200' },
   '관심 구간': { color: 'text-[var(--yellow)]', bg: 'bg-yellow-50 border-yellow-200' },
   '추격 진행중': { color: 'text-[var(--green)]', bg: 'bg-green-50 border-green-200' },
   '선행 하락': { color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
@@ -67,8 +69,8 @@ export default function RelayView() {
     )
   }
 
-  const buySignals = items.filter((i) => i.signal_type.includes('매수') || i.signal_type === '관심 구간')
-  const otherSignals = items.filter((i) => !i.signal_type.includes('매수') && i.signal_type !== '관심 구간')
+  const buySignals = items.filter((i) => i.signal_type.includes('매수') || i.signal_type.includes('포착') || i.signal_type === '관심 구간')
+  const otherSignals = items.filter((i) => !i.signal_type.includes('매수') && !i.signal_type.includes('포착') && i.signal_type !== '관심 구간')
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
@@ -83,7 +85,7 @@ export default function RelayView() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="매수 기회" count={buySignals.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
+        <SummaryCard label="포착 기회" count={buySignals.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
         <SummaryCard label="기타 시그널" count={otherSignals.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
         <SummaryCard label="전체 쌍" count={items.length} color="text-[var(--text-primary)]" bg="bg-gray-50" />
       </div>

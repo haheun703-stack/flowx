@@ -64,28 +64,33 @@ function formatShares(v: number): string {
 }
 
 function getStatus(item: CountryItem): string {
-  if (item.prev === 0 && item.direction === '매수') return '(NEW) 신규'
+  const isBuyDir = item.direction === '매수' || item.direction === '유입'
+  if (item.prev === 0 && isBuyDir) return '(NEW) 신규'
   const pct = Math.abs(item.change_pct)
   const sign = item.change_pct > 0 ? '+' : '-'
   const pctStr = pct >= 10 ? pct.toFixed(0) : pct.toFixed(1)
-  if (item.direction === '매수' && pct >= 500) return `(${sign}${pctStr}%) 급증`
-  if (item.direction === '매수') return `(${sign}${pctStr}%) 매집`
+  if (isBuyDir && pct >= 500) return `(${sign}${pctStr}%) 급증`
+  if (isBuyDir) return `(${sign}${pctStr}%) 매집`
   return `(${sign}${pctStr}%) 이탈`
 }
 
 const catAbbr = (c: string) => c === '헤지펀드' ? '헤지' : c
 
 const signalColor = (s: string) => {
-  if (s.includes('BUY')) return C.green
-  if (s.includes('SELL')) return C.red
+  if (s.includes('BUY') || s.includes('PICK')) return C.green
+  if (s.includes('SELL') || s.includes('CAUTION')) return C.red
   return C.amber
 }
 
 const signalLabel = (s: string) => {
   const map: Record<string, string> = {
-    STRONG_BUY: '강력매수', BUY: '매수', WEAK_BUY: '약매수',
+    STRONG_BUY: '강력 포착', STRONG_PICK: '강력 포착',
+    BUY: '포착', PICK: '포착',
+    WEAK_BUY: '약 포착', WEAK_PICK: '약 포착',
     NEUTRAL: '중립',
-    WEAK_SELL: '약매도', SELL: '매도', STRONG_SELL: '강력매도',
+    WEAK_SELL: '약 경계', WEAK_CAUTION: '약 경계',
+    SELL: '경계', CAUTION: '경계',
+    STRONG_SELL: '강력 경계', STRONG_CAUTION: '강력 경계',
   }
   return map[s] || s
 }
@@ -133,7 +138,7 @@ function CardContent({ data }: { data: NationalityData }) {
         {sorted.length === 0 ? (
           <div style={{ padding: 24, color: C.muted, fontSize: 13, textAlign: 'center' }}>국적별 데이터 없음</div>
         ) : sorted.map((item, i) => {
-          const isBuy = item.direction === '매수'
+          const isBuy = item.direction === '매수' || item.direction === '유입'
           const color = isBuy ? BUY : SELL
           const iconCount = Math.max(1, Math.round(Math.abs(item.change) / maxAbs * MAX_ICONS))
           const status = getStatus(item)
@@ -173,11 +178,11 @@ function CardContent({ data }: { data: NationalityData }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <PersonIcon color={BUY} size={12} />
-              <span style={{ fontSize: 11, color: C.muted }}>= 매수</span>
+              <span style={{ fontSize: 11, color: C.muted }}>= 유입</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <PersonIcon color={SELL} size={12} />
-              <span style={{ fontSize: 11, color: C.muted }}>= 매도</span>
+              <span style={{ fontSize: 11, color: C.muted }}>= 유출</span>
             </div>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px' }}>

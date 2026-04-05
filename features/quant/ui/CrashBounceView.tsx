@@ -34,11 +34,13 @@ const SIGNAL_CONFIG: Record<string, { color: string; badge?: string }> = {
 
 const GRADE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
   '적극매수': { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
+  '강력 포착': { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
   '매수': { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
+  '포착': { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
   '관심': { icon: '○', color: '#999999', bg: '#F5F5F5' },
 }
 
-const GRADE_TABS = ['전체', '적극매수', '매수', '관심'] as const
+const GRADE_TABS = ['전체', '강력 포착', '포착', '관심'] as const
 
 /* ── 이유 파싱 ── */
 
@@ -94,7 +96,7 @@ export default function CrashBounceView() {
         <p className="text-[28px] mb-3">🔍</p>
         <p className="text-[17px] font-bold text-[#1A1A2E]">오늘은 급락반등 시그널이 없습니다</p>
         <p className="text-[14px] text-[#6B7280] mt-1">
-          주가가 크게 빠지면서 큰손이 매수하는 종목이 나타나면 여기에 표시됩니다
+          주가가 크게 빠지면서 큰손이 유입하는 종목이 나타나면 여기에 표시됩니다
         </p>
         <p className="text-[13px] text-[#9CA3AF] mt-2">
           시장이 안정적일 때는 시그널이 없는 것이 정상입니다
@@ -107,7 +109,7 @@ export default function CrashBounceView() {
     ? items
     : items.filter(i => i.grade === gradeFilter)
 
-  const cardItems = filtered.filter(i => i.grade === '적극매수' || i.grade === '매수')
+  const cardItems = filtered.filter(i => ['적극매수', '매수', '강력 포착', '포착'].includes(i.grade))
   const watchItems = filtered.filter(i => i.grade === '관심')
 
   return (
@@ -124,7 +126,7 @@ export default function CrashBounceView() {
               </span>
             </div>
             <p className="text-[14px] text-[#6B7280] mb-3">
-              극도로 빠진 종목 중 큰손이 매수하기 시작한 종목
+              극도로 빠진 종목 중 큰손이 유입하기 시작한 종목
             </p>
             <div className="flex gap-4">
               <div className="text-center">

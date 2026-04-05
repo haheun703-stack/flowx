@@ -6,8 +6,11 @@ import { DashboardCard, CardSkeleton } from './DashboardCard'
 
 const GRADE_COLORS: Record<string, string> = {
   '적극매수': 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
+  '강력 포착': 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
   '매수': 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
+  '포착': 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
   '관심매수': 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
+  '관심': 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
   '관찰': 'bg-[var(--bg-row)] text-[var(--text-dim)] border-[var(--border)]',
 }
 
@@ -30,7 +33,7 @@ export function TopPicksCard() {
   if (isLoading || !data) return <CardSkeleton className="col-span-2" />
 
   const topPicks = data.picks
-    .filter(p => ['적극매수', '매수', '관심매수'].includes(p.grade))
+    .filter(p => ['적극매수', '매수', '관심매수', '강력 포착', '포착', '관심'].includes(p.grade))
     .slice(0, 8)
 
   return (

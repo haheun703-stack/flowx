@@ -10,14 +10,14 @@ const GRADE_COLOR: Record<string, string> = {
 }
 
 const SIGNAL_LABEL: Record<string, string> = {
-  FORCE_BUY: '적극매수',
-  BUY: '매수',
+  FORCE_BUY: '강력 포착', STRONG_PICK: '강력 포착',
+  BUY: '포착', PICK: '포착',
   WATCH: '관심',
 }
 
 const SIGNAL_COLOR: Record<string, string> = {
-  FORCE_BUY: 'text-[var(--up)]',
-  BUY: 'text-[var(--green)]',
+  FORCE_BUY: 'text-[var(--up)]', STRONG_PICK: 'text-[var(--up)]',
+  BUY: 'text-[var(--green)]', PICK: 'text-[var(--green)]',
   WATCH: 'text-[var(--yellow)]',
 }
 
@@ -35,7 +35,7 @@ export function SniperWatchPanel() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-[var(--text-primary)] tracking-wider uppercase">스나이퍼 워치</span>
-          <span className="text-[11px] text-[var(--text-dim)] font-bold">매수 시그널</span>
+          <span className="text-[11px] text-[var(--text-dim)] font-bold">포착 시그널</span>
         </div>
         <div className="flex items-center gap-2">
           {rel && <span className={`text-[10px] font-bold ${rel.daysAgo === 0 ? 'text-[var(--green)]' : 'text-[var(--text-muted)]'}`}>{rel.label}</span>}

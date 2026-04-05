@@ -9,15 +9,15 @@ function getStatusStyle(regime: string) {
       return {
         bg: '#ECFDF5', border: '#A7F3D0', text: '#059669',
         tipBg: 'rgba(16, 185, 129, 0.08)',
-        label: '강세 (적극 매수)',
-        advice: '오늘은 적극적으로 매수 기회를 찾아보세요',
+        label: '강세 (적극 포착)',
+        advice: '오늘은 적극적으로 포착 기회를 찾아보세요',
       }
     case 'CAUTION':
       return {
         bg: '#FFFBEB', border: '#FDE68A', text: '#D97706',
         tipBg: 'rgba(245, 158, 11, 0.08)',
         label: '관망 (조심)',
-        advice: '오늘은 매수를 자제하고, 기존 보유 종목 점검을 권장합니다',
+        advice: '오늘은 신규 진입을 자제하고, 기존 보유 종목 점검을 권장합니다',
       }
     case 'BEAR':
     case 'BEARISH':
@@ -25,14 +25,14 @@ function getStatusStyle(regime: string) {
         bg: '#FEF2F2', border: '#FECACA', text: '#DC2626',
         tipBg: 'rgba(239, 68, 68, 0.08)',
         label: '약세 (방어)',
-        advice: '하락장입니다. 신규 매수는 피하고 손절 라인을 점검하세요',
+        advice: '하락장입니다. 신규 진입은 피하고 손절 라인을 점검하세요',
       }
     default:
       return {
         bg: '#F9FAFB', border: '#E5E7EB', text: '#6B7280',
         tipBg: 'rgba(107, 114, 128, 0.08)',
         label: '중립 (관찰)',
-        advice: '방향성이 불분명합니다. 소액 분할 매수를 고려하세요',
+        advice: '방향성이 불분명합니다. 소액 분할 진입을 고려하세요',
       }
   }
 }

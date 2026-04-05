@@ -4,8 +4,8 @@ import { runWhyNowEngine } from '@/features/why-now-engine/model/scoreEngine'
 import { SignalGrade } from '@/features/why-now-engine/types'
 
 const GRADE_CONFIG: Record<SignalGrade, { label: string; color: string; bg: string; border: string }> = {
-  STRONG_BUY: { label: '매수 강신호',   color: 'text-emerald-600', bg: 'bg-white', border: 'border-emerald-500/40' },
-  BUY:        { label: '매수 관심',      color: 'text-[var(--green)]',   bg: 'bg-white', border: 'border-green-500/40' },
+  STRONG_BUY: { label: '강력 포착',   color: 'text-emerald-600', bg: 'bg-white', border: 'border-emerald-500/40' },
+  BUY:        { label: '포착 관심',      color: 'text-[var(--green)]',   bg: 'bg-white', border: 'border-green-500/40' },
   NEUTRAL:    { label: '중립',           color: 'text-[var(--yellow)]',  bg: 'bg-white', border: 'border-yellow-500/40' },
   CAUTION:    { label: '주의',           color: 'text-orange-600',  bg: 'bg-white', border: 'border-orange-500/40' },
   AVOID:      { label: '회피',           color: 'text-[var(--up)]',     bg: 'bg-white', border: 'border-red-500/40' },

@@ -94,8 +94,8 @@ function getVerdictHero(verdict: string) {
 /* ── action 뱃지 색상 ── */
 function actionBadgeStyle(action?: string) {
   switch (action) {
-    case '매수': return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' }
-    case '관심매수': return { bg: '#FFFBEB', border: '#FDE68A', text: '#D97706' }
+    case '매수': case '포착': return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' }
+    case '관심매수': case '관심': return { bg: '#FFFBEB', border: '#FDE68A', text: '#D97706' }
     default: return { bg: '#F3F4F6', border: '#E5E7EB', text: '#6B7280' }
   }
 }
@@ -570,7 +570,9 @@ export default function SwingDashboardView() {
 
         const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
           '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
+          '강력 포착': { backgroundColor: '#22c55e', color: '#FFF' },
           '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
+          '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
           '경계': { backgroundColor: '#eab308', color: '#FFF' },
           '회피': { backgroundColor: '#ef4444', color: '#FFF' },
         }

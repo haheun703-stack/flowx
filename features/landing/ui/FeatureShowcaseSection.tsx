@@ -139,17 +139,17 @@ function InvestorMock() {
 /* 2) AI 스크리닝 */
 function AIRecommendMock() {
   const stocks = [
-    { rank: 1, name: '삼성전자', score: 87, signal: '적극매수', price: '72,400', target: '85,000' },
-    { rank: 2, name: 'SK하이닉스', score: 82, signal: '매수', price: '185,500', target: '210,000' },
-    { rank: 3, name: 'LG에너지솔루션', score: 78, signal: '매수', price: '380,000', target: '430,000' },
+    { rank: 1, name: '삼성전자', score: 87, signal: '강력 포착', price: '72,400', target: '85,000' },
+    { rank: 2, name: 'SK하이닉스', score: 82, signal: '포착', price: '185,500', target: '210,000' },
+    { rank: 3, name: 'LG에너지솔루션', score: 78, signal: '포착', price: '380,000', target: '430,000' },
     { rank: 4, name: 'NAVER', score: 65, signal: '관심', price: '192,000', target: '220,000' },
-    { rank: 5, name: '현대차', score: 74, signal: '매수', price: '245,000', target: '280,000' },
+    { rank: 5, name: '현대차', score: 74, signal: '포착', price: '245,000', target: '280,000' },
     { rank: 6, name: '카카오', score: 58, signal: '관심', price: '42,500', target: '50,000' },
   ]
   return (
     <BrowserFrame>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">AI 선별 종목 (매수 시그널)</span>
+        <span className="text-[11px] text-[#1A1A2E]/70 font-mono font-bold">AI 선별 종목 (포착 시그널)</span>
         <span className="text-[9px] text-[#1A1A2E]/40 font-mono">2026-03-28</span>
       </div>
       <div className="grid text-[8px] text-[#1A1A2E]/40 font-mono pb-1 border-b border-[#B8E8CC] mb-1"
@@ -166,8 +166,8 @@ function AIRecommendMock() {
           <span className="text-right text-[#1A1A2E]/60">{s.target}</span>
           <span className="text-right">
             <span className={`px-1 py-0.5 rounded text-[7px] font-bold ${
-              s.signal === '적극매수' ? 'bg-[#16A34A]/15 text-[#16A34A]' :
-              s.signal === '매수' ? 'bg-[#2563EB]/15 text-[#2563EB]' :
+              s.signal === '강력 포착' ? 'bg-[#16A34A]/15 text-[#16A34A]' :
+              s.signal === '포착' ? 'bg-[#2563EB]/15 text-[#2563EB]' :
               'bg-[#EAB308]/15 text-[#B45309]'
             }`}>{s.signal}</span>
           </span>

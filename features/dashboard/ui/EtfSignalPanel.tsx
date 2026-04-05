@@ -4,11 +4,11 @@ import { useDashboardEtf } from '../api/useDashboard'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const GRADE_STYLE: Record<string, string> = {
-  '적극매수': 'text-[#16A34A] bg-[#E8F5E9]',
-  '매수': 'text-[#16A34A] bg-[#E8F5E9]',
+  '적극매수': 'text-[#16A34A] bg-[#E8F5E9]', '강력 포착': 'text-[#16A34A] bg-[#E8F5E9]',
+  '매수': 'text-[#16A34A] bg-[#E8F5E9]', '포착': 'text-[#16A34A] bg-[#E8F5E9]',
   '관망': 'text-[#9CA3AF] bg-[#F5F4F0]',
-  '매도': 'text-[#DC2626] bg-[#FEE2E2]',
-  '적극매도': 'text-[#DC2626] bg-[#FEE2E2]',
+  '매도': 'text-[#DC2626] bg-[#FEE2E2]', '경계': 'text-[#DC2626] bg-[#FEE2E2]',
+  '적극매도': 'text-[#DC2626] bg-[#FEE2E2]', '위험': 'text-[#DC2626] bg-[#FEE2E2]',
 }
 
 export function EtfSignalPanel() {

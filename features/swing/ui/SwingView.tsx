@@ -15,14 +15,14 @@ const GRADE_COLOR: Record<string, string> = {
 }
 
 const SIGNAL_LABEL: Record<string, string> = {
-  FORCE_BUY: '적극매수',
-  BUY: '매수',
+  FORCE_BUY: '강력 포착', STRONG_PICK: '강력 포착',
+  BUY: '포착', PICK: '포착',
   WATCH: '관심',
 }
 
 const SIGNAL_COLOR: Record<string, string> = {
-  FORCE_BUY: 'text-[#dc2626]',
-  BUY: 'text-[#16a34a]',
+  FORCE_BUY: 'text-[#dc2626]', STRONG_PICK: 'text-[#dc2626]',
+  BUY: 'text-[#16a34a]', PICK: 'text-[#16a34a]',
   WATCH: 'text-[#f59e0b]',
 }
 

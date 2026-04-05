@@ -17,9 +17,12 @@ interface SmartMoneyItem {
 }
 
 const SIGNAL_STYLE: Record<string, { label: string; color: string; bg: string }> = {
-  DUAL_BUY: { label: '쌍끌이 매수', color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
-  FOREIGN_BUY: { label: '외인 매집', color: 'text-[var(--green)]', bg: 'bg-green-50 border-green-200' },
-  INST_BUY: { label: '기관 매집', color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
+  DUAL_BUY: { label: '쌍끌이 흐름', color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
+  DUAL_FLOW: { label: '쌍끌이 흐름', color: 'text-[var(--up)]', bg: 'bg-red-50 border-red-200' },
+  FOREIGN_BUY: { label: '외인 유입', color: 'text-[var(--green)]', bg: 'bg-green-50 border-green-200' },
+  FOREIGN_FLOW: { label: '외인 유입', color: 'text-[var(--green)]', bg: 'bg-green-50 border-green-200' },
+  INST_BUY: { label: '기관 유입', color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
+  INST_FLOW: { label: '기관 유입', color: 'text-[var(--down)]', bg: 'bg-blue-50 border-blue-200' },
 }
 
 function formatBil(n: number) {
@@ -72,9 +75,9 @@ export default function SmartMoneyView() {
     )
   }
 
-  const dual = items.filter((i) => i.signal_type === 'DUAL_BUY')
-  const foreign = items.filter((i) => i.signal_type === 'FOREIGN_BUY')
-  const inst = items.filter((i) => i.signal_type === 'INST_BUY')
+  const dual = items.filter((i) => i.signal_type === 'DUAL_BUY' || i.signal_type === 'DUAL_FLOW')
+  const foreign = items.filter((i) => i.signal_type === 'FOREIGN_BUY' || i.signal_type === 'FOREIGN_FLOW')
+  const inst = items.filter((i) => i.signal_type === 'INST_BUY' || i.signal_type === 'INST_FLOW')
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
@@ -89,9 +92,9 @@ export default function SmartMoneyView() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-3 gap-3">
-        <SummaryCard label="쌍끌이 매수" count={dual.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
-        <SummaryCard label="외인 매집" count={foreign.length} color="text-[var(--green)]" bg="bg-green-50" />
-        <SummaryCard label="기관 매집" count={inst.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
+        <SummaryCard label="쌍끌이 흐름" count={dual.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
+        <SummaryCard label="외인 유입" count={foreign.length} color="text-[var(--green)]" bg="bg-green-50" />
+        <SummaryCard label="기관 유입" count={inst.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
       </div>
 
       {/* 종목 리스트 */}

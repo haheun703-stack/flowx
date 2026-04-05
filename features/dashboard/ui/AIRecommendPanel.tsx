@@ -12,8 +12,8 @@ const GRADE_STYLE: Record<string, string> = {
 }
 
 const SIGNAL_LABEL: Record<string, string> = {
-  FORCE_BUY: '적극매수',
-  BUY: '매수',
+  FORCE_BUY: '강력 포착', STRONG_PICK: '강력 포착',
+  BUY: '포착', PICK: '포착',
   WATCH: '관심',
 }
 
@@ -35,7 +35,7 @@ export function AIRecommendPanel() {
     <div className={`flex flex-col h-full ${isStale ? 'opacity-50' : ''}`}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
-        <span className="fx-card-title mb-0">AI 선별 종목 (매수 시그널)</span>
+        <span className="fx-card-title mb-0">AI 선별 종목 (포착 시그널)</span>
         <div className="flex items-center gap-2">
           {rel && (
             <span className={`text-[14px] font-bold ${rel.daysAgo === 0 ? 'text-[#00CC6A]' : 'text-[#B0ADA6]'}`}>
@@ -95,7 +95,7 @@ export function AIRecommendPanel() {
 
       {/* 주린이 설명 */}
       <div className="fx-card-tip">
-        점수가 높을수록 AI가 매수에 유리하다고 판단한 종목입니다 (100점 만점)
+        점수가 높을수록 AI 분석 적합도가 높은 종목입니다 (100점 만점)
       </div>
     </div>
   )
