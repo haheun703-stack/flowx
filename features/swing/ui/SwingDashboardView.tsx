@@ -41,6 +41,19 @@ interface FibStock {
   per: number; pbr: number; frgn: number
 }
 
+interface FxMonitor {
+  timestamp: string
+  dxy: { value: number; prev: number; chg_1d: number; ma5: number; ma20: number; trend: string }
+  usdkrw: { value: number; prev: number; chg_1d: number; ma5: number; ma20: number; trend: string }
+  vix_structure: { vix: number; vix3m: number; ratio: number; structure: string; label: string }
+  correlation: { matches: number; total: number; pct: number; label: string }
+  foreign_flow: {
+    proxy: string; today_억: number; sum_3d_억: number
+    streak: number; direction: string; signal: string; signal_color: string
+  }
+  verdict: { text: string; color: string; bullish: number; bearish: number; score: number }
+}
+
 interface SwingData {
   date: string
   brain_verdict: string; brain_pct: number; brain_reason: string
@@ -56,6 +69,7 @@ interface SwingData {
     indicators?: { key: string; name: string; signal: string; signal_label: string; detail: string }[]
   }
   fib_stocks?: FibStock[]
+  fx_monitor?: FxMonitor
   vix: number; nasdaq_pct: number; usdkrw: number
   oil_pct: number; gold_pct: number; silver_pct: number
   analysis: Record<string, string>; portfolio: Record<string, number>
@@ -130,6 +144,151 @@ const TIMELINE = [
   { time: '종일', color: '#16A34A', action: '포지션 관리', desc: '손절가 감시, 목표가 도달 시 분할 매도', badge: '자동 알림' },
 ]
 
+/* ── 추세 화살표 ── */
+function trendArrow(trend: string): { arrow: string; color: string } {
+  if (trend === '약세' || trend === '원강세') return { arrow: '▼', color: '#22c55e' }
+  if (trend === '강세' || trend === '원약세') return { arrow: '▲', color: '#ef4444' }
+  return { arrow: '→', color: '#9ca3af' }
+}
+
+/* ── verdict 색상 ── */
+const VERDICT_COLOR: Record<string, string> = { GREEN: '#22c55e', YELLOW: '#eab308', RED: '#ef4444' }
+const SIGNAL_BG: Record<string, string> = { GREEN: '#F0FDF4', YELLOW: '#FFFBEB', RED: '#FEF2F2' }
+
+/* ── FX 모니터 섹션 ── */
+function FxMonitorSection({ fx }: { fx: FxMonitor }) {
+  const vc = VERDICT_COLOR[fx.verdict.color] ?? '#9ca3af'
+  const dxyT = trendArrow(fx.dxy.trend)
+  const krwT = trendArrow(fx.usdkrw.trend)
+  const corrColor = fx.correlation.pct >= 80 ? '#22c55e' : fx.correlation.pct >= 60 ? '#eab308' : '#ef4444'
+  const sigColor = VERDICT_COLOR[fx.foreign_flow.signal_color] ?? '#9ca3af'
+  const sigBg = SIGNAL_BG[fx.foreign_flow.signal_color] ?? '#F5F4F0'
+
+  return (
+    <section>
+      {/* 헤더 + 종합 판정 */}
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">💲</span>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E]">달러-환율 모니터</h2>
+          <span className="text-[12px] text-[#6B7280]">외국인 자금 흐름 신호</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span
+            className="text-[13px] font-bold px-3 py-1 rounded-lg text-white"
+            style={{ backgroundColor: vc }}
+          >
+            {fx.verdict.text}
+          </span>
+          <span className="text-[12px] font-bold text-[#6B7280]">
+            유입 <span style={{ color: '#22c55e' }}>+{fx.verdict.bullish}</span>
+            {' / '}유출 <span style={{ color: '#ef4444' }}>{fx.verdict.bearish}</span>
+          </span>
+          <span className="text-[11px] text-[#9CA3AF]">{fx.timestamp}</span>
+        </div>
+      </div>
+
+      {/* 4개 카드 */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+        {/* DXY */}
+        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
+          <p className="text-[11px] font-bold text-[#6B7280] mb-1">DXY 달러인덱스</p>
+          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.dxy.value.toFixed(2)}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[14px] font-bold" style={{ color: dxyT.color }}>
+              {dxyT.arrow}{fx.dxy.trend}
+            </span>
+            <span className="text-[12px] tabular-nums" style={{ color: fx.dxy.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
+              {fx.dxy.chg_1d >= 0 ? '+' : ''}{fx.dxy.chg_1d.toFixed(2)}%
+            </span>
+          </div>
+          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+            <span>5일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.dxy.ma5.toFixed(1)}</span></span>
+            <span>20일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.dxy.ma20.toFixed(1)}</span></span>
+          </div>
+        </div>
+
+        {/* USD/KRW */}
+        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
+          <p className="text-[11px] font-bold text-[#6B7280] mb-1">USD/KRW 환율</p>
+          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.usdkrw.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[14px] font-bold" style={{ color: krwT.color }}>
+              {krwT.arrow}{fx.usdkrw.trend}
+            </span>
+            <span className="text-[12px] tabular-nums" style={{ color: fx.usdkrw.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
+              {fx.usdkrw.chg_1d >= 0 ? '+' : ''}{fx.usdkrw.chg_1d.toFixed(2)}%
+            </span>
+          </div>
+          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+            <span>5일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.usdkrw.ma5.toFixed(0)}</span></span>
+            <span>20일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.usdkrw.ma20.toFixed(0)}</span></span>
+          </div>
+        </div>
+
+        {/* VIX 구조 */}
+        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
+          <p className="text-[11px] font-bold text-[#6B7280] mb-1">VIX 구조</p>
+          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix.toFixed(2)}</p>
+          <div className="mt-1">
+            <span
+              className="text-[12px] font-bold px-2 py-0.5 rounded"
+              style={{
+                backgroundColor: fx.vix_structure.structure === 'CONTANGO' ? '#F0FDF4' : '#FEF2F2',
+                color: fx.vix_structure.structure === 'CONTANGO' ? '#16A34A' : '#DC2626',
+              }}
+            >
+              {fx.vix_structure.structure} — {fx.vix_structure.label}
+            </span>
+          </div>
+          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+            <span>VIX3M: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix3m.toFixed(1)}</span></span>
+            <span>비율: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.vix_structure.ratio.toFixed(3)}</span></span>
+          </div>
+        </div>
+
+        {/* 외국인 흐름 */}
+        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
+          <p className="text-[11px] font-bold text-[#6B7280] mb-1">외국인 흐름 <span className="text-[#9CA3AF]">({fx.foreign_flow.proxy} 기준)</span></p>
+          <div className="mt-0.5">
+            <span
+              className="text-[16px] font-bold px-2.5 py-1 rounded-lg inline-block"
+              style={{ backgroundColor: sigBg, color: sigColor }}
+            >
+              {fx.foreign_flow.signal}
+            </span>
+          </div>
+          <p className="text-[18px] font-black tabular-nums mt-1.5" style={{ color: fx.foreign_flow.today_억 >= 0 ? '#22c55e' : '#ef4444' }}>
+            {fx.foreign_flow.today_억 >= 0 ? '+' : ''}{fx.foreign_flow.today_억.toLocaleString()}억
+          </p>
+          <div className="flex gap-3 mt-1 text-[11px] text-[#6B7280]">
+            <span>3일: <span className="font-bold tabular-nums" style={{ color: fx.foreign_flow.sum_3d_억 >= 0 ? '#22c55e' : '#ef4444' }}>
+              {fx.foreign_flow.sum_3d_억 >= 0 ? '+' : ''}{fx.foreign_flow.sum_3d_억.toLocaleString()}억
+            </span></span>
+            <span>{fx.foreign_flow.streak}일째 {fx.foreign_flow.direction}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 상관관계 바 */}
+      <div className="bg-white rounded-xl border border-[var(--border)] p-3">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-[12px]">📊</span>
+          <span className="text-[12px] font-bold text-[#1A1A2E]">환율↔KOSPI 상관</span>
+          <span className="text-[13px] font-black tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
+          <span className="text-[11px] text-[#6B7280] ml-1">{fx.correlation.label}</span>
+        </div>
+        <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{ width: `${fx.correlation.pct}%`, backgroundColor: corrColor }}
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function SwingDashboardView() {
   const [data, setData] = useState<SwingData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -183,6 +342,11 @@ export default function SwingDashboardView() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
+
+      {/* ═══ 0행: 달러-환율 모니터 (최상단) ═══ */}
+      {data.fx_monitor && data.fx_monitor.dxy && (
+        <FxMonitorSection fx={data.fx_monitor} />
+      )}
 
       {/* ═══ 1행: BRAIN AI 오늘의 결론 — 히어로 ═══ */}
       <section
