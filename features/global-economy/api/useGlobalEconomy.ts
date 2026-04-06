@@ -2,26 +2,31 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-export interface EconomicIndicator {
+export interface SeriesData {
   id: string
   name: string
-  category: string
   unit: string
-  value: number
-  prev_value: number | null
-  change: number | null
-  change_pct: number | null
-  date: string
+  color: string
+  current: { value: number; date: string; prev_value: number | null; change: number | null } | null
+  history: { d: string; v: number }[]
 }
 
-interface CategoryGroup {
-  meta: { title: string; icon: string }
-  items: EconomicIndicator[]
+export interface SectionData {
+  id: string
+  title: string
+  icon: string
+  desc: string
+  series: SeriesData[]
 }
 
-interface GlobalEconomyData {
-  categories: Record<string, CategoryGroup>
-  total: number
+interface YieldPoint { maturity: string; value: number | null; date?: string | null }
+
+export interface GlobalEconomyData {
+  sections: SectionData[]
+  yield_curve: {
+    current: YieldPoint[]
+    year_ago: YieldPoint[]
+  }
   updated_at: string
 }
 
@@ -35,7 +40,7 @@ export function useGlobalEconomy() {
   return useQuery<GlobalEconomyData>({
     queryKey: ['global-economy'],
     queryFn: ({ signal }) => fetchGlobalEconomy(signal),
-    staleTime: 30 * 60 * 1000, // 30분
-    refetchInterval: 60 * 60 * 1000, // 1시간마다 리페치
+    staleTime: 30 * 60 * 1000,
+    refetchInterval: 60 * 60 * 1000,
   })
 }
