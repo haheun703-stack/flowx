@@ -16,10 +16,11 @@ const NAV_TABS = [
   {
     label: '시장',
     href: '/market',
-    match: (p: string) => p === '/market' || p.startsWith('/macro'),
+    match: (p: string) => p === '/market' || p.startsWith('/macro') || p.startsWith('/global-economy'),
     sub: [
       { label: '시장 개요', href: '/market' },
       { label: '매크로 지표', href: '/macro' },
+      { label: '글로벌 이코노미', href: '/global-economy' },
     ],
   },
   {
