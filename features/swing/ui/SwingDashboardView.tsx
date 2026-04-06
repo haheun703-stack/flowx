@@ -165,72 +165,72 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
   return (
     <section>
       {/* 헤더 + 종합 판정 */}
-      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-lg">💲</span>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E]">달러-환율 모니터</h2>
-          <span className="text-[12px] text-[#6B7280]">외국인 자금 흐름 신호</span>
+          <span className="text-xl">💲</span>
+          <h2 className="text-[20px] font-black text-[#1A1A2E]">달러-환율 모니터</h2>
+          <span className="text-[14px] text-[#6B7280]">외국인 자금 흐름 신호</span>
         </div>
         <div className="flex items-center gap-3">
           <span
-            className="text-[13px] font-bold px-3 py-1 rounded-lg text-white"
+            className="text-[14px] font-bold px-3.5 py-1.5 rounded-lg text-white"
             style={{ backgroundColor: vc }}
           >
             {fx.verdict.text}
           </span>
-          <span className="text-[12px] font-bold text-[#6B7280]">
+          <span className="text-[13px] font-bold text-[#6B7280]">
             유입 <span style={{ color: '#22c55e' }}>+{fx.verdict.bullish}</span>
             {' / '}유출 <span style={{ color: '#ef4444' }}>{fx.verdict.bearish}</span>
           </span>
-          <span className="text-[11px] text-[#9CA3AF]">{fx.timestamp}</span>
+          <span className="text-[12px] text-[#9CA3AF]">{fx.timestamp}</span>
         </div>
       </div>
 
       {/* 4개 카드 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         {/* DXY */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
-          <p className="text-[11px] font-bold text-[#6B7280] mb-1">DXY 달러인덱스</p>
-          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.dxy.value.toFixed(2)}</p>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-[14px] font-bold" style={{ color: dxyT.color }}>
+        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+          <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">DXY 달러인덱스</p>
+          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.dxy.value.toFixed(2)}</p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="text-[15px] font-bold" style={{ color: dxyT.color }}>
               {dxyT.arrow}{fx.dxy.trend}
             </span>
-            <span className="text-[12px] tabular-nums" style={{ color: fx.dxy.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
+            <span className="text-[14px] font-bold tabular-nums" style={{ color: fx.dxy.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
               {fx.dxy.chg_1d >= 0 ? '+' : ''}{fx.dxy.chg_1d.toFixed(2)}%
             </span>
           </div>
-          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+          <div className="flex gap-3 mt-2 text-[12px] text-[#6B7280]">
             <span>5일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.dxy.ma5.toFixed(1)}</span></span>
             <span>20일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.dxy.ma20.toFixed(1)}</span></span>
           </div>
         </div>
 
         {/* USD/KRW */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
-          <p className="text-[11px] font-bold text-[#6B7280] mb-1">USD/KRW 환율</p>
-          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.usdkrw.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원</p>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-[14px] font-bold" style={{ color: krwT.color }}>
+        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+          <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">USD/KRW 환율</p>
+          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.usdkrw.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원</p>
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="text-[15px] font-bold" style={{ color: krwT.color }}>
               {krwT.arrow}{fx.usdkrw.trend}
             </span>
-            <span className="text-[12px] tabular-nums" style={{ color: fx.usdkrw.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
+            <span className="text-[14px] font-bold tabular-nums" style={{ color: fx.usdkrw.chg_1d >= 0 ? '#dc2626' : '#2563eb' }}>
               {fx.usdkrw.chg_1d >= 0 ? '+' : ''}{fx.usdkrw.chg_1d.toFixed(2)}%
             </span>
           </div>
-          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+          <div className="flex gap-3 mt-2 text-[12px] text-[#6B7280]">
             <span>5일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.usdkrw.ma5.toFixed(0)}</span></span>
             <span>20일: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.usdkrw.ma20.toFixed(0)}</span></span>
           </div>
         </div>
 
         {/* VIX 구조 */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
-          <p className="text-[11px] font-bold text-[#6B7280] mb-1">VIX 구조</p>
-          <p className="text-[24px] font-black text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix.toFixed(2)}</p>
-          <div className="mt-1">
+        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+          <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">VIX 구조</p>
+          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix.toFixed(2)}</p>
+          <div className="mt-1.5">
             <span
-              className="text-[12px] font-bold px-2 py-0.5 rounded"
+              className="text-[13px] font-bold px-2.5 py-1 rounded"
               style={{
                 backgroundColor: fx.vix_structure.structure === 'CONTANGO' ? '#F0FDF4' : '#FEF2F2',
                 color: fx.vix_structure.structure === 'CONTANGO' ? '#16A34A' : '#DC2626',
@@ -239,27 +239,27 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
               {fx.vix_structure.structure} — {fx.vix_structure.label}
             </span>
           </div>
-          <div className="flex gap-3 mt-2 text-[11px] text-[#6B7280]">
+          <div className="flex gap-3 mt-2 text-[12px] text-[#6B7280]">
             <span>VIX3M: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix3m.toFixed(1)}</span></span>
             <span>비율: <span className="font-bold text-[#1A1A2E] tabular-nums">{fx.vix_structure.ratio.toFixed(3)}</span></span>
           </div>
         </div>
 
         {/* 외국인 흐름 */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-4">
-          <p className="text-[11px] font-bold text-[#6B7280] mb-1">외국인 흐름 <span className="text-[#9CA3AF]">({fx.foreign_flow.proxy} 기준)</span></p>
+        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+          <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">외국인 흐름 <span className="text-[#9CA3AF]">({fx.foreign_flow.proxy} 기준)</span></p>
           <div className="mt-0.5">
             <span
-              className="text-[16px] font-bold px-2.5 py-1 rounded-lg inline-block"
+              className="text-[17px] font-bold px-3 py-1.5 rounded-lg inline-block"
               style={{ backgroundColor: sigBg, color: sigColor }}
             >
               {fx.foreign_flow.signal}
             </span>
           </div>
-          <p className="text-[18px] font-black tabular-nums mt-1.5" style={{ color: fx.foreign_flow.today_억 >= 0 ? '#22c55e' : '#ef4444' }}>
+          <p className="text-[24px] font-black tabular-nums mt-1.5" style={{ color: fx.foreign_flow.today_억 >= 0 ? '#22c55e' : '#ef4444' }}>
             {fx.foreign_flow.today_억 >= 0 ? '+' : ''}{fx.foreign_flow.today_억.toLocaleString()}억
           </p>
-          <div className="flex gap-3 mt-1 text-[11px] text-[#6B7280]">
+          <div className="flex gap-3 mt-1.5 text-[12px] text-[#6B7280]">
             <span>3일: <span className="font-bold tabular-nums" style={{ color: fx.foreign_flow.sum_3d_억 >= 0 ? '#22c55e' : '#ef4444' }}>
               {fx.foreign_flow.sum_3d_억 >= 0 ? '+' : ''}{fx.foreign_flow.sum_3d_억.toLocaleString()}억
             </span></span>
@@ -269,14 +269,14 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
       </div>
 
       {/* 상관관계 바 */}
-      <div className="bg-white rounded-xl border border-[var(--border)] p-3">
-        <div className="flex items-center gap-2 mb-1.5">
-          <span className="text-[12px]">📊</span>
-          <span className="text-[12px] font-bold text-[#1A1A2E]">환율↔KOSPI 상관</span>
-          <span className="text-[13px] font-black tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
-          <span className="text-[11px] text-[#6B7280] ml-1">{fx.correlation.label}</span>
+      <div className="bg-white rounded-xl border border-[var(--border)] p-4">
+        <div className="flex items-center gap-2.5 mb-2.5">
+          <span className="text-[16px]">📊</span>
+          <span className="text-[15px] font-bold text-[#1A1A2E]">환율↔KOSPI 상관</span>
+          <span className="text-[17px] font-black tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
+          <span className="text-[13px] text-[#6B7280] ml-1">{fx.correlation.label}</span>
         </div>
-        <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+        <div className="h-3 bg-[#E8E6E0] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all"
             style={{ width: `${fx.correlation.pct}%`, backgroundColor: corrColor }}
