@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FibStock } from './FibShared'
 
 /* ── 타입 ── */
@@ -64,7 +64,7 @@ interface SwingData {
   fx_monitor?: FxMonitor
   vix: number; nasdaq_pct: number; usdkrw: number
   oil_pct: number; gold_pct: number; silver_pct: number
-  analysis: Record<string, string>; portfolio: Record<string, number>
+  analysis: Record<string, unknown>; portfolio: Record<string, number>
   smart_money_score: number; smart_money_signal: string
   stress_index: number; stress_level: string
   rotation_signal: string; liquidity_score: number; market_comment: string
@@ -112,16 +112,22 @@ function formatAnalysisKey(key: string): string {
 }
 
 /* ── 분석 카드 분류 (4칸 + 나이트워치) ── */
-function classifyAnalysis(analysis: Record<string, string>) {
-  const warning = analysis['경고'] ?? analysis['risk_summary'] ?? ''
-  const strategy = analysis['전략요약'] ?? analysis['매매안내'] ?? ''
-  const sector = analysis['sector_summary'] ?? analysis['섹터 요약'] ?? ''
-  const commodity = analysis['commodity_summary'] ?? analysis['원자재 요약'] ?? ''
-  const nightwatch = analysis['나이트워치'] ?? ''
+function toStr(v: unknown): string {
+  if (typeof v === 'string') return v
+  if (v == null) return ''
+  return JSON.stringify(v)
+}
+
+function classifyAnalysis(analysis: Record<string, unknown>) {
+  const warning = toStr(analysis['경고'] ?? analysis['risk_summary'])
+  const strategy = toStr(analysis['전략요약'] ?? analysis['매매안내'])
+  const sector = toStr(analysis['sector_summary'] ?? analysis['섹터 요약'])
+  const commodity = toStr(analysis['commodity_summary'] ?? analysis['원자재 요약'])
+  const nightwatch = toStr(analysis['나이트워치'])
   const rest: Record<string, string> = {}
   for (const [k, v] of Object.entries(analysis)) {
     if (!['경고', 'risk_summary', '전략요약', '매매안내', 'sector_summary', '섹터 요약', 'commodity_summary', '원자재 요약', '나이트워치'].includes(k)) {
-      rest[k] = v
+      rest[k] = toStr(v)
     }
   }
   return { warning, strategy, sector, commodity, nightwatch, rest }
@@ -330,7 +336,7 @@ export default function SwingDashboardView() {
   const hasCategory = data.picks?.some(p => p.category)
   const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
   const nxtPicks = hasCategory ? data.picks.filter(p => p.category === 'NXT') : []
-  const analysisCards = useMemo(() => data.analysis ? classifyAnalysis(data.analysis) : null, [data.analysis])
+  const analysisCards = data.analysis ? classifyAnalysis(data.analysis) : null
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
