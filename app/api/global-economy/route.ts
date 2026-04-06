@@ -5,10 +5,14 @@ export const dynamic = 'force-dynamic'
 const FRED_KEY = process.env.FRED_API_KEY
 const FRED = 'https://api.stlouisfed.org/fred/series/observations'
 
+/* ── 인메모리 캐시 (Vercel 인스턴스 수명 내 유효) ── */
+let _cache: { json: unknown; ts: number } | null = null
+const CACHE_TTL = 6 * 3600_000 // 6시간
+
 /* ── 시리즈 정의 ── */
 interface SDef {
   id: string; name: string; unit: string; color: string
-  transform?: 'pc1' | 'chg'   // pc1=YoY%, chg=MoM변화
+  transform?: 'pc1' | 'chg'
 }
 interface SectionDef {
   id: string; title: string; icon: string; desc: string
@@ -97,27 +101,38 @@ function fiveYearsAgo(): string {
   return d.toISOString().slice(0, 10)
 }
 
+/* ── 1년 전 월 문자열 ("2025-04") ── */
+function oneYearAgoMonth(): string {
+  const d = new Date()
+  d.setFullYear(d.getFullYear() - 1)
+  return d.toISOString().slice(0, 7)
+}
+
 /* ── FRED 페치 (월별 5년) ── */
-async function fetchHistory(seriesId: string, transform?: string) {
-  const params = new URLSearchParams({
-    series_id: seriesId,
-    api_key: FRED_KEY!,
-    file_type: 'json',
-    observation_start: fiveYearsAgo(),
-    frequency: 'm',
-    aggregation_method: 'avg',
-    sort_order: 'asc',
-    ...(transform ? { units: transform } : {}),
-  })
-  const res = await fetch(`${FRED}?${params}`, { next: { revalidate: 21600 } }) // 6시간 캐시
-  if (!res.ok) return null
-  const json = await res.json()
-  const obs = json.observations?.filter((o: { value: string }) => o.value !== '.')
-  if (!obs || obs.length === 0) return null
-  return obs.map((o: { date: string; value: string }) => ({
-    d: o.date.slice(0, 7), // "2021-04"
-    v: parseFloat(o.value),
-  })).filter((p: { v: number }) => !isNaN(p.v))
+async function fetchHistory(apiKey: string, seriesId: string, transform?: string) {
+  try {
+    const params = new URLSearchParams({
+      series_id: seriesId,
+      api_key: apiKey,
+      file_type: 'json',
+      observation_start: fiveYearsAgo(),
+      frequency: 'm',
+      aggregation_method: 'avg',
+      sort_order: 'asc',
+      ...(transform ? { units: transform } : {}),
+    })
+    const res = await fetch(`${FRED}?${params}`, { next: { revalidate: 21600 } })
+    if (!res.ok) return null
+    const json = await res.json()
+    const obs = json.observations?.filter((o: { value: string }) => o.value !== '.')
+    if (!obs || obs.length === 0) return null
+    return obs.map((o: { date: string; value: string }) => ({
+      d: o.date.slice(0, 7),
+      v: parseFloat(o.value),
+    })).filter((p: { v: number }) => !isNaN(p.v))
+  } catch {
+    return null
+  }
 }
 
 /* ── 최근값 추출 ── */
@@ -128,9 +143,17 @@ function extractCurrent(history: { d: string; v: number }[] | null) {
   return {
     value: latest.v,
     date: latest.d,
-    prev_value: prev?.v ?? null,
     change: prev ? +(latest.v - prev.v).toFixed(4) : null,
   }
+}
+
+/* ── 날짜 기반 1년전 값 찾기 ── */
+function findYearAgo(hist: { d: string; v: number }[], targetMonth: string): number | null {
+  // 정확히 targetMonth 매칭, 없으면 가장 가까운 이전 월
+  const exact = hist.find(p => p.d === targetMonth)
+  if (exact) return exact.v
+  const before = hist.filter(p => p.d <= targetMonth)
+  return before.length > 0 ? before[before.length - 1].v : null
 }
 
 export async function GET() {
@@ -138,11 +161,14 @@ export async function GET() {
     return NextResponse.json({ error: 'FRED_API_KEY not configured' }, { status: 500 })
   }
 
+  // 인메모리 캐시 체크
+  if (_cache && Date.now() - _cache.ts < CACHE_TTL) {
+    return NextResponse.json(_cache.json)
+  }
+
   try {
-    // 1) 모든 시리즈 히스토리 병렬 페치
     const allDefs = SECTIONS.flatMap(s => s.series)
     const yieldIds = YIELD_MATURITIES.map(m => m.id)
-    // 중복 제거 (DGS2, DGS10 등은 rates에도 있음)
     const uniqueIds = [...new Set([...allDefs.map(d => d.id), ...yieldIds])]
     const defMap = new Map(allDefs.map(d => [d.id, d]))
 
@@ -150,7 +176,7 @@ export async function GET() {
     const results = await Promise.all(
       uniqueIds.map(async (id) => {
         const def = defMap.get(id)
-        const hist = await fetchHistory(id, def?.transform)
+        const hist = await fetchHistory(FRED_KEY, id, def?.transform)
         return { id, hist }
       })
     )
@@ -158,7 +184,7 @@ export async function GET() {
       if (hist) historyMap.set(id, hist)
     }
 
-    // 2) 섹션별 응답 구성
+    // 섹션별 응답 구성
     const sections = SECTIONS.map(sec => ({
       id: sec.id,
       title: sec.title,
@@ -168,17 +194,15 @@ export async function GET() {
         const hist = historyMap.get(s.id) ?? []
         const cur = extractCurrent(hist)
         return {
-          id: s.id,
-          name: s.name,
-          unit: s.unit,
-          color: s.color,
+          id: s.id, name: s.name, unit: s.unit, color: s.color,
           current: cur,
           history: hist,
         }
       }).filter(s => s.current !== null),
     }))
 
-    // 3) 수익률 곡선 (현재 + 1년전)
+    // 수익률 곡선 (현재 + 날짜 기반 1년전)
+    const yaMonth = oneYearAgoMonth()
     const yieldCurve = {
       current: YIELD_MATURITIES.map(m => {
         const hist = historyMap.get(m.id)
@@ -188,17 +212,21 @@ export async function GET() {
       year_ago: YIELD_MATURITIES.map(m => {
         const hist = historyMap.get(m.id)
         if (!hist) return { maturity: m.label, value: null }
-        // 12개월 전 찾기
-        const target = hist.length > 12 ? hist[hist.length - 13] : hist[0]
-        return { maturity: m.label, value: target?.v ?? null }
+        return { maturity: m.label, value: findYearAgo(hist, yaMonth) }
       }),
     }
 
-    return NextResponse.json({
+    const responseData = {
       sections,
       yield_curve: yieldCurve,
+      total: sections.reduce((n, s) => n + s.series.length, 0),
       updated_at: new Date().toISOString(),
-    })
+    }
+
+    // 캐시 저장
+    _cache = { json: responseData, ts: Date.now() }
+
+    return NextResponse.json(responseData)
   } catch (e) {
     console.error('[global-economy] error:', e)
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 })

@@ -12,7 +12,6 @@ export interface ChartSeries {
   unit: string
   color: string
   history: { d: string; v: number }[]
-  current: { value: number; date: string; change: number | null } | null
 }
 
 interface EconChartProps {
@@ -36,36 +35,46 @@ function mergeData(series: ChartSeries[]) {
     .map(([date, vals]) => ({ date, ...vals }))
 }
 
-/* ── 툴팁 포맷 ── */
-function fmtTooltipValue(value: number, unit: string): string {
+/* ── 공통 값 포맷 (카드 + 툴팁 공용) ── */
+export function fmtEconValue(value: number, unit: string): string {
   if (unit === '원') return value.toLocaleString('ko-KR', { maximumFractionDigits: 0 }) + '원'
   if (unit === '조$') return (value / 1_000_000).toFixed(2) + '조$'
-  if (unit === '십억$') return (value / 1_000).toFixed(0) + '십억$'
+  if (unit === '십억$') return (value / 1_000).toFixed(0) + 'B$'
   if (unit === '천명' || unit === '천건' || unit === '천호') return Math.round(value).toLocaleString() + unit
   if (unit === '$/bbl') return '$' + value.toFixed(2)
-  return value.toFixed(2) + (unit ? unit : '')
+  return value.toFixed(2) + (unit || '')
 }
 
-/* ── 커스텀 툴팁 ── */
-function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg p-3 text-xs">
-      <p className="font-bold text-[#1A1A2E] mb-1">{label}</p>
-      {payload.map((p, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-          <span className="text-gray-600">{p.name}:</span>
-          <span className="font-bold text-[#1A1A2E]">{typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</span>
-        </div>
-      ))}
-    </div>
-  )
+/* ── 커스텀 툴팁 (unit lookup 포함) ── */
+interface TooltipPayload { name: string; value: number; color: string; dataKey: string }
+
+function makeTooltip(unitMap: Map<string, string>) {
+  return function EconTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayload[]; label?: string }) {
+    if (!active || !payload?.length) return null
+    return (
+      <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg p-3 text-xs">
+        <p className="font-bold text-[#1A1A2E] mb-1">{label}</p>
+        {payload.map((p, i) => {
+          const unit = unitMap.get(p.dataKey) ?? ''
+          return (
+            <div key={i} className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+              <span className="text-gray-600">{p.name}:</span>
+              <span className="font-bold text-[#1A1A2E]">{fmtEconValue(p.value, unit)}</span>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
 }
 
 export function EconLineChart({ series, height = 280, refLine }: EconChartProps) {
   const data = mergeData(series)
   if (data.length === 0) return <div className="h-[200px] flex items-center justify-center text-sm text-gray-400">데이터 없음</div>
+
+  const unitMap = new Map(series.map(s => [s.id, s.unit]))
+  const TooltipContent = makeTooltip(unitMap)
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -84,12 +93,8 @@ export function EconLineChart({ series, height = 280, refLine }: EconChartProps)
           width={50}
           domain={['auto', 'auto']}
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
-          iconType="circle"
-          iconSize={8}
-          wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-        />
+        <Tooltip content={<TooltipContent />} />
+        <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
         {refLine && (
           <ReferenceLine
             y={refLine.y}
@@ -123,6 +128,22 @@ interface YieldCurveProps {
   yearAgo: YieldPoint[]
 }
 
+function YieldTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayload[]; label?: string }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg p-3 text-xs">
+      <p className="font-bold text-[#1A1A2E] mb-1">{label}</p>
+      {payload.map((p, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+          <span className="text-gray-600">{p.name}:</span>
+          <span className="font-bold text-[#1A1A2E]">{typeof p.value === 'number' ? p.value.toFixed(2) + '%' : '—'}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function YieldCurveChart({ current, yearAgo }: YieldCurveProps) {
   const data = current.map((c, i) => ({
     maturity: c.maturity,
@@ -142,7 +163,7 @@ export function YieldCurveChart({ current, yearAgo }: YieldCurveProps) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="maturity" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} />
           <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} width={40} domain={['auto', 'auto']} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<YieldTooltip />} />
           <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
           <Line type="monotone" dataKey="현재" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 3, fill: '#2563eb' }} />
           <Line type="monotone" dataKey="1년전" stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="5 3" dot={{ r: 2, fill: '#9CA3AF' }} connectNulls />

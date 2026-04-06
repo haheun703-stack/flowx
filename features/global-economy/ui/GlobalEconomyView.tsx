@@ -2,7 +2,7 @@
 
 import { CONTAINER, PAGE, PAGE_HEADER } from '@/shared/lib/card-styles'
 import { useGlobalEconomy, type SectionData, type SeriesData } from '../api/useGlobalEconomy'
-import { EconLineChart, YieldCurveChart, type ChartSeries } from './EconChart'
+import { EconLineChart, YieldCurveChart, fmtEconValue, type ChartSeries } from './EconChart'
 
 /* ── 상태 판정 ── */
 function getStatus(sectionId: string, series: SeriesData[]): { text: string; color: string } | null {
@@ -53,16 +53,21 @@ function getRefLine(sectionId: string) {
   return undefined
 }
 
-/* ── 현재값 포맷 ── */
-function fmtCurrent(s: SeriesData): string {
-  if (!s.current) return '—'
-  const v = s.current.value
-  if (s.unit === '원') return v.toLocaleString('ko-KR', { maximumFractionDigits: 0 }) + '원'
-  if (s.unit === '조$') return (v / 1_000_000).toFixed(2) + '조$'
-  if (s.unit === '십억$') return (v / 1_000).toFixed(0) + 'B$'
-  if (s.unit === '천명' || s.unit === '천건' || s.unit === '천호') return Math.round(v).toLocaleString() + s.unit
-  if (s.unit === '$/bbl') return '$' + v.toFixed(2)
-  return v.toFixed(2) + (s.unit ? s.unit : '')
+/* ── 수익률 곡선 역전 뱃지 ── */
+function YieldCurveStatus({ current }: { current: { maturity: string; value: number | null }[] }) {
+  const c2y = current.find(c => c.maturity === '2Y')?.value
+  const c10y = current.find(c => c.maturity === '10Y')?.value
+  if (c2y == null || c10y == null) return null
+  const inverted = c10y < c2y
+  const color = inverted ? '#dc2626' : '#16a34a'
+  return (
+    <span
+      className="text-[10px] px-2 py-0.5 rounded-full font-bold"
+      style={{ color, backgroundColor: color + '15' }}
+    >
+      {inverted ? '역전 경고' : '정상'}
+    </span>
+  )
 }
 
 /* ── 현재값 미니 카드들 ── */
@@ -71,18 +76,21 @@ function CurrentValues({ series }: { series: SeriesData[] }) {
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
       {series.map(s => {
         if (!s.current) return null
-        const isUp = (s.current.change ?? 0) >= 0
-        const chgColor = s.current.change === 0 || s.current.change == null ? '#64748b' : isUp ? '#dc2626' : '#2563eb'
+        const chg = s.current.change
+        const isZero = chg === 0 || chg == null
+        const isUp = (chg ?? 0) > 0
+        const chgColor = isZero ? '#64748b' : isUp ? '#dc2626' : '#2563eb'
+        const arrow = isZero ? '─' : isUp ? '▲' : '▼'
         return (
           <div key={s.id} className="bg-[#FAFAF8] rounded-lg px-3 py-2 border border-[var(--border)]">
             <div className="text-[11px] text-gray-500 truncate">{s.name}</div>
             <div className="text-[18px] font-black text-[#1A1A2E] tabular-nums leading-tight">
-              {fmtCurrent(s)}
+              {fmtEconValue(s.current.value, s.unit)}
             </div>
             <div className="flex items-center gap-1 mt-0.5">
-              {s.current.change != null && (
+              {chg != null && (
                 <span className="text-[11px] font-bold tabular-nums" style={{ color: chgColor }}>
-                  {isUp ? '▲' : '▼'}{Math.abs(s.current.change).toFixed(2)}
+                  {arrow}{Math.abs(chg).toFixed(2)}
                 </span>
               )}
               <span className="text-[10px] text-gray-400 ml-auto">{s.current.date}</span>
@@ -99,17 +107,11 @@ function SectionPanel({ section }: { section: SectionData }) {
   const status = getStatus(section.id, section.series)
   const refLine = getRefLine(section.id)
   const chartSeries: ChartSeries[] = section.series.map(s => ({
-    id: s.id,
-    name: s.name,
-    unit: s.unit,
-    color: s.color,
-    history: s.history,
-    current: s.current,
+    id: s.id, name: s.name, unit: s.unit, color: s.color, history: s.history,
   }))
 
   return (
     <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden">
-      {/* 헤더 */}
       <div className="flex items-center gap-2 px-5 py-3 border-b border-[var(--border)]/50">
         <span className="text-lg">{section.icon}</span>
         <span className="text-[17px] font-bold text-[#1A1A2E]">{section.title}</span>
@@ -123,8 +125,6 @@ function SectionPanel({ section }: { section: SectionData }) {
         )}
         <span className="text-[11px] text-gray-400 ml-auto">{section.desc}</span>
       </div>
-
-      {/* 현재값 + 차트 */}
       <div className="p-5">
         <CurrentValues series={section.series} />
         <EconLineChart series={chartSeries} refLine={refLine} />
@@ -141,8 +141,8 @@ function Skeleton() {
         <div key={i} className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden">
           <div className="h-10 bg-gray-50 border-b border-[var(--border)]/50 animate-pulse" />
           <div className="p-5">
-            <div className="grid grid-cols-5 gap-2 mb-4">
-              {Array.from({ length: 5 }).map((_, j) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
+              {Array.from({ length: 4 }).map((_, j) => (
                 <div key={j} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
               ))}
             </div>
@@ -157,6 +157,7 @@ function Skeleton() {
 /* ── 메인 뷰 ── */
 export function GlobalEconomyView() {
   const { data, isLoading, isError } = useGlobalEconomy()
+  const totalCount = data?.total ?? 0
 
   return (
     <div className={PAGE}>
@@ -166,7 +167,7 @@ export function GlobalEconomyView() {
             Global Economy
           </h1>
           <span className="text-xs px-2 py-0.5 rounded border border-[#00FF88]/40 text-[#00CC6A] font-bold">LIVE</span>
-          <span className="text-sm text-gray-500">FRED 5년 히스토리 · 38개 거시경제 지표</span>
+          <span className="text-sm text-gray-500">FRED 5년 히스토리 · {totalCount || '—'}개 거시경제 지표</span>
         </div>
         {data?.updated_at && (
           <p className="text-xs text-[var(--text-dim)] mt-1">
@@ -186,43 +187,23 @@ export function GlobalEconomyView() {
 
         {data && (
           <>
-            {/* 수익률 곡선 (최상단) */}
+            {/* 수익률 곡선 */}
             <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden">
               <div className="flex items-center gap-2 px-5 py-3 border-b border-[var(--border)]/50">
                 <span className="text-lg">📉</span>
                 <span className="text-[17px] font-bold text-[#1A1A2E]">미국 국채 수익률 곡선</span>
-                {(() => {
-                  const c2y = data.yield_curve.current.find(c => c.maturity === '2Y')?.value
-                  const c10y = data.yield_curve.current.find(c => c.maturity === '10Y')?.value
-                  if (c2y != null && c10y != null) {
-                    const inverted = c10y < c2y
-                    return (
-                      <span
-                        className="text-[10px] px-2 py-0.5 rounded-full font-bold"
-                        style={{ color: inverted ? '#dc2626' : '#16a34a', backgroundColor: (inverted ? '#dc2626' : '#16a34a') + '15' }}
-                      >
-                        {inverted ? '역전 경고' : '정상'}
-                      </span>
-                    )
-                  }
-                  return null
-                })()}
+                <YieldCurveStatus current={data.yield_curve.current} />
                 <span className="text-[11px] text-gray-400 ml-auto">만기별 국채 수익률 — 역전 시 경기침체 신호</span>
               </div>
               <div className="p-5">
-                <YieldCurveChart
-                  current={data.yield_curve.current}
-                  yearAgo={data.yield_curve.year_ago}
-                />
+                <YieldCurveChart current={data.yield_curve.current} yearAgo={data.yield_curve.year_ago} />
               </div>
             </div>
 
-            {/* 각 섹션 패널 */}
             {data.sections.map(section => (
               <SectionPanel key={section.id} section={section} />
             ))}
 
-            {/* 출처 */}
             <div className="text-center py-4 border-t border-[var(--border)]">
               <p className="text-[11px] text-[var(--text-dim)]">
                 데이터 출처: Federal Reserve Economic Data (FRED) · 6시간 캐시 · 월별 집계 · 5년 히스토리

@@ -7,7 +7,7 @@ export interface SeriesData {
   name: string
   unit: string
   color: string
-  current: { value: number; date: string; prev_value: number | null; change: number | null } | null
+  current: { value: number; date: string; change: number | null } | null
   history: { d: string; v: number }[]
 }
 
@@ -27,6 +27,7 @@ export interface GlobalEconomyData {
     current: YieldPoint[]
     year_ago: YieldPoint[]
   }
+  total: number
   updated_at: string
 }
 
