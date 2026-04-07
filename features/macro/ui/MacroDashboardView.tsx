@@ -57,8 +57,8 @@ export default function MacroDashboardView() {
               <p className="text-sm text-[#888] mt-0.5">{sub}</p>
             </div>
 
-            {/* 차트 그리드 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 차트 */}
+            <div className="space-y-6">
               <Component />
             </div>
           </section>
