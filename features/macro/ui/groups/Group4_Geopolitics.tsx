@@ -131,7 +131,7 @@ function TradeBalance() {
               zero: { type: 'line', yMin: 0, yMax: 0, borderColor: 'rgba(0,0,0,0.2)', borderWidth: 1 },
               war22: vl(2, '우크라 전쟁', C.red + '0.3)'),
               war26: vl(6, '이란전쟁', C.red + '0.4)'),
-              a1: ann(2, -980, '美 적자\n역대 최대', C.blue + '0.12)'),
+              a1: ann(3, -980, '美 적자\n역대 최대', C.blue + '0.12)'),
               a2: ann(2, 920, '中 흑자\n$877B', C.red + '0.12)'),
               a3: ann(6, 200, '러 수혜\n$150B', C.orange + '0.15)'),
             }},
