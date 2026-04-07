@@ -20,7 +20,7 @@ const NAV_TABS = [
     sub: [
       { label: '시장 개요', href: '/market' },
       { label: '매크로 지표', href: '/macro' },
-      { label: '글로벌 이코노미', href: '/global-economy' },
+      { label: '거시경제', href: '/global-economy' },
     ],
   },
   {
