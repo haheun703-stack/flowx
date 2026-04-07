@@ -38,8 +38,8 @@ function Russell2000() {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'line', padding: 14 } },
             annotation: { annotations: {
               bot: vl(4, '바닥 형성'),
-              split: { type: 'label', xValue: 20, yValue: 145, content: ['↕ 괴리 확대'], backgroundColor: 'rgba(255,255,255,0.9)', font: { size: 10 }, color: '#d32f2f', padding: 4 },
-              top: ann(24, 147, '적자 +40%', C.red + '0.15)'),
+              split: { type: 'label', xValue: 22, yValue: 128, content: ['↕ 괴리 확대'], backgroundColor: 'rgba(255,255,255,0.9)', font: { size: 10 }, color: '#d32f2f', padding: 4 },
+              top: ann(26, 143, '적자 +40%', C.red + '0.15)'),
               btm: ann(24, 112, '흑자 +20%', C.blue + '0.12)'),
               base: { type: 'line', yMin: 100, yMax: 100, borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1, borderDash: [6, 3], label: { display: true, content: '기준 100', position: 'start', backgroundColor: 'rgba(255,255,255,.8)', color: '#888', font: { size: 9 }, padding: 2 } },
             }},
