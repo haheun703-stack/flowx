@@ -131,7 +131,7 @@ function InterestRateFx() {
             annotation: { annotations: {
               hike: vl(6, '금리인상 충격', C.red + '0.3)'),
               a1: ann(4, 1.2, '제로금리', C.teal + '0.15)'),
-              a2: ann(10, 4.8, '금리차 1.25%p', C.red + '0.12)'),
+              a2: ann(8, 5.8, '금리차 1.25%p', C.red + '0.12)'),
             }},
           },
           scales: {
