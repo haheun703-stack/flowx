@@ -141,3 +141,37 @@ export function useInformationSupplyDemandHistory() {
     refetchInterval: getRefetchInterval(1000 * 60 * 10, 1000 * 60 * 60),
   })
 }
+
+// ─── Supply Scoring ───
+
+export interface SupplyScoringItem {
+  id: number
+  date: string
+  ticker: string
+  name: string | null
+  sector: string | null
+  market: string | null
+  score: number
+  grade: string
+  signals: string[]
+  change_pct: number
+  cum_3d: number
+  cum_5d: number
+  foreign_net_amt: number
+  inst_net_amt: number
+  foreign_days: number
+  inst_days: number
+  exec_strength: number
+  price: number
+  next_change_pct: number | null
+  hit: boolean | null
+}
+
+export function useSupplyScoring() {
+  return useQuery<{ date: string | null; items: SupplyScoringItem[] }>({
+    queryKey: ['supply-scoring'],
+    queryFn: () => fetchJson('/api/supply-scoring'),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: getRefetchInterval(1000 * 60 * 10, 1000 * 60 * 60),
+  })
+}
