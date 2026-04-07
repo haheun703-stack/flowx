@@ -171,7 +171,7 @@ function HouseholdDebt() {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
               a1: ann(4, 110, '코로나\n대출폭증', C.red + '0.15)'),
-              a2: ann(9, 112, '105%\nOECD 1위', C.red + '0.2)'),
+              a2: ann(7, 112, '105%\nOECD 1위', C.red + '0.2)'),
               danger: { type: 'line', yMin: 100, yMax: 100, borderColor: C.red + '0.3)', borderWidth: 1, borderDash: [6, 3], label: { display: true, content: '위험선 100%', position: 'end', backgroundColor: 'rgba(255,255,255,.8)', color: '#c62828', font: { size: 9 }, padding: 2 } },
             }},
           },
@@ -211,8 +211,8 @@ function BuffettIndicator() {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
               overheat: { type: 'line', yMin: 100, yMax: 100, borderColor: C.orange + '0.5)', borderWidth: 2, borderDash: [6, 3], label: { display: true, content: '과열 경고선 100%', position: 'end', backgroundColor: 'rgba(255,255,255,.8)', color: '#e65100', font: { size: 9 }, padding: 2 } },
-              a1: ann(9, 218, '美 205%\n역대과열', C.red + '0.15)'),
-              a2: ann(9, 82, '韓 95%\n저평가', C.neon + '0.2)'),
+              a1: ann(7, 218, '美 205%\n역대과열', C.red + '0.15)'),
+              a2: ann(7, 82, '韓 95%\n저평가', C.neon + '0.2)'),
             }},
           },
           scales: {
