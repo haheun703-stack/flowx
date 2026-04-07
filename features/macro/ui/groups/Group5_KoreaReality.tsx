@@ -145,76 +145,106 @@ function KoreaDemographics() {
 }
 
 /* ── 15-B 인구 깔때기 ── */
+
+interface FunnelStage {
+  label: string; value: string; pct: number; vis: number; bg: string; drop: string
+}
+
+function FunnelColumn({ stages, title, year, opacity }: { stages: FunnelStage[]; title: string; year: string; opacity?: number }) {
+  return (
+    <div className="w-full" style={{ opacity: opacity ?? 1 }}>
+      <div className="text-center mb-3">
+        <div className="text-xs font-bold text-[var(--text-dim)] tracking-wider">{title}</div>
+        <div className="text-lg font-black text-[var(--text-primary)]">{year}</div>
+      </div>
+      {stages.map((s, i) => {
+        const visPct = s.vis
+        const nextVisPct = stages[i + 1]?.vis ?? 12
+        const tL = (100 - visPct) / 2
+        const tR = (100 + visPct) / 2
+        const bL = (100 - nextVisPct) / 2
+        const bR = (100 + nextVisPct) / 2
+        return (
+          <div key={i}>
+            {i > 0 && (
+              <div className="text-center text-[10px] text-red-500 font-bold py-0.5">{s.drop}</div>
+            )}
+            <div className="relative" style={{ height: '54px' }}>
+              <div
+                className="absolute inset-0 flex items-center justify-center text-white"
+                style={{
+                  clipPath: `polygon(${tL}% 0%, ${tR}% 0%, ${bR}% 100%, ${bL}% 100%)`,
+                  backgroundColor: s.bg,
+                }}
+              >
+                <div className="text-center px-3">
+                  <div className="text-[9px] opacity-80 font-bold">{s.label}</div>
+                  <div className="text-sm font-black leading-tight">{s.value}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function PopulationFunnel() {
-  const stages = [
+  const now: FunnelStage[] = [
     { label: '총 인구', value: '5,100만', pct: 100, vis: 100, bg: '#1565c0', drop: '' },
-    { label: '생산가능인구 (15~64세)', value: '3,545만', pct: 69, vis: 72, bg: '#0277bd', drop: '▼ 30.5% 이탈' },
-    { label: '실제 취업자', value: '2,840만', pct: 56, vis: 58, bg: '#ef6c00', drop: '▼ 19.9% 비경활' },
-    { label: '청년 노동력 (20~39세)', value: '1,320만', pct: 26, vis: 40, bg: '#c62828', drop: '▼ 53.5% 고령화' },
-    { label: '연간 출생아', value: '23만', pct: 4.5, vis: 22, bg: '#b71c1c', drop: '▼ 98.3% 소멸' },
+    { label: '생산가능인구 (15~64세)', value: '3,545만', pct: 69, vis: 72, bg: '#0277bd', drop: '▼ 30.5%' },
+    { label: '실제 취업자', value: '2,840만', pct: 56, vis: 58, bg: '#ef6c00', drop: '▼ 19.9%' },
+    { label: '청년 노동력 (20~39세)', value: '1,320만', pct: 26, vis: 40, bg: '#c62828', drop: '▼ 53.5%' },
+    { label: '연간 출생아', value: '23만', pct: 4.5, vis: 22, bg: '#b71c1c', drop: '▼ 98.3%' },
+  ]
+
+  const future: FunnelStage[] = [
+    { label: '총 인구', value: '4,500만', pct: 88, vis: 88, bg: '#1565c0', drop: '' },
+    { label: '생산가능인구 (15~64세)', value: '2,419만', pct: 54, vis: 56, bg: '#0277bd', drop: '▼ 46.2%' },
+    { label: '실제 취업자', value: '1,900만', pct: 42, vis: 45, bg: '#ef6c00', drop: '▼ 21.5%' },
+    { label: '청년 노동력 (20~39세)', value: '700만', pct: 16, vis: 30, bg: '#c62828', drop: '▼ 63.2%' },
+    { label: '연간 출생아', value: '15만', pct: 3.3, vis: 20, bg: '#b71c1c', drop: '▼ 97.9%' },
   ]
 
   return (
     <MacroCard
       num="15-B — 인구 깔때기"
-      title="한국 인구 구조의 붕괴"
+      title="한국 인구 구조의 붕괴: 현재 vs 20년 후"
       desc="총 인구에서 연간 출생아까지 — 매 단계에서 인구가 소멸한다"
       full
-      source="통계청, 고용노동부 (2025년 기준) | 합계출산율 0.72 (OECD 최저)"
-      insight={`<b>💡 깔때기의 경고:</b> 5,100만 중 실제 청년 노동력(20~39세)은 <b style="color:#ff1744">1,320만(26%)</b>뿐. 연간 출생아 23만은 전체의 <b style="color:#ff1744">0.45%</b>. 2000년 출생아 64만 대비 <b style="color:#ff1744">-64% 감소</b>. 이 깔때기가 10년 후 생산인구로 직결됩니다. <b style="color:#00c853">자동화·이민 없이는 연금·의료·국방 모두 붕괴.</b>`}
+      source="통계청 장래인구추계 (2022~2072), 고용노동부 | 합계출산율 0.72 (OECD 최저)"
+      insight={`<b>💡 20년 후 충격:</b> 생산가능인구 3,545만→<b style="color:#ff1744">2,419만(-32%)</b>. 청년 노동력 1,320만→<b style="color:#ff1744">700만(-47%)</b>. 출생아 23만→<b style="color:#ff1744">15만(-35%)</b>. 깔때기가 더 좁아지면 연금·의료·국방 모두 붕괴. <b style="color:#00c853">AI 자동화 + 이민 정책 없이는 국가 유지 불가.</b>`}
     >
-      <div className="py-6 grid grid-cols-1 lg:grid-cols-[1fr_180px] gap-4 items-start">
-        {/* 깔때기 */}
-        <div className="max-w-[520px] mx-auto w-full">
-          {stages.map((s, i) => {
-            const visPct = s.vis
-            const nextVisPct = stages[i + 1]?.vis ?? 12
-            const tL = (100 - visPct) / 2
-            const tR = (100 + visPct) / 2
-            const bL = (100 - nextVisPct) / 2
-            const bR = (100 + nextVisPct) / 2
-
-            return (
-              <div key={i}>
-                {i > 0 && (
-                  <div className="text-center text-[10px] text-red-500 font-bold py-0.5">{s.drop}</div>
-                )}
-                <div className="relative" style={{ height: '58px' }}>
-                  <div
-                    className="absolute inset-0 flex items-center justify-center text-white"
-                    style={{
-                      clipPath: `polygon(${tL}% 0%, ${tR}% 0%, ${bR}% 100%, ${bL}% 100%)`,
-                      backgroundColor: s.bg,
-                    }}
-                  >
-                    <div className="text-center px-4">
-                      <div className="text-[10px] opacity-80 font-bold">{s.label}</div>
-                      <div className="text-base font-black leading-tight">{s.value}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* 우측 범례 */}
-        <div className="space-y-3 pt-2">
-          {stages.map((s, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: s.bg }} />
+      <div className="py-4 grid grid-cols-1 lg:grid-cols-[140px_1fr_auto_1fr] gap-3 items-start">
+        {/* 좌측 범례 */}
+        <div className="space-y-2 pt-12">
+          {now.map((s, i) => (
+            <div key={i} className="flex items-center gap-1.5" style={{ height: i > 0 ? '72px' : '54px' }}>
+              <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: s.bg }} />
               <div>
-                <div className="text-[11px] font-bold text-[var(--text-primary)]">{s.value}</div>
-                <div className="text-[10px] text-gray-400 font-mono">{s.pct}%</div>
+                <div className="text-[10px] font-bold text-[var(--text-primary)] leading-tight">{s.label}</div>
+                <div className="text-[9px] text-gray-400 font-mono">{s.pct}%</div>
               </div>
             </div>
           ))}
           <div className="pt-2 border-t border-gray-200">
-            <div className="text-[10px] text-gray-500">2000년 출생아: <b className="text-red-500">64만</b></div>
-            <div className="text-[10px] text-gray-500">2025년 출생아: <b className="text-red-500">23만</b></div>
-            <div className="text-[10px] text-red-500 font-bold">→ 25년간 -64% 감소</div>
+            <div className="text-[9px] text-gray-500">2000년 출생아: <b className="text-red-500">64만</b></div>
+            <div className="text-[9px] text-gray-500">2025년 출생아: <b className="text-red-500">23만</b></div>
+            <div className="text-[9px] text-red-500 font-bold">25년간 -64%</div>
           </div>
         </div>
+
+        {/* 현재 깔때기 */}
+        <FunnelColumn stages={now} title="현재" year="2025" />
+
+        {/* 화살표 */}
+        <div className="flex items-center justify-center self-center">
+          <div className="text-2xl font-black text-red-400">→</div>
+        </div>
+
+        {/* 20년 후 깔때기 */}
+        <FunnelColumn stages={future} title="20년 후" year="2045" opacity={0.75} />
       </div>
     </MacroCard>
   )
