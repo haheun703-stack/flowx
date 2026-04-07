@@ -200,6 +200,74 @@ function KoreaExport() {
   )
 }
 
+/* ── 🔒 SECRET — 엔 캐리트레이드 ── */
+function YenCarryTrade() {
+  const labels = ['22.1', '22.7', '22.10', '23.1', '23.6', '23.12', '24.3', '24.7', '24.8★', '24.12', '25.3', '25.9', '26E']
+  const usdJpy = [115, 136, 150, 127, 140, 142, 150, 162, 142, 157, 149, 143, 148]
+  const foreignNet = [-1, -5, -6, 3, -1, 2, 3, 2, -12, 5, 8, 5, -3]
+
+  return (
+    <MacroCard
+      num="🔒 SECRET — 엔 캐리트레이드"
+      title="엔 캐리트레이드의 시한폭탄"
+      desc="USD/JPY 환율 vs KOSPI 외국인 순매수 (조원) | 2024.8 캐리 언와인드 = 실전 증거"
+      full
+      source="BOJ, Fed, Bloomberg, KRX, Reuters"
+      insight={`<b>🔒 시크릿 인사이트:</b><br>• <b style="color:#ff1744">엔 캐리트레이드</b> = 엔화 저금리 차입 → 고금리 자산(미국·한국 주식) 투자. 일본 금리 인상 시 역류.<br>• <b style="color:#ff1744">2024.8 증거:</b> USD/JPY 162→142 급락. 동시에 외국인 KOSPI <b>-12조원</b> 역대급 매도. 이것이 캐리 언와인드.<br>• <b style="color:#ff1744">2026E 경고:</b> BOJ 추가 금리인상(0.5→0.75%) + 이란전쟁 리스크 = 2차 언와인드 가능. USD/JPY 148 수준에서 재차 급락 시 외국인 이탈 반복.`}
+    >
+      <MacroChart config={{
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'USD/JPY 환율', data: usdJpy, type: 'line', yAxisID: 'y',
+              borderColor: C.orange + '0.9)', backgroundColor: C.orange + '0.1)',
+              borderWidth: 3, tension: 0.3, pointRadius: 5,
+              pointBackgroundColor: usdJpy.map((v, i) => i === 8 ? 'rgba(255,23,68,1)' : C.orange + '0.8)'),
+              pointBorderColor: usdJpy.map((v, i) => i === 8 ? 'rgba(255,23,68,1)' : 'transparent'),
+              pointBorderWidth: usdJpy.map((v, i) => i === 8 ? 3 : 0),
+              order: 1,
+            },
+            {
+              label: '외국인 순매수 (조원)', data: foreignNet, yAxisID: 'y2',
+              backgroundColor: foreignNet.map(v => v >= 0 ? C.neon + '0.5)' : C.red + '0.5)'),
+              borderRadius: 3, borderSkipped: false, order: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true, aspectRatio: 2.2,
+          interaction: { intersect: false, mode: 'index' },
+          plugins: {
+            legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
+            tooltip: {
+              callbacks: {
+                label: (c: { dataset: { label: string }; parsed: { y: number }; datasetIndex: number }) =>
+                  c.datasetIndex === 0
+                    ? `USD/JPY: ¥${c.parsed.y}`
+                    : `외국인: ${c.parsed.y > 0 ? '+' : ''}${c.parsed.y}조원`,
+              },
+            },
+            annotation: { annotations: {
+              crash: vl(8, '캐리 언와인드', C.red + '0.6)'),
+              a1: ann(8, 170, '¥162→¥142\n-12.3% 폭락', C.red + '0.18)'),
+              a2: ann(8, -14, '외국인 -12조\n역대급 매도', C.red + '0.18)'),
+              a3: ann(12, 155, '2차 언와인드\n경고 구간', C.amber + '0.2)'),
+              carry: ann(3, 120, '캐리 자금 유입\n엔 약세 = 매수', C.neon + '0.15)'),
+            }},
+          },
+          scales: {
+            y: { min: 100, max: 175, title: { display: true, text: 'USD/JPY 환율' }, grid: { color: G }, ticks: { callback: (v: number) => '¥' + v } },
+            y2: { position: 'right', min: -15, max: 12, title: { display: true, text: '외국인 순매수 (조원)' }, grid: { display: false }, ticks: { callback: (v: number) => v + '조' } },
+            x: { grid: { display: false } },
+          },
+        },
+      }} />
+    </MacroCard>
+  )
+}
+
 export function Group4_Geopolitics() {
   return (
     <>
@@ -207,6 +275,7 @@ export function Group4_Geopolitics() {
       <GeopoliticalShock />
       <TradeBalance />
       <KoreaExport />
+      <YenCarryTrade />
     </>
   )
 }
