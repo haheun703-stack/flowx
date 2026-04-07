@@ -127,10 +127,10 @@ function UltimateChart() {
             annotation: { annotations: {
               conv: { type: 'box', xMin: 6.5, xMax: 8.5, backgroundColor: 'rgba(255,214,0,0.08)', borderColor: 'rgba(255,214,0,0.3)', borderWidth: 2, borderDash: [4, 2], label: { display: true, content: '⚡ 2028 수렴점', position: 'start', color: '#f57f17', font: { size: 13, weight: 'bold' }, padding: 6 } },
               gold: { type: 'box', xMin: 4.5, xMax: 6.5, backgroundColor: 'rgba(0,200,83,0.04)', borderWidth: 0, label: { display: true, content: '🔥 골든타임', position: 'start', color: '#1b5e20', font: { size: 10, weight: 'bold' } } },
-              crossA: ann(8, 67, 'AI가 인구감소를\n추월하는 순간', C.neon + '0.25)'),
-              crossB: ann(5, 38, '이란전쟁\n에너지 충격', C.orange + '0.18)'),
+              crossA: ann(8, 82, 'AI가 인구감소를\n추월하는 순간', C.neon + '0.25)'),
+              crossB: ann(5, 25, '이란전쟁\n에너지 충격', C.orange + '0.18)'),
               crossC: ann(10, 96, '지정학 가치\n최고점 접근', C.purple + '0.15)'),
-              crossD: ann(12, 14, '인구 위기\n심화 구간', C.red + '0.15)'),
+              crossD: ann(10, 8, '인구 위기\n심화 구간', C.red + '0.15)'),
               mid: { type: 'line', yMin: 50, yMax: 50, borderColor: 'rgba(0,0,0,0.08)', borderWidth: 1, borderDash: [8, 4], label: { display: true, content: '균형선 50', position: 'end', backgroundColor: 'rgba(255,255,255,.7)', color: '#aaa', font: { size: 9 }, padding: 2 } },
             }},
           },
