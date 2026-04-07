@@ -15,7 +15,7 @@ function JCurve() {
 
   return (
     <MacroCard
-      num="09 — J-Curve"
+      num="09 — J커브"
       title="생산성 J커브: AI 투자 수익의 지연"
       desc="노동생산성 vs 총요소생산성(TFP) — 기준점=100"
       full
@@ -37,9 +37,9 @@ function JCurve() {
           plugins: {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
-              p1: { type: 'box', xMin: 0, xMax: 2.5, backgroundColor: 'rgba(21,101,192,0.04)', borderWidth: 0, label: { display: true, content: 'Phase 1', position: 'start', color: '#888', font: { size: 9 } } },
-              p2: { type: 'box', xMin: 2.5, xMax: 6.5, backgroundColor: 'rgba(255,23,68,0.04)', borderWidth: 0, label: { display: true, content: 'Phase 2: 하락', position: 'start', color: '#c62828', font: { size: 9 } } },
-              p3: { type: 'box', xMin: 6.5, xMax: 12, backgroundColor: 'rgba(57,255,20,0.04)', borderWidth: 0, label: { display: true, content: 'Phase 3: 폭발성장', position: 'start', color: '#1b5e20', font: { size: 9 } } },
+              p1: { type: 'box', xMin: 0, xMax: 2.5, backgroundColor: 'rgba(21,101,192,0.04)', borderWidth: 0, label: { display: true, content: '1단계', position: 'start', color: '#888', font: { size: 9 } } },
+              p2: { type: 'box', xMin: 2.5, xMax: 6.5, backgroundColor: 'rgba(255,23,68,0.04)', borderWidth: 0, label: { display: true, content: '2단계: 하락', position: 'start', color: '#c62828', font: { size: 9 } } },
+              p3: { type: 'box', xMin: 6.5, xMax: 12, backgroundColor: 'rgba(57,255,20,0.04)', borderWidth: 0, label: { display: true, content: '3단계: 폭발성장', position: 'start', color: '#1b5e20', font: { size: 9 } } },
               dip: ann(5, 90, 'J커브 바닥 96', C.red + '0.15)'),
               peak: ann(10.5, 142, '성숙기 135', C.neon + '0.25)'),
               base: { type: 'line', yMin: 100, yMax: 100, borderColor: 'rgba(0,0,0,0.12)', borderWidth: 1, borderDash: [6, 3], label: { display: true, content: '기준 100', position: 'end', backgroundColor: 'rgba(255,255,255,.8)', color: '#888', font: { size: 9 }, padding: 2 } },
@@ -65,7 +65,7 @@ function AiTimeline() {
 
   return (
     <MacroCard
-      num="16 — AI Adoption & Reskilling Timeline"
+      num="16 — AI 도입 & 재교육 타임라인"
       title="AI 가속 도입 시점 & 재교육 타이밍"
       desc="인구절벽 · AI 생산성 · 재교육 수요의 교차점 분석"
       full
@@ -115,7 +115,7 @@ function AiRisk() {
 
   return (
     <MacroCard
-      num="20 — AI Displacement Risk"
+      num="20 — AI 대체 위험도"
       title="섹터별 AI 대체 위험도"
       desc="WEF·McKinsey 기반 — 자동화 가능성 vs 고용 규모"
       full
@@ -151,11 +151,11 @@ function AiRisk() {
 function SemiReturns() {
   return (
     <MacroCard
-      num="10 — US vs Korea Semi"
+      num="10 — 미국 vs 한국 반도체"
       title="미국 vs 한국 반도체 연간수익률"
       desc="SOX(미국) vs MSCI Korea Semi"
       source="MSCI, Nasdaq, Bloomberg"
-      insight={`<b>💡 핵심:</b> 2025년 韓 반도체 <b style="color:#00c853">+69%</b> vs 美 +13.8%. AI CapEx→HBM/DRAM→SK하이닉스·삼성 수혜. <b style="color:#ff1744">2022년은 둘 다 폭락</b> — 사이클 동조.`}
+      insight={`<b>💡 핵심:</b> 2025년 韓 반도체 <b style="color:#00c853">+69%</b> vs 美 +13.8%. AI 설비투자→HBM/DRAM→SK하이닉스·삼성 수혜. <b style="color:#ff1744">2022년은 둘 다 폭락</b> — 사이클 동조.`}
     >
       <MacroChart config={{
         type: 'bar',
@@ -199,7 +199,7 @@ function SemiScatter() {
 
   return (
     <MacroCard
-      num="10-B — Correlation"
+      num="10-B — 상관관계"
       title="미·한 반도체 상관관계 산점도"
       desc="X축=SOX 수익률 / Y축=한국반도체 수익률"
       source="MSCI, LSEG, Bloomberg"

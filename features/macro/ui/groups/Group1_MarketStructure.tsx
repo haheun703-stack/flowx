@@ -11,17 +11,17 @@ import { C, G, ann, vl } from '../chartHelpers'
 export function OverviewKPI() {
   return (
     <MacroCard
-      num="Overview"
+      num="개요"
       title="핵심 거시 지표 한눈에 보기"
       full
-      insight={`<b>💡 핵심:</b> Mag-7은 S&P 500의 1/3을 차지하지만, 이익 기여도는 줄고 있습니다. '집중 → 분산' 로테이션이 시작되었다는 신호입니다.`}
+      insight={`<b>💡 핵심:</b> S&P 7은 S&P 500의 1/3을 차지하지만, 이익 기여도는 줄고 있습니다. '집중 → 분산' 로테이션이 시작되었다는 신호입니다.`}
     >
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-        <KPICard value="32.5%" label="Mag-7 S&P 500 비중" color="blue" />
-        <KPICard value="$427B" label="Big Tech CapEx (2025)" color="green" />
-        <KPICard value="25.8%" label="Mag-7 순이익률 (역대최고)" color="green" />
+        <KPICard value="32.5%" label="S&P 7 S&P 500 비중" color="blue" />
+        <KPICard value="$427B" label="빅테크 설비투자 (2025)" color="green" />
+        <KPICard value="25.8%" label="S&P 7 순이익률 (역대최고)" color="green" />
         <KPICard value="33%↓" label="이익기여도 (52%→33%)" color="red" />
-        <KPICard value="875%" label="Mag-7 10년 누적수익률" color="green" />
+        <KPICard value="875%" label="S&P 7 10년 누적수익률" color="green" />
       </div>
     </MacroCard>
   )
@@ -40,7 +40,7 @@ export function PortfolioShift() {
 
   return (
     <MacroCard
-      num="01 — Portfolio Shift"
+      num="01 — 포트폴리오 전환"
       title="금융 투자 포트폴리오 변화"
       desc="전통 60/40 → 80/20 구조 전환"
       source="Bloomberg, Apollo Chief Economist"
@@ -61,12 +61,12 @@ export function PortfolioShift() {
   )
 }
 
-/* ── 02 CapEx Surge ── */
+/* ── 02 설비투자 Surge ── */
 export function CapexSurge() {
   return (
     <MacroCard
-      num="02 — CapEx Surge"
-      title="빅테크 CapEx 연도별 추이"
+      num="02 — 설비투자 급증"
+      title="빅테크 설비투자 연도별 추이"
       desc="AI 인프라 투자 폭발 — $107B → $562B"
       source="Bloomberg, RBC Wealth Management, CNBC"
       insight={`<b>💡 전환점:</b> 2023년 ChatGPT 이후 AI 경쟁 본격화. 2024년부터 전년비 +52% 급증. 2026E $562B은 마샬플랜의 4~8배 규모.`}
@@ -76,7 +76,7 @@ export function CapexSurge() {
         data: {
           labels: ['2020', '2021', '2022', '2023', '2024', '2025E', '2026E'],
           datasets: [{
-            label: 'CapEx ($B)',
+            label: '설비투자 ($B)',
             data: [107, 143, 172, 168, 256, 427, 562],
             backgroundColor: ['#90caf9', '#90caf9', '#90caf9', '#90caf9', C.blue + '0.8)', C.neon + '0.45)', C.neon + '0.3)'],
             borderColor: ['transparent', 'transparent', 'transparent', 'transparent', C.blue + '1)', '#1b5e20', '#2e7d32'],
@@ -106,15 +106,15 @@ export function CapexSurge() {
   )
 }
 
-/* ── 03 Company CapEx ── */
+/* ── 03 Company 설비투자 ── */
 export function CompanyCapex() {
   return (
     <MacroCard
-      num="03 — Company CapEx"
-      title="2025 기업별 CapEx 가이던스"
+      num="03 — 기업별 설비투자"
+      title="2025 기업별 설비투자 가이던스"
       desc="아마존 $125B 선두 — AI 데이터센터 경쟁"
       source="CNBC, 각사 어닝콜 가이던스"
-      insight={`<b>💡 포인트:</b> 상위 4사 합산 $352B. 테슬라는 $5B — AI CapEx에선 뒤처지는 구도.`}
+      insight={`<b>💡 포인트:</b> 상위 4사 합산 $352B. 테슬라는 $5B — AI 설비투자에선 뒤처지는 구도.`}
     >
       <MacroChart config={{
         type: 'bar',
@@ -137,7 +137,7 @@ export function CompanyCapex() {
             }},
           },
           scales: {
-            x: { beginAtZero: true, max: 150, title: { display: true, text: '2025E CapEx ($B)' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
+            x: { beginAtZero: true, max: 150, title: { display: true, text: '2025E 설비투자 ($B)' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
             y: { grid: { display: false } },
           },
         },
@@ -150,18 +150,18 @@ export function CompanyCapex() {
 export function EarningsGrowth() {
   return (
     <MacroCard
-      num="04 — Earnings Growth"
-      title="Mag-7 vs S&P 493 이익성장률"
+      num="04 — 이익 성장률"
+      title="S&P 7 vs S&P 493 이익성장률"
       desc="성장 격차 축소 → 로테이션 신호"
       source="LSEG I/B/E/S, FactSet"
-      insight={`<b>💡 핵심:</b> Mag-7 성장률 36.8%→17.1% 반감, S&P 493은 6.9%→9.2% 가속. <b style="color:#00c853">성장의 바통이 넘어가고 있다!</b>`}
+      insight={`<b>💡 핵심:</b> S&P 7 성장률 36.8%→17.1% 반감, S&P 493은 6.9%→9.2% 가속. <b style="color:#00c853">성장의 바통이 넘어가고 있다!</b>`}
     >
       <MacroChart config={{
         type: 'bar',
         data: {
           labels: ['2024', '2025E'],
           datasets: [
-            { label: 'Mag-7', data: [36.8, 17.1], backgroundColor: C.orange + '0.75)', borderRadius: 5, borderSkipped: false },
+            { label: 'S&P 7', data: [36.8, 17.1], backgroundColor: C.orange + '0.75)', borderRadius: 5, borderSkipped: false },
             { label: 'S&P 493', data: [6.9, 9.2], backgroundColor: C.blue + '0.65)', borderRadius: 5, borderSkipped: false },
           ],
         },
@@ -189,18 +189,18 @@ export function EarningsGrowth() {
 export function Contribution() {
   return (
     <MacroCard
-      num="05 — Contribution"
+      num="05 — 이익 기여도"
       title="S&P 500 이익성장 기여도"
-      desc="Mag-7 독주 종료 → S&P 493 역할 확대"
+      desc="S&P 7 독주 종료 → S&P 493 역할 확대"
       source="LSEG I/B/E/S"
-      insight={`<b>💡 의미:</b> 2023년엔 Mag-7 없으면 S&P 이익이 <b style="color:#ff1744">마이너스(-1.3%)</b>. 2025년엔 나머지 기업이 67% 담당. 시장 체질 건강해지는 중.`}
+      insight={`<b>💡 의미:</b> 2023년엔 S&P 7 없으면 S&P 이익이 <b style="color:#ff1744">마이너스(-1.3%)</b>. 2025년엔 나머지 기업이 67% 담당. 시장 체질 건강해지는 중.`}
     >
       <MacroChart config={{
         type: 'bar',
         data: {
           labels: ['2023', '2024', '2025E'],
           datasets: [
-            { label: 'Mag-7', data: [100, 52, 33], backgroundColor: C.orange + '0.7)', borderRadius: 5, borderSkipped: false },
+            { label: 'S&P 7', data: [100, 52, 33], backgroundColor: C.orange + '0.7)', borderRadius: 5, borderSkipped: false },
             { label: 'S&P 493', data: [0, 48, 67], backgroundColor: C.teal + '0.6)', borderRadius: 5, borderSkipped: false },
           ],
         },
@@ -209,7 +209,7 @@ export function Contribution() {
           plugins: {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
-              a1: ann(0, 85, 'Mag-7 독주\n493=0%', C.red + '0.15)'),
+              a1: ann(0, 85, 'S&P 7 독주\n493=0%', C.red + '0.15)'),
               a2: ann(2, 80, '67%로 역전!', C.neon + '0.2)'),
             }},
           },
@@ -227,8 +227,8 @@ export function Contribution() {
 export function Profitability() {
   return (
     <MacroCard
-      num="06 — Profitability"
-      title="Mag-7 순이익률 vs S&P 500"
+      num="06 — 수익성"
+      title="S&P 7 순이익률 vs S&P 500"
       desc="2배의 구조적 수익성 프리미엄"
       source="LSEG I/B/E/S, Bloomberg"
       insight={`<b>💡 해석:</b> 25.8%는 S&P 평균(13.4%)의 거의 2배. <b style="color:#00c853">AI 시대에도 마진 유지 = 경제적 해자(moat) 건재.</b>`}
@@ -238,7 +238,7 @@ export function Profitability() {
         data: {
           labels: ["Q3'23", "Q4'23", "Q1'24", "Q2'24", "Q3'24", "Q4'24", "'25E"],
           datasets: [
-            { label: 'Mag-7 순이익률', data: [22.5, 23, 23.8, 24.2, 24.8, 25.8, 25.3], borderColor: C.orange + '1)', backgroundColor: C.orange + '0.08)', fill: true, tension: 0.35, pointRadius: 5, pointBackgroundColor: C.orange + '1)', borderWidth: 2.5 },
+            { label: 'S&P 7 순이익률', data: [22.5, 23, 23.8, 24.2, 24.8, 25.8, 25.3], borderColor: C.orange + '1)', backgroundColor: C.orange + '0.08)', fill: true, tension: 0.35, pointRadius: 5, pointBackgroundColor: C.orange + '1)', borderWidth: 2.5 },
             { label: 'S&P 500 순이익률', data: [11.8, 12, 12.5, 12.8, 13, 13.4, 13], borderColor: C.blue + '1)', backgroundColor: C.blue + '0.05)', fill: true, tension: 0.35, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 2.5 },
           ],
         },
@@ -266,12 +266,12 @@ export function Profitability() {
 export function AnnualReturns() {
   return (
     <MacroCard
-      num="07 — Annual Returns"
-      title="Mag-7 vs S&P 500 연간 수익률 (2016~2025)"
+      num="07 — 연간 수익률"
+      title="S&P 7 vs S&P 500 연간 수익률 (2016~2025)"
       desc="10년 중 8년 아웃퍼폼 — 누적 875% vs 235%"
       source="Bloomberg, Motley Fool"
       full
-      insight={`<b>💡 주목:</b> 2020 코로나→+65.8%. 2022 금리인상→-41.3%. 2023 ChatGPT→+107% 역대급. <b style="color:#ff1744">2025년은 Mag-7이 처음으로 S&P에 뒤처진 해.</b>`}
+      insight={`<b>💡 주목:</b> 2020 코로나→+65.8%. 2022 금리인상→-41.3%. 2023 ChatGPT→+107% 역대급. <b style="color:#ff1744">2025년은 S&P 7이 처음으로 S&P에 뒤처진 해.</b>`}
     >
       <MacroChart config={{
         type: 'bar',
@@ -279,7 +279,7 @@ export function AnnualReturns() {
           labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
           datasets: [
             {
-              label: 'Mag-7', data: [8.8, 50, 3, 55, 65.8, 30, -41.3, 107, 67, -7.7],
+              label: 'S&P 7', data: [8.8, 50, 3, 55, 65.8, 30, -41.3, 107, 67, -7.7],
               backgroundColor: [C.orange + '0.6)', C.orange + '0.6)', C.red + '0.4)', C.orange + '0.6)', C.orange + '0.7)', C.orange + '0.6)', C.red + '0.7)', C.neon + '0.4)', C.orange + '0.65)', C.red + '0.5)'],
               borderRadius: 3, borderSkipped: false,
             },
@@ -317,8 +317,8 @@ export function DataTable() {
     { label: 'Q4 2024 이익성장률', mag7: '+31.7%', sp493: '+13.0%', note: '전체 +16.9%', hl: true, mg: 'g', sp: 'g', nc: '' },
     { label: '2025E 이익성장률', mag7: '+17.1%', sp493: '+9.2%', note: '격차 축소!', hl: false, mg: 'g', sp: 'g', nc: 'r' },
     { label: '순이익률 (Q4 2024)', mag7: '25.8%', sp493: '—', note: 'S&P: 13.4%', hl: true, mg: 'g', sp: '', nc: '' },
-    { label: 'Forward P/E', mag7: '28.3x', sp493: '19.7x', note: '프리미엄 44%', hl: false, mg: '', sp: '', nc: '' },
-    { label: 'Forward P/S', mag7: '7.2x', sp493: '—', note: 'S&P: 2.7x', hl: false, mg: '', sp: '', nc: '' },
+    { label: '선행 PER', mag7: '28.3x', sp493: '19.7x', note: '프리미엄 44%', hl: false, mg: '', sp: '', nc: '' },
+    { label: '선행 PSR', mag7: '7.2x', sp493: '—', note: 'S&P: 2.7x', hl: false, mg: '', sp: '', nc: '' },
     { label: '이익기여도 (2024→2025E)', mag7: '52% → 33%', sp493: '48% → 67%', note: '로테이션!', hl: true, mg: 'r', sp: 'g', nc: 'g' },
     { label: '10년 누적수익률', mag7: '875.5%', sp493: '—', note: 'S&P: 234.9%', hl: false, mg: 'g', sp: '', nc: '' },
   ]
@@ -326,18 +326,18 @@ export function DataTable() {
 
   return (
     <MacroCard
-      num="13 — Data Table"
-      title="Mag-7 핵심 데이터 종합"
+      num="13 — 데이터 종합"
+      title="S&P 7 핵심 데이터 종합"
       full
       source="Bloomberg, LSEG I/B/E/S, FactSet, Motley Fool 종합"
-      insight={`<b>💡 정리:</b> Mag-7은 높은 수익성(25.8%) 유지하지만 밸류에이션 프리미엄(P/E 28x vs 20x) 높고 기여도 하락 중 — <b style="color:#00c853">나머지 493개 기업에 주목할 타이밍.</b>`}
+      insight={`<b>💡 정리:</b> S&P 7은 높은 수익성(25.8%) 유지하지만 밸류에이션 프리미엄(P/E 28x vs 20x) 높고 기여도 하락 중 — <b style="color:#00c853">나머지 493개 기업에 주목할 타이밍.</b>`}
     >
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-xs">
           <thead>
             <tr>
               <th className="text-left p-2 border-b-2 border-[#e0ddd8] text-[#888] text-[10px] uppercase tracking-wider">지표</th>
-              <th className="text-left p-2 border-b-2 border-[#e0ddd8] text-[#888] text-[10px] uppercase tracking-wider">Mag-7</th>
+              <th className="text-left p-2 border-b-2 border-[#e0ddd8] text-[#888] text-[10px] uppercase tracking-wider">S&P 7</th>
               <th className="text-left p-2 border-b-2 border-[#e0ddd8] text-[#888] text-[10px] uppercase tracking-wider">S&P 493</th>
               <th className="text-right p-2 border-b-2 border-[#e0ddd8] text-[#888] text-[10px] uppercase tracking-wider">비고</th>
             </tr>

@@ -17,7 +17,7 @@ function FomcInflation() {
 
   return (
     <MacroCard
-      num="11 — FOMC Inflation Outlook"
+      num="11 — FOMC 인플레 전망"
       title="인플레 전망: FOMC 위원 리스크 평가"
       desc="인플레이션 상방(상승) vs 하방(하락) 위험에 무게를 두는 FOMC 위원 수"
       full
@@ -60,9 +60,9 @@ function FomcInflation() {
 function CpiComparison() {
   return (
     <MacroCard
-      num="12 — US vs Korea CPI"
+      num="12 — 미국 vs 한국 물가"
       title="미국 vs 한국 소비자물가 상승률 (10년)"
-      desc="CPI YoY(%) — Fed 목표 2% / 한은 목표 2%"
+      desc="소비자물가 전년비(%) — 미국 목표 2% / 한은 목표 2%"
       full
       source="BLS, 통계청, Trading Economics, KDI"
       insight={`<b>💡 비교:</b> 2022년 미국 <b style="color:#ff1744">8.0%</b> vs 한국 5.1% — 미국이 더 심각. 2025~2026년 양국 모두 2%대 안착 시도 중. 하지만 <b style="color:#ff1744">트럼프 관세·에너지 변동성</b>이 2차 인플레 리스크. 한국은 원/달러 환율 변수 추가.`}
@@ -106,9 +106,9 @@ function CpiComparison() {
 function InterestRateFx() {
   return (
     <MacroCard
-      num="17 — Interest Rate & FX"
+      num="17 — 금리 & 환율"
       title="미국 금리 vs 한국 금리 vs 달러/원 환율"
-      desc="Fed Funds Rate · 한은 기준금리 · USD/KRW (우축)"
+      desc="미국 기준금리 · 한은 기준금리 · 달러/원 (우축)"
       full
       source="Fed, 한국은행, Bloomberg"
       insight={`<b>💡 핵심:</b> 한미 금리차(현재 1.25%p)가 벌어지면 → 자본유출 → 원화약세. 2022년 미국 금리 급등 시 환율 1,400원 돌파. <b style="color:#00c853">금리차 축소 = 외국인 한국투자 복귀 신호.</b>`}
@@ -120,7 +120,7 @@ function InterestRateFx() {
           datasets: [
             { label: '미국 금리 (%)', data: [0.5, 1.0, 2.0, 1.75, 0.25, 0.25, 4.5, 5.5, 4.5, 4.0, 3.75], yAxisID: 'y', borderColor: C.blue + '1)', backgroundColor: C.blue + '0.06)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 3 },
             { label: '한국 금리 (%)', data: [1.25, 1.25, 1.5, 1.75, 0.5, 0.75, 3.25, 3.5, 3.0, 2.75, 2.5], yAxisID: 'y', borderColor: C.red + '1)', backgroundColor: C.red + '0.04)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 3 },
-            { label: 'USD/KRW (우축)', data: [1160, 1070, 1100, 1160, 1180, 1190, 1300, 1290, 1380, 1400, 1380], yAxisID: 'y2', borderColor: C.orange + '0.8)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 4, pointBackgroundColor: C.orange + '1)', borderWidth: 2, borderDash: [6, 3] },
+            { label: '달러/원 환율 (우축)', data: [1160, 1070, 1100, 1160, 1180, 1190, 1300, 1290, 1380, 1400, 1380], yAxisID: 'y2', borderColor: C.orange + '0.8)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 4, pointBackgroundColor: C.orange + '1)', borderWidth: 2, borderDash: [6, 3] },
           ],
         },
         options: {
@@ -136,7 +136,7 @@ function InterestRateFx() {
           },
           scales: {
             y: { min: 0, max: 6.5, title: { display: true, text: '기준금리 (%)' }, ticks: { callback: (v: number) => v + '%' }, grid: { color: G } },
-            y2: { position: 'right', min: 1000, max: 1500, title: { display: true, text: 'USD/KRW' }, grid: { display: false }, ticks: { callback: (v: number) => v.toLocaleString() + '원' } },
+            y2: { position: 'right', min: 1000, max: 1500, title: { display: true, text: '달러/원' }, grid: { display: false }, ticks: { callback: (v: number) => v.toLocaleString() + '원' } },
             x: { title: { display: true, text: '연도' }, grid: { color: 'rgba(0,0,0,0.03)' } },
           },
         },
