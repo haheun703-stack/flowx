@@ -252,29 +252,29 @@ function PopulationFunnel() {
 
 /* ── 15-C 지역별 노동인구 지도 ── */
 
-/* 한반도 윤곽선 SVG path */
-const KOREA_OUTLINE = 'M50,5 L90,2 L125,3 L155,6 L178,18 L188,35 L190,55 L187,78 L183,100 L180,118 L178,135 L180,155 L185,172 L192,192 L195,212 L188,232 L178,250 L165,264 L148,274 L130,277 L112,270 L95,260 L78,250 L62,237 L48,222 L35,207 L22,192 L12,177 L6,160 L5,142 L10,124 L18,110 L22,97 L18,80 L12,60 L8,40 L15,22 L30,10 Z'
-const JEJU_OUTLINE = 'M28,318 L82,318 L90,332 L82,345 L32,345 L22,332 Z'
+/* 한반도 윤곽선 SVG path (300×500 viewBox, 남서부 반도 확장) */
+const KOREA_OUTLINE = 'M70,7 L126,3 L175,4 L217,8 L249,25 L263,49 L266,77 L262,109 L256,140 L252,165 L249,189 L252,217 L259,241 L269,269 L273,297 L263,325 L249,350 L240,365 L215,375 L195,382 L182,388 L160,385 L138,375 L120,365 L95,358 L70,360 L50,355 L42,342 L35,325 L30,310 L35,290 L33,269 L17,248 L8,224 L7,199 L14,174 L25,154 L31,136 L25,112 L17,84 L11,56 L21,31 L42,14 Z'
+const JEJU_OUTLINE = 'M42,438 L118,438 L130,458 L118,478 L48,478 L34,458 Z'
 
 function KoreaLaborMap() {
-  const regions = [
-    { name: '서울', labor: 540, rate: -3.2, cx: 60, cy: 56, metro: true },
-    { name: '경기', labor: 800, rate: -0.8, cx: 48, cy: 78, metro: true },
-    { name: '인천', labor: 170, rate: -1.5, cx: 22, cy: 62, metro: true },
-    { name: '강원', labor: 85, rate: -3.0, cx: 148, cy: 52 },
-    { name: '충북', labor: 95, rate: -1.5, cx: 112, cy: 122 },
-    { name: '충남', labor: 128, rate: -0.5, cx: 40, cy: 152 },
-    { name: '세종', labor: 25, rate: 12.0, cx: 78, cy: 140 },
-    { name: '대전', labor: 85, rate: -1.8, cx: 82, cy: 164 },
-    { name: '경북', labor: 148, rate: -4.0, cx: 160, cy: 138 },
-    { name: '대구', labor: 135, rate: -3.5, cx: 140, cy: 178 },
-    { name: '울산', labor: 68, rate: -4.0, cx: 178, cy: 210 },
-    { name: '전북', labor: 98, rate: -4.5, cx: 52, cy: 205 },
-    { name: '광주', labor: 82, rate: -2.2, cx: 48, cy: 240 },
-    { name: '전남', labor: 98, rate: -5.0, cx: 55, cy: 272 },
-    { name: '경남', labor: 188, rate: -3.5, cx: 128, cy: 242 },
-    { name: '부산', labor: 185, rate: -4.8, cx: 170, cy: 258 },
-    { name: '제주', labor: 40, rate: 1.0, cx: 56, cy: 332 },
+  const regions: { name: string; labor: number; rate: number; cx: number; cy: number; metro?: boolean }[] = [
+    { name: '서울', labor: 540, rate: -3.2, cx: 95, cy: 78, metro: true },
+    { name: '경기', labor: 800, rate: -0.8, cx: 72, cy: 118, metro: true },
+    { name: '인천', labor: 170, rate: -1.5, cx: 38, cy: 92, metro: true },
+    { name: '강원', labor: 85, rate: -3.0, cx: 210, cy: 65 },
+    { name: '충북', labor: 95, rate: -1.5, cx: 168, cy: 172 },
+    { name: '충남', labor: 128, rate: -0.5, cx: 62, cy: 220 },
+    { name: '세종', labor: 25, rate: 12.0, cx: 118, cy: 198 },
+    { name: '대전', labor: 85, rate: -1.8, cx: 122, cy: 240 },
+    { name: '경북', labor: 148, rate: -4.0, cx: 228, cy: 200 },
+    { name: '대구', labor: 135, rate: -3.5, cx: 208, cy: 280 },
+    { name: '울산', labor: 68, rate: -4.0, cx: 248, cy: 318 },
+    { name: '전북', labor: 98, rate: -4.5, cx: 82, cy: 305 },
+    { name: '광주', labor: 82, rate: -2.2, cx: 68, cy: 335 },
+    { name: '전남', labor: 98, rate: -5.0, cx: 95, cy: 350 },
+    { name: '경남', labor: 188, rate: -3.5, cx: 185, cy: 355 },
+    { name: '부산', labor: 185, rate: -4.8, cx: 225, cy: 362 },
+    { name: '제주', labor: 40, rate: 1.0, cx: 80, cy: 458 },
   ]
 
   const maxLabor = Math.max(...regions.map(r => r.labor))
@@ -298,30 +298,31 @@ function KoreaLaborMap() {
       source="통계청, 고용노동부 (2025년 추정) | 노동인구 = 15~64세 취업자"
       insight={`<b>💡 수도권 블랙홀:</b> 전체 노동인구의 <b style="color:#ff1744">${metroPct}%</b>가 수도권(서울+경기+인천)에 집중. 비수도권은 <b style="color:#ff1744">부산 -4.8%, 전남 -5.0%</b> 등 급속 감소 중. 유일한 성장 도시는 <b style="color:#00c853">세종(+12%)</b>. 지방소멸 가속 → 국토 불균형 심화.`}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 py-4">
-        {/* 좌: SVG 한국 지도 */}
-        <svg viewBox="0 0 210 360" className="w-full h-auto max-h-[480px]" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 py-4">
+        {/* 좌: SVG 한국 지도 (확대) */}
+        <svg viewBox="0 0 300 500" className="w-full h-auto" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
           {/* 한반도 윤곽 */}
-          <path d={KOREA_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="1.5" />
-          <path d={JEJU_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="1.5" />
+          <path d={KOREA_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="2" />
+          <path d={JEJU_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="2" />
 
           {/* DMZ 라인 */}
-          <line x1="50" y1="5" x2="178" y2="18" stroke="#999" strokeWidth="0.8" strokeDasharray="3,2" />
-          <text x="115" y="14" textAnchor="middle" fill="#999" fontSize="5" fontWeight="bold">DMZ</text>
+          <line x1="70" y1="7" x2="249" y2="25" stroke="#999" strokeWidth="1" strokeDasharray="4,3" />
+          <text x="160" y="12" textAnchor="middle" fill="#999" fontSize="7" fontWeight="bold">DMZ</text>
 
           {/* 지역 버블 + 라벨 */}
           {regions.map(r => {
-            const radius = 6 + (r.labor / maxLabor) * 18
+            const radius = 8 + (r.labor / maxLabor) * 20
             const color = getColor(r.rate)
-            const showLabel = radius > 7
+            const big = radius >= 18
+            const mid = radius >= 12
             return (
               <g key={r.name}>
-                <circle cx={r.cx} cy={r.cy} r={radius} fill={color} opacity={0.8} stroke="white" strokeWidth="1.5" />
-                <text x={r.cx} y={r.cy - (showLabel ? 2 : 0)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={radius > 12 ? '8' : '6.5'} fontWeight="900">
+                <circle cx={r.cx} cy={r.cy} r={radius} fill={color} opacity={0.85} stroke="white" strokeWidth="2" />
+                <text x={r.cx} y={r.cy - (mid ? 3 : 0)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={big ? '13' : mid ? '10' : '8'} fontWeight="900">
                   {r.name}
                 </text>
-                {showLabel && (
-                  <text x={r.cx} y={r.cy + 7} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="5" opacity={0.85} fontWeight="bold">
+                {mid && (
+                  <text x={r.cx} y={r.cy + (big ? 10 : 8)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={big ? '8' : '6.5'} opacity={0.9} fontWeight="bold">
                     {r.labor}만
                   </text>
                 )}
@@ -330,17 +331,17 @@ function KoreaLaborMap() {
           })}
 
           {/* 범례 */}
-          <g transform="translate(150,300)">
-            <rect x="0" y="0" width="52" height="48" rx="4" fill="white" fillOpacity="0.9" stroke="#ddd" strokeWidth="0.5" />
+          <g transform="translate(210,410)">
+            <rect x="0" y="0" width="72" height="62" rx="5" fill="white" fillOpacity="0.92" stroke="#ddd" strokeWidth="0.8" />
             {[
               { color: '#16a34a', label: '증가' },
               { color: '#ea580c', label: '소폭감소' },
               { color: '#dc2626', label: '감소' },
               { color: '#991b1b', label: '급감' },
             ].map((l, i) => (
-              <g key={i} transform={`translate(6,${6 + i * 10})`}>
-                <circle cx="4" cy="4" r="3" fill={l.color} />
-                <text x="10" y="4" dominantBaseline="middle" fill="#555" fontSize="5.5">{l.label}</text>
+              <g key={i} transform={`translate(8,${8 + i * 13})`}>
+                <circle cx="5" cy="5" r="4.5" fill={l.color} />
+                <text x="14" y="5" dominantBaseline="middle" fill="#555" fontSize="8">{l.label}</text>
               </g>
             ))}
           </g>
