@@ -153,7 +153,7 @@ function UltimateChart() {
           <span style={{ color: '#d81b60' }}>■</span> <b>가계부채 한계</b> — GDP 105%. 금리 인하에도 소비 회복 제한적<br />
           <span style={{ color: '#7c3aed' }}>■</span> <b>지정학적 가치</b> — 미·중 모두에게 필요한 유일한 반도체 국가
         </div>
-        <div className="mt-4 p-3 rounded-lg bg-black text-center text-[#ffd600] text-lg font-bold tracking-wide">
+        <div className="mt-4 p-3 rounded-lg bg-black text-center text-[#ffd600] text-base font-bold tracking-wide">
           &quot;2028년은 대한민국의 <span className="text-[#ff1744]">최대 위기</span>이자 <span className="text-[#00c853]">최대 기회</span>가 동시에 오는 해.
           지금(2025~2027)이 방향을 정하는 <span className="text-white underline">마지막 골든타임</span>이다.&quot;
         </div>
