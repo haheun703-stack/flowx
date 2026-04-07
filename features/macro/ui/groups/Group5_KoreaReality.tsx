@@ -147,11 +147,11 @@ function KoreaDemographics() {
 /* ── 15-B 인구 깔때기 ── */
 function PopulationFunnel() {
   const stages = [
-    { label: '총 인구', value: '5,100만', pct: 100, bg: '#1565c0', drop: '' },
-    { label: '생산가능인구 (15~64세)', value: '3,545만', pct: 69, bg: '#0277bd', drop: '▼ 30.5% 이탈' },
-    { label: '실제 취업자', value: '2,840만', pct: 56, bg: '#ef6c00', drop: '▼ 19.9% 비경활' },
-    { label: '청년 노동력 (20~39세)', value: '1,320만', pct: 26, bg: '#c62828', drop: '▼ 53.5% 고령화' },
-    { label: '연간 출생아', value: '23만', pct: 4.5, bg: '#b71c1c', drop: '▼ 98.3% 소멸' },
+    { label: '총 인구', value: '5,100만', pct: 100, vis: 100, bg: '#1565c0', drop: '' },
+    { label: '생산가능인구 (15~64세)', value: '3,545만', pct: 69, vis: 72, bg: '#0277bd', drop: '▼ 30.5% 이탈' },
+    { label: '실제 취업자', value: '2,840만', pct: 56, vis: 58, bg: '#ef6c00', drop: '▼ 19.9% 비경활' },
+    { label: '청년 노동력 (20~39세)', value: '1,320만', pct: 26, vis: 40, bg: '#c62828', drop: '▼ 53.5% 고령화' },
+    { label: '연간 출생아', value: '23만', pct: 4.5, vis: 22, bg: '#b71c1c', drop: '▼ 98.3% 소멸' },
   ]
 
   return (
@@ -167,8 +167,8 @@ function PopulationFunnel() {
         {/* 깔때기 */}
         <div className="max-w-[520px] mx-auto w-full">
           {stages.map((s, i) => {
-            const visPct = Math.max(s.pct, 22)
-            const nextVisPct = Math.max(stages[i + 1]?.pct ?? s.pct * 0.25, 14)
+            const visPct = s.vis
+            const nextVisPct = stages[i + 1]?.vis ?? 12
             const tL = (100 - visPct) / 2
             const tR = (100 + visPct) / 2
             const bL = (100 - nextVisPct) / 2
