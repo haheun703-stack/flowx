@@ -300,7 +300,7 @@ function KoreaLaborMap() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 py-4">
         {/* 좌: SVG 한국 지도 (확대) */}
-        <svg viewBox="0 0 300 500" className="w-full h-auto" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+        <svg viewBox="0 0 300 500" className="w-full h-auto max-h-[520px]" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
           {/* 한반도 윤곽 */}
           <path d={KOREA_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="2" />
           <path d={JEJU_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="2" />
