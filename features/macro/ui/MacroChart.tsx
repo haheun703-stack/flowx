@@ -1,20 +1,10 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import {
-  Chart as ChartJS,
-  CategoryScale, LinearScale, PointElement, LineElement, BarElement,
-  ArcElement, RadialLinearScale,
-  Title, Tooltip, Legend, Filler,
-} from 'chart.js'
+import { Chart as ChartJS } from 'chart.js/auto'
 import annotationPlugin from 'chartjs-plugin-annotation'
 
-ChartJS.register(
-  CategoryScale, LinearScale, PointElement, LineElement, BarElement,
-  ArcElement, RadialLinearScale,
-  Title, Tooltip, Legend, Filler,
-  annotationPlugin,
-)
+ChartJS.register(annotationPlugin)
 
 // 전역 기본값
 ChartJS.defaults.color = '#555'
