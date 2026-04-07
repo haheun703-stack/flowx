@@ -71,9 +71,9 @@ function KoreaDiscount() {
             plugins: {
               legend: { display: false },
               annotation: { annotations: {
-                kr: ann(6, 55, '한국 35%\n세계 꼴찌 수준\n= 코리아 디스카운트', C.red + '0.2)'),
+                kr: ann(5, 55, '한국 35%\n세계 꼴찌 수준\n= 코리아 디스카운트', C.red + '0.2)'),
                 jp: ann(2, 180, '일본 156%\n밸류업 효과', C.neon + '0.12)'),
-                now: ann(6, 115, 'But 2025\n+60% 급등\n재평가 시작!', C.neon + '0.25)'),
+                now: ann(6, 55, 'But 2025\n+60% 급등\n재평가 시작!', C.neon + '0.25)'),
               }},
             },
             scales: {
