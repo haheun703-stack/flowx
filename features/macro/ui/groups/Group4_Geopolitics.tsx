@@ -11,7 +11,7 @@ import { C, G, ann, vl } from '../chartHelpers'
 function GlobalFundFlow() {
   return (
     <MacroCard
-      num="18 — Global Fund Flow"
+      num="18 — 글로벌 자금 흐름"
       title="글로벌 자금흐름: 돈은 어디로 가는가"
       desc="미국·유럽·중국·한국 주식시장 연간 순유입 ($B) | 2026E = 이란전쟁 반영 추정"
       full
@@ -61,7 +61,7 @@ function GeopoliticalShock() {
 
   return (
     <MacroCard
-      num="18-B — Geopolitical Shock"
+      num="18-B — 지정학 충격"
       title="2026 이란전쟁: 글로벌 시장 충격 시나리오"
       desc="호르무즈 해협 봉쇄 → 유가·인플레·금리·자금흐름 연쇄 반응"
       full
@@ -102,7 +102,7 @@ function GeopoliticalShock() {
 function TradeBalance() {
   return (
     <MacroCard
-      num="19 — Trade Balance"
+      num="19 — 무역수지"
       title="주요국 무역수지 비교 (2020~2026E)"
       desc="연간 상품무역수지 ($B) | 2026E = 이란전쟁 영향 반영 추정"
       full
@@ -154,7 +154,7 @@ function KoreaExport() {
 
   return (
     <MacroCard
-      num="19-B — Korea Export"
+      num="19-B — 한국 수출"
       title="한국 수출·수입·무역수지 추이"
       desc="연간 수출/수입($B) + 무역수지(라인) | 반도체 의존도 주의"
       full

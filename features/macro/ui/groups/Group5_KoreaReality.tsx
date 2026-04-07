@@ -15,7 +15,7 @@ function Russell2000() {
 
   return (
     <MacroCard
-      num="08 — Russell 2000"
+      num="08 — 러셀 2000"
       title="러셀 2000 적자 vs 흑자 기업 주가 상승률"
       desc="2025.04.02 = 100 기준 | 영업이익 추정치 기준 분류"
       full
@@ -27,8 +27,8 @@ function Russell2000() {
         data: {
           labels: lb,
           datasets: [
-            { label: '적자 기업 (Unprofitable)', data: loss, borderColor: C.red + '1)', backgroundColor: C.red + '0.06)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2.5 },
-            { label: '흑자 기업 (Profitable)', data: prof, borderColor: C.blue + '1)', backgroundColor: C.blue + '0.04)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2.5 },
+            { label: '적자 기업', data: loss, borderColor: C.red + '1)', backgroundColor: C.red + '0.06)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2.5 },
+            { label: '흑자 기업', data: prof, borderColor: C.blue + '1)', backgroundColor: C.blue + '0.04)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2.5 },
           ],
         },
         options: {
@@ -64,7 +64,7 @@ function OecdRetirement() {
 
   return (
     <MacroCard
-      num="14 — OECD Retirement Age"
+      num="14 — OECD 은퇴 연령"
       title="OECD 국가별 평균 은퇴 연령"
       desc="파란 바=미래 법정 은퇴연령 / ◆=현재 실제 은퇴연령 | 한국은 OECD 최하위권"
       full
@@ -103,7 +103,7 @@ function OecdRetirement() {
 function KoreaDemographics() {
   return (
     <MacroCard
-      num="15 — Korea Demographics Crisis"
+      num="15 — 한국 인구 위기"
       title="한국 인구구조 위기: 생산인구 급감 vs 고령인구 폭증"
       desc="15~64세 생산연령인구 · 65세 이상 고령인구 · 0~14세 유소년인구 (만명)"
       full
@@ -148,7 +148,7 @@ function KoreaDemographics() {
 function HouseholdDebt() {
   return (
     <MacroCard
-      num="21 — Household Debt"
+      num="21 — 가계부채"
       title="한국 가계부채/GDP 비율"
       desc="OECD 최상위 — 투자여력·소비에 직결"
       source="BIS, 한국은행, OECD"
@@ -189,7 +189,7 @@ function HouseholdDebt() {
 function BuffettIndicator() {
   return (
     <MacroCard
-      num="22 — Buffett Indicator"
+      num="22 — 버핏 지표"
       title="버핏 지표 (시총/GDP)"
       desc="시장 과열/저평가 판단 — 미국 vs 한국"
       source="World Bank, Bloomberg, FRED"

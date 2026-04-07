@@ -11,17 +11,17 @@ import { C, G, ann } from '../chartHelpers'
 function KoreaDiscount() {
   return (
     <MacroCard
-      num="🇰🇷 KOREA DISCOUNT"
+      num="🇰🇷 코리아 디스카운트"
       title="한국은 정말 저평가인가? — 4가지 증거"
       desc="PBR·PER·10년수익률·장부가 미달 기업 비율로 본 객관적 팩트"
       full
       style={{ border: '2px solid #d32f2f', boxShadow: '0 4px 20px rgba(211,47,47,0.06)' }}
       source="Korea Exchange, MSCI, Jefferies, FactSet, Siblis Research, Aberdeen, KCMI"
-      insight={`<b>💡 코리아 디스카운트란?</b><br>같은 이익을 내도 한국 기업은 미국·일본보다 <b style="color:#ff1744">40~60% 싸게</b> 거래됩니다.<br><br><b>① PBR 0.84 = "회사를 해체해서 파는 게 더 비쌈"</b><br>주가가 순자산가치보다 낮다는 뜻. KOSPI 기업 69%가 이 상태.<br><br><b>② Forward PER 10.4x = "미래를 반값에 사는 것"</b><br>S&P500 22x, 인도 22x, 일본 16x 대비 한국은 10x.<br><br><b style="color:#00c853">④ 지금 변하고 있는 것!</b><br>2025년 밸류업 프로그램 + 자사주 소각 + KOSPI 60% 상승(세계 1위) + 외국인 $20B 순매수.<br><b style="color:#00c853">일본이 먼저 증명했다 — 니케이 +155%. 한국은 이제 시작.</b>`}
+      insight={`<b>💡 코리아 디스카운트란?</b><br>같은 이익을 내도 한국 기업은 미국·일본보다 <b style="color:#ff1744">40~60% 싸게</b> 거래됩니다.<br><br><b>① PBR 0.84 = "회사를 해체해서 파는 게 더 비쌈"</b><br>주가가 순자산가치보다 낮다는 뜻. KOSPI 기업 69%가 이 상태.<br><br><b>② 선행 PER 10.4x = "미래를 반값에 사는 것"</b><br>S&P500 22x, 인도 22x, 일본 16x 대비 한국은 10x.<br><br><b style="color:#00c853">④ 지금 변하고 있는 것!</b><br>2025년 밸류업 프로그램 + 자사주 소각 + KOSPI 60% 상승(세계 1위) + 외국인 $20B 순매수.<br><b style="color:#00c853">일본이 먼저 증명했다 — 니케이 +155%. 한국은 이제 시작.</b>`}
     >
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
         <KPICard value="0.84x" label='KOSPI PBR (2024)<br><b style="color:#d32f2f">1 미만 = 청산가치 이하</b>' color="red" borderColor="#d32f2f" />
-        <KPICard value="10.4x" label='KOSPI Forward PER<br><b style="color:#1565c0">S&P 500의 절반</b>' color="blue" borderColor="#1565c0" />
+        <KPICard value="10.4x" label='KOSPI 선행 PER<br><b style="color:#1565c0">S&P 500의 절반</b>' color="blue" borderColor="#1565c0" />
         <KPICard value="69%" label='장부가 미달 기업 비율<br><b style="color:#d32f2f">KOSPI 10곳 중 7곳</b>' color="red" borderColor="#d32f2f" />
         <KPICard value="+60%" label='KOSPI 2025 상승률<br><b style="color:#00c853">세계 1위 → 재평가 시작</b>' color="green" borderColor="#00c853" />
       </div>
@@ -33,7 +33,7 @@ function KoreaDiscount() {
           labels: ['미국\nS&P500', '인도\nNIFTY', '대만\nTWSE', '일본\nNikkei', '유럽\nSTOXX', '한국\nKOSPI'],
           datasets: [
             { label: 'PBR (주가순자산비율)', data: [4.5, 3.8, 2.5, 1.6, 1.7, 0.84], backgroundColor: ['rgba(21,101,192,0.5)', 'rgba(255,109,0,0.5)', 'rgba(0,131,143,0.5)', 'rgba(124,58,237,0.5)', 'rgba(0,131,143,0.4)', 'rgba(255,23,68,0.7)'], borderColor: ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'rgba(255,23,68,1)'], borderWidth: [0, 0, 0, 0, 0, 3], borderRadius: 5, borderSkipped: false },
-            { label: 'Forward PER', data: [22, 22, 18, 16, 14, 10.4], backgroundColor: ['rgba(21,101,192,0.25)', 'rgba(255,109,0,0.25)', 'rgba(0,131,143,0.25)', 'rgba(124,58,237,0.25)', 'rgba(0,131,143,0.2)', 'rgba(255,23,68,0.35)'], borderRadius: 5, borderSkipped: false },
+            { label: '선행 PER', data: [22, 22, 18, 16, 14, 10.4], backgroundColor: ['rgba(21,101,192,0.25)', 'rgba(255,109,0,0.25)', 'rgba(0,131,143,0.25)', 'rgba(124,58,237,0.25)', 'rgba(0,131,143,0.2)', 'rgba(255,23,68,0.35)'], borderRadius: 5, borderSkipped: false },
           ],
         },
         options: {
@@ -99,7 +99,7 @@ function UltimateChart() {
 
   return (
     <MacroCard
-      num="🇰🇷 THE ULTIMATE CHART"
+      num="🇰🇷 궁극의 차트"
       title="대한민국 운명의 교차점: 6대 메가포스 수렴 타임라인"
       desc="인구·AI·반도체·에너지·부채·지정학 — 모든 힘이 2028년 한 점에서 만난다"
       full
@@ -148,7 +148,7 @@ function UltimateChart() {
           <b>6개의 선이 모두 2027~2029년에 교차합니다.</b> 이것은 우연이 아닙니다.<br /><br />
           <span style={{ color: '#ff1744' }}>■</span> <b>인구 붕괴 가속</b> — 2028년부터 연 30만+ 생산인구 감소<br />
           <span style={{ color: '#00c853' }}>■</span> <b>AI 생산성 폭발</b> — J커브 바닥을 지나 급상승<br />
-          <span style={{ color: '#1565c0' }}>■</span> <b>반도체 슈퍼사이클</b> — CapEx $427B→$562B. HBM 수요 구조적 확대<br />
+          <span style={{ color: '#1565c0' }}>■</span> <b>반도체 슈퍼사이클</b> — 설비투자 $427B→$562B. HBM 수요 구조적 확대<br />
           <span style={{ color: '#ff6d00' }}>■</span> <b>에너지 전환 임계점</b> — 이란전쟁이 원전·SMR 투자를 강제 가속<br />
           <span style={{ color: '#d81b60' }}>■</span> <b>가계부채 한계</b> — GDP 105%. 금리 인하에도 소비 회복 제한적<br />
           <span style={{ color: '#7c3aed' }}>■</span> <b>지정학적 가치</b> — 미·중 모두에게 필요한 유일한 반도체 국가
@@ -166,7 +166,7 @@ function UltimateChart() {
 function SynthesisRadar() {
   return (
     <MacroCard
-      num="★ FINAL SYNTHESIS"
+      num="★ 최종 종합 분석"
       title="24개 섹션 교차 분석: 숨겨진 교집합"
       desc="모든 섹션을 연결하면 보이는 것 — 다른 사람들이 놓치고 있는 진짜 신호"
       full
@@ -205,8 +205,8 @@ function AnalysisCards() {
         <div className="font-mono text-[10px] text-[#00c853] tracking-[3px] uppercase mb-1">✅ 좋아지고 있는 점</div>
         <h2 className="text-xl font-black text-[#00c853] mb-3">시장이 건강해지고 있다는 5가지 신호</h2>
         <div className="text-sm leading-relaxed text-[#1b5e20] p-4 rounded-r-lg" style={{ background: 'rgba(0,200,83,0.06)', borderLeft: '4px solid #00c853' }}>
-          <b>① [섹션 4+5] 이익성장의 민주화</b> — Mag-7 독주 끝나고 S&P 493이 67% 담당.<br /><br />
-          <b>② [섹션 10+19b] 한국 반도체 = 세계의 심장</b> — 수출 $710B 역대최대. AI CapEx의 최대 수혜가 한국 HBM.<br /><br />
+          <b>① [섹션 4+5] 이익성장의 민주화</b> — S&P 7 독주 끝나고 S&P 493이 67% 담당.<br /><br />
+          <b>② [섹션 10+19b] 한국 반도체 = 세계의 심장</b> — 수출 $710B 역대최대. AI 설비투자의 최대 수혜가 한국 HBM.<br /><br />
           <b>③ [섹션 9+16] J커브 변곡점 돌파 임박</b> — AI 생산성이 바닥을 찍고 상승 전환 중.<br /><br />
           <b>④ [섹션 12+17] 인플레 안정화 + 금리 인하 사이클</b> — 미국 2.4%, 한국 2.0%로 2%대 안착.<br /><br />
           <b>⑤ [섹션 18+22] 한국 = 저평가 자산의 재발견</b> — 버핏지표: 미국 205% vs 한국 95%. 외국인 자금 $20B 복귀.
@@ -220,7 +220,7 @@ function AnalysisCards() {
         <div className="text-sm leading-relaxed text-[#b71c1c] p-4 rounded-r-lg" style={{ background: 'rgba(255,23,68,0.04)', borderLeft: '4px solid #ff1744' }}>
           <b>① [섹션 11+12+18b] 인플레 재점화 — 이란전쟁 쇼크</b> — 유가 $72→$110(+53%). FOMC 전원 상방 리스크.<br /><br />
           <b>② [섹션 15+21] 인구절벽 × 가계부채 = 데스 스파이럴</b> — 생산인구 -27% + 가계부채 105% OECD 1위.<br /><br />
-          <b>③ [섹션 22+7] 미국 시장 역대급 과열</b> — 버핏지표 205% + Mag-7 첫 언더퍼폼.<br /><br />
+          <b>③ [섹션 22+7] 미국 시장 역대급 과열</b> — 버핏지표 205% + S&P 7 첫 언더퍼폼.<br /><br />
           <b>④ [섹션 20+15+16] 40~50대 대량 실업 시한폭탄</b> — AI 대체 위험도 70%+ 직종에 종사하는 40~50대가 위험.<br /><br />
           <b>⑤ [섹션 17+19+18b] 한국의 에너지 아킬레스건</b> — 원유 100% 수입 + 이란전쟁 + 원화약세.
         </div>
@@ -231,15 +231,15 @@ function AnalysisCards() {
         <div className="font-mono text-[10px] text-[#1565c0] tracking-[3px] uppercase mb-1">🔵 유지되고 있는 점 (구조적 트렌드)</div>
         <h2 className="text-xl font-black text-[#1565c0] mb-3">변하지 않는 3가지 메가트렌드</h2>
         <div className="text-sm leading-relaxed text-[#0d47a1] p-4 rounded-r-lg" style={{ background: 'rgba(21,101,192,0.04)', borderLeft: '4px solid #1565c0' }}>
-          <b>① [섹션 1+2+3] 자본의 대이동: 채권→주식→AI 인프라</b> — Big Tech CapEx $427B→$562B. 10년짜리 트렌드.<br /><br />
-          <b>② [섹션 6+10] Mag-7의 경제적 해자는 건재</b> — 순이익률 25.8%(S&P 2배) 유지. 성장은 둔화돼도 수익성은 압도적.<br /><br />
+          <b>① [섹션 1+2+3] 자본의 대이동: 채권→주식→AI 인프라</b> — Big Tech 설비투자 $427B→$562B. 10년짜리 트렌드.<br /><br />
+          <b>② [섹션 6+10] S&P 7의 경제적 해자는 건재</b> — 순이익률 25.8%(S&P 2배) 유지. 성장은 둔화돼도 수익성은 압도적.<br /><br />
           <b>③ [섹션 14+15] 고령화는 가속만 있고 브레이크 없다</b> — 한국 생산인구 매년 -32만명. 20년간 역전 불가. AI·로봇·이민만이 해법.
         </div>
       </MacroCard>
 
       {/* JACKPOT */}
       <MacroCard full style={{ border: '3px solid #ffd600', background: 'linear-gradient(135deg,rgba(255,214,0,0.03),rgba(57,255,20,0.03))', boxShadow: '0 6px 30px rgba(255,214,0,0.1)' }}>
-        <div className="font-mono text-[13px] text-[#f57f17] tracking-[4px] uppercase mb-1">💎 JACKPOT — THE HIDDEN SIGNAL</div>
+        <div className="font-mono text-[13px] text-[#f57f17] tracking-[4px] uppercase mb-1">💎 잭팟 — 숨겨진 신호</div>
         <h2 className="text-2xl font-black mb-3" style={{ background: 'linear-gradient(90deg,#f57f17,#00c853)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           다른 사람들이 보지 못하는 3가지 교집합
         </h2>
@@ -250,7 +250,7 @@ function AnalysisCards() {
 
           <b className="text-xl text-[#f57f17]">🏆 JACKPOT #2: &quot;반도체 지정학 레버리지&quot;</b><br />
           <span className="text-[#555]">[섹션 2+3+10+18+18b+19 교집합]</span><br />
-          Big Tech CapEx $427B → 핵심 목적지가 <b>HBM/DRAM = 한국</b>. 미국도, 중국도 한국 반도체 없이는 AI를 못 만든다. → <b className="text-[#00c853]">&quot;양쪽 모두에게 필요한 유일한 나라&quot;라는 전략적 위치.</b><br /><br />
+          Big Tech 설비투자 $427B → 핵심 목적지가 <b>HBM/DRAM = 한국</b>. 미국도, 중국도 한국 반도체 없이는 AI를 못 만든다. → <b className="text-[#00c853]">&quot;양쪽 모두에게 필요한 유일한 나라&quot;라는 전략적 위치.</b><br /><br />
 
           <b className="text-xl text-[#f57f17]">🏆 JACKPOT #3: &quot;위기의 역설 — 에너지 약점이 만드는 기회&quot;</b><br />
           <span className="text-[#555]">[섹션 12+17+18b+19b+21 교집합]</span><br />
