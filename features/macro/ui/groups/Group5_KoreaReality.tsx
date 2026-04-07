@@ -144,6 +144,202 @@ function KoreaDemographics() {
   )
 }
 
+/* ── 15-B 인구 깔때기 ── */
+function PopulationFunnel() {
+  const stages = [
+    { label: '총 인구', value: '5,100만', pct: 100, bg: '#1565c0', drop: '' },
+    { label: '생산가능인구 (15~64세)', value: '3,545만', pct: 69, bg: '#0277bd', drop: '▼ 30.5% 이탈' },
+    { label: '실제 취업자', value: '2,840만', pct: 56, bg: '#ef6c00', drop: '▼ 19.9% 비경활' },
+    { label: '청년 노동력 (20~39세)', value: '1,320만', pct: 26, bg: '#c62828', drop: '▼ 53.5% 고령화' },
+    { label: '연간 출생아', value: '23만', pct: 4.5, bg: '#b71c1c', drop: '▼ 98.3% 소멸' },
+  ]
+
+  return (
+    <MacroCard
+      num="15-B — 인구 깔때기"
+      title="한국 인구 구조의 붕괴"
+      desc="총 인구에서 연간 출생아까지 — 매 단계에서 인구가 소멸한다"
+      full
+      source="통계청, 고용노동부 (2025년 기준) | 합계출산율 0.72 (OECD 최저)"
+      insight={`<b>💡 깔때기의 경고:</b> 5,100만 중 실제 청년 노동력(20~39세)은 <b style="color:#ff1744">1,320만(26%)</b>뿐. 연간 출생아 23만은 전체의 <b style="color:#ff1744">0.45%</b>. 2000년 출생아 64만 대비 <b style="color:#ff1744">-64% 감소</b>. 이 깔때기가 10년 후 생산인구로 직결됩니다. <b style="color:#00c853">자동화·이민 없이는 연금·의료·국방 모두 붕괴.</b>`}
+    >
+      <div className="py-6 grid grid-cols-1 lg:grid-cols-[1fr_180px] gap-4 items-start">
+        {/* 깔때기 */}
+        <div className="max-w-[520px] mx-auto w-full">
+          {stages.map((s, i) => {
+            const nextPct = stages[i + 1]?.pct ?? Math.max(s.pct * 0.25, 2)
+            const tL = (100 - s.pct) / 2
+            const tR = (100 + s.pct) / 2
+            const bL = (100 - nextPct) / 2
+            const bR = (100 + nextPct) / 2
+
+            return (
+              <div key={i}>
+                {i > 0 && (
+                  <div className="text-center text-[10px] text-red-500 font-bold py-0.5">{s.drop}</div>
+                )}
+                <div className="relative" style={{ height: '54px' }}>
+                  <div
+                    className="absolute inset-0 flex items-center justify-center text-white"
+                    style={{
+                      clipPath: `polygon(${tL}% 0%, ${tR}% 0%, ${bR}% 100%, ${bL}% 100%)`,
+                      backgroundColor: s.bg,
+                    }}
+                  >
+                    <div className="text-center px-4">
+                      <div className="text-[10px] opacity-80 font-bold">{s.label}</div>
+                      <div className="text-base font-black leading-tight">{s.value}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* 우측 범례 */}
+        <div className="space-y-3 pt-2">
+          {stages.map((s, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: s.bg }} />
+              <div>
+                <div className="text-[11px] font-bold text-[var(--text-primary)]">{s.value}</div>
+                <div className="text-[10px] text-gray-400 font-mono">{s.pct}%</div>
+              </div>
+            </div>
+          ))}
+          <div className="pt-2 border-t border-gray-200">
+            <div className="text-[10px] text-gray-500">2000년 출생아: <b className="text-red-500">64만</b></div>
+            <div className="text-[10px] text-gray-500">2025년 출생아: <b className="text-red-500">23만</b></div>
+            <div className="text-[10px] text-red-500 font-bold">→ 25년간 -64% 감소</div>
+          </div>
+        </div>
+      </div>
+    </MacroCard>
+  )
+}
+
+/* ── 15-C 지역별 노동인구 지도 ── */
+function KoreaLaborMap() {
+  const regions = [
+    { name: '서울', labor: 540, rate: -3.2, x: 33, y: 18, metro: true },
+    { name: '경기', labor: 800, rate: -0.8, x: 28, y: 33, metro: true },
+    { name: '인천', labor: 170, rate: -1.5, x: 10, y: 27, metro: true },
+    { name: '강원', labor: 85, rate: -3.0, x: 62, y: 10 },
+    { name: '충북', labor: 95, rate: -1.5, x: 52, y: 33 },
+    { name: '충남', labor: 128, rate: -0.5, x: 18, y: 48 },
+    { name: '세종', labor: 25, rate: 12.0, x: 38, y: 46 },
+    { name: '대전', labor: 85, rate: -1.8, x: 38, y: 54 },
+    { name: '경북', labor: 148, rate: -4.0, x: 70, y: 32 },
+    { name: '대구', labor: 135, rate: -3.5, x: 64, y: 48 },
+    { name: '울산', labor: 68, rate: -4.0, x: 80, y: 54 },
+    { name: '전북', labor: 98, rate: -4.5, x: 22, y: 64 },
+    { name: '광주', labor: 82, rate: -2.2, x: 18, y: 74 },
+    { name: '전남', labor: 98, rate: -5.0, x: 22, y: 84 },
+    { name: '경남', labor: 188, rate: -3.5, x: 58, y: 66 },
+    { name: '부산', labor: 185, rate: -4.8, x: 74, y: 66 },
+    { name: '제주', labor: 40, rate: 1.0, x: 22, y: 96 },
+  ]
+
+  const maxLabor = Math.max(...regions.map(r => r.labor))
+  const metroPop = regions.filter(r => r.metro).reduce((s, r) => s + r.labor, 0)
+  const totalPop = regions.reduce((s, r) => s + r.labor, 0)
+  const metroPct = ((metroPop / totalPop) * 100).toFixed(1)
+
+  function getColor(rate: number): string {
+    if (rate > 0) return '#16a34a'
+    if (rate > -2) return '#ea580c'
+    if (rate > -4) return '#dc2626'
+    return '#991b1b'
+  }
+
+  return (
+    <MacroCard
+      num="15-C — 지역별 노동인구"
+      title="대한민국 노동인구 지도"
+      desc="17개 시도 노동인구(만명) 분포 | 원 크기 = 노동인구, 색상 = 인구 증감률"
+      full
+      source="통계청, 고용노동부 (2025년 추정) | 노동인구 = 15~64세 취업자"
+      insight={`<b>💡 수도권 블랙홀:</b> 전체 노동인구의 <b style="color:#ff1744">${metroPct}%</b>가 수도권(서울+경기+인천)에 집중. 비수도권은 <b style="color:#ff1744">부산 -4.8%, 전남 -5.0%</b> 등 급속 감소 중. 유일한 성장 도시는 <b style="color:#00c853">세종(+12%)</b>. 지방소멸 가속 → 국토 불균형 심화.`}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 py-4">
+        {/* 좌: 지도 카토그램 */}
+        <div className="relative bg-gray-50 rounded-xl border border-gray-200" style={{ height: '420px' }}>
+          {regions.map(r => {
+            const size = 28 + (r.labor / maxLabor) * 52
+            const color = getColor(r.rate)
+            return (
+              <div
+                key={r.name}
+                className="absolute flex flex-col items-center justify-center rounded-full border-2 border-white shadow-sm cursor-default"
+                title={`${r.name}: ${r.labor}만명 (${r.rate > 0 ? '+' : ''}${r.rate}%)`}
+                style={{
+                  left: `${r.x}%`,
+                  top: `${r.y}%`,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  backgroundColor: color,
+                  opacity: 0.8,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                <span className="text-white font-black" style={{ fontSize: size > 45 ? '11px' : '9px' }}>{r.name}</span>
+                {size > 35 && <span className="text-white font-mono opacity-80" style={{ fontSize: '8px' }}>{r.labor}만</span>}
+              </div>
+            )
+          })}
+          {/* 범례 */}
+          <div className="absolute bottom-2 right-2 bg-white/90 rounded-lg p-2 border border-gray-200 text-[9px]">
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#16a34a' }} /> 증가</div>
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ea580c' }} /> 소폭 감소</div>
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#dc2626' }} /> 감소</div>
+            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#991b1b' }} /> 급감</div>
+          </div>
+        </div>
+
+        {/* 우: 요약 통계 */}
+        <div className="space-y-4">
+          {/* 수도권 vs 비수도권 */}
+          <div className="rounded-lg overflow-hidden border border-gray-200">
+            <div className="bg-red-50 p-4 border-b border-red-200">
+              <div className="text-[10px] text-red-400 font-bold tracking-wider">수도권 (서울·경기·인천)</div>
+              <div className="text-3xl font-black text-red-600">{metroPct}%</div>
+              <div className="text-xs text-red-500 font-mono">{metroPop.toLocaleString()}만명</div>
+            </div>
+            <div className="bg-blue-50 p-4">
+              <div className="text-[10px] text-blue-400 font-bold tracking-wider">비수도권 (14개 시도)</div>
+              <div className="text-3xl font-black text-blue-600">{(100 - Number(metroPct)).toFixed(1)}%</div>
+              <div className="text-xs text-blue-500 font-mono">{(totalPop - metroPop).toLocaleString()}만명</div>
+            </div>
+          </div>
+
+          {/* 위기 지역 TOP 5 */}
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="text-[10px] font-bold text-gray-500 tracking-wider mb-2">인구 감소 위기 TOP 5</div>
+            {[...regions].sort((a, b) => a.rate - b.rate).slice(0, 5).map(r => (
+              <div key={r.name} className="flex items-center justify-between text-xs py-1 border-b border-gray-100 last:border-0">
+                <span className="font-bold text-[var(--text-primary)]">{r.name}</span>
+                <span className="font-mono font-bold text-red-500">{r.rate}%</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 성장 지역 */}
+          <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+            <div className="text-[10px] font-bold text-green-600 tracking-wider mb-1">유일한 성장 도시</div>
+            {regions.filter(r => r.rate > 0).map(r => (
+              <div key={r.name} className="flex items-center justify-between text-xs py-1">
+                <span className="font-bold text-green-700">{r.name}</span>
+                <span className="font-mono font-bold text-green-600">+{r.rate}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </MacroCard>
+  )
+}
+
 /* ── 21 Household Debt ── */
 function HouseholdDebt() {
   return (
@@ -231,6 +427,8 @@ export function Group5_KoreaReality() {
       <Russell2000 />
       <OecdRetirement />
       <KoreaDemographics />
+      <PopulationFunnel />
+      <KoreaLaborMap />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <HouseholdDebt />
         <BuffettIndicator />
