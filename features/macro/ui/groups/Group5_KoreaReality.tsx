@@ -128,10 +128,10 @@ function KoreaDemographics() {
             tooltip: { callbacks: { label: (c: { dataset: { label: string }; parsed: { y: number } }) => c.dataset.label + ': ' + c.parsed.y + '만명' } },
             annotation: { annotations: {
               cross: { type: 'line', xMin: 4.5, xMax: 4.5, borderColor: C.red + '0.5)', borderWidth: 2, borderDash: [4, 2], label: { display: true, content: '◀ 데드크로스 구간', position: 'end', backgroundColor: C.red + '0.12)', color: '#c62828', font: { size: 10, weight: 'bold' }, padding: 4 } },
-              a1: ann(3, 3500, '3,342만\n320만↓', C.blue + '0.12)'),
-              a2: ann(5, 2500, '2,676만\n-27%', C.red + '0.15)'),
-              a3: ann(5, 1900, '1,739만\n2.2배↑', C.red + '0.12)'),
-              a4: ann(7, 2000, '고령>생산\n역전 임박', C.neon + '0.2)'),
+              a1: ann(3, 3700, '3,342만\n320만↓', C.blue + '0.12)'),
+              a2: ann(5, 2900, '2,676만\n-27%', C.blue + '0.15)'),
+              a3: ann(5, 1400, '1,739만\n2.2배↑', C.red + '0.12)'),
+              a4: ann(7, 2300, '고령>생산\n역전 임박', C.neon + '0.2)'),
             }},
           },
           scales: {
