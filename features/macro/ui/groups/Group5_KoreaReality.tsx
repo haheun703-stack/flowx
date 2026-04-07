@@ -167,18 +167,19 @@ function PopulationFunnel() {
         {/* 깔때기 */}
         <div className="max-w-[520px] mx-auto w-full">
           {stages.map((s, i) => {
-            const nextPct = stages[i + 1]?.pct ?? Math.max(s.pct * 0.25, 2)
-            const tL = (100 - s.pct) / 2
-            const tR = (100 + s.pct) / 2
-            const bL = (100 - nextPct) / 2
-            const bR = (100 + nextPct) / 2
+            const visPct = Math.max(s.pct, 22)
+            const nextVisPct = Math.max(stages[i + 1]?.pct ?? s.pct * 0.25, 14)
+            const tL = (100 - visPct) / 2
+            const tR = (100 + visPct) / 2
+            const bL = (100 - nextVisPct) / 2
+            const bR = (100 + nextVisPct) / 2
 
             return (
               <div key={i}>
                 {i > 0 && (
                   <div className="text-center text-[10px] text-red-500 font-bold py-0.5">{s.drop}</div>
                 )}
-                <div className="relative" style={{ height: '54px' }}>
+                <div className="relative" style={{ height: '58px' }}>
                   <div
                     className="absolute inset-0 flex items-center justify-center text-white"
                     style={{
