@@ -130,7 +130,7 @@ function UltimateChart() {
               crossA: ann(8, 78, 'AI가 인구감소를\n추월하는 순간', C.neon + '0.25)'),
               crossB: ann(6, 22, '이란전쟁\n에너지 충격', C.orange + '0.18)'),
               crossC: ann(10, 96, '지정학 가치\n최고점 접근', C.purple + '0.15)'),
-              crossD: ann(11, 28, '인구 위기\n심화 구간', C.red + '0.15)'),
+              crossD: ann(12, 28, '인구 위기\n심화 구간', C.red + '0.15)'),
               mid: { type: 'line', yMin: 50, yMax: 50, borderColor: 'rgba(0,0,0,0.08)', borderWidth: 1, borderDash: [8, 4], label: { display: true, content: '균형선 50', position: 'end', backgroundColor: 'rgba(255,255,255,.7)', color: '#aaa', font: { size: 9 }, padding: 2 } },
             }},
           },
