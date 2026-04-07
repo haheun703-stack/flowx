@@ -86,7 +86,7 @@ function OecdRetirement() {
             legend: { position: 'top', labels: { usePointStyle: true, padding: 14 } },
             annotation: { annotations: {
               avg: { type: 'line', yMin: 66.7, yMax: 66.7, borderColor: C.teal + '0.6)', borderWidth: 2, borderDash: [6, 3], label: { display: true, content: 'OECD 미래 평균 66.7세', position: 'start', backgroundColor: 'rgba(255,255,255,.9)', color: '#00838f', font: { size: 10 }, padding: 3 } },
-              kr: ann(33, 73, '한국 65세\nOECD 하위', C.red + '0.2)'),
+              kr: ann(33, 66.5, '한국 65세\nOECD 하위', C.red + '0.2)'),
             }},
           },
           scales: {
