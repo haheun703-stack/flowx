@@ -84,8 +84,8 @@ function GeopoliticalShock() {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
               a1: ann(118, 0, '$72→$110\n+53% 급등', C.red + '0.15)'),
-              a3: ann(45, 5, '러시아 수혜\n2.0→3.2%', C.neon + '0.12)'),
-              a4: ann(45, 6, 'EU 역성장\n1.2→-0.3%', C.red + '0.12)'),
+              a3: ann(10, 5, '러시아 수혜\n2.0→3.2%', C.neon + '0.12)'),
+              a4: ann(10, 6, 'EU 역성장\n1.2→-0.3%', C.red + '0.12)'),
             }},
           },
           scales: {
