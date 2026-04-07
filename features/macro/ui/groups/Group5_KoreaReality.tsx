@@ -251,25 +251,30 @@ function PopulationFunnel() {
 }
 
 /* ── 15-C 지역별 노동인구 지도 ── */
+
+/* 한반도 윤곽선 SVG path */
+const KOREA_OUTLINE = 'M50,5 L90,2 L125,3 L155,6 L178,18 L188,35 L190,55 L187,78 L183,100 L180,118 L178,135 L180,155 L185,172 L192,192 L195,212 L188,232 L178,250 L165,264 L148,274 L130,277 L112,270 L95,260 L78,250 L62,237 L48,222 L35,207 L22,192 L12,177 L6,160 L5,142 L10,124 L18,110 L22,97 L18,80 L12,60 L8,40 L15,22 L30,10 Z'
+const JEJU_OUTLINE = 'M28,318 L82,318 L90,332 L82,345 L32,345 L22,332 Z'
+
 function KoreaLaborMap() {
   const regions = [
-    { name: '서울', labor: 540, rate: -3.2, x: 33, y: 18, metro: true },
-    { name: '경기', labor: 800, rate: -0.8, x: 28, y: 33, metro: true },
-    { name: '인천', labor: 170, rate: -1.5, x: 10, y: 27, metro: true },
-    { name: '강원', labor: 85, rate: -3.0, x: 62, y: 10 },
-    { name: '충북', labor: 95, rate: -1.5, x: 52, y: 33 },
-    { name: '충남', labor: 128, rate: -0.5, x: 18, y: 48 },
-    { name: '세종', labor: 25, rate: 12.0, x: 38, y: 46 },
-    { name: '대전', labor: 85, rate: -1.8, x: 38, y: 54 },
-    { name: '경북', labor: 148, rate: -4.0, x: 70, y: 32 },
-    { name: '대구', labor: 135, rate: -3.5, x: 64, y: 48 },
-    { name: '울산', labor: 68, rate: -4.0, x: 80, y: 54 },
-    { name: '전북', labor: 98, rate: -4.5, x: 22, y: 64 },
-    { name: '광주', labor: 82, rate: -2.2, x: 18, y: 74 },
-    { name: '전남', labor: 98, rate: -5.0, x: 22, y: 84 },
-    { name: '경남', labor: 188, rate: -3.5, x: 58, y: 66 },
-    { name: '부산', labor: 185, rate: -4.8, x: 74, y: 66 },
-    { name: '제주', labor: 40, rate: 1.0, x: 22, y: 96 },
+    { name: '서울', labor: 540, rate: -3.2, cx: 60, cy: 56, metro: true },
+    { name: '경기', labor: 800, rate: -0.8, cx: 48, cy: 78, metro: true },
+    { name: '인천', labor: 170, rate: -1.5, cx: 22, cy: 62, metro: true },
+    { name: '강원', labor: 85, rate: -3.0, cx: 148, cy: 52 },
+    { name: '충북', labor: 95, rate: -1.5, cx: 112, cy: 122 },
+    { name: '충남', labor: 128, rate: -0.5, cx: 40, cy: 152 },
+    { name: '세종', labor: 25, rate: 12.0, cx: 78, cy: 140 },
+    { name: '대전', labor: 85, rate: -1.8, cx: 82, cy: 164 },
+    { name: '경북', labor: 148, rate: -4.0, cx: 160, cy: 138 },
+    { name: '대구', labor: 135, rate: -3.5, cx: 140, cy: 178 },
+    { name: '울산', labor: 68, rate: -4.0, cx: 178, cy: 210 },
+    { name: '전북', labor: 98, rate: -4.5, cx: 52, cy: 205 },
+    { name: '광주', labor: 82, rate: -2.2, cx: 48, cy: 240 },
+    { name: '전남', labor: 98, rate: -5.0, cx: 55, cy: 272 },
+    { name: '경남', labor: 188, rate: -3.5, cx: 128, cy: 242 },
+    { name: '부산', labor: 185, rate: -4.8, cx: 170, cy: 258 },
+    { name: '제주', labor: 40, rate: 1.0, cx: 56, cy: 332 },
   ]
 
   const maxLabor = Math.max(...regions.map(r => r.labor))
@@ -294,43 +299,55 @@ function KoreaLaborMap() {
       insight={`<b>💡 수도권 블랙홀:</b> 전체 노동인구의 <b style="color:#ff1744">${metroPct}%</b>가 수도권(서울+경기+인천)에 집중. 비수도권은 <b style="color:#ff1744">부산 -4.8%, 전남 -5.0%</b> 등 급속 감소 중. 유일한 성장 도시는 <b style="color:#00c853">세종(+12%)</b>. 지방소멸 가속 → 국토 불균형 심화.`}
     >
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 py-4">
-        {/* 좌: 지도 카토그램 */}
-        <div className="relative bg-gray-50 rounded-xl border border-gray-200" style={{ height: '420px' }}>
+        {/* 좌: SVG 한국 지도 */}
+        <svg viewBox="0 0 210 360" className="w-full h-auto max-h-[480px]" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+          {/* 한반도 윤곽 */}
+          <path d={KOREA_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="1.5" />
+          <path d={JEJU_OUTLINE} fill="#f0ede8" stroke="#d4d0c8" strokeWidth="1.5" />
+
+          {/* DMZ 라인 */}
+          <line x1="50" y1="5" x2="178" y2="18" stroke="#999" strokeWidth="0.8" strokeDasharray="3,2" />
+          <text x="115" y="14" textAnchor="middle" fill="#999" fontSize="5" fontWeight="bold">DMZ</text>
+
+          {/* 지역 버블 + 라벨 */}
           {regions.map(r => {
-            const size = 28 + (r.labor / maxLabor) * 52
+            const radius = 6 + (r.labor / maxLabor) * 18
             const color = getColor(r.rate)
+            const showLabel = radius > 7
             return (
-              <div
-                key={r.name}
-                className="absolute flex flex-col items-center justify-center rounded-full border-2 border-white shadow-sm cursor-default"
-                title={`${r.name}: ${r.labor}만명 (${r.rate > 0 ? '+' : ''}${r.rate}%)`}
-                style={{
-                  left: `${r.x}%`,
-                  top: `${r.y}%`,
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  backgroundColor: color,
-                  opacity: 0.8,
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
-                <span className="text-white font-black" style={{ fontSize: size > 45 ? '11px' : '9px' }}>{r.name}</span>
-                {size > 35 && <span className="text-white font-mono opacity-80" style={{ fontSize: '8px' }}>{r.labor}만</span>}
-              </div>
+              <g key={r.name}>
+                <circle cx={r.cx} cy={r.cy} r={radius} fill={color} opacity={0.8} stroke="white" strokeWidth="1.5" />
+                <text x={r.cx} y={r.cy - (showLabel ? 2 : 0)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={radius > 12 ? '8' : '6.5'} fontWeight="900">
+                  {r.name}
+                </text>
+                {showLabel && (
+                  <text x={r.cx} y={r.cy + 7} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="5" opacity={0.85} fontWeight="bold">
+                    {r.labor}만
+                  </text>
+                )}
+              </g>
             )
           })}
+
           {/* 범례 */}
-          <div className="absolute bottom-2 right-2 bg-white/90 rounded-lg p-2 border border-gray-200 text-[9px]">
-            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#16a34a' }} /> 증가</div>
-            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ea580c' }} /> 소폭 감소</div>
-            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#dc2626' }} /> 감소</div>
-            <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#991b1b' }} /> 급감</div>
-          </div>
-        </div>
+          <g transform="translate(150,300)">
+            <rect x="0" y="0" width="52" height="48" rx="4" fill="white" fillOpacity="0.9" stroke="#ddd" strokeWidth="0.5" />
+            {[
+              { color: '#16a34a', label: '증가' },
+              { color: '#ea580c', label: '소폭감소' },
+              { color: '#dc2626', label: '감소' },
+              { color: '#991b1b', label: '급감' },
+            ].map((l, i) => (
+              <g key={i} transform={`translate(6,${6 + i * 10})`}>
+                <circle cx="4" cy="4" r="3" fill={l.color} />
+                <text x="10" y="4" dominantBaseline="middle" fill="#555" fontSize="5.5">{l.label}</text>
+              </g>
+            ))}
+          </g>
+        </svg>
 
         {/* 우: 요약 통계 */}
         <div className="space-y-4">
-          {/* 수도권 vs 비수도권 */}
           <div className="rounded-lg overflow-hidden border border-gray-200">
             <div className="bg-red-50 p-4 border-b border-red-200">
               <div className="text-[10px] text-red-400 font-bold tracking-wider">수도권 (서울·경기·인천)</div>
@@ -344,7 +361,6 @@ function KoreaLaborMap() {
             </div>
           </div>
 
-          {/* 위기 지역 TOP 5 */}
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-[10px] font-bold text-gray-500 tracking-wider mb-2">인구 감소 위기 TOP 5</div>
             {[...regions].sort((a, b) => a.rate - b.rate).slice(0, 5).map(r => (
@@ -355,7 +371,6 @@ function KoreaLaborMap() {
             ))}
           </div>
 
-          {/* 성장 지역 */}
           <div className="p-3 bg-green-50 rounded-lg border border-green-200">
             <div className="text-[10px] font-bold text-green-600 tracking-wider mb-1">유일한 성장 도시</div>
             {regions.filter(r => r.rate > 0).map(r => (
