@@ -46,11 +46,10 @@ const NAV_TABS = [
   {
     label: '시스템',
     href: '/quant',
-    match: (p: string) => p.startsWith('/quant') || p.startsWith('/swing') || p.startsWith('/us-system'),
+    match: (p: string) => p.startsWith('/quant') || p.startsWith('/swing'),
     sub: [
       { label: '한국 퀀트', href: '/quant' },
       { label: '한국 스윙', href: '/swing' },
-      { label: '미국 시스템', href: '/us-system' },
     ],
   },
 ]
