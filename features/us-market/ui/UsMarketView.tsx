@@ -2,8 +2,12 @@
 
 import { useUsMarket } from '../api/useUsMarket'
 import { UsIndexCards } from './UsIndexCards'
+import { UsMag7Panel } from './UsMag7Panel'
+import { UsFuturesForexPanel } from './UsFuturesForexPanel'
 import { UsRatePanel } from './UsRatePanel'
+import { UsYieldCurvePanel } from './UsYieldCurvePanel'
 import { UsSectorPanel } from './UsSectorPanel'
+import { UsNewsPanel } from './UsNewsPanel'
 import type { UsMarketDaily } from '../types'
 
 function Skeleton({ className }: { className?: string }) {
@@ -123,8 +127,12 @@ export function UsMarketView() {
     <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-[14px]">
       <UsMarketHeader data={data} />
       <UsIndexCards data={data} />
+      <UsMag7Panel data={data} />
+      <UsFuturesForexPanel data={data} />
       <UsRatePanel data={data} />
+      <UsYieldCurvePanel data={data} />
       <UsSectorPanel data={data} />
+      <UsNewsPanel data={data} />
     </div>
   )
 }

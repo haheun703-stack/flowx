@@ -11,38 +11,23 @@ export async function GET() {
       .select('*')
       .order('date', { ascending: false })
       .limit(1)
+      .single()
 
     if (error) throw error
-    if (!data || data.length === 0) {
+    if (!data) {
       return NextResponse.json({ error: '데이터 없음' }, { status: 404 })
     }
 
-    const latest = data[0]
-
     return NextResponse.json({
-      date: latest.date,
-      sp500_close: latest.sp500_close,
-      sp500_change: latest.sp500_change,
-      nasdaq_close: latest.nasdaq_close,
-      nasdaq_change: latest.nasdaq_change,
-      dow_close: latest.dow_close,
-      dow_change: latest.dow_change,
-      vix: latest.vix,
-      fear_greed: latest.fear_greed,
-      fear_greed_label: latest.fear_greed_label,
-      us_3y_yield: latest.us_3y_yield,
-      us_2y_yield: latest.us_2y_yield,
-      us_10y_yield: latest.us_10y_yield,
-      spread_3y_10y: latest.spread_3y_10y,
-      spread_2y_10y: latest.spread_2y_10y,
-      dxy: latest.dxy,
-      wti: latest.wti,
-      gold: latest.gold,
-      soxx_close: latest.soxx_close,
-      soxx_change: latest.soxx_change,
-      sector_etf: latest.sector_etf ?? {},
-      kr_impact: latest.kr_impact,
-      risk_flags: latest.risk_flags ?? [],
+      ...data,
+      sector_etf: data.sector_etf ?? {},
+      risk_flags: data.risk_flags ?? [],
+      mag7: data.mag7 ?? null,
+      futures: data.futures ?? null,
+      crypto: data.crypto ?? null,
+      forex: data.forex ?? null,
+      yield_curve: data.yield_curve ?? null,
+      us_news: data.us_news ?? null,
     })
   } catch (err) {
     console.error('[us-market/daily]', err)
