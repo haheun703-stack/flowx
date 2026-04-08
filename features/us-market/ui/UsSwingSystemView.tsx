@@ -46,29 +46,29 @@ interface DaytradingData {
 
 // ── 상수 ────────────────────────────────────────────────────
 const ETF_EMOJI: Record<string, string> = {
-  SOXX: '\uD83D\uDD2C', XLK: '\uD83D\uDCBB', XLF: '\uD83C\uDFE6', XLC: '\uD83D\uDCE1',
-  XLV: '\uD83C\uDFE5', XLI: '\uD83C\uDFD7\uFE0F', XLE: '\u26FD', XLY: '\uD83D\uDECD\uFE0F', QQQ: '\uD83D\uDCC8',
+  SOXX: '\�\�', XLK: '\�\�', XLF: '\�\�', XLC: '\�\�',
+  XLV: '\�\�', XLI: '\�\�\️', XLE: '\⛽', XLY: '\�\�\️', QQQ: '\�\�',
 }
 const MODE_COLOR: Record<string, string> = {
   AGGRESSIVE: '#00843D', NORMAL: '#1565C0', DEFENSIVE: '#B07D00', HALT: '#D62728',
   BULL_AGGRESSIVE: '#00843D', BULL_NORMAL: '#1565C0', BEAR_DEFENSIVE: '#B07D00', BEAR_CASH: '#D62728',
 }
 const MODE_DESC: Record<string, string> = {
-  AGGRESSIVE: '조건 완화 \u2014 적극 진입. 수급 A+ 빠르게 선점.',
-  NORMAL: '기본 필터 \u2014 수급 확인 후 진입. 비중 50% 이내.',
-  DEFENSIVE: '조건 강화 \u2014 A+만, 손절 타이트, 슬롯 축소.',
-  HALT: '진입 금지 \u2014 극단 위험. 현금 보유 권장.',
-  BULL_AGGRESSIVE: '조건 완화 \u2014 적극 진입. 수급 A+ 빠르게 선점.',
-  BULL_NORMAL: '강세 기조 \u2014 기본 운영. 안정적 매매.',
-  BEAR_DEFENSIVE: '약세 방어 \u2014 A+만, 손절 타이트, 슬롯 축소.',
-  BEAR_CASH: '진입 금지 \u2014 극단 위험. 현금 보유 권장.',
+  AGGRESSIVE: '조건 완화 \— 적극 진입. 수급 A+ 빠르게 선점.',
+  NORMAL: '기본 필터 \— 수급 확인 후 진입. 비중 50% 이내.',
+  DEFENSIVE: '조건 강화 \— A+만, 손절 타이트, 슬롯 축소.',
+  HALT: '진입 금지 \— 극단 위험. 현금 보유 권장.',
+  BULL_AGGRESSIVE: '조건 완화 \— 적극 진입. 수급 A+ 빠르게 선점.',
+  BULL_NORMAL: '강세 기조 \— 기본 운영. 안정적 매매.',
+  BEAR_DEFENSIVE: '약세 방어 \— A+만, 손절 타이트, 슬롯 축소.',
+  BEAR_CASH: '진입 금지 \— 극단 위험. 현금 보유 권장.',
 }
 
 // ── 헬퍼 ────────────────────────────────────────────────────
 const chgColor = (v: number | null) =>
   v == null ? '#888' : v >= 0 ? '#D62728' : '#1565C0'
 const chgStr = (v: number | null, d = 2) =>
-  v == null ? '\u2014' : `${v >= 0 ? '+' : ''}${v.toFixed(d)}%`
+  v == null ? '\—' : `${v >= 0 ? '+' : ''}${v.toFixed(d)}%`
 
 function Sk({ h = 'h-4' }: { h?: string }) {
   return <div className={`animate-pulse rounded bg-[#E8E6E0] ${h} w-full`} />
@@ -101,15 +101,15 @@ function ModeCard({ dt }: { dt: DaytradingData }) {
 
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="bg-[#F0FFF4] rounded-lg p-3">
-          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u2705 좋은 신호</div>
+          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\✅ 좋은 신호</div>
           {dt.reasons_good?.slice(0, 2).map((r, i) => (
-            <div key={i} className="text-[12px] text-[#555] mb-1">\u2022 {r}</div>
+            <div key={i} className="text-[12px] text-[#555] mb-1">\• {r}</div>
           ))}
         </div>
         <div className="bg-[#FFF8F8] rounded-lg p-3">
-          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u26A0 주의 신호</div>
+          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\⚠ 주의 신호</div>
           {dt.reasons_bad?.slice(0, 2).map((r, i) => (
-            <div key={i} className="text-[12px] text-[#555] mb-1">\u2022 {r}</div>
+            <div key={i} className="text-[12px] text-[#555] mb-1">\• {r}</div>
           ))}
         </div>
       </div>
@@ -130,7 +130,7 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
   const first = stocks[0]
   if (!first) return null
   const up = first.etf_change >= 0
-  const emoji = ETF_EMOJI[etf] ?? '\uD83D\uDCC8'
+  const emoji = ETF_EMOJI[etf] ?? '\�\�'
 
   return (
     <div className="fx-card px-0 py-0 overflow-hidden">
@@ -139,8 +139,8 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
         <div className="flex items-center gap-2">
           <span className="text-xl">{emoji}</span>
           <div>
-            <div className="text-[16px] font-black text-[#1A1A2E]">{etf} \u00B7 {first.etf_name}</div>
-            <div className="text-[12px] text-[#888]">ETF 강세 \u2192 구성 종목 자동 분석</div>
+            <div className="text-[16px] font-black text-[#1A1A2E]">{etf} \· {first.etf_name}</div>
+            <div className="text-[12px] text-[#888]">ETF 강세 \→ 구성 종목 자동 분석</div>
           </div>
         </div>
         <div className="text-right">
@@ -173,7 +173,7 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
             </div>
             <div className="w-20 text-right">
               <div className="text-[14px] font-black text-[#1A1A2E]">
-                ${s.close != null ? s.close.toFixed(2) : '\u2014'}
+                ${s.close != null ? s.close.toFixed(2) : '\—'}
               </div>
               <div className="text-[13px] font-bold" style={{ color: chgColor(s.chg_1d) }}>
                 {chgStr(s.chg_1d)}
@@ -184,7 +184,7 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
             </div>
             <div className="w-16 text-right text-[13px] font-bold"
                  style={{ color: s.vol_ratio != null && s.vol_ratio >= 2 ? '#D62728' : '#888' }}>
-              {s.vol_ratio != null ? `${s.vol_ratio.toFixed(1)}x` : '\u2014'}
+              {s.vol_ratio != null ? `${s.vol_ratio.toFixed(1)}x` : '\—'}
             </div>
             <div className="w-16">
               <div className="flex items-center gap-1">
@@ -209,14 +209,14 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
 
   return (
     <div className="fx-card px-4 py-4">
-      <div className="text-[20px] font-bold text-[#1A1A2E] mb-1">\u26A1 오늘의 스윙 후보</div>
-      <div className="text-[13px] text-[#888] mb-4">S&P 500 전종목 스캔 \u2014 단기 진입 우선순위</div>
+      <div className="text-[20px] font-bold text-[#1A1A2E] mb-1">\⚡ 오늘의 스윙 후보</div>
+      <div className="text-[13px] text-[#888] mb-4">S&P 500 전종목 스캔 \— 단기 진입 우선순위</div>
 
       <div className="space-y-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="text-[13px] font-black bg-[#FFEBEB] text-[#C0392B] px-2 py-0.5 rounded">A+</div>
-            <span className="text-[13px] font-bold text-[#1A1A2E]">최우선 \u2014 지금 바로</span>
+            <span className="text-[13px] font-bold text-[#1A1A2E]">최우선 \— 지금 바로</span>
             <span className="text-[12px] text-[#888]">{aPlus.length}개</span>
           </div>
           {aPlus.slice(0, 5).map(s => (
@@ -229,13 +229,13 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
                 </div>
                 <div className="flex gap-2 mt-0.5">
                   {s.reasons?.slice(0, 2).map((r, i) => (
-                    <span key={i} className="text-[11px] text-[#888]">\u2022 {r}</span>
+                    <span key={i} className="text-[11px] text-[#888]">\• {r}</span>
                   ))}
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-[14px] font-black" style={{ color: chgColor(s.chg_1d) }}>{chgStr(s.chg_1d)}</div>
-                <div className="text-[12px] text-[#888]">거래량 {s.vol_ratio?.toFixed(1) ?? '\u2014'}x</div>
+                <div className="text-[12px] text-[#888]">거래량 {s.vol_ratio?.toFixed(1) ?? '\—'}x</div>
               </div>
               <div className="text-[15px] font-black text-[#1A1A2E] w-8 text-right">{s.score}</div>
             </div>
@@ -245,7 +245,7 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <div className="text-[13px] font-black bg-[#FFF0E6] text-[#B05000] px-2 py-0.5 rounded">A</div>
-            <span className="text-[13px] font-bold text-[#1A1A2E]">관심 \u2014 수급 확인 후</span>
+            <span className="text-[13px] font-bold text-[#1A1A2E]">관심 \— 수급 확인 후</span>
             <span className="text-[12px] text-[#888]">{a.length}개</span>
           </div>
           {a.slice(0, 5).map(s => (
@@ -324,7 +324,7 @@ export function UsSwingSystemView() {
   return (
     <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-[14px]">
       <div className="flex items-center gap-2">
-        <div className="text-[22px] font-black text-[#1A1A2E]">\uD83C\uDDFA\uD83C\uDDF8 미국 스윙시스템</div>
+        <div className="text-[22px] font-black text-[#1A1A2E]">\�\�\�\� 미국 스윙시스템</div>
         <div className="text-[13px] text-[#888] bg-[#F1F0EA] px-2 py-1 rounded font-bold">단기 1~3일</div>
       </div>
 
@@ -333,7 +333,7 @@ export function UsSwingSystemView() {
       {etfOrder.length > 0 && (
         <div>
           <div className="text-[18px] font-bold text-[#1A1A2E] mb-3">강세 ETF 구성 종목 드릴다운</div>
-          <div className="text-[13px] text-[#888] mb-4">오늘 강하게 오른 ETF \u2192 구성 종목 중 가장 강한 것을 자동 추출</div>
+          <div className="text-[13px] text-[#888] mb-4">오늘 강하게 오른 ETF \→ 구성 종목 중 가장 강한 것을 자동 추출</div>
           <div className="space-y-4">
             {etfOrder.slice(0, 4).map(etf => (
               <EtfDrillBlock key={etf} etf={etf} stocks={drilldown[etf] ?? []} />
