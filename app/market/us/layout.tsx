@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 const TABS = [
-  { href: '/market/us',       label: '\�\�\�\� 전체 개요',    sub: '지수\·ETF\·체온' },
-  { href: '/market/us/swing', label: '\⚡ 스윙시스템',    sub: '단기 1~3일' },
-  { href: '/market/us/quant', label: '\�\� 퀀트시스템',    sub: '중기 5~10일' },
+  { href: '/market/us', label: '전체 개요', sub: '지수·ETF·체온'},
+  { href: '/market/us/swing', label: '⚡ 스윙시스템', sub: '단기 1~3일'},
+  { href: '/market/us/quant', label: '퀀트시스템', sub: '중기 5~10일'},
 ]
 
 export default function UsMarketLayout({ children }: { children: React.ReactNode }) {
@@ -25,8 +25,8 @@ export default function UsMarketLayout({ children }: { children: React.ReactNode
                   href={tab.href}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
                   style={{
-                    background: isActive ? '#1A1A2E' : 'transparent',
-                    color:      isActive ? '#fff'    : '#888',
+                    background: isActive ? '#1A1A2E': 'transparent',
+                    color: isActive ? '#fff': '#888',
                   }}
                 >
                   <span className="text-[15px] font-black">{tab.label}</span>
