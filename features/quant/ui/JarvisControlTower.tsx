@@ -466,30 +466,35 @@ export default function JarvisControlTower() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     if (activeTab === "etf-signals" && !etfData) {
       setTabLoading("etf-signals");
-      fetch("/api/etf-signals")
+      fetch("/api/etf-signals", { signal })
         .then((r) => r.json())
         .then((json) => setEtfData({ items: json.items ?? [], date: json.date }))
-        .catch(() => setEtfData({ items: [], date: null }))
-        .finally(() => setTabLoading(null));
+        .catch((err) => { if (err?.name !== "AbortError") setEtfData({ items: [], date: null }); })
+        .finally(() => { if (!signal.aborted) setTabLoading(null); });
     }
     if (activeTab === "relay" && !relayData) {
       setTabLoading("relay");
-      fetch("/api/relay")
+      fetch("/api/relay", { signal })
         .then((r) => r.json())
         .then((json) => setRelayData({ items: json.items ?? [], date: json.date }))
-        .catch(() => setRelayData({ items: [], date: null }))
-        .finally(() => setTabLoading(null));
+        .catch((err) => { if (err?.name !== "AbortError") setRelayData({ items: [], date: null }); })
+        .finally(() => { if (!signal.aborted) setTabLoading(null); });
     }
     if (activeTab === "sniper" && !sniperData) {
       setTabLoading("sniper");
-      fetch("/api/sniper")
+      fetch("/api/sniper", { signal })
         .then((r) => r.json())
         .then((json) => setSniperData({ items: json.items ?? [], date: json.date }))
-        .catch(() => setSniperData({ items: [], date: null }))
-        .finally(() => setTabLoading(null));
+        .catch((err) => { if (err?.name !== "AbortError") setSniperData({ items: [], date: null }); })
+        .finally(() => { if (!signal.aborted) setTabLoading(null); });
     }
+
+    return () => controller.abort();
   }, [activeTab, etfData, relayData, sniperData]);
 
   if (loading) {
