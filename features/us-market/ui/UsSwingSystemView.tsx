@@ -79,16 +79,16 @@ function ModeCard({ dt }: { dt: DaytradingData }) {
   const color = MODE_COLOR[dt.mode] ?? '#888'
   return (
     <div className="fx-card px-4 py-4">
-      <div className="text-[13px] font-black text-[#1A1A2E] mb-3">스윙시스템 오늘의 진입 모드</div>
+      <div className="text-[17px] font-bold text-[#1A1A2E] mb-3">스윙시스템 오늘의 진입 모드</div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div style={{ color }} className="text-[28px] font-black font-mono">{dt.mode}</div>
-          <div className="text-[11px] text-[#888] mt-1 max-w-xs">{MODE_DESC[dt.mode] ?? ''}</div>
+          <div style={{ color }} className="text-[32px] font-black font-mono">{dt.mode}</div>
+          <div className="text-[13px] text-[#888] mt-1 max-w-xs">{MODE_DESC[dt.mode] ?? ''}</div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] text-[#888] font-bold mb-1">위험점수</div>
-          <div className="text-[26px] font-black font-mono text-[#1A1A2E]">
-            {dt.risk_score}<span className="text-[12px] text-[#aaa]">/100</span>
+          <div className="text-[12px] text-[#888] font-bold mb-1">위험점수</div>
+          <div className="text-[30px] font-black font-mono text-[#1A1A2E]">
+            {dt.risk_score}<span className="text-[14px] text-[#aaa]">/100</span>
           </div>
           <div className="flex gap-1 justify-end mt-1">
             {[1, 2, 3, 4, 5].map(i => (
@@ -101,15 +101,15 @@ function ModeCard({ dt }: { dt: DaytradingData }) {
 
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="bg-[#F0FFF4] rounded-lg p-3">
-          <div className="text-[10px] font-black text-[#1A1A2E] mb-2">\u2705 좋은 신호</div>
+          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u2705 좋은 신호</div>
           {dt.reasons_good?.slice(0, 2).map((r, i) => (
-            <div key={i} className="text-[10px] text-[#555] mb-1">\u2022 {r}</div>
+            <div key={i} className="text-[12px] text-[#555] mb-1">\u2022 {r}</div>
           ))}
         </div>
         <div className="bg-[#FFF8F8] rounded-lg p-3">
-          <div className="text-[10px] font-black text-[#1A1A2E] mb-2">\u26A0 주의 신호</div>
+          <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u26A0 주의 신호</div>
           {dt.reasons_bad?.slice(0, 2).map((r, i) => (
-            <div key={i} className="text-[10px] text-[#555] mb-1">\u2022 {r}</div>
+            <div key={i} className="text-[12px] text-[#555] mb-1">\u2022 {r}</div>
           ))}
         </div>
       </div>
@@ -117,7 +117,7 @@ function ModeCard({ dt }: { dt: DaytradingData }) {
       {dt.risk_flags?.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {dt.risk_flags.map((f, i) => (
-            <span key={i} className="text-[10px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{f}</span>
+            <span key={i} className="text-[12px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{f}</span>
           ))}
         </div>
       )}
@@ -139,20 +139,20 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
         <div className="flex items-center gap-2">
           <span className="text-xl">{emoji}</span>
           <div>
-            <div className="text-[14px] font-black text-[#1A1A2E]">{etf} \u00B7 {first.etf_name}</div>
-            <div className="text-[10px] text-[#888]">ETF 강세 \u2192 구성 종목 자동 분석</div>
+            <div className="text-[16px] font-black text-[#1A1A2E]">{etf} \u00B7 {first.etf_name}</div>
+            <div className="text-[12px] text-[#888]">ETF 강세 \u2192 구성 종목 자동 분석</div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[22px] font-black font-mono" style={{ color: chgColor(first.etf_change) }}>
+          <div className="text-[26px] font-black font-mono" style={{ color: chgColor(first.etf_change) }}>
             {chgStr(first.etf_change)}
           </div>
-          <div className="text-[9px] text-[#888]">ETF 오늘 등락</div>
+          <div className="text-[11px] text-[#888]">ETF 오늘 등락</div>
         </div>
       </div>
 
       <div>
-        <div className="flex items-center gap-3 px-4 py-2 bg-[#F8F7F3] text-[9px] font-black text-[#888] tracking-wider uppercase border-b border-[#E8E6E0]">
+        <div className="flex items-center gap-3 px-4 py-2 bg-[#F8F7F3] text-[11px] font-black text-[#888] tracking-wider uppercase border-b border-[#E8E6E0]">
           <div className="w-5 text-center">#</div>
           <div className="flex-1">종목</div>
           <div className="w-20 text-right">가격 / 1일</div>
@@ -164,25 +164,25 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
         {stocks.slice(0, 8).map((s, i) => (
           <div key={s.ticker}
                className="flex items-center gap-3 px-4 py-2.5 border-b border-[#F0EEE8] last:border-0 hover:bg-[#FAFAF8] transition-colors">
-            <div className="w-5 text-center text-[11px] font-black text-[#aaa]">{i + 1}</div>
+            <div className="w-5 text-center text-[13px] font-black text-[#aaa]">{i + 1}</div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[14px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                <span className="text-[10px] text-[#888]">{s.name}</span>
+                <span className="text-[16px] font-black text-[#1A1A2E]">{s.ticker}</span>
+                <span className="text-[12px] text-[#888]">{s.name}</span>
               </div>
             </div>
             <div className="w-20 text-right">
-              <div className="text-[12px] font-black text-[#1A1A2E]">
+              <div className="text-[14px] font-black text-[#1A1A2E]">
                 ${s.close != null ? s.close.toFixed(2) : '\u2014'}
               </div>
-              <div className="text-[11px] font-bold" style={{ color: chgColor(s.chg_1d) }}>
+              <div className="text-[13px] font-bold" style={{ color: chgColor(s.chg_1d) }}>
                 {chgStr(s.chg_1d)}
               </div>
             </div>
-            <div className="w-16 text-right text-[11px] font-bold" style={{ color: chgColor(s.chg_5d) }}>
+            <div className="w-16 text-right text-[13px] font-bold" style={{ color: chgColor(s.chg_5d) }}>
               {chgStr(s.chg_5d, 1)}
             </div>
-            <div className="w-16 text-right text-[11px] font-bold"
+            <div className="w-16 text-right text-[13px] font-bold"
                  style={{ color: s.vol_ratio != null && s.vol_ratio >= 2 ? '#D62728' : '#888' }}>
               {s.vol_ratio != null ? `${s.vol_ratio.toFixed(1)}x` : '\u2014'}
             </div>
@@ -192,7 +192,7 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
                   <div className="h-full rounded-full"
                        style={{ width: `${s.score}%`, background: s.score >= 70 ? '#D62728' : s.score >= 55 ? '#B07D00' : '#888' }} />
                 </div>
-                <span className="text-[10px] font-black text-[#1A1A2E]">{s.score}</span>
+                <span className="text-[12px] font-black text-[#1A1A2E]">{s.score}</span>
               </div>
             </div>
           </div>
@@ -209,58 +209,58 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
 
   return (
     <div className="fx-card px-4 py-4">
-      <div className="text-[15px] font-black text-[#1A1A2E] mb-1">\u26A1 오늘의 스윙 후보</div>
-      <div className="text-[11px] text-[#888] mb-4">S&P 500 전종목 스캔 \u2014 단기 진입 우선순위</div>
+      <div className="text-[20px] font-bold text-[#1A1A2E] mb-1">\u26A1 오늘의 스윙 후보</div>
+      <div className="text-[13px] text-[#888] mb-4">S&P 500 전종목 스캔 \u2014 단기 진입 우선순위</div>
 
       <div className="space-y-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="text-[11px] font-black bg-[#FFEBEB] text-[#C0392B] px-2 py-0.5 rounded">A+</div>
-            <span className="text-[11px] font-bold text-[#1A1A2E]">최우선 \u2014 지금 바로</span>
-            <span className="text-[10px] text-[#888]">{aPlus.length}개</span>
+            <div className="text-[13px] font-black bg-[#FFEBEB] text-[#C0392B] px-2 py-0.5 rounded">A+</div>
+            <span className="text-[13px] font-bold text-[#1A1A2E]">최우선 \u2014 지금 바로</span>
+            <span className="text-[12px] text-[#888]">{aPlus.length}개</span>
           </div>
           {aPlus.slice(0, 5).map(s => (
             <div key={s.ticker} className="flex items-center gap-3 py-2 border-b border-[#F0EEE8] last:border-0">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                  <span className="text-[10px] text-[#888]">{s.name}</span>
-                  <span className="text-[9px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
+                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.ticker}</span>
+                  <span className="text-[12px] text-[#888]">{s.name}</span>
+                  <span className="text-[11px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
                 </div>
                 <div className="flex gap-2 mt-0.5">
                   {s.reasons?.slice(0, 2).map((r, i) => (
-                    <span key={i} className="text-[9px] text-[#888]">\u2022 {r}</span>
+                    <span key={i} className="text-[11px] text-[#888]">\u2022 {r}</span>
                   ))}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[12px] font-black" style={{ color: chgColor(s.chg_1d) }}>{chgStr(s.chg_1d)}</div>
-                <div className="text-[10px] text-[#888]">거래량 {s.vol_ratio?.toFixed(1) ?? '\u2014'}x</div>
+                <div className="text-[14px] font-black" style={{ color: chgColor(s.chg_1d) }}>{chgStr(s.chg_1d)}</div>
+                <div className="text-[12px] text-[#888]">거래량 {s.vol_ratio?.toFixed(1) ?? '\u2014'}x</div>
               </div>
-              <div className="text-[13px] font-black text-[#1A1A2E] w-8 text-right">{s.score}</div>
+              <div className="text-[15px] font-black text-[#1A1A2E] w-8 text-right">{s.score}</div>
             </div>
           ))}
         </div>
 
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="text-[11px] font-black bg-[#FFF0E6] text-[#B05000] px-2 py-0.5 rounded">A</div>
-            <span className="text-[11px] font-bold text-[#1A1A2E]">관심 \u2014 수급 확인 후</span>
-            <span className="text-[10px] text-[#888]">{a.length}개</span>
+            <div className="text-[13px] font-black bg-[#FFF0E6] text-[#B05000] px-2 py-0.5 rounded">A</div>
+            <span className="text-[13px] font-bold text-[#1A1A2E]">관심 \u2014 수급 확인 후</span>
+            <span className="text-[12px] text-[#888]">{a.length}개</span>
           </div>
           {a.slice(0, 5).map(s => (
             <div key={s.ticker} className="flex items-center gap-3 py-2 border-b border-[#F0EEE8] last:border-0">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                  <span className="text-[10px] text-[#888]">{s.name}</span>
-                  <span className="text-[9px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
+                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.ticker}</span>
+                  <span className="text-[12px] text-[#888]">{s.name}</span>
+                  <span className="text-[11px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[12px] font-black" style={{ color: chgColor(s.chg_1d) }}>{chgStr(s.chg_1d)}</div>
+                <div className="text-[14px] font-black" style={{ color: chgColor(s.chg_1d) }}>{chgStr(s.chg_1d)}</div>
               </div>
-              <div className="text-[13px] font-black text-[#888] w-8 text-right">{s.score}</div>
+              <div className="text-[15px] font-black text-[#888] w-8 text-right">{s.score}</div>
             </div>
           ))}
         </div>
@@ -324,16 +324,16 @@ export function UsSwingSystemView() {
   return (
     <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-[14px]">
       <div className="flex items-center gap-2">
-        <div className="text-[18px] font-black text-[#1A1A2E]">\uD83C\uDDFA\uD83C\uDDF8 미국 스윙시스템</div>
-        <div className="text-[11px] text-[#888] bg-[#F1F0EA] px-2 py-1 rounded font-bold">단기 1~3일</div>
+        <div className="text-[22px] font-black text-[#1A1A2E]">\uD83C\uDDFA\uD83C\uDDF8 미국 스윙시스템</div>
+        <div className="text-[13px] text-[#888] bg-[#F1F0EA] px-2 py-1 rounded font-bold">단기 1~3일</div>
       </div>
 
       {dt && <ModeCard dt={dt} />}
 
       {etfOrder.length > 0 && (
         <div>
-          <div className="text-[14px] font-black text-[#1A1A2E] mb-3">강세 ETF 구성 종목 드릴다운</div>
-          <div className="text-[11px] text-[#888] mb-4">오늘 강하게 오른 ETF \u2192 구성 종목 중 가장 강한 것을 자동 추출</div>
+          <div className="text-[18px] font-bold text-[#1A1A2E] mb-3">강세 ETF 구성 종목 드릴다운</div>
+          <div className="text-[13px] text-[#888] mb-4">오늘 강하게 오른 ETF \u2192 구성 종목 중 가장 강한 것을 자동 추출</div>
           <div className="space-y-4">
             {etfOrder.slice(0, 4).map(etf => (
               <EtfDrillBlock key={etf} etf={etf} stocks={drilldown[etf] ?? []} />

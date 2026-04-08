@@ -29,8 +29,8 @@ export default function UsMarketLayout({ children }: { children: React.ReactNode
                     color:      isActive ? '#fff'    : '#888',
                   }}
                 >
-                  <span className="text-[13px] font-black">{tab.label}</span>
-                  <span className="text-[10px] opacity-70">{tab.sub}</span>
+                  <span className="text-[15px] font-black">{tab.label}</span>
+                  <span className="text-[12px] opacity-70">{tab.sub}</span>
                 </Link>
               )
             })}

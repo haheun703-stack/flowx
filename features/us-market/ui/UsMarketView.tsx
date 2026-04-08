@@ -133,25 +133,25 @@ function EtfBar({ sectorEtf }: { sectorEtf: Record<string, number> }) {
   return (
     <div className="fx-card px-4 py-3">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[13px] font-black text-[#1A1A2E]">주요 ETF 현황</span>
-        <span className="text-[10px] text-[#888]">레버리지 \u00B7 섹터 \u00B7 안전자산 한눈에</span>
+        <span className="text-[17px] font-bold text-[#1A1A2E]">주요 ETF 현황</span>
+        <span className="text-[12px] text-[#888]">레버리지 \u00B7 섹터 \u00B7 안전자산 한눈에</span>
       </div>
       <div className="grid grid-cols-6 gap-2">
         {ETF_LIST.map(({ ticker, name, category }) => {
           const chg = sectorEtf[ticker] ?? null
           return (
             <div key={ticker} className={`border rounded-lg px-2 py-2 text-center ${getCategoryBg(category)}`}>
-              <div className="text-[9px] font-bold text-[#888] mb-0.5">{category}</div>
-              <div className="text-[12px] font-black text-[#1A1A2E]">{ticker}</div>
-              <div className="text-[10px] text-[#888] mb-1">{name}</div>
-              <div className="text-[14px] font-black" style={{ color: changeColor(chg) }}>
+              <div className="text-[11px] font-bold text-[#888] mb-0.5">{category}</div>
+              <div className="text-[14px] font-black text-[#1A1A2E]">{ticker}</div>
+              <div className="text-[12px] text-[#888] mb-1">{name}</div>
+              <div className="text-[16px] font-black" style={{ color: changeColor(chg) }}>
                 {changeStr(chg)}
               </div>
             </div>
           )
         })}
       </div>
-      <div className="mt-2 flex gap-3 text-[10px] text-[#888]">
+      <div className="mt-2 flex gap-3 text-[12px] text-[#888]">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-[#FFBBBB] inline-block" />지수</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-[#D4AAFF] inline-block" />레버리지</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-[#AACCFF] inline-block" />인버스</span>
@@ -174,13 +174,13 @@ function IndexCards({ data }: { data: UsMarketData }) {
     <div className="grid grid-cols-3 gap-3">
       {cards.map(card => (
         <div key={card.name} className="fx-card px-4 py-4" style={{ borderTop: `3px solid ${changeColor(card.change)}` }}>
-          <div className="text-[12px] font-black text-[#1A1A2E] tracking-wide">{card.name}</div>
-          <div className="text-[10px] text-[#888] mb-2">{card.sub}</div>
-          <div className="text-[30px] font-black leading-none" style={{ color: changeColor(card.change) }}>
+          <div className="text-[16px] font-bold text-[#1A1A2E] tracking-wide">{card.name}</div>
+          <div className="text-[12px] text-[#888] mb-2">{card.sub}</div>
+          <div className="text-[36px] font-black leading-none" style={{ color: changeColor(card.change) }}>
             {changeStr(card.change)}
           </div>
-          <div className="text-[18px] font-bold text-[#1A1A2E] mt-1 font-mono">{f2(card.close, 0)}</div>
-          <div className="text-[10px] text-[#888] mt-2">{card.note}</div>
+          <div className="text-[22px] font-bold text-[#1A1A2E] mt-1 font-mono">{f2(card.close, 0)}</div>
+          <div className="text-[12px] text-[#888] mt-2">{card.note}</div>
         </div>
       ))}
     </div>
@@ -195,45 +195,45 @@ function MarketVitals({ data }: { data: UsMarketData }) {
   return (
     <div className="grid grid-cols-4 gap-3">
       <div className="fx-card px-4 py-4">
-        <div className="text-[12px] font-black text-[#1A1A2E] mb-1">VIX 공포지수</div>
-        <div className="text-[10px] text-[#888] mb-3">20 이하 = 안심 / 30 이상 = 공포</div>
-        <div className="text-[28px] font-black font-mono" style={{ color: vixColor }}>{f2(data.vix)}</div>
+        <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">VIX 공포지수</div>
+        <div className="text-[12px] text-[#888] mb-3">20 이하 = 안심 / 30 이상 = 공포</div>
+        <div className="text-[32px] font-black font-mono" style={{ color: vixColor }}>{f2(data.vix)}</div>
         <div className="h-2 bg-[#F0EEE8] rounded-full overflow-hidden mt-2 mb-1">
           <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((data.vix ?? 0) / 50 * 100, 100)}%`, background: vixColor }} />
         </div>
-        <div className="text-[10px] font-bold mt-1" style={{ color: vixColor }}>
+        <div className="text-[12px] font-bold mt-1" style={{ color: vixColor }}>
           {data.vix == null ? '\u2014' : data.vix >= 30 ? '\u26A0\uFE0F 패닉구간 \u2014 신중하게' : data.vix >= 25 ? '\u26A0\uFE0F 주의구간 \u2014 비중 조절' : '\u2705 안정 \u2014 정상 매매'}
         </div>
       </div>
 
       <div className="fx-card px-4 py-4">
-        <div className="text-[12px] font-black text-[#1A1A2E] mb-1">공포 \u00B7 탐욕 지수</div>
-        <div className="text-[10px] text-[#888] mb-3">0 극단공포 \u2194 100 극단탐욕</div>
-        <div className="text-[28px] font-black font-mono" style={{ color: fgColor }}>{data.fear_greed ?? '\u2014'}</div>
-        <div className="text-[11px] font-bold mt-1" style={{ color: fgColor }}>{data.fear_greed_label ?? '\u2014'}</div>
-        <div className="text-[10px] text-[#888] mt-1">
+        <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">공포 \u00B7 탐욕 지수</div>
+        <div className="text-[12px] text-[#888] mb-3">0 극단공포 \u2194 100 극단탐욕</div>
+        <div className="text-[32px] font-black font-mono" style={{ color: fgColor }}>{data.fear_greed ?? '\u2014'}</div>
+        <div className="text-[13px] font-bold mt-1" style={{ color: fgColor }}>{data.fear_greed_label ?? '\u2014'}</div>
+        <div className="text-[12px] text-[#888] mt-1">
           {data.fear_greed == null ? '' : data.fear_greed <= 25 ? '저가매수 기회일 수도 있어요' : data.fear_greed >= 75 ? '과열 \u2014 차익실현 타이밍' : '중립 구간 \u2014 수급 보고 결정'}
         </div>
       </div>
 
       <div className="fx-card px-4 py-4">
-        <div className="text-[12px] font-black text-[#1A1A2E] mb-1">3년물 금리 \u2605핵심</div>
-        <div className="text-[10px] text-[#888] mb-3">높을수록 성장주 \u00B7 기술주 부담</div>
-        <div className="text-[28px] font-black font-mono" style={{ color: yieldColor }}>
+        <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">3년물 금리 \u2605핵심</div>
+        <div className="text-[12px] text-[#888] mb-3">높을수록 성장주 \u00B7 기술주 부담</div>
+        <div className="text-[32px] font-black font-mono" style={{ color: yieldColor }}>
           {data.us_3y_yield != null ? `${data.us_3y_yield.toFixed(2)}%` : '\u2014'}
         </div>
-        <div className="text-[10px] font-bold mt-1" style={{ color: yieldColor }}>
+        <div className="text-[12px] font-bold mt-1" style={{ color: yieldColor }}>
           {data.us_3y_yield == null ? '\u2014' : data.us_3y_yield >= 4.5 ? '\u26A0\uFE0F 고금리 \u2014 기술주 밸류에이션 부담' : data.us_3y_yield >= 4.0 ? '\u26A0\uFE0F 주의 \u2014 보수적 운영 권장' : '\u2705 안정 \u2014 성장주 우호 환경'}
         </div>
         {data.spread_3y_10y != null && data.spread_3y_10y < 0 && (
-          <div className="text-[10px] text-[#D62728] font-bold mt-1">\u26A0\uFE0F 장단기 금리 역전 중</div>
+          <div className="text-[12px] text-[#D62728] font-bold mt-1">\u26A0\uFE0F 장단기 금리 역전 중</div>
         )}
       </div>
 
       <div className="fx-card px-4 py-4">
-        <div className="text-[12px] font-black text-[#1A1A2E] mb-1">달러 DXY</div>
-        <div className="text-[10px] text-[#888] mb-3">높을수록 달러 강세 = 신흥국 약세</div>
-        <div className="text-[28px] font-black font-mono" style={{ color: data.dxy == null ? '#888' : data.dxy >= 104 ? '#D62728' : data.dxy <= 100 ? '#00843D' : '#888' }}>
+        <div className="text-[16px] font-bold text-[#1A1A2E] mb-1">달러 DXY</div>
+        <div className="text-[12px] text-[#888] mb-3">높을수록 달러 강세 = 신흥국 약세</div>
+        <div className="text-[32px] font-black font-mono" style={{ color: data.dxy == null ? '#888' : data.dxy >= 104 ? '#D62728' : data.dxy <= 100 ? '#00843D' : '#888' }}>
           {f2(data.dxy)}
         </div>
         <div className="mt-2 space-y-0.5">
@@ -241,7 +241,7 @@ function MarketVitals({ data }: { data: UsMarketData }) {
             { label: 'WTI 유가', value: data.wti, suffix: '$' },
             { label: '금', value: data.gold, suffix: '$' },
           ].map(({ label, value, suffix }) => (
-            <div key={label} className="flex justify-between text-[10px]">
+            <div key={label} className="flex justify-between text-[12px]">
               <span className="text-[#888]">{label}</span>
               <span className="font-bold text-[#1A1A2E]">{value != null ? `${suffix}${f2(value, 0)}` : '\u2014'}</span>
             </div>
@@ -269,22 +269,22 @@ function SectorHeatmap({ sectorEtf }: { sectorEtf: Record<string, number> }) {
   return (
     <div className="fx-card px-4 py-4">
       <div className="flex items-center justify-between mb-1">
-        <div className="text-[15px] font-black text-[#1A1A2E]">어떤 섹터가 뜨나?</div>
-        <div className="text-[10px] text-[#888]">S&P 500 섹터 ETF 등락률 \u2014 진한 빨강일수록 강세</div>
+        <div className="text-[20px] font-bold text-[#1A1A2E]">어떤 섹터가 뜨나?</div>
+        <div className="text-[12px] text-[#888]">S&P 500 섹터 ETF 등락률 \u2014 진한 빨강일수록 강세</div>
       </div>
-      <div className="text-[11px] text-[#888] mb-4">빨강 섹터 = 오늘 돈이 몰리는 곳 / 파랑 섹터 = 자금 이탈 중</div>
+      <div className="text-[13px] text-[#888] mb-4">빨강 섹터 = 오늘 돈이 몰리는 곳 / 파랑 섹터 = 자금 이탈 중</div>
       <div className="grid grid-cols-4 gap-2">
         {sorted.map(({ ticker, name, emoji, kr, change }) => (
           <div key={ticker} className={`border rounded-xl px-3 py-3 ${getBg(change)}`}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[16px]">{emoji}</span>
-              <span className="text-[10px] font-bold text-[#888]">{ticker}</span>
+              <span className="text-[20px]">{emoji}</span>
+              <span className="text-[12px] font-bold text-[#888]">{ticker}</span>
             </div>
-            <div className="text-[14px] font-black text-[#1A1A2E]">{name}</div>
-            <div className="text-[22px] font-black font-mono my-1" style={{ color: changeColor(change) }}>
+            <div className="text-[16px] font-black text-[#1A1A2E]">{name}</div>
+            <div className="text-[26px] font-black font-mono my-1" style={{ color: changeColor(change) }}>
               {changeStr(change)}
             </div>
-            <div className="text-[9px] text-[#888] leading-tight">{kr}</div>
+            <div className="text-[11px] text-[#888] leading-tight">{kr}</div>
           </div>
         ))}
       </div>
@@ -316,46 +316,46 @@ function SystemPanels({ dt, qt }: { dt: DaytradingData | null; qt: QuantData | n
     <div className="grid grid-cols-2 gap-3">
       {/* 스윙시스템 */}
       <div className="fx-card px-4 py-4">
-        <div className="text-[16px] font-black text-[#1A1A2E]">스윙시스템</div>
-        <div className="text-[11px] text-[#888] mb-4">단기 1~3일 트레이딩 신호</div>
+        <div className="text-[20px] font-black text-[#1A1A2E]">스윙시스템</div>
+        <div className="text-[13px] text-[#888] mb-4">단기 1~3일 트레이딩 신호</div>
         {dt ? (
           <>
             <div className="flex items-start justify-between mb-4">
               <div>
-                <div className="text-[11px] text-[#888] font-bold">진입 모드</div>
-                <div className="text-[26px] font-black font-mono" style={{ color: modeColor[dt.mode] ?? '#888' }}>{dt.mode}</div>
+                <div className="text-[13px] text-[#888] font-bold">진입 모드</div>
+                <div className="text-[30px] font-black font-mono" style={{ color: modeColor[dt.mode] ?? '#888' }}>{dt.mode}</div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] text-[#888] font-bold">위험점수</div>
-                <div className="text-[26px] font-black font-mono text-[#1A1A2E]">
-                  {dt.risk_score}<span className="text-[13px] text-[#aaa]">/100</span>
+                <div className="text-[13px] text-[#888] font-bold">위험점수</div>
+                <div className="text-[30px] font-black font-mono text-[#1A1A2E]">
+                  {dt.risk_score}<span className="text-[15px] text-[#aaa]">/100</span>
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2 mb-4">
               <div className="bg-[#F0FFF4] rounded-lg p-3">
-                <div className="text-[10px] font-black text-[#1A1A2E] mb-2">\u2705 좋은 신호</div>
+                <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u2705 좋은 신호</div>
                 {dt.reasons_good?.slice(0, 3).map((r, i) => (
-                  <div key={i} className="text-[10px] text-[#555] leading-tight mb-1">\u2022 {r}</div>
+                  <div key={i} className="text-[12px] text-[#555] leading-tight mb-1">\u2022 {r}</div>
                 ))}
               </div>
               <div className="bg-[#FFF8F8] rounded-lg p-3">
-                <div className="text-[10px] font-black text-[#1A1A2E] mb-2">\u26A0 주의 신호</div>
+                <div className="text-[12px] font-black text-[#1A1A2E] mb-2">\u26A0 주의 신호</div>
                 {dt.reasons_bad?.slice(0, 3).map((r, i) => (
-                  <div key={i} className="text-[10px] text-[#555] leading-tight mb-1">\u2022 {r}</div>
+                  <div key={i} className="text-[12px] text-[#555] leading-tight mb-1">\u2022 {r}</div>
                 ))}
               </div>
             </div>
             {dt.risk_flags?.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {dt.risk_flags.map((f, i) => (
-                  <span key={i} className="text-[10px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{f}</span>
+                  <span key={i} className="text-[12px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{f}</span>
                 ))}
               </div>
             )}
             <div className="bg-[#F0F7FF] rounded-xl p-3 border-l-4" style={{ borderColor: modeColor[dt.mode] ?? '#888' }}>
-              <div className="text-[11px] font-black text-[#1A1A2E]">오늘 전략</div>
-              <div className="text-[11px] text-[#444] mt-1 leading-relaxed">
+              <div className="text-[13px] font-black text-[#1A1A2E]">오늘 전략</div>
+              <div className="text-[13px] text-[#444] mt-1 leading-relaxed">
                 {(dt.mode === 'AGGRESSIVE' || dt.mode === 'BULL_AGGRESSIVE') && 'VIX 안정, 시장 우호적. 수급 좋은 종목 적극 진입.'}
                 {(dt.mode === 'NORMAL' || dt.mode === 'BULL_NORMAL') && 'VIX 주의구간. 수급 확인 후 포지션 50% 이내로.'}
                 {(dt.mode === 'DEFENSIVE' || dt.mode === 'BEAR_DEFENSIVE') && '시장 불안정. A+ 수급 종목만, 손절 타이트하게.'}
@@ -364,42 +364,42 @@ function SystemPanels({ dt, qt }: { dt: DaytradingData | null; qt: QuantData | n
             </div>
           </>
         ) : (
-          <div className="py-6 text-center text-[12px] text-[#888]">
+          <div className="py-6 text-center text-[14px] text-[#888]">
             스윙시스템 데이터 로딩 중...<br />
-            <span className="text-[10px] text-[#aaa]">단타봇 실행 후 표시됩니다</span>
+            <span className="text-[12px] text-[#aaa]">단타봇 실행 후 표시됩니다</span>
           </div>
         )}
       </div>
 
       {/* 퀀트시스템 */}
       <div className="fx-card px-4 py-4">
-        <div className="text-[16px] font-black text-[#1A1A2E]">퀀트시스템</div>
-        <div className="text-[11px] text-[#888] mb-4">중기 5~10일 스윙 매크로 분석</div>
+        <div className="text-[20px] font-black text-[#1A1A2E]">퀀트시스템</div>
+        <div className="text-[13px] text-[#888] mb-4">중기 5~10일 스윙 매크로 분석</div>
         {qt ? (
           <>
             <div className="flex items-start justify-between mb-4">
               <div>
-                <div className="text-[11px] text-[#888] font-bold">이번 주 전략</div>
-                <div className="text-[20px] font-black text-[#1A1A2E]">{stratLabel[qMode ?? ''] ?? qMode ?? '\u2014'}</div>
+                <div className="text-[13px] text-[#888] font-bold">이번 주 전략</div>
+                <div className="text-[24px] font-black text-[#1A1A2E]">{stratLabel[qMode ?? ''] ?? qMode ?? '\u2014'}</div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] text-[#888] font-bold">최대 보유</div>
-                <div className="text-[20px] font-black text-[#1A1A2E]">{qSlots ?? '\u2014'}종목</div>
+                <div className="text-[13px] text-[#888] font-bold">최대 보유</div>
+                <div className="text-[24px] font-black text-[#1A1A2E]">{qSlots ?? '\u2014'}종목</div>
                 {qHoldMin != null && qHoldMax != null && (
-                  <div className="text-[10px] text-[#888]">{qHoldMin}~{qHoldMax}일</div>
+                  <div className="text-[12px] text-[#888]">{qHoldMin}~{qHoldMax}일</div>
                 )}
               </div>
             </div>
             {qScore != null && (
               <div className="mb-4">
-                <div className="flex justify-between text-[11px] font-black text-[#1A1A2E] mb-1">
+                <div className="flex justify-between text-[13px] font-black text-[#1A1A2E] mb-1">
                   <span>매크로 환경 점수</span>
                   <span className="font-mono">{qScore}/100</span>
                 </div>
                 <div className="h-3 bg-[#F0EEE8] rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all" style={{ width: `${qScore}%`, background: qScore >= 65 ? '#00843D' : qScore >= 45 ? '#888' : '#B07D00' }} />
                 </div>
-                <div className="flex justify-between text-[9px] text-[#bbb] mt-1">
+                <div className="flex justify-between text-[11px] text-[#bbb] mt-1">
                   <span>현금보유</span><span>방어</span><span>중립</span><span>기본</span><span>공격</span>
                 </div>
               </div>
@@ -412,41 +412,41 @@ function SystemPanels({ dt, qt }: { dt: DaytradingData | null; qt: QuantData | n
                   { label: 'VIX 공포', value: qt.vix != null ? qt.vix.toFixed(1) : '\u2014', signal: qt.vix_env ?? '' },
                 ].map(({ label, value, signal }) => (
                   <div key={label} className="bg-[#F8F7F3] rounded-lg p-2 text-center">
-                    <div className="text-[10px] font-black text-[#1A1A2E]">{label}</div>
-                    <div className="text-[16px] font-black font-mono text-[#1A1A2E]">{value}</div>
-                    <div className="text-[9px] text-[#888] truncate">{signal}</div>
+                    <div className="text-[12px] font-black text-[#1A1A2E]">{label}</div>
+                    <div className="text-[20px] font-black font-mono text-[#1A1A2E]">{value}</div>
+                    <div className="text-[11px] text-[#888] truncate">{signal}</div>
                   </div>
                 ))}
               </div>
             )}
             {qOverweight.length > 0 && (
               <div className="mb-2">
-                <div className="text-[10px] font-black text-[#00843D] mb-1">\u25B2 비중 확대 섹터</div>
+                <div className="text-[12px] font-black text-[#00843D] mb-1">\u25B2 비중 확대 섹터</div>
                 <div className="flex flex-wrap gap-1">
                   {qOverweight.map((s: string) => (
-                    <span key={s} className="text-[10px] font-bold bg-[#E6F9EE] text-[#00843D] px-2 py-0.5 rounded-full">{s}</span>
+                    <span key={s} className="text-[12px] font-bold bg-[#E6F9EE] text-[#00843D] px-2 py-0.5 rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
             )}
             {qUnderweight.length > 0 && (
               <div className="mb-3">
-                <div className="text-[10px] font-black text-[#D62728] mb-1">\u25BC 회피 섹터</div>
+                <div className="text-[12px] font-black text-[#D62728] mb-1">\u25BC 회피 섹터</div>
                 <div className="flex flex-wrap gap-1">
                   {qUnderweight.map((s: string) => (
-                    <span key={s} className="text-[10px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{s}</span>
+                    <span key={s} className="text-[12px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
             )}
             {qOutlook && (
-              <div className="bg-[#F8F7F3] rounded-lg p-3 text-[11px] text-[#444] leading-relaxed">{qOutlook}</div>
+              <div className="bg-[#F8F7F3] rounded-lg p-3 text-[13px] text-[#444] leading-relaxed">{qOutlook}</div>
             )}
           </>
         ) : (
-          <div className="py-6 text-center text-[12px] text-[#888]">
+          <div className="py-6 text-center text-[14px] text-[#888]">
             퀀트시스템 데이터 로딩 중...<br />
-            <span className="text-[10px] text-[#aaa]">퀀트봇 실행 후 표시됩니다</span>
+            <span className="text-[12px] text-[#aaa]">퀀트봇 실행 후 표시됩니다</span>
           </div>
         )}
       </div>
@@ -523,26 +523,26 @@ export function UsMarketView() {
       <div className="bg-white rounded-xl border-2 border-[#00FF88] px-5 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-4">
           <div>
-            <div className="text-[11px] font-black text-[#888] tracking-widest uppercase">오늘 미국장 한줄 요약</div>
-            <div className="text-[18px] font-black text-[#1A1A2E] mt-1">
+            <div className="text-[13px] font-black text-[#888] tracking-widest uppercase">오늘 미국장 한줄 요약</div>
+            <div className="text-[22px] font-black text-[#1A1A2E] mt-1">
               {overallUp ? `나스닥 ${nqChg >= 0 ? '+' : ''}${nqChg.toFixed(1)}% 상승, ${market.soxx_change && market.soxx_change > 0 ? '반도체 강세' : '기술주 주도'}`
                : overallDn ? `나스닥 ${nqChg.toFixed(1)}% 하락, 시장 조정 중`
                : '나스닥 보합, 방향 탐색 중'}
-              <span className={`text-[12px] px-3 py-1 rounded-full font-black ml-3 ${
+              <span className={`text-[14px] px-3 py-1 rounded-full font-black ml-3 ${
                 overallUp ? 'bg-[#E6F9EE] text-[#00843D]'
                 : overallDn ? 'bg-[#FFEEEE] text-[#C0392B]'
                 : 'bg-[#F1F0EA] text-[#555]'}`}>
                 {overallUp ? '\u2191 긍정' : overallDn ? '\u2193 주의' : '\u2192 중립'}
               </span>
             </div>
-            <div className="text-[11px] text-[#777] mt-1">
+            <div className="text-[13px] text-[#777] mt-1">
               S&P500 {changeStr(market.sp500_change)} \u00B7 나스닥 {changeStr(market.nasdaq_change)} \u00B7 SOXX {changeStr(market.soxx_change)}
             </div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[11px] text-[#888]">{market.date} 기준</div>
-          <div className="text-[11px] font-black text-[#00843D] mt-1">\u25CF 정보봇 자동수집</div>
+          <div className="text-[13px] text-[#888]">{market.date} 기준</div>
+          <div className="text-[13px] font-black text-[#00843D] mt-1">\u25CF 정보봇 자동수집</div>
         </div>
       </div>
 
@@ -552,7 +552,7 @@ export function UsMarketView() {
       <SectorHeatmap sectorEtf={market.sector_etf} />
       <SystemPanels dt={dt} qt={qt} />
 
-      <div className="text-center text-[10px] text-[#bbb] py-1">
+      <div className="text-center text-[12px] text-[#bbb] py-1">
         본 정보는 투자 권유가 아니며 최종 판단은 투자자 본인에게 있습니다 \u00B7 FLOWX 정보봇 자동수집
       </div>
     </div>
