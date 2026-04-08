@@ -3,6 +3,30 @@
 import { useEffect, useState } from 'react'
 import type { FibStock } from './FibShared'
 
+/* ── US 야간 필터 타입 ── */
+interface UsOvernight {
+  date: string
+  mode: string | null
+  gap_signal: string | null
+  gap_est_pct: number | null
+  risk_level: number | null
+  risk_score: number | null
+  watch_sectors: string[]
+  avoid_sectors: string[]
+  relay_picks: { name: string; ticker?: string; reason?: string }[]
+  reasons_bad: string[]
+  reasons_good: string[]
+  reason: string | null
+  nasdaq_change: number | null
+  soxx_change: number | null
+  vix: number | null
+  dxy: number | null
+  fear_greed: number | null
+  fear_greed_label: string | null
+  kr_impact: string | null
+  risk_flags: string[]
+}
+
 /* ── 타입 ── */
 interface Pick {
   code: string; name: string; grade: string; score: number
@@ -292,6 +316,7 @@ export default function SwingDashboardView() {
   const [loading, setLoading] = useState(true)
   const [expandedStock, setExpandedStock] = useState<string | null>(null)
   const [brainExpanded, setBrainExpanded] = useState(false)
+  const [usOvernight, setUsOvernight] = useState<UsOvernight | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -308,6 +333,22 @@ export default function SwingDashboardView() {
       setLoading(false)
     }
     load()
+    return () => controller.abort()
+  }, [])
+
+  /* US 야간 필터 별도 fetch */
+  useEffect(() => {
+    const controller = new AbortController()
+    ;(async () => {
+      try {
+        const res = await fetch('/api/us-overnight', { signal: controller.signal })
+        if (!res.ok) return
+        const json = await res.json()
+        if (json.date) setUsOvernight(json)
+      } catch (e) {
+        if ((e as Error).name !== 'AbortError') console.error('[UsOvernight]', e)
+      }
+    })()
     return () => controller.abort()
   }, [])
 
@@ -375,6 +416,127 @@ export default function SwingDashboardView() {
           <p className="text-[13px] text-[#6B7280] mt-2">{data.regime_desc}</p>
         )}
       </section>
+
+      {/* ═══ 1.5행: US 야간 필터 ═══ */}
+      {usOvernight && (
+        <section className="bg-white rounded-xl border border-[var(--border)] p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🇺🇸</span>
+              <h2 className="text-[17px] font-bold text-[#1A1A2E]">미국장 야간 필터</h2>
+              <span
+                className="text-[13px] font-bold px-2.5 py-1 rounded-full"
+                style={{
+                  backgroundColor:
+                    usOvernight.mode === 'HALT' ? '#FEF2F2' :
+                    usOvernight.mode === 'DEFENSIVE' ? '#FFFBEB' :
+                    usOvernight.mode === 'AGGRESSIVE' ? '#F0FDF4' : '#F5F4F0',
+                  color:
+                    usOvernight.mode === 'HALT' ? '#DC2626' :
+                    usOvernight.mode === 'DEFENSIVE' ? '#D97706' :
+                    usOvernight.mode === 'AGGRESSIVE' ? '#16A34A' : '#1A1A2E',
+                }}
+              >
+                {usOvernight.mode ?? '—'}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-[12px] text-[#6B7280] font-mono">
+              <span>갭: {usOvernight.gap_signal} ({usOvernight.gap_est_pct != null ? `${usOvernight.gap_est_pct >= 0 ? '+' : ''}${usOvernight.gap_est_pct.toFixed(2)}%` : '—'})</span>
+              <span>위험: {usOvernight.risk_level ?? '—'}/5</span>
+              <span>{usOvernight.date}</span>
+            </div>
+          </div>
+
+          {/* 주요 지표 4개 */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+            {[
+              { label: '나스닥', val: usOvernight.nasdaq_change, pct: true },
+              { label: 'SOXX', val: usOvernight.soxx_change, pct: true },
+              { label: 'VIX', val: usOvernight.vix, raw: true },
+              { label: 'DXY', val: usOvernight.dxy, raw: true },
+            ].map(({ label, val, pct, raw }) => (
+              <div key={label} className="bg-[#F5F4F0] rounded-lg px-3 py-2 text-center">
+                <div className="text-[10px] text-[#6B7280] font-mono">{label}</div>
+                <div
+                  className="text-[15px] font-mono font-bold"
+                  style={{
+                    color: raw
+                      ? (label === 'VIX' && val != null && val >= 25 ? '#F59E0B' : '#1A1A2E')
+                      : val == null ? '#9CA3AF'
+                      : val >= 0 ? '#dc2626' : '#2563eb',
+                  }}
+                >
+                  {val == null ? '—' : pct ? `${val >= 0 ? '+' : ''}${val.toFixed(2)}%` : val.toFixed(2)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 긍정/부정 + 릴레이 + 섹터 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* 긍정 요인 */}
+            {usOvernight.reasons_good?.length > 0 && (
+              <div>
+                <div className="text-[10px] text-[#16A34A] font-mono font-bold mb-1">긍정 요인</div>
+                <div className="space-y-1">
+                  {usOvernight.reasons_good.map((r, i) => (
+                    <div key={i} className="text-[11px] font-mono text-[#1A1A2E] px-2 py-1 rounded bg-green-50 border border-green-100">
+                      {r}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 부정 요인 */}
+            {usOvernight.reasons_bad?.length > 0 && (
+              <div>
+                <div className="text-[10px] text-[#DC2626] font-mono font-bold mb-1">부정 요인</div>
+                <div className="space-y-1">
+                  {usOvernight.reasons_bad.map((r, i) => (
+                    <div key={i} className="text-[11px] font-mono text-[#1A1A2E] px-2 py-1 rounded bg-red-50 border border-red-100">
+                      {r}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 릴레이 종목 + 섹터 */}
+            <div>
+              {usOvernight.relay_picks?.length > 0 && (
+                <div className="mb-2">
+                  <div className="text-[10px] text-[#2563EB] font-mono font-bold mb-1">릴레이 종목</div>
+                  {usOvernight.relay_picks.map((p, i) => (
+                    <div key={i} className="text-[11px] font-mono text-[#1A1A2E] px-2 py-1 rounded bg-blue-50 border border-blue-100 mb-1">
+                      {p.name}{p.reason ? ` — ${p.reason}` : ''}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {usOvernight.watch_sectors?.length > 0 && (
+                <div className="mb-1">
+                  <span className="text-[10px] text-[#16A34A] font-mono font-bold">주목: </span>
+                  <span className="text-[11px] font-mono text-[#1A1A2E]">{usOvernight.watch_sectors.join(', ')}</span>
+                </div>
+              )}
+              {usOvernight.avoid_sectors?.length > 0 && (
+                <div>
+                  <span className="text-[10px] text-[#DC2626] font-mono font-bold">회피: </span>
+                  <span className="text-[11px] font-mono text-[#1A1A2E]">{usOvernight.avoid_sectors.join(', ')}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 한국 영향 요약 */}
+          {usOvernight.kr_impact && (
+            <div className="mt-3 pt-3 border-t border-[var(--border)]">
+              <div className="text-[11px] font-mono text-[#6B7280] leading-relaxed">{usOvernight.kr_impact}</div>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ═══ 2행: 주목 종목 카드 (접힌/펼침) ═══ */}
       {krxPicks?.length > 0 && (
