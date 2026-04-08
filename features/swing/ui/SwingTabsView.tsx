@@ -9,10 +9,10 @@ import StealthScannerView from "./StealthScannerView"
 
 const TABS = [
   { key: "dashboard", label: "대시보드" },
+  { key: "stealth", label: "선매집 탐지" },
   { key: "fib-leaders", label: "대형주 피보나치" },
   { key: "fib-stocks", label: "전체 피보나치" },
   { key: "sector-rotation", label: "섹터 로테이션" },
-  { key: "stealth", label: "선매집 탐지" },
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
