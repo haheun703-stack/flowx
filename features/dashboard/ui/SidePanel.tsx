@@ -1,6 +1,7 @@
 'use client'
 
 import { useDashboardMarket, useMarketSnapshot } from '../api/useDashboard'
+import { GRADE_PICK } from '@/shared/constants/grades'
 
 export function SidePanel() {
   const { data, isLoading } = useDashboardMarket()
@@ -46,8 +47,8 @@ export function SidePanel() {
         {[
           { label: 'KOSPI', value: regime },
           { label: 'US', value: data?.us_grade ?? '—' },
-          { label: '매수', value: `${data?.buys ?? 0}건` },
-          { label: '매도', value: `${data?.sells ?? 0}건` },
+          { label: GRADE_PICK, value: `${data?.buys ?? 0}건` },
+          { label: '경계', value: `${data?.sells ?? 0}건` },
         ].map((row, i) => (
           <div key={row.label} className={`flex items-center justify-between px-3 py-1 border-b border-[var(--border)]/30 last:border-b-0 ${i % 2 === 1 ? 'bg-gray-50' : ''}`}>
             <span className="text-[11px] text-[var(--text-dim)]">{row.label}</span>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useShortSignals, type ShortSignalItem } from '@/features/dashboard/api/useDashboard'
 import { useQuery } from '@tanstack/react-query'
 import { getRefetchInterval } from '@/shared/lib/marketUtils'
+import { GRADE_STRONG_PICK, GRADE_PICK, GRADE_WATCH } from '@/shared/constants/grades'
 
 // ── 상수 ──
 const GRADE_COLOR: Record<string, string> = {
@@ -15,9 +16,9 @@ const GRADE_COLOR: Record<string, string> = {
 }
 
 const SIGNAL_LABEL: Record<string, string> = {
-  FORCE_BUY: '강력 포착', STRONG_PICK: '강력 포착',
-  BUY: '포착', PICK: '포착',
-  WATCH: '관심',
+  FORCE_BUY: GRADE_STRONG_PICK, STRONG_PICK: GRADE_STRONG_PICK,
+  BUY: GRADE_PICK, PICK: GRADE_PICK,
+  WATCH: GRADE_WATCH,
 }
 
 const SIGNAL_COLOR: Record<string, string> = {

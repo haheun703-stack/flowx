@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { GRADE_PICK, GRADE_LEGACY_BUY } from '@/shared/constants/grades'
 
 interface RelayItem {
   lead_sector: string
@@ -69,8 +70,8 @@ export default function RelayView() {
     )
   }
 
-  const buySignals = items.filter((i) => i.signal_type.includes('매수') || i.signal_type.includes('포착') || i.signal_type === '관심 구간')
-  const otherSignals = items.filter((i) => !i.signal_type.includes('매수') && !i.signal_type.includes('포착') && i.signal_type !== '관심 구간')
+  const buySignals = items.filter((i) => i.signal_type.includes(GRADE_LEGACY_BUY) || i.signal_type.includes(GRADE_PICK) || i.signal_type === '관심 구간')
+  const otherSignals = items.filter((i) => !i.signal_type.includes(GRADE_LEGACY_BUY) && !i.signal_type.includes(GRADE_PICK) && i.signal_type !== '관심 구간')
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">

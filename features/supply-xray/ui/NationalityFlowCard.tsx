@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchJson } from '@/shared/lib/fetchJson'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
+import { GRADE_STRONG_PICK, GRADE_PICK, GRADE_LEGACY_BUY } from '@/shared/constants/grades'
 
 interface CountryItem {
   country: string
@@ -64,7 +65,7 @@ function formatShares(v: number): string {
 }
 
 function getStatus(item: CountryItem): string {
-  const isBuyDir = item.direction === '매수' || item.direction === '유입'
+  const isBuyDir = item.direction === GRADE_LEGACY_BUY || item.direction === '유입'
   if (item.prev === 0 && isBuyDir) return '(NEW) 신규'
   const pct = Math.abs(item.change_pct)
   const sign = item.change_pct > 0 ? '+' : '-'
@@ -84,9 +85,9 @@ const signalColor = (s: string) => {
 
 const signalLabel = (s: string) => {
   const map: Record<string, string> = {
-    STRONG_BUY: '강력 포착', STRONG_PICK: '강력 포착',
-    BUY: '포착', PICK: '포착',
-    WEAK_BUY: '약 포착', WEAK_PICK: '약 포착',
+    STRONG_BUY: GRADE_STRONG_PICK, STRONG_PICK: GRADE_STRONG_PICK,
+    BUY: GRADE_PICK, PICK: GRADE_PICK,
+    WEAK_BUY: `약 ${GRADE_PICK}`, WEAK_PICK: `약 ${GRADE_PICK}`,
     NEUTRAL: '중립',
     WEAK_SELL: '약 경계', WEAK_CAUTION: '약 경계',
     SELL: '경계', CAUTION: '경계',
@@ -138,7 +139,7 @@ function CardContent({ data }: { data: NationalityData }) {
         {sorted.length === 0 ? (
           <div style={{ padding: 24, color: C.muted, fontSize: 13, textAlign: 'center' }}>국적별 데이터 없음</div>
         ) : sorted.map((item, i) => {
-          const isBuy = item.direction === '매수' || item.direction === '유입'
+          const isBuy = item.direction === GRADE_LEGACY_BUY || item.direction === '유입'
           const color = isBuy ? BUY : SELL
           const iconCount = Math.max(1, Math.round(Math.abs(item.change) / maxAbs * MAX_ICONS))
           const status = getStatus(item)

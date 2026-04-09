@@ -3,15 +3,25 @@
 import Link from 'next/link'
 import { useDashboardPicks } from '../api/useDashboard'
 import { DashboardCard, CardSkeleton } from './DashboardCard'
+import {
+  GRADE_STRONG_PICK,
+  GRADE_PICK,
+  GRADE_WATCH,
+  GRADE_OBSERVE,
+  GRADE_LEGACY_FORCE_BUY,
+  GRADE_LEGACY_BUY,
+  GRADE_LEGACY_WATCH_BUY,
+  BUYABLE_GRADES,
+} from '@/shared/constants/grades'
 
 const GRADE_COLORS: Record<string, string> = {
-  '적극매수': 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
-  '강력 포착': 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
-  '매수': 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
-  '포착': 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
-  '관심매수': 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
-  '관심': 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
-  '관찰': 'bg-[var(--bg-row)] text-[var(--text-dim)] border-[var(--border)]',
+  [GRADE_LEGACY_FORCE_BUY]: 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
+  [GRADE_STRONG_PICK]: 'bg-[var(--up-bg)] text-[var(--up)] border-[var(--up)]/30',
+  [GRADE_LEGACY_BUY]: 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
+  [GRADE_PICK]: 'bg-amber-50 text-[var(--yellow)] border-[var(--yellow)]/30',
+  [GRADE_LEGACY_WATCH_BUY]: 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
+  [GRADE_WATCH]: 'bg-amber-50/70 text-[var(--yellow)] border-[var(--yellow)]/30',
+  [GRADE_OBSERVE]: 'bg-[var(--bg-row)] text-[var(--text-dim)] border-[var(--border)]',
 }
 
 function formatPrice(v: number) {
@@ -33,7 +43,7 @@ export function TopPicksCard() {
   if (isLoading || !data) return <CardSkeleton className="col-span-2" />
 
   const topPicks = data.picks
-    .filter(p => ['적극매수', '매수', '관심매수', '강력 포착', '포착', '관심'].includes(p.grade))
+    .filter(p => (BUYABLE_GRADES as readonly string[]).includes(p.grade))
     .slice(0, 8)
 
   return (

@@ -2,6 +2,7 @@
 
 import { useInformationSupplyDemand, useInformationSupplyDemandHistory, type SupplyDemandData } from '../api/useInformation'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
+import { GRADE_LEGACY_BUY } from '@/shared/constants/grades'
 import {
   XAxis, YAxis, CartesianGrid,
   ReferenceLine, ResponsiveContainer,
@@ -50,7 +51,7 @@ function DailySupplyFlow({ data }: { data: SupplyDemandData }) {
                 <div className="flex items-center gap-2">
                   {item.streak !== 0 && (
                     <span className={`text-[10px] font-bold ${item.streak > 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}`}>
-                      {item.streak > 0 ? '매수' : '매도'} {Math.abs(item.streak)}일째
+                      {item.streak > 0 ? GRADE_LEGACY_BUY : '매도'} {Math.abs(item.streak)}일째
                     </span>
                   )}
                   <span className="text-sm font-black tabular-nums" style={{ color }}>

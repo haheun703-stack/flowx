@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useShortSignals } from '../api/useDashboard'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
+import { GRADE_STRONG_PICK, GRADE_PICK, GRADE_WATCH } from '@/shared/constants/grades'
 
 const GRADE_STYLE: Record<string, string> = {
   'AA': 'text-[#16A34A] bg-[#E8F5E9]',
@@ -12,9 +13,9 @@ const GRADE_STYLE: Record<string, string> = {
 }
 
 const SIGNAL_LABEL: Record<string, string> = {
-  FORCE_BUY: '강력 포착', STRONG_PICK: '강력 포착',
-  BUY: '포착', PICK: '포착',
-  WATCH: '관심',
+  FORCE_BUY: GRADE_STRONG_PICK, STRONG_PICK: GRADE_STRONG_PICK,
+  BUY: GRADE_PICK, PICK: GRADE_PICK,
+  WATCH: GRADE_WATCH,
 }
 
 function gradeColor(score: number) {

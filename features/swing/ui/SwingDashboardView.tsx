@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import type { FibStock } from './FibShared'
+import {
+  GRADE_STRONG_PICK,
+  GRADE_PICK,
+  GRADE_WATCH,
+  GRADE_LEGACY_BUY,
+  GRADE_LEGACY_WATCH_BUY,
+} from '@/shared/constants/grades'
 
 /* ── 타입 ── */
 interface Pick {
@@ -86,8 +93,8 @@ function getVerdictHero(verdict: string) {
 /* ── action 뱃지 색상 ── */
 function actionBadgeStyle(action?: string) {
   switch (action) {
-    case '매수': case '포착': return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' }
-    case '관심매수': case '관심': return { bg: '#FFFBEB', border: '#FDE68A', text: '#D97706' }
+    case GRADE_LEGACY_BUY: case GRADE_PICK: return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' }
+    case GRADE_LEGACY_WATCH_BUY: case GRADE_WATCH: return { bg: '#FFFBEB', border: '#FDE68A', text: '#D97706' }
     default: return { bg: '#F3F4F6', border: '#E5E7EB', text: '#6B7280' }
   }
 }
@@ -568,7 +575,7 @@ export default function SwingDashboardView() {
 
         const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
           '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
-          '강력 포착': { backgroundColor: '#22c55e', color: '#FFF' },
+          [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
           '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
           '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
           '경계': { backgroundColor: '#eab308', color: '#FFF' },

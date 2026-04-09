@@ -1,12 +1,18 @@
 'use client'
 
 import type { MarketStatus } from '../types'
+import {
+  GRADE_STRONG_PICK,
+  GRADE_PICK,
+  GRADE_LEGACY_FORCE_BUY,
+  GRADE_LEGACY_BUY,
+} from '@/shared/constants/grades'
 
 const VERDICT_STYLE: Record<string, { color: string; bg: string }> = {
-  '적극매수': { color: 'text-[var(--green)]', bg: 'bg-green-50' },
-  '강력 포착': { color: 'text-[var(--green)]', bg: 'bg-green-50' },
-  '매수': { color: 'text-[var(--green)]', bg: 'bg-green-50' },
-  '포착': { color: 'text-[var(--green)]', bg: 'bg-green-50' },
+  [GRADE_LEGACY_FORCE_BUY]: { color: 'text-[var(--green)]', bg: 'bg-green-50' },
+  [GRADE_STRONG_PICK]: { color: 'text-[var(--green)]', bg: 'bg-green-50' },
+  [GRADE_LEGACY_BUY]: { color: 'text-[var(--green)]', bg: 'bg-green-50' },
+  [GRADE_PICK]: { color: 'text-[var(--green)]', bg: 'bg-green-50' },
   '관망': { color: 'text-[var(--yellow)]', bg: 'bg-yellow-50' },
   '매도': { color: 'text-[var(--up)]', bg: 'bg-red-50' },
   '경계': { color: 'text-[var(--up)]', bg: 'bg-red-50' },

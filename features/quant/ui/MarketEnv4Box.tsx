@@ -1,5 +1,7 @@
 'use client'
 
+import { GRADE_LEGACY_BUY } from '@/shared/constants/grades'
+
 // ─── Row 2: 시장 환경 4박스 (스펙 §5) ───
 
 interface MarketEnv4BoxProps {
@@ -15,7 +17,7 @@ interface MarketEnv4BoxProps {
 function boxColor(type: 'verdict' | 'risk' | 'cash' | 'rec', value?: string | number) {
   if (type === 'verdict') {
     const v = String(value ?? '').toLowerCase()
-    if (v.includes('매수') || v.includes('공격') || v.includes('bull')) return '#059669'
+    if (v.includes(GRADE_LEGACY_BUY) || v.includes('공격') || v.includes('bull')) return '#059669'
     if (v.includes('관망') || v.includes('중립') || v.includes('neutral')) return '#D97706'
     if (v.includes('방어') || v.includes('매도') || v.includes('bear')) return '#DC2626'
     return '#6B7280'

@@ -1,6 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  BUYABLE_GRADES,
+  GRADE_BADGE_CLASS,
+  ACTION_STYLE_CLASS,
+  GRADE_OBSERVE,
+  GRADE_PICK,
+  GRADE_LEGACY_BUY,
+} from "@/shared/constants/grades";
 
 /* ─── 타입 ─── */
 
@@ -366,25 +374,8 @@ const ICO = {
 };
 
 /* ─── 상수 ─── */
-
-const GRADE_COLORS: Record<string, string> = {
-  // 신 표현 (4/5 이후)
-  "\uAC15\uB825 \uD3EC\uCC29": "bg-red-600 text-white",
-  "\uD3EC\uCC29": "bg-green-600 text-white",
-  "\uAD00\uC2EC": "bg-blue-600 text-white",
-  "\uAD00\uCC30": "bg-yellow-600 text-white",
-  // 하위호환 (구표현)
-  "\uC801\uADF9\uB9E4\uC218": "bg-red-600 text-white",
-  "\uB9E4\uC218": "bg-green-600 text-white",
-  "\uAD00\uC2EC\uB9E4\uC218": "bg-blue-600 text-white",
-  "\uBCF4\uB958": "bg-gray-300 text-[var(--text-dim)]",
-};
-
-// 포착 가능 등급 (신+구표현 모두)
-const BUYABLE_GRADES = [
-  "\uAC15\uB825 \uD3EC\uCC29", "\uD3EC\uCC29", "\uAD00\uC2EC", "\uAD00\uCC30",
-  "\uC801\uADF9\uB9E4\uC218", "\uB9E4\uC218", "\uAD00\uC2EC\uB9E4\uC218",
-];
+// 등급 관련 상수는 @/shared/constants/grades에서 import (SSoT)
+// GRADE_BADGE_CLASS, BUYABLE_GRADES, ACTION_STYLE_CLASS 참조
 
 const REGIME_DISPLAY: Record<string, { icon: string; label: string; color: string; bg: string }> = {
   BULL: { icon: "\uD83D\uDFE2", label: "\uC0C1\uC2B9\uC7A5", color: "text-[var(--green)]", bg: "border-green-200" },
@@ -539,7 +530,7 @@ export default function JarvisControlTower() {
 
   const allPicks = picks?.picks ?? [];
   const buyable = allPicks
-    .filter((p) => BUYABLE_GRADES.includes(p.grade))
+    .filter((p) => (BUYABLE_GRADES as readonly string[]).includes(p.grade))
     .sort((a, b) => b.total_score - a.total_score);
 
   const stats = picks?.stats ?? {};
@@ -620,7 +611,7 @@ export default function JarvisControlTower() {
               <div className="space-y-2">
                 {Object.entries(stats).map(([grade, count]) => (
                   <div key={grade} className="flex items-center justify-between">
-                    <span className={`text-sm px-2 py-0.5 rounded ${GRADE_COLORS[grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
+                    <span className={`text-sm px-2 py-0.5 rounded ${GRADE_BADGE_CLASS[grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
                       {grade}
                     </span>
                     <div className="flex-1 mx-3 bg-gray-200 rounded-full h-2">
@@ -895,7 +886,7 @@ function PickRow({ pick }: { pick: PickItem }) {
     <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
-          <span className={`text-sm px-2 py-0.5 rounded font-bold ${GRADE_COLORS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
+          <span className={`text-sm px-2 py-0.5 rounded font-bold ${GRADE_BADGE_CLASS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
             {pick.grade}
           </span>
           <span className="text-[var(--text-primary)] font-medium">{pick.name}</span>
@@ -1707,7 +1698,7 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
 
 function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | null } }) {
   const { items, date } = data;
-  const buySignals = items.filter((i) => i.signal_type.includes("매수") || i.signal_type === "관심 구간");
+  const buySignals = items.filter((i) => i.signal_type.includes(GRADE_LEGACY_BUY) || i.signal_type === "관심 구간");
 
   return (
     <div className="space-y-4">
@@ -1899,23 +1890,10 @@ const INST_GRADE_LABEL: Record<string, string> = {
   STRONG: "강력",
   MODERATE: "양호",
   NOTABLE: "주목",
-  WATCH: "관찰",
+  WATCH: GRADE_OBSERVE,
 };
 
-const ACTION_STYLE: Record<string, string> = {
-  // 신 표현
-  "\uAC15\uB825 \uD3EC\uCC29": "bg-red-50 text-[var(--up)] border-red-200",
-  "\uD3EC\uCC29": "bg-red-50 text-[var(--up)] border-red-200",
-  "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
-  "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
-  // 하위호환
-  "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
-  "\uAD00\uC2EC\uB9E4\uC218": "bg-amber-50 text-amber-700 border-amber-200",
-  // 영문
-  STRONG_PICK: "bg-red-50 text-[var(--up)] border-red-200",
-  PICK: "bg-red-50 text-[var(--up)] border-red-200",
-  BUY: "bg-red-50 text-[var(--up)] border-red-200",
-};
+// ACTION_STYLE은 @/shared/constants/grades의 ACTION_STYLE_CLASS 사용 (SSoT)
 
 const INST_GRADE_STYLE: Record<string, string> = {
   STRONG: "bg-green-50 text-green-700 border-green-200",
@@ -2073,7 +2051,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                       </span>
                     )}
                     {c.action && (
-                      <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[c.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
+                      <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE_CLASS[c.action] ?? ACTION_STYLE_CLASS[GRADE_OBSERVE]}`}>
                         {c.action}
                       </span>
                     )}
@@ -2131,8 +2109,8 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
                 <div className="flex items-center gap-2 shrink-0 ml-3">
                   {e.sizing && <span className="text-[12px] text-[var(--text-muted)]">{e.sizing}</span>}
                   {e.action && (
-                    <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE[e.action] ?? ACTION_STYLE["\uAD00\uCC30"]}`}>
-                      {e.action === "BUY" ? "매수" : e.action}
+                    <span className={`text-[12px] font-bold px-1.5 py-0.5 rounded border ${ACTION_STYLE_CLASS[e.action] ?? ACTION_STYLE_CLASS[GRADE_OBSERVE]}`}>
+                      {e.action === "BUY" ? GRADE_PICK : e.action}
                     </span>
                   )}
                 </div>

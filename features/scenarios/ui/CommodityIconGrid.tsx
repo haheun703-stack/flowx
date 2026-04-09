@@ -1,6 +1,7 @@
 'use client'
 
 import type { CommodityInfo } from '../types'
+import { GRADE_OBSERVE } from '@/shared/constants/grades'
 
 // ─── 원자재별 SVG 아이콘 메타 ───
 
@@ -139,7 +140,7 @@ function getIconKey(commodityKey: string): string {
 function getStatusBadge(gapPct: number): { label: string; bg: string; text: string } {
   if (gapPct >= 80) return { label: '과열', bg: '#FEE2E2', text: '#DC2626' }
   if (gapPct >= 40) return { label: '보유', bg: '#FEF3C7', text: '#D97706' }
-  if (gapPct >= 20) return { label: '관찰', bg: '#FEF3C7', text: '#D97706' }
+  if (gapPct >= 20) return { label: GRADE_OBSERVE, bg: '#FEF3C7', text: '#D97706' }
   return { label: '매수구간', bg: '#DCFCE7', text: '#16A34A' }
 }
 

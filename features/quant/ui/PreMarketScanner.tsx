@@ -1,8 +1,10 @@
 'use client'
 
+import { GRADE_PICK } from '@/shared/constants/grades'
+
 // ─── Row 2: 미국장 → 한국장 릴레이 (보라 라인 카드) ───
 // 왼쪽: 어젯밤 미국 시장 마감 + 섹터별 핵심 변동
-// 오른쪽: 오늘 한국 ETF 전략 (매수/대기 뱃지)
+// 오른쪽: 오늘 한국 ETF 전략 (포착/대기 뱃지)
 
 interface USMarketData {
   sp500?: { close: number; change_pct: number }
@@ -47,7 +49,7 @@ const PLACEHOLDER_RELAYS: ETFRelay[] = [
 ]
 
 const ACTION_BADGE: Record<string, { label: string; bg: string; text: string }> = {
-  buy: { label: '매수', bg: '#E8F5E9', text: '#16A34A' },
+  buy: { label: GRADE_PICK, bg: '#E8F5E9', text: '#16A34A' },
   wait: { label: '대기', bg: '#F3F4F6', text: '#6B7280' },
   conditional: { label: '조건부', bg: '#FFFBEB', text: '#D97706' },
 }

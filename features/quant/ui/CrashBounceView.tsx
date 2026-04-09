@@ -1,6 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import {
+  GRADE_STRONG_PICK,
+  GRADE_PICK,
+  GRADE_WATCH,
+  GRADE_LEGACY_FORCE_BUY,
+  GRADE_LEGACY_BUY,
+  GRADE_LEGACY_WATCH_BUY,
+  GRADE_ALIAS as SHARED_GRADE_ALIAS,
+  type GradeNew,
+} from '@/shared/constants/grades'
 
 /* ── 타입 ── */
 
@@ -29,18 +39,18 @@ const SIGNAL_CONFIG: Record<string, { color: string; badge?: string }> = {
   '복합급락 반등': { color: '#FF0000', badge: 'BEST' },
   '볼린저급락 반등': { color: '#FF6600' },
   '거래량폭발 반등': { color: '#FF9900' },
-  '관심': { color: '#999999' },
+  [GRADE_WATCH]: { color: '#999999' },
 }
 
 const GRADE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
-  '적극매수': { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
-  '강력 포착': { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
-  '매수': { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
-  '포착': { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
-  '관심': { icon: '○', color: '#999999', bg: '#F5F5F5' },
+  [GRADE_LEGACY_FORCE_BUY]: { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
+  [GRADE_STRONG_PICK]: { icon: '★', color: '#FF0000', bg: '#FFF0F0' },
+  [GRADE_LEGACY_BUY]: { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
+  [GRADE_PICK]: { icon: '◎', color: '#FF6600', bg: '#FFF5E6' },
+  [GRADE_WATCH]: { icon: '○', color: '#999999', bg: '#F5F5F5' },
 }
 
-const GRADE_TABS = ['전체', '강력 포착', '포착', '관심'] as const
+const GRADE_TABS = ['전체', GRADE_STRONG_PICK, GRADE_PICK, GRADE_WATCH] as const
 
 /* ── 이유 파싱 ── */
 
@@ -105,17 +115,20 @@ export default function CrashBounceView() {
     )
   }
 
-  const GRADE_ALIAS: Record<string, string[]> = {
-    '강력 포착': ['강력 포착', '적극매수'],
-    '포착': ['포착', '매수'],
-    '관심': ['관심', '관심매수'],
+  // 구 등급 매칭을 위한 별칭 (신 등급 선택 시 구 등급 데이터도 포함)
+  // 관심매수는 GRADE_ALIAS에 따라 관심 탭에서도 매칭
+  const localAlias: Record<string, string[]> = {
+    [GRADE_STRONG_PICK]: SHARED_GRADE_ALIAS[GRADE_STRONG_PICK],
+    [GRADE_PICK]: SHARED_GRADE_ALIAS[GRADE_PICK],
+    [GRADE_WATCH]: [GRADE_WATCH, GRADE_LEGACY_WATCH_BUY],
   }
   const filtered = gradeFilter === '전체'
     ? items
-    : items.filter(i => (GRADE_ALIAS[gradeFilter] ?? [gradeFilter]).includes(i.grade))
+    : items.filter(i => (localAlias[gradeFilter] ?? [gradeFilter]).includes(i.grade))
 
-  const cardItems = filtered.filter(i => ['적극매수', '매수', '강력 포착', '포착'].includes(i.grade))
-  const watchItems = filtered.filter(i => i.grade === '관심')
+  const cardGrades: string[] = [GRADE_LEGACY_FORCE_BUY, GRADE_LEGACY_BUY, GRADE_STRONG_PICK, GRADE_PICK]
+  const cardItems = filtered.filter(i => cardGrades.includes(i.grade))
+  const watchItems = filtered.filter(i => i.grade === GRADE_WATCH)
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-5">

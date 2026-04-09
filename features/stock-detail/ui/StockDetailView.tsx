@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { GRADE_LEGACY_BUY } from "@/shared/constants/grades"
 
 interface WhyNow {
   technical: string[]
@@ -343,7 +344,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
             <div className="flex items-center gap-2">
               {technicals.tech_signal && (
                 <span className={`text-[10px] px-2 py-0.5 rounded border ${
-                  technicals.tech_signal.includes("매수") || technicals.tech_signal.includes("반등")
+                  technicals.tech_signal.includes(GRADE_LEGACY_BUY) || technicals.tech_signal.includes("반등")
                     ? "bg-[var(--green)]/20 text-[var(--green)] border-[var(--green)]/30"
                     : technicals.tech_signal.includes("매도") || technicals.tech_signal.includes("하락")
                     ? "bg-[var(--red)]/20 text-[var(--red)] border-[var(--red)]/30"
@@ -563,7 +564,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
             <div className="bg-[var(--bg-row)] rounded-xl p-4 text-center">
               <span className="text-[10px] text-[var(--text-muted)] block mb-1">판정</span>
               <span className={`text-sm font-bold px-3 py-1 rounded-lg border ${
-                ml_prediction.decision.includes("매수") || ml_prediction.decision.includes("레버리지") || ml_prediction.decision.includes("상승")
+                ml_prediction.decision.includes(GRADE_LEGACY_BUY) || ml_prediction.decision.includes("레버리지") || ml_prediction.decision.includes("상승")
                   ? "bg-[var(--green)]/20 text-[var(--green)] border-[var(--green)]/30"
                   : ml_prediction.decision.includes("인버스") || ml_prediction.decision.includes("하락")
                   ? "bg-[var(--red)]/20 text-[var(--red)] border-[var(--red)]/30"

@@ -1,13 +1,14 @@
 'use client'
 
 import type { CommodityInfo } from '../types'
+import { GRADE_OBSERVE } from '@/shared/constants/grades'
 
 // ─── 원자재 온도 게이지 (스펙 §5) ───
 // 세로 온도계: 높이로 "어디까지 올라왔는지" 시각적 표현
 
 const ZONE_LABEL: Record<string, { label: string; color: string }> = {
   buy: { label: '매수구간', color: '#16a34a' },
-  watch: { label: '관찰', color: '#F59E0B' },
+  watch: { label: GRADE_OBSERVE, color: '#F59E0B' },
   hold: { label: '보유', color: '#EA580C' },
   overheated: { label: '과열', color: '#dc2626' },
 }
