@@ -368,12 +368,23 @@ const ICO = {
 /* ─── 상수 ─── */
 
 const GRADE_COLORS: Record<string, string> = {
+  // 신 표현 (4/5 이후)
+  "\uAC15\uB825 \uD3EC\uCC29": "bg-red-600 text-white",
+  "\uD3EC\uCC29": "bg-green-600 text-white",
+  "\uAD00\uC2EC": "bg-blue-600 text-white",
+  "\uAD00\uCC30": "bg-yellow-600 text-white",
+  // 하위호환 (구표현)
   "\uC801\uADF9\uB9E4\uC218": "bg-red-600 text-white",
   "\uB9E4\uC218": "bg-green-600 text-white",
   "\uAD00\uC2EC\uB9E4\uC218": "bg-blue-600 text-white",
-  "\uAD00\uCC30": "bg-yellow-600 text-white",
   "\uBCF4\uB958": "bg-gray-300 text-[var(--text-dim)]",
 };
+
+// 포착 가능 등급 (신+구표현 모두)
+const BUYABLE_GRADES = [
+  "\uAC15\uB825 \uD3EC\uCC29", "\uD3EC\uCC29", "\uAD00\uC2EC", "\uAD00\uCC30",
+  "\uC801\uADF9\uB9E4\uC218", "\uB9E4\uC218", "\uAD00\uC2EC\uB9E4\uC218",
+];
 
 const REGIME_DISPLAY: Record<string, { icon: string; label: string; color: string; bg: string }> = {
   BULL: { icon: "\uD83D\uDFE2", label: "\uC0C1\uC2B9\uC7A5", color: "text-[var(--green)]", bg: "border-green-200" },
@@ -528,7 +539,7 @@ export default function JarvisControlTower() {
 
   const allPicks = picks?.picks ?? [];
   const buyable = allPicks
-    .filter((p) => ["\uC801\uADF9\uB9E4\uC218", "\uB9E4\uC218", "\uAD00\uC2EC\uB9E4\uC218", "\uAD00\uCC30"].includes(p.grade))
+    .filter((p) => BUYABLE_GRADES.includes(p.grade))
     .sort((a, b) => b.total_score - a.total_score);
 
   const stats = picks?.stats ?? {};
@@ -1892,11 +1903,18 @@ const INST_GRADE_LABEL: Record<string, string> = {
 };
 
 const ACTION_STYLE: Record<string, string> = {
+  // 신 표현
+  "\uAC15\uB825 \uD3EC\uCC29": "bg-red-50 text-[var(--up)] border-red-200",
+  "\uD3EC\uCC29": "bg-red-50 text-[var(--up)] border-red-200",
+  "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
+  "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
+  // 하위호환
   "\uB9E4\uC218": "bg-red-50 text-[var(--up)] border-red-200",
   "\uAD00\uC2EC\uB9E4\uC218": "bg-amber-50 text-amber-700 border-amber-200",
-  "\uAD00\uCC30": "bg-gray-100 text-gray-600 border-gray-200",
+  // 영문
+  STRONG_PICK: "bg-red-50 text-[var(--up)] border-red-200",
+  PICK: "bg-red-50 text-[var(--up)] border-red-200",
   BUY: "bg-red-50 text-[var(--up)] border-red-200",
-  "\uAD00\uC2EC": "bg-amber-50 text-amber-700 border-amber-200",
 };
 
 const INST_GRADE_STYLE: Record<string, string> = {
