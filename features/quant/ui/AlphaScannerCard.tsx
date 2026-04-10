@@ -11,7 +11,7 @@ const GRADE_STYLE: Record<string, { color: string; border: string; label: string
 }
 
 const SCORE_AXES = [
-  { key: 'value' as const, label: '가치', max: 30, color: '#D97706' },
+  { key: 'value' as const, label: '가치', max: 30, color: '#EAB308' },
   { key: 'quality' as const, label: '품질', max: 25, color: '#2563EB' },
   { key: 'earnings' as const, label: '실적', max: 20, color: '#16A34A' },
   { key: 'drawdown' as const, label: '낙폭', max: 15, color: '#EA580C' },
