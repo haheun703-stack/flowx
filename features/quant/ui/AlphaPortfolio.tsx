@@ -14,19 +14,23 @@ export default function AlphaPortfolio({ defensePct, offensePct, allocation }: P
       <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-4">자산 배분 제안</h3>
 
       {/* 방어 / 공격 바 */}
-      <div className="flex h-6 rounded-full overflow-hidden mb-4">
-        <div
-          className="bg-[#059669] flex items-center justify-center text-[12px] font-bold text-white"
-          style={{ width: `${defensePct}%` }}
-        >
-          방어 {defensePct}%
-        </div>
-        <div
-          className="bg-[#DC2626] flex items-center justify-center text-[12px] font-bold text-white"
-          style={{ width: `${offensePct}%` }}
-        >
-          공격 {offensePct}%
-        </div>
+      <div className="flex h-7 rounded-full overflow-hidden mb-4">
+        {defensePct > 0 && (
+          <div
+            className="bg-[#059669] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap min-w-[80px]"
+            style={{ width: `${defensePct}%` }}
+          >
+            방어 {defensePct}%
+          </div>
+        )}
+        {offensePct > 0 && (
+          <div
+            className="bg-[#DC2626] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap min-w-[80px]"
+            style={{ width: `${offensePct}%` }}
+          >
+            공격 {offensePct}%
+          </div>
+        )}
       </div>
 
       {/* 자산군별 비중 */}
@@ -34,7 +38,7 @@ export default function AlphaPortfolio({ defensePct, offensePct, allocation }: P
         <div className="space-y-2">
           {entries.map(([name, pct]) => (
             <div key={name} className="flex items-center gap-3">
-              <span className="text-[14px] font-bold text-[#1A1A2E] w-[56px] shrink-0">
+              <span className="text-[14px] font-bold text-[#1A1A2E] w-[64px] shrink-0">
                 {name}
               </span>
               <div className="flex-1 h-4 bg-[#F5F4F0] rounded-full overflow-hidden">

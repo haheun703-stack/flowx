@@ -12,39 +12,48 @@ function fmtPrice(n: number): string {
 
 function MoneyRow({ item }: { item: SmartMoneyItem }) {
   return (
-    <div className="flex items-center gap-3 py-1.5">
-      <span className="text-[14px] font-bold text-[#1A1A2E] flex-1 truncate">
-        {item.name}
-      </span>
-      {item.foreign_5d_억 !== 0 && (
+    <div className="py-2 space-y-0.5">
+      {/* 1행: 종목명 + 가격 + 등락률 */}
+      <div className="flex items-center gap-2">
+        <span className="text-[14px] font-bold text-[#1A1A2E] truncate flex-1">
+          {item.name}
+        </span>
+        <span className="text-[13px] text-[#1A1A2E] tabular-nums shrink-0">
+          {fmtPrice(item.close)}
+        </span>
         <span
-          className={`text-[12px] font-bold tabular-nums ${
-            item.foreign_5d_억 > 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'
+          className={`text-[12px] font-bold tabular-nums shrink-0 ${
+            item.change_pct >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
           }`}
         >
-          외인{fmtBil(item.foreign_5d_억)}
+          {item.change_pct >= 0 ? '+' : ''}{item.change_pct.toFixed(1)}%
         </span>
-      )}
-      {item.inst_5d_억 !== 0 && (
-        <span
-          className={`text-[12px] font-bold tabular-nums ${
-            item.inst_5d_억 > 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'
-          }`}
-        >
-          기관{fmtBil(item.inst_5d_억)}
-        </span>
-      )}
-      <span className="text-[13px] text-[#1A1A2E] tabular-nums">
-        {fmtPrice(item.close)}
-      </span>
-      <span
-        className={`text-[12px] font-bold tabular-nums ${
-          item.change_pct >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
-        }`}
-      >
-        {item.change_pct >= 0 ? '+' : ''}
-        {item.change_pct.toFixed(1)}%
-      </span>
+      </div>
+      {/* 2행: 수급 뱃지 */}
+      <div className="flex gap-2">
+        {item.foreign_5d_억 !== 0 && (
+          <span
+            className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
+              item.foreign_5d_억 > 0
+                ? 'bg-[#2563EB]/10 text-[#2563EB]'
+                : 'bg-[#DC2626]/10 text-[#DC2626]'
+            }`}
+          >
+            외인{fmtBil(item.foreign_5d_억)}
+          </span>
+        )}
+        {item.inst_5d_억 !== 0 && (
+          <span
+            className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
+              item.inst_5d_억 > 0
+                ? 'bg-[#EA580C]/10 text-[#EA580C]'
+                : 'bg-[#DC2626]/10 text-[#DC2626]'
+            }`}
+          >
+            기관{fmtBil(item.inst_5d_억)}
+          </span>
+        )}
+      </div>
     </div>
   )
 }
