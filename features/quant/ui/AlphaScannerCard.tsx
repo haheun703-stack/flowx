@@ -205,44 +205,43 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
             <div className="mt-4">
               <p className="text-[14px] font-extrabold text-[#1A1A2E] mb-2">피보나치 위치</p>
 
-              {/* 바 본체 (상단 라벨 공간 확보) */}
-              <div className="relative h-6 rounded-full overflow-hidden flex mt-10">
-                {/* 위험 구간: 52주저 ~ 0.382 */}
-                <div
-                  className="h-full"
-                  style={{ width: `${f382Pct}%`, backgroundColor: '#FEE2E2' }}
-                />
-                {/* 중립 구간: 0.382 ~ 0.618 */}
-                <div
-                  className="h-full"
-                  style={{ width: `${f618Pct - f382Pct}%`, backgroundColor: '#FEF9C3' }}
-                />
-                {/* 안전 구간: 0.618 ~ 52주고 */}
-                <div
-                  className="h-full"
-                  style={{ width: `${100 - f618Pct}%`, backgroundColor: '#00FF8820' }}
-                />
+              {/* Row 1: 현재가 라벨 */}
+              <div className="relative h-[20px]">
+                <span
+                  className="absolute bottom-0 text-[14px] font-extrabold text-[#1A1A2E] tabular-nums whitespace-nowrap -translate-x-1/2"
+                  style={{ left: `${curPct}%` }}
+                >
+                  {fmtPrice(c.close)}
+                </span>
+              </div>
 
-                {/* 0.382 구획선 */}
-                <div
-                  className="absolute top-0 h-full w-[2px] bg-[#DC2626]/40"
-                  style={{ left: `${f382Pct}%` }}
-                />
-                {/* 0.618 구획선 */}
-                <div
-                  className="absolute top-0 h-full w-[2px] bg-[#00FF88]/60"
-                  style={{ left: `${f618Pct}%` }}
-                />
+              {/* Row 2: ▼ 화살표 */}
+              <div className="relative h-[14px]">
+                <span
+                  className="absolute top-0 text-[11px] font-bold -translate-x-1/2"
+                  style={{ left: `${curPct}%` }}
+                >
+                  ▼
+                </span>
+              </div>
 
-                {/* 현재가 마커 */}
+              {/* Row 3: 바 본체 */}
+              <div className="relative h-6 rounded-full overflow-hidden flex">
+                <div className="h-full" style={{ width: `${f382Pct}%`, backgroundColor: '#FEE2E2' }} />
+                <div className="h-full" style={{ width: `${f618Pct - f382Pct}%`, backgroundColor: '#FEF9C3' }} />
+                <div className="h-full" style={{ width: `${100 - f618Pct}%`, backgroundColor: '#00FF8820' }} />
+
+                <div className="absolute top-0 h-full w-[2px] bg-[#DC2626]/40" style={{ left: `${f382Pct}%` }} />
+                <div className="absolute top-0 h-full w-[2px] bg-[#00FF88]/60" style={{ left: `${f618Pct}%` }} />
+
                 <div
                   className="absolute top-1/2 w-[12px] h-[12px] rounded-full bg-[#1A1A2E] border-2 border-white shadow"
                   style={{ left: `${curPct}%`, transform: 'translate(-50%, -50%)' }}
                 />
               </div>
 
-              {/* 라벨 행 */}
-              <div className="relative h-5 mt-1 text-[13px]">
+              {/* Row 4: 하단 라벨 (52주저 · 0.382 · 0.618 · 52주고) */}
+              <div className="relative h-[18px] mt-1 text-[13px]">
                 <span className="absolute left-0 font-extrabold text-[#1A1A2E] tabular-nums">
                   {fmtPrice(c.low_252)}
                 </span>
@@ -251,14 +250,6 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
                   style={{ left: `${f382Pct}%` }}
                 >
                   0.382
-                </span>
-                <span
-                  className="absolute text-[#1A1A2E] font-extrabold -translate-x-1/2 -top-[34px] text-[14px] whitespace-nowrap"
-                  style={{ left: `${curPct}%` }}
-                >
-                  {fmtPrice(c.close)}
-                  <br />
-                  <span className="text-[11px]">▼</span>
                 </span>
                 <span
                   className="absolute text-[#059669] font-extrabold -translate-x-1/2"
