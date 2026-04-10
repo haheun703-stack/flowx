@@ -7,6 +7,10 @@ import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvesto
 import { SectorHeatmap } from './SectorHeatmap'
 import { SupplyRankPanel } from './SupplyRankPanel'
 import MarketCalendarPanel from './MarketCalendarPanel'
+import FearGreedPanel from './FearGreedPanel'
+import HighsLowsPanel from './HighsLowsPanel'
+import ProgramTradingPanel from './ProgramTradingPanel'
+import SectorInvestorPanel from './SectorInvestorPanel'
 
 interface MarketOverviewData {
   date: string
@@ -181,6 +185,16 @@ export function MarketSummaryView() {
             ))}
           </div>
 
+          {/* ── 시장 심리: 공포/탐욕 + 52주 신고저 ── */}
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <FearGreedPanel />
+            </div>
+            <div className="flex-1">
+              <HighsLowsPanel />
+            </div>
+          </div>
+
           {/* ── 3행: 시장 체온(1/2) + 투자자 순매수(1/2) ── */}
           <div className="flex gap-3">
             {/* 시장 체온 */}
@@ -305,6 +319,16 @@ export function MarketSummaryView() {
               </div>
             </div>
           )}
+
+          {/* ── 수급 분석: 프로그램 매매 + 업종별 수급 ── */}
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <ProgramTradingPanel />
+            </div>
+            <div className="flex-1">
+              <SectorInvestorPanel />
+            </div>
+          </div>
 
           {/* ── 5행: 시장 이벤트 캘린더 ── */}
           <MarketCalendarPanel />
