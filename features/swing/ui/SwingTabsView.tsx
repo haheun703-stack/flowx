@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import DaytradingPicksPanel from "@/features/daytrading/ui/DaytradingPicksPanel"
 import SwingDashboardView from "./SwingDashboardView"
 import FibLeadersView from "./FibLeadersView"
 import FibStocksView from "./FibStocksView"
@@ -8,6 +9,7 @@ import SectorRotationView from "./SectorRotationView"
 import StealthScannerView from "./StealthScannerView"
 
 const TABS = [
+  { key: "daytrading", label: "단타 TOP픽" },
   { key: "dashboard", label: "대시보드" },
   { key: "stealth", label: "선매집 탐지" },
   { key: "fib-leaders", label: "대형주 피보나치" },
@@ -18,7 +20,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"]
 
 export function SwingTabsView() {
-  const [tab, setTab] = useState<TabKey>("dashboard")
+  const [tab, setTab] = useState<TabKey>("daytrading")
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
@@ -42,6 +44,7 @@ export function SwingTabsView() {
       </div>
 
       {/* 탭 콘텐츠 */}
+      {tab === "daytrading" && <DaytradingPicksPanel />}
       {tab === "dashboard" && <SwingDashboardView />}
       {tab === "fib-leaders" && <FibLeadersView />}
       {tab === "fib-stocks" && <FibStocksView />}
