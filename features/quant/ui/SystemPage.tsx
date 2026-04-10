@@ -7,12 +7,25 @@ import SectorHeatMap from './SectorHeatMap'
 import AlphaScannerPanel from './AlphaScannerPanel'
 import AlphaSmartMoney from './AlphaSmartMoney'
 import AlphaPortfolio from './AlphaPortfolio'
+import FibLeadersView from '@/features/swing/ui/FibLeadersView'
+import FibStocksView from '@/features/swing/ui/FibStocksView'
+import SectorRotationView from '@/features/swing/ui/SectorRotationView'
 import type { AlphaScannerData } from './alpha-types'
+
+const TABS = [
+  { key: 'quant', label: '퀀트시스템' },
+  { key: 'crash', label: '급락반등' },
+  { key: 'fib-leaders', label: '대형주 피보나치' },
+  { key: 'fib-all', label: '전체 피보나치' },
+  { key: 'sector', label: '섹터 로테이션' },
+] as const
+
+type TabKey = (typeof TABS)[number]['key']
 
 export default function SystemPage() {
   const [data, setData] = useState<AlphaScannerData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<'quant' | 'swing'>('quant')
+  const [tab, setTab] = useState<TabKey>('quant')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -59,19 +72,19 @@ export default function SystemPage() {
         }}
       />
 
-      {/* Quant / Swing 서브탭 */}
+      {/* 탭 바 */}
       <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
-        {(['quant', 'swing'] as const).map((t) => (
+        {TABS.map((t) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={t.key}
+            onClick={() => setTab(t.key)}
             className={`px-5 py-2.5 rounded-lg text-[15px] font-bold transition-colors whitespace-nowrap ${
-              tab === t
+              tab === t.key
                 ? 'bg-[#00FF88] text-[#1A1A2E]'
                 : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
             }`}
           >
-            {t === 'quant' ? '퀀트시스템' : '급락반등'}
+            {t.label}
           </button>
         ))}
         {data?.date && (
@@ -79,8 +92,17 @@ export default function SystemPage() {
         )}
       </div>
 
-      {/* 급락반등 탭 */}
-      {tab === 'swing' && <CrashBounceView />}
+      {/* 급락반등 */}
+      {tab === 'crash' && <CrashBounceView />}
+
+      {/* 대형주 피보나치 */}
+      {tab === 'fib-leaders' && <FibLeadersView />}
+
+      {/* 전체 피보나치 */}
+      {tab === 'fib-all' && <FibStocksView />}
+
+      {/* 섹터 로테이션 */}
+      {tab === 'sector' && <SectorRotationView />}
 
       {/* 퀀트시스템 탭 — 알파 스캐너 */}
       {tab === 'quant' && (
