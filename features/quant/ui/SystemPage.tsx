@@ -8,6 +8,7 @@ import EventCalendarPanel from './EventCalendarPanel'
 import BottomFishingPanel from './BottomFishingPanel'
 import SmartMoneyTracking from './SmartMoneyTracking'
 import CrashBounceView from './CrashBounceView'
+import NuggetReportPanel from './NuggetReportPanel'
 
 // ─── 타입 (JarvisControlTower에서 필요한 부분만) ───
 
@@ -347,6 +348,12 @@ export default function SystemPage() {
           </div>
           </section>
           )}
+
+          {/* Row 7: 노다지 리포트 (장기 가치투자) */}
+          <section>
+            <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">💎 노다지 리포트 — 장기 가치투자</h2>
+            <NuggetReportPanel />
+          </section>
         </>
       )}
     </div>

@@ -361,18 +361,6 @@ interface SniperItem {
   score: number;
 }
 
-interface NuggetItem {
-  code: string;
-  name: string;
-  grade: string;
-  total_score: number;
-  entry_price: number;
-  stop_loss: number;
-  target_price: number;
-  holding_days: number;
-  momentum_regime: string;
-}
-
 /* ─── 아이콘 (유니코드 이스케이프) ─── */
 const ICO = {
   WARN: "\u26A0\uFE0F",
@@ -449,7 +437,6 @@ const TAB_ITEMS = [
   { key: "signals", label: "\uB9E4\uB9E4 \uC2E0\uD638", icon: "\uD83D\uDCE1" },
   { key: "performance", label: "\uC131\uACFC", icon: "\uD83D\uDCC8" },
   { key: "fundamentals", label: "\uD39C\uB354\uBA58\uD138", icon: "\uD83D\uDCCB" },
-  { key: "nugget", label: "\uB178\uB2E4\uC9C0", icon: "\uD83D\uDC8E" },
 ];
 
 /* ─── 메인 컴포넌트 ─── */
@@ -461,7 +448,6 @@ export default function JarvisControlTower() {
   const [etfData, setEtfData] = useState<{ items: EtfSignalItem[]; date: string | null } | null>(null);
   const [relayData, setRelayData] = useState<{ items: RelayItem[]; date: string | null } | null>(null);
   const [sniperData, setSniperData] = useState<{ items: SniperItem[]; date: string | null } | null>(null);
-  const [nuggetData, setNuggetData] = useState<{ items: NuggetItem[]; date: string | null } | null>(null);
   const [tabLoading, setTabLoading] = useState<string | null>(null);
 
   useEffect(() => {
@@ -509,17 +495,9 @@ export default function JarvisControlTower() {
         .catch((err) => { if (err?.name !== "AbortError") setSniperData({ items: [], date: null }); })
         .finally(() => { if (!signal.aborted) setTabLoading(null); });
     }
-    if (activeTab === "nugget" && !nuggetData) {
-      setTabLoading("nugget");
-      fetch("/api/intelligence/nugget-picks", { signal })
-        .then((r) => r.json())
-        .then((json) => setNuggetData({ items: json.items ?? [], date: json.date }))
-        .catch((err) => { if (err?.name !== "AbortError") setNuggetData({ items: [], date: null }); })
-        .finally(() => { if (!signal.aborted) setTabLoading(null); });
-    }
 
     return () => controller.abort();
-  }, [activeTab, etfData, relayData, sniperData, nuggetData]);
+  }, [activeTab, etfData, relayData, sniperData]);
 
   if (loading) {
     return (
@@ -721,11 +699,6 @@ export default function JarvisControlTower() {
         <TabEmpty label="스나이퍼" />
       )}
 
-      {activeTab === "nugget" && (
-        tabLoading === "nugget" ? <TabLoadingSkeleton /> :
-        nuggetData && nuggetData.items.length > 0 ? <NuggetTabContent data={nuggetData} /> :
-        <TabEmpty label="노다지" />
-      )}
     </div>
   );
 }
@@ -2333,117 +2306,6 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
           </div>
         </section>
       )}
-    </div>
-  );
-}
-
-/* ─── 노다지 탭 ─── */
-
-const NUGGET_GRADE_STYLE: Record<string, { label: string; bg: string; text: string }> = {
-  AA: { label: "GOLD", bg: "bg-amber-100", text: "text-amber-700" },
-  A:  { label: "SILVER", bg: "bg-gray-100", text: "text-gray-700" },
-  B:  { label: "BRONZE", bg: "bg-orange-50", text: "text-orange-600" },
-};
-
-function NuggetTabContent({ data }: { data: { items: NuggetItem[]; date: string | null } }) {
-  const { items, date } = data;
-
-  const gold = items.filter((i) => i.grade === "AA");
-  const silver = items.filter((i) => i.grade === "A");
-  const bronze = items.filter((i) => i.grade === "B");
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 text-lg font-bold">
-          💎 노다지 리포트 <span className="text-sm font-normal text-gray-500">장기 가치투자 (6개월)</span>
-        </h2>
-        {date && <span className="text-gray-500 text-sm">{date}</span>}
-      </div>
-
-      {/* 요약 카드 */}
-      <div className="grid grid-cols-4 gap-2">
-        <div className="bg-amber-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[12px]">GOLD</p>
-          <p className="text-amber-600 text-xl font-bold">{gold.length}</p>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[12px]">SILVER</p>
-          <p className="text-gray-600 text-xl font-bold">{silver.length}</p>
-        </div>
-        <div className="bg-orange-50 rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[12px]">BRONZE</p>
-          <p className="text-orange-500 text-xl font-bold">{bronze.length}</p>
-        </div>
-        <div className="bg-white rounded-lg p-3 border border-[var(--border)] text-center">
-          <p className="text-gray-500 text-[12px]">전체</p>
-          <p className="text-[var(--text-primary)] text-xl font-bold">{items.length}</p>
-        </div>
-      </div>
-
-      {/* 종목 테이블 */}
-      <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
-              <th className="text-left py-2 px-2">종목</th>
-              <th className="text-center py-2 px-2">등급</th>
-              <th className="text-right py-2 px-2">점수</th>
-              <th className="text-right py-2 px-2">현재가</th>
-              <th className="text-right py-2 px-2">목표가</th>
-              <th className="text-right py-2 px-2">손절가</th>
-              <th className="text-right py-2 px-2">상승여력</th>
-              <th className="text-right py-2 px-2">R:R</th>
-              <th className="text-center py-2 px-2">시장</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => {
-              const g = NUGGET_GRADE_STYLE[item.grade] ?? { label: item.grade, bg: "bg-gray-100", text: "text-gray-500" };
-              const upside = item.entry_price > 0 ? ((item.target_price - item.entry_price) / item.entry_price) * 100 : 0;
-              const risk = item.entry_price > 0 ? ((item.entry_price - item.stop_loss) / item.entry_price) * 100 : 0;
-              const rr = risk > 0 ? upside / risk : 0;
-
-              return (
-                <tr key={item.code} className="border-b border-[var(--border)]/50 hover:bg-gray-50">
-                  <td className="py-2 px-2">
-                    <span className="text-[var(--text-primary)]">{item.name}</span>
-                    <span className="text-gray-500 text-[12px] ml-1">{item.code}</span>
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    <span className={`text-[12px] px-1.5 py-0.5 rounded font-bold ${g.bg} ${g.text}`}>{g.label}</span>
-                  </td>
-                  <td className="text-right py-2 px-2">
-                    <span className={`font-bold font-mono ${item.total_score >= 70 ? "text-amber-600" : item.total_score >= 60 ? "text-gray-700" : "text-gray-400"}`}>
-                      {item.total_score.toFixed(1)}
-                    </span>
-                  </td>
-                  <td className="text-right py-2 px-2 text-[var(--text-primary)] font-mono">{item.entry_price.toLocaleString()}</td>
-                  <td className="text-right py-2 px-2 text-green-600 font-mono">{item.target_price.toLocaleString()}</td>
-                  <td className="text-right py-2 px-2 text-red-500 font-mono">{item.stop_loss.toLocaleString()}</td>
-                  <td className={`text-right py-2 px-2 font-mono font-bold ${upside >= 30 ? "text-green-600" : upside >= 15 ? "text-emerald-500" : "text-gray-600"}`}>
-                    +{upside.toFixed(1)}%
-                  </td>
-                  <td className={`text-right py-2 px-2 font-mono font-bold ${rr >= 3 ? "text-green-600" : rr >= 2 ? "text-emerald-500" : "text-gray-500"}`}>
-                    {rr.toFixed(1)}
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    <span className={`text-[11px] px-1 py-0.5 rounded ${
-                      item.momentum_regime === "BULL" ? "bg-green-50 text-green-600" :
-                      item.momentum_regime === "BEAR" ? "bg-red-50 text-red-500" :
-                      "bg-yellow-50 text-yellow-600"
-                    }`}>{item.momentum_regime}</span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <p className="text-center text-xs text-gray-400">
-        💎 노다지 = DCF/RIM 내재가치 + 섹터PER + 피보나치 + ATR 역산 · 보유기간 ~6개월
-      </p>
     </div>
   );
 }
