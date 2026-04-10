@@ -26,10 +26,25 @@ const TYPE_CFG: Record<string, { icon: string; color: string; dot: string; label
   etc:            { icon: '📌', color: '#6B7280', dot: '#6B7280', label: '기타' },
 }
 
+const GROUP_ORDER: Record<string, { icon: string; label: string; order: number }> = {
+  central_bank:   { icon: '🏦', label: '중앙은행', order: 1 },
+  earnings:       { icon: '📊', label: '실적발표', order: 2 },
+  options_expiry: { icon: '⚠️', label: '옵션만기', order: 3 },
+  economic:       { icon: '📈', label: '경제지표', order: 4 },
+  holiday:        { icon: '🔴', label: '휴장일', order: 5 },
+  ipo:            { icon: '🆕', label: 'IPO', order: 6 },
+  dividend:       { icon: '💰', label: '배당', order: 7 },
+  etc:            { icon: '📌', label: '기타', order: 8 },
+}
+
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
 function cfg(type: string) {
   return TYPE_CFG[type] ?? TYPE_CFG.etc
+}
+
+function grp(type: string) {
+  return GROUP_ORDER[type] ?? GROUP_ORDER.etc
 }
 
 function kstToday() {
@@ -41,9 +56,9 @@ export default function MarketCalendarPanel() {
   const today = kstToday()
   const [yearMonth, setYearMonth] = useState(today.slice(0, 7)) // YYYY-MM
   const [events, setEvents] = useState<CalEvent[]>([])
-  const [upcoming, setUpcoming] = useState<CalEvent[]>([])
   const [selectedDate, setSelectedDate] = useState<string>(today)
   const [loading, setLoading] = useState(true)
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const ac = new AbortController()
@@ -52,7 +67,6 @@ export default function MarketCalendarPanel() {
       .then(r => r.json())
       .then(j => {
         setEvents(j.events ?? [])
-        setUpcoming(j.upcoming ?? [])
         setLoading(false)
       })
       .catch(e => { if (e.name !== 'AbortError') setLoading(false) })
@@ -72,6 +86,32 @@ export default function MarketCalendarPanel() {
 
   /* 선택된 날짜의 이벤트 */
   const selectedEvents = eventsByDate[selectedDate] ?? []
+
+  /* 당월 이벤트를 event_type별로 그룹핑 (아코디언용) */
+  const groupedEvents = useMemo(() => {
+    const map: Record<string, CalEvent[]> = {}
+    for (const ev of events) {
+      const t = ev.event_type
+      if (!map[t]) map[t] = []
+      map[t].push(ev)
+    }
+    // importance=high 포함 그룹 우선, 그 다음 GROUP_ORDER.order 순
+    return Object.entries(map)
+      .sort(([a, aEvs], [b, bEvs]) => {
+        const aHigh = aEvs.some(e => e.importance === 'high') ? 0 : 1
+        const bHigh = bEvs.some(e => e.importance === 'high') ? 0 : 1
+        if (aHigh !== bHigh) return aHigh - bHigh
+        return (grp(a).order) - (grp(b).order)
+      })
+  }, [events])
+
+  /* 가장 이벤트 많은 그룹 1개 기본 펼침 */
+  useEffect(() => {
+    if (groupedEvents.length > 0) {
+      const maxGroup = groupedEvents.reduce((a, b) => b[1].length > a[1].length ? b : a)
+      setOpenGroups(new Set([maxGroup[0]]))
+    }
+  }, [groupedEvents])
 
   /* 캘린더 그리드 계산 */
   const [year, month] = yearMonth.split('-').map(Number)
@@ -189,46 +229,63 @@ export default function MarketCalendarPanel() {
           </div>
         </div>
 
-        {/* ── 오른쪽: 향후 이벤트 리스트 ── */}
+        {/* ── 오른쪽: 타입별 아코디언 ── */}
         <div className="w-[300px] shrink-0 border-l border-[#E8E6E0] pl-4 overflow-y-auto">
-          <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">향후 이벤트</p>
-          {upcoming.length === 0 ? (
-            <p className="text-[13px] text-[#9CA3AF]">예정된 이벤트 없음</p>
+          <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">{month}월 이벤트</p>
+          {groupedEvents.length === 0 ? (
+            <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>
           ) : (
-            <div className="space-y-3">
-              {upcoming.map(ev => {
-                const c = cfg(ev.event_type)
-                const d = new Date(ev.event_date)
-                const dayLabel = `${String(d.getMonth() + 1)}/${String(d.getDate())} (${WEEKDAYS[d.getDay()]})`
+            <div className="space-y-1">
+              {groupedEvents.map(([type, evs]) => {
+                const g = grp(type)
+                const c = cfg(type)
+                const isOpen = openGroups.has(type)
                 return (
-                  <button
-                    key={ev.id}
-                    onClick={() => {
-                      setSelectedDate(ev.event_date)
-                      setYearMonth(ev.event_date.slice(0, 7))
-                    }}
-                    className="w-full text-left group"
-                  >
-                    <div className="flex items-center gap-2">
+                  <div key={type}>
+                    {/* 아코디언 헤더 */}
+                    <button
+                      onClick={() => setOpenGroups(prev => {
+                        const next = new Set(prev)
+                        if (next.has(type)) next.delete(type)
+                        else next.add(type)
+                        return next
+                      })}
+                      className="w-full flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-[#F5F4F0] transition-colors"
+                    >
+                      <span className="text-[13px]">{g.icon}</span>
+                      <span className="text-[13px] font-bold text-[#1A1A2E]">{g.label}</span>
                       <span
-                        className="w-[6px] h-[6px] rounded-full shrink-0"
-                        style={{ backgroundColor: c.dot }}
-                      />
-                      <span className="text-[12px] font-bold text-[#9CA3AF] tabular-nums">{dayLabel}</span>
-                      <span
-                        className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                        className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                         style={{ backgroundColor: `${c.color}15`, color: c.color }}
                       >
-                        {c.label}
+                        {evs.length}
                       </span>
-                    </div>
-                    <p className={`text-[13px] mt-0.5 ml-[14px] group-hover:text-[#1A1A2E] transition-colors ${ev.importance === 'high' ? 'font-bold text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
-                      {c.icon} {ev.title}
-                    </p>
-                    {ev.description && (
-                      <p className="text-[11px] text-[#9CA3AF] ml-[14px] truncate">{ev.description}</p>
+                      <span className="ml-auto text-[11px] text-[#9CA3AF]">
+                        {isOpen ? '▼' : '▶'}
+                      </span>
+                    </button>
+                    {/* 펼친 내용 */}
+                    {isOpen && (
+                      <div className="ml-4 pl-2 border-l-2 space-y-1 pb-1" style={{ borderColor: `${c.color}30` }}>
+                        {evs.map(ev => {
+                          const d = new Date(ev.event_date)
+                          const dl = `${String(d.getMonth() + 1)}/${String(d.getDate())}`
+                          return (
+                            <button
+                              key={ev.id}
+                              onClick={() => setSelectedDate(ev.event_date)}
+                              className="w-full text-left py-0.5 group"
+                            >
+                              <p className={`text-[12px] group-hover:text-[#1A1A2E] transition-colors ${ev.importance === 'high' ? 'font-bold text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
+                                <span className="text-[#9CA3AF] tabular-nums mr-1">{dl}</span>
+                                {ev.title}
+                              </p>
+                            </button>
+                          )
+                        })}
+                      </div>
                     )}
-                  </button>
+                  </div>
                 )
               })}
             </div>
