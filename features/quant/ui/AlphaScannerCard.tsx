@@ -11,11 +11,11 @@ const GRADE_STYLE: Record<string, { color: string; border: string; label: string
 }
 
 const SCORE_AXES = [
-  { key: 'value' as const, label: '가치', max: 30 },
-  { key: 'quality' as const, label: '품질', max: 25 },
-  { key: 'earnings' as const, label: '실적', max: 20 },
-  { key: 'drawdown' as const, label: '낙폭', max: 15 },
-  { key: 'peer_value' as const, label: '동종비교', max: 10 },
+  { key: 'value' as const, label: '가치', max: 30, color: '#D97706' },
+  { key: 'quality' as const, label: '품질', max: 25, color: '#2563EB' },
+  { key: 'earnings' as const, label: '실적', max: 20, color: '#16A34A' },
+  { key: 'drawdown' as const, label: '낙폭', max: 15, color: '#EA580C' },
+  { key: 'peer_value' as const, label: '동종비교', max: 10, color: '#7C3AED' },
 ]
 
 const EARNINGS_KR: Record<string, { label: string; color: string }> = {
@@ -33,13 +33,6 @@ function fmtPrice(n: number): string {
 function fmtCap(v: number): string {
   if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
   return `${v.toLocaleString()}억`
-}
-
-function barColor(pct: number): string {
-  if (pct >= 80) return '#16A34A'
-  if (pct >= 60) return '#2563EB'
-  if (pct >= 40) return '#CA8A04'
-  return '#9CA3AF'
 }
 
 function supplyLabel(type: string): string {
@@ -108,22 +101,21 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
           <div>
             <p className="text-[13px] font-bold text-[#6B7280] mb-3">5축 점수</p>
             <div className="space-y-2">
-              {SCORE_AXES.map(({ key, label, max }) => {
+              {SCORE_AXES.map(({ key, label, max, color }) => {
                 const val = c.scores?.[key] ?? 0
                 const pct = Math.min((val / max) * 100, 100)
-                const clr = barColor(pct)
                 return (
                   <div key={key} className="flex items-center gap-2">
                     <span className="text-[13px] text-[#1A1A2E] w-[60px] shrink-0">{label}</span>
                     <div className="flex-1 h-4 bg-[#F5F4F0] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, backgroundColor: clr }}
+                        style={{ width: `${pct}%`, backgroundColor: color }}
                       />
                     </div>
                     <span
                       className="text-[12px] font-bold tabular-nums w-[52px] text-right"
-                      style={{ color: clr }}
+                      style={{ color }}
                     >
                       {val.toFixed(1)}/{max}
                     </span>
@@ -198,40 +190,82 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
           </div>
         </div>
 
-        {/* ── 피보나치 위치 바 ── */}
-        {fibRange > 0 && (
-          <div className="mt-4">
-            <p className="text-[12px] text-[#6B7280] mb-1">피보나치 위치</p>
-            <div className="relative h-4 bg-[#E8E6E0] rounded-full overflow-hidden">
-              {fib && (
-                <>
-                  <div
-                    className="absolute top-0 h-full w-[1px] bg-[#9CA3AF]/60"
-                    style={{ left: `${((fib.fib_382 - c.low_252) / fibRange) * 100}%` }}
-                  />
-                  <div
-                    className="absolute top-0 h-full w-[1px] bg-[#9CA3AF]/60"
-                    style={{ left: `${((fib.fib_618 - c.low_252) / fibRange) * 100}%` }}
-                  />
-                </>
-              )}
-              <div
-                className="absolute top-0 h-full w-[8px] rounded-full bg-[#1A1A2E]"
-                style={{
-                  left: `${Math.max(Math.min(pricePctOnFib, 97), 3)}%`,
-                  transform: 'translateX(-50%)',
-                }}
-              />
+        {/* ── 피보나치 위치 바 (구간별 색상) ── */}
+        {fibRange > 0 && (() => {
+          const f382Pct = fib ? ((fib.fib_382 - c.low_252) / fibRange) * 100 : 38.2
+          const f618Pct = fib ? ((fib.fib_618 - c.low_252) / fibRange) * 100 : 61.8
+          const curPct = Math.max(Math.min(pricePctOnFib, 97), 3)
+
+          return (
+            <div className="mt-4">
+              <p className="text-[12px] text-[#6B7280] mb-2">피보나치 위치</p>
+
+              {/* 바 본체 */}
+              <div className="relative h-6 rounded-full overflow-hidden flex">
+                {/* 위험 구간: 52주저 ~ 0.382 */}
+                <div
+                  className="h-full"
+                  style={{ width: `${f382Pct}%`, backgroundColor: '#FEE2E2' }}
+                />
+                {/* 중립 구간: 0.382 ~ 0.618 */}
+                <div
+                  className="h-full"
+                  style={{ width: `${f618Pct - f382Pct}%`, backgroundColor: '#FEF9C3' }}
+                />
+                {/* 안전 구간: 0.618 ~ 52주고 */}
+                <div
+                  className="h-full"
+                  style={{ width: `${100 - f618Pct}%`, backgroundColor: '#DCFCE7' }}
+                />
+
+                {/* 0.382 구획선 */}
+                <div
+                  className="absolute top-0 h-full w-[2px] bg-[#DC2626]/40"
+                  style={{ left: `${f382Pct}%` }}
+                />
+                {/* 0.618 구획선 */}
+                <div
+                  className="absolute top-0 h-full w-[2px] bg-[#16A34A]/40"
+                  style={{ left: `${f618Pct}%` }}
+                />
+
+                {/* 현재가 마커 */}
+                <div
+                  className="absolute top-1/2 w-[12px] h-[12px] rounded-full bg-[#1A1A2E] border-2 border-white shadow"
+                  style={{ left: `${curPct}%`, transform: 'translate(-50%, -50%)' }}
+                />
+              </div>
+
+              {/* 라벨 행 */}
+              <div className="relative h-5 mt-1 text-[11px]">
+                <span className="absolute left-0 text-[#9CA3AF]">
+                  {fmtPrice(c.low_252)}
+                </span>
+                <span
+                  className="absolute text-[#DC2626] font-bold -translate-x-1/2"
+                  style={{ left: `${f382Pct}%` }}
+                >
+                  0.382
+                </span>
+                <span
+                  className="absolute text-[#1A1A2E] font-bold -translate-x-1/2 -top-[18px]"
+                  style={{ left: `${curPct}%` }}
+                >
+                  ▼{fmtPrice(c.close)}
+                </span>
+                <span
+                  className="absolute text-[#16A34A] font-bold -translate-x-1/2"
+                  style={{ left: `${f618Pct}%` }}
+                >
+                  0.618
+                </span>
+                <span className="absolute right-0 text-[#9CA3AF]">
+                  {fmtPrice(c.high_252)}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between text-[11px] text-[#9CA3AF] mt-0.5">
-              <span>{fmtPrice(c.low_252)}</span>
-              {fib && <span className="text-[10px]">0.382</span>}
-              <span className="font-bold text-[#1A1A2E]">현재</span>
-              {fib && <span className="text-[10px]">0.618</span>}
-              <span>{fmtPrice(c.high_252)}</span>
-            </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* ── 태그 (가격 방법론) ── */}
         {tags.length > 0 && (
