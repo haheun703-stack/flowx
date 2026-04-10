@@ -27,6 +27,7 @@ export async function GET(request: Request) {
     ])
 
     if (tradingRes.error) throw tradingRes.error
+    if (investorRes.error) throw investorRes.error
 
     // 투자자별: 가장 최근 날짜만 필터
     const investors = investorRes.data ?? []

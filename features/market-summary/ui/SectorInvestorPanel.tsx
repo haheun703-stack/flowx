@@ -50,7 +50,8 @@ export default function SectorInvestorPanel() {
 
   const amtKey = view === 'foreign' ? 'foreign_net_amt' : 'inst_net_amt'
   const sorted = [...sectors].sort((a, b) => b[amtKey] - a[amtKey])
-  const maxAbs = Math.max(...sorted.map((s) => Math.abs(s[amtKey] / 100000)), 1)
+  const amtArr = sorted.map((s) => Math.abs(s[amtKey] / 100000))
+  const maxAbs = amtArr.length > 0 ? Math.max(...amtArr, 1) : 1
 
   return (
     <div className="fx-card">

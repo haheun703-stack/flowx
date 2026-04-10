@@ -2,7 +2,8 @@
 
 import type { SmartMoneyItem } from './alpha-types'
 
-function fmtBil(n: number): string {
+function fmtBil(n: number | null | undefined): string {
+  if (n == null) return '0억'
   return `${n >= 0 ? '+' : ''}${n.toFixed(0)}억`
 }
 

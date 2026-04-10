@@ -55,7 +55,7 @@ export default function HighsLowsPanel() {
   if (!data) return null
 
   const total = data.new_high_count + data.new_low_count
-  const highPct = total > 0 ? (data.new_high_count / total) * 100 : 50
+  const highPct = total > 0 ? (data.new_high_count / total) * 100 : 0
   const rl = ratioLabel(data.ratio)
   const list = showList === 'highs' ? (data.top_highs ?? []).slice(0, 10) : (data.top_lows ?? []).slice(0, 10)
 
@@ -67,24 +67,30 @@ export default function HighsLowsPanel() {
       </div>
 
       {/* 비율 바 */}
-      <div className="flex h-7 rounded-full overflow-hidden mb-2">
-        {data.new_high_count > 0 && (
-          <div
-            className="bg-[#EF4444] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap"
-            style={{ width: `${highPct}%`, minWidth: 60 }}
-          >
-            신고가 {data.new_high_count}
-          </div>
-        )}
-        {data.new_low_count > 0 && (
-          <div
-            className="bg-[#3B82F6] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap"
-            style={{ width: `${100 - highPct}%`, minWidth: 60 }}
-          >
-            신저가 {data.new_low_count}
-          </div>
-        )}
-      </div>
+      {total > 0 ? (
+        <div className="flex h-7 rounded-full overflow-hidden mb-2">
+          {data.new_high_count > 0 && (
+            <div
+              className="bg-[#EF4444] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap"
+              style={{ width: `${highPct}%`, minWidth: 60 }}
+            >
+              신고가 {data.new_high_count}
+            </div>
+          )}
+          {data.new_low_count > 0 && (
+            <div
+              className="bg-[#3B82F6] flex items-center justify-center text-[12px] font-bold text-white whitespace-nowrap"
+              style={{ width: `${100 - highPct}%`, minWidth: 60 }}
+            >
+              신저가 {data.new_low_count}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="h-7 bg-[#F5F4F0] rounded-full flex items-center justify-center text-[12px] text-[#9CA3AF] mb-2">
+          데이터 없음
+        </div>
+      )}
 
       <div className="flex items-center gap-2 mb-3">
         <span className="text-[14px] font-bold" style={{ color: rl.color }}>

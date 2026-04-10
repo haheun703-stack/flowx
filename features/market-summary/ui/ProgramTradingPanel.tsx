@@ -43,9 +43,11 @@ export default function ProgramTradingPanel() {
 
   const latest = trading[0]
   const recent = trading.slice(0, 10)
-  const maxAbs = Math.max(...recent.map((r) => Math.abs(r.total_net_amt / 100)), 1)
+  const recentAmts = recent.map((r) => Math.abs(r.total_net_amt / 100))
+  const maxAbs = recentAmts.length > 0 ? Math.max(...recentAmts, 1) : 1
   const sortedInv = [...investors].sort((a, b) => b.net_amt - a.net_amt)
-  const maxInvAbs = Math.max(...sortedInv.map((r) => Math.abs(r.net_amt / 100)), 1)
+  const invAmts = sortedInv.map((r) => Math.abs(r.net_amt / 100))
+  const maxInvAbs = invAmts.length > 0 ? Math.max(...invAmts, 1) : 1
 
   if (loading) {
     return (

@@ -23,6 +23,7 @@ export async function GET() {
     ])
 
     if (latestRes.error) throw latestRes.error
+    if (historyRes.error) throw historyRes.error
 
     return NextResponse.json({
       latest: latestRes.data,

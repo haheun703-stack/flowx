@@ -138,7 +138,7 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
             <div className="space-y-1.5 text-[13px]">
               {/* 목표가 (내림차순) */}
               {targets.map((t, i) => {
-                const pct = ((t.price - c.close) / c.close) * 100
+                const pct = c.close > 0 ? ((t.price - c.close) / c.close) * 100 : 0
                 return (
                   <div key={i} className="flex items-center gap-2">
                     <span className="text-[#6B7280] w-[60px] shrink-0">
@@ -171,9 +171,8 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
                 <span className="font-bold text-[#1A1A2E] tabular-nums flex-1">
                   {fmtPrice(c.entry_price)}
                 </span>
-                <span className="text-[11px] text-[#9CA3AF]" />
                 <span className="font-bold text-[#DC2626] tabular-nums w-[52px] text-right">
-                  {(((c.entry_price - c.close) / c.close) * 100).toFixed(1)}%
+                  {c.close > 0 ? (((c.entry_price - c.close) / c.close) * 100).toFixed(1) : '0.0'}%
                 </span>
               </div>
 
@@ -183,9 +182,8 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
                 <span className="font-bold text-[#DC2626] tabular-nums flex-1">
                   {fmtPrice(c.stop_loss)}
                 </span>
-                <span className="text-[11px] text-[#9CA3AF]" />
                 <span className="font-bold text-[#DC2626] tabular-nums w-[52px] text-right">
-                  {(((c.stop_loss - c.close) / c.close) * 100).toFixed(1)}%
+                  {c.close > 0 ? (((c.stop_loss - c.close) / c.close) * 100).toFixed(1) : '0.0'}%
                 </span>
               </div>
 
