@@ -17,11 +17,18 @@ export default function FibLeadersView() {
     const controller = new AbortController()
     async function load() {
       try {
-        const res = await fetch('/api/swing-dashboard', { signal: controller.signal })
-        if (!res.ok) throw new Error(`API error: ${res.status}`)
-        const json = await res.json()
-        setStocks(json.data?.fib_leaders ?? [])
-        setDate(json.data?.date ?? '')
+        // 퀀트봇 신규 테이블 우선, 없으면 기존 단타봇 데이터 fallback
+        let res = await fetch('/api/quant/fib-scanner', { signal: controller.signal })
+        let json = res.ok ? await res.json() : null
+        if (json?.data?.fib_leaders?.length) {
+          setStocks(json.data.fib_leaders)
+          setDate(json.data.date ?? '')
+        } else {
+          res = await fetch('/api/swing-dashboard', { signal: controller.signal })
+          json = res.ok ? await res.json() : null
+          setStocks(json?.data?.fib_leaders ?? [])
+          setDate(json?.data?.date ?? '')
+        }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         setStocks([])

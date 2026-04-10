@@ -35,10 +35,15 @@ export default function SectorRotationView() {
     const controller = new AbortController()
     async function load() {
       try {
-        const res = await fetch('/api/swing-dashboard', { signal: controller.signal })
-        if (!res.ok) throw new Error(`API error: ${res.status}`)
-        const json = await res.json()
-        setRotation(json.data?.sector_rotation ?? null)
+        let res = await fetch('/api/quant/fib-scanner', { signal: controller.signal })
+        let json = res.ok ? await res.json() : null
+        if (json?.data?.sector_rotation) {
+          setRotation(json.data.sector_rotation)
+        } else {
+          res = await fetch('/api/swing-dashboard', { signal: controller.signal })
+          json = res.ok ? await res.json() : null
+          setRotation(json?.data?.sector_rotation ?? null)
+        }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         setRotation(null)

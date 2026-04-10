@@ -17,11 +17,17 @@ export default function FibStocksView() {
     const controller = new AbortController()
     async function load() {
       try {
-        const res = await fetch('/api/swing-dashboard', { signal: controller.signal })
-        if (!res.ok) throw new Error(`API error: ${res.status}`)
-        const json = await res.json()
-        setStocks(json.data?.fib_stocks ?? [])
-        setDate(json.data?.date ?? '')
+        let res = await fetch('/api/quant/fib-scanner', { signal: controller.signal })
+        let json = res.ok ? await res.json() : null
+        if (json?.data?.fib_stocks?.length) {
+          setStocks(json.data.fib_stocks)
+          setDate(json.data.date ?? '')
+        } else {
+          res = await fetch('/api/swing-dashboard', { signal: controller.signal })
+          json = res.ok ? await res.json() : null
+          setStocks(json?.data?.fib_stocks ?? [])
+          setDate(json?.data?.date ?? '')
+        }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         setStocks([])
