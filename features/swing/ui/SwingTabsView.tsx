@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import DaytradingPicksPanel from "@/features/daytrading/ui/DaytradingPicksPanel"
+import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerformancePanel"
 import SwingDashboardView from "./SwingDashboardView"
 import FibLeadersView from "./FibLeadersView"
 import FibStocksView from "./FibStocksView"
@@ -44,7 +45,12 @@ export function SwingTabsView() {
       </div>
 
       {/* 탭 콘텐츠 */}
-      {tab === "daytrading" && <DaytradingPicksPanel />}
+      {tab === "daytrading" && (
+        <>
+          <DaytradingPicksPanel />
+          <DaytradingPerformancePanel />
+        </>
+      )}
       {tab === "dashboard" && <SwingDashboardView />}
       {tab === "fib-leaders" && <FibLeadersView />}
       {tab === "fib-stocks" && <FibStocksView />}
