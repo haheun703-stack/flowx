@@ -215,7 +215,7 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
                 {/* 안전 구간: 0.618 ~ 52주고 */}
                 <div
                   className="h-full"
-                  style={{ width: `${100 - f618Pct}%`, backgroundColor: '#DCFCE7' }}
+                  style={{ width: `${100 - f618Pct}%`, backgroundColor: '#00FF8820' }}
                 />
 
                 {/* 0.382 구획선 */}
@@ -225,7 +225,7 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
                 />
                 {/* 0.618 구획선 */}
                 <div
-                  className="absolute top-0 h-full w-[2px] bg-[#16A34A]/40"
+                  className="absolute top-0 h-full w-[2px] bg-[#00FF88]/60"
                   style={{ left: `${f618Pct}%` }}
                 />
 
@@ -254,7 +254,7 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
                   ▼{fmtPrice(c.close)}
                 </span>
                 <span
-                  className="absolute text-[#16A34A] font-bold -translate-x-1/2"
+                  className="absolute text-[#059669] font-bold -translate-x-1/2"
                   style={{ left: `${f618Pct}%` }}
                 >
                   0.618
