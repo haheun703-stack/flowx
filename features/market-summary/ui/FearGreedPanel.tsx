@@ -37,12 +37,12 @@ function componentBarColor(score: number): string {
 }
 
 const COMPONENTS = [
-  { key: 'momentum_score' as const, label: 'Momentum', desc: 'KOSPI vs 125일 MA' },
-  { key: 'breadth_score' as const, label: 'Breadth', desc: '상승/하락 비율' },
-  { key: 'volatility_score' as const, label: 'Volatility', desc: 'VIX 변동성' },
-  { key: 'safe_haven_score' as const, label: 'Safe Haven', desc: '주식 vs 채권' },
-  { key: 'hy_spread_score' as const, label: 'HY Spread', desc: '하이일드 스프레드' },
-  { key: 'foreign_flow_score' as const, label: 'Foreign', desc: '외국인 수급' },
+  { key: 'momentum_score' as const, label: '모멘텀', desc: 'KOSPI vs 125일 MA' },
+  { key: 'breadth_score' as const, label: '시장폭', desc: '상승/하락 비율' },
+  { key: 'volatility_score' as const, label: '변동성', desc: 'VIX 변동성' },
+  { key: 'safe_haven_score' as const, label: '안전자산', desc: '주식 vs 채권' },
+  { key: 'hy_spread_score' as const, label: '하이일드', desc: '하이일드 스프레드' },
+  { key: 'foreign_flow_score' as const, label: '외국인', desc: '외국인 수급' },
 ]
 
 /** SVG 반원 게이지 */

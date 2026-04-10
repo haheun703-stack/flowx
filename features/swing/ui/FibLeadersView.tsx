@@ -137,7 +137,7 @@ export default function FibLeadersView() {
               <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">현재가</th>
               <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">하락률</th>
               <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280]">구간</th>
-              <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280] min-w-[100px]">피보나치 위치</th>
+              <th className="text-center py-2 px-2 text-[13px] font-extrabold text-[#1A1A2E] min-w-[140px]">피보나치 위치</th>
               <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">상승여력</th>
               <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">PER</th>
               <th className="text-right py-2 px-2 text-[12px] font-bold text-[#6B7280]">외국인</th>

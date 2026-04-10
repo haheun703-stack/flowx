@@ -30,20 +30,41 @@ export function FibMiniGauge({ stock }: { stock: FibStock }) {
   const f382 = ((stock.fib_382 - stock.w52l) / range) * 100
   const f500 = ((stock.fib_500 - stock.w52l) / range) * 100
   const f618 = ((stock.fib_618 - stock.w52l) / range) * 100
+  const clampedPct = Math.max(Math.min(pricePct, 96), 4)
+  const dotColor = pricePct < f382 ? '#DC2626' : pricePct < f500 ? '#EA580C' : pricePct < f618 ? '#CA8A04' : '#16A34A'
 
   return (
-    <div className="relative h-3 bg-[#E8E6E0] rounded-full overflow-hidden">
-      {[f382, f500, f618].map((pos, i) => (
-        <div key={i} className="absolute top-0 h-full w-[1px] bg-[#9CA3AF]/50" style={{ left: `${pos}%` }} />
-      ))}
-      <div
-        className="absolute top-0 h-full w-[6px] rounded-full"
-        style={{
-          left: `${Math.max(Math.min(pricePct, 98), 2)}%`,
-          backgroundColor: pricePct < f382 ? '#DC2626' : pricePct < f500 ? '#EA580C' : pricePct < f618 ? '#CA8A04' : '#16A34A',
-          transform: 'translateX(-50%)',
-        }}
-      />
+    <div className="relative min-w-[120px]" style={{ paddingTop: 18, paddingBottom: 14 }}>
+      {/* 가격 + ▼ 표시 */}
+      <div className="absolute top-0 text-center" style={{ left: `${clampedPct}%`, transform: 'translateX(-50%)' }}>
+        <span className="text-[12px] font-extrabold tabular-nums text-[#1A1A2E] whitespace-nowrap">
+          {stock.price.toLocaleString()}
+        </span>
+        <div className="text-[10px] font-bold leading-none" style={{ color: dotColor }}>▼</div>
+      </div>
+      {/* 바 */}
+      <div className="relative h-[6px] rounded-full overflow-visible">
+        {/* 하락 영역 (52w고점→현재가) */}
+        <div className="absolute inset-0 rounded-full bg-[#FECACA]" />
+        <div className="absolute top-0 h-full rounded-r-full bg-[#BBF7D0]"
+          style={{ left: `${clampedPct}%`, right: 0 }} />
+        {/* 피보나치 라인 */}
+        {[
+          { pos: f618, color: '#DC2626' },
+          { pos: f500, color: '#9CA3AF' },
+          { pos: f382, color: '#16A34A' },
+        ].map((f, i) => (
+          <div key={i} className="absolute top-[-2px] h-[10px] w-[2px] rounded-full" style={{ left: `${f.pos}%`, backgroundColor: f.color }} />
+        ))}
+        {/* 현재가 점 */}
+        <div className="absolute top-[-3px] w-[8px] h-[12px] rounded-full"
+          style={{ left: `${clampedPct}%`, transform: 'translateX(-50%)', backgroundColor: dotColor }} />
+      </div>
+      {/* 피보나치 숫자 */}
+      <div className="relative mt-0.5">
+        <span className="absolute text-[10px] font-bold tabular-nums text-[#DC2626]" style={{ left: `${f618}%`, transform: 'translateX(-50%)' }}>0.618</span>
+        <span className="absolute text-[10px] font-bold tabular-nums text-[#16A34A]" style={{ left: `${f382}%`, transform: 'translateX(-50%)' }}>0.382</span>
+      </div>
     </div>
   )
 }
