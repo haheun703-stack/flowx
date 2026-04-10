@@ -203,7 +203,7 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
 
           return (
             <div className="mt-4">
-              <p className="text-[12px] text-[#6B7280] mb-2">피보나치 위치</p>
+              <p className="text-[14px] font-extrabold text-[#1A1A2E] mb-2">피보나치 위치</p>
 
               {/* 바 본체 (상단 라벨 공간 확보) */}
               <div className="relative h-6 rounded-full overflow-hidden flex mt-10">
@@ -242,31 +242,31 @@ export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCand
               </div>
 
               {/* 라벨 행 */}
-              <div className="relative h-5 mt-1 text-[11px]">
-                <span className="absolute left-0 text-[#9CA3AF]">
+              <div className="relative h-5 mt-1 text-[13px]">
+                <span className="absolute left-0 font-extrabold text-[#1A1A2E] tabular-nums">
                   {fmtPrice(c.low_252)}
                 </span>
                 <span
-                  className="absolute text-[#DC2626] font-bold -translate-x-1/2"
+                  className="absolute text-[#DC2626] font-extrabold -translate-x-1/2"
                   style={{ left: `${f382Pct}%` }}
                 >
                   0.382
                 </span>
                 <span
-                  className="absolute text-[#1A1A2E] font-bold -translate-x-1/2 -top-[34px] text-[12px] whitespace-nowrap"
+                  className="absolute text-[#1A1A2E] font-extrabold -translate-x-1/2 -top-[34px] text-[14px] whitespace-nowrap"
                   style={{ left: `${curPct}%` }}
                 >
                   {fmtPrice(c.close)}
                   <br />
-                  <span className="text-[10px]">▼</span>
+                  <span className="text-[11px]">▼</span>
                 </span>
                 <span
-                  className="absolute text-[#059669] font-bold -translate-x-1/2"
+                  className="absolute text-[#059669] font-extrabold -translate-x-1/2"
                   style={{ left: `${f618Pct}%` }}
                 >
                   0.618
                 </span>
-                <span className="absolute right-0 text-[#9CA3AF]">
+                <span className="absolute right-0 font-extrabold text-[#1A1A2E] tabular-nums">
                   {fmtPrice(c.high_252)}
                 </span>
               </div>
