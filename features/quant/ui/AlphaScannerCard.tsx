@@ -44,7 +44,7 @@ function supplyLabel(type: string): string {
 
 /* ── 컴포넌트 ── */
 
-export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank: number }) {
+export default function AlphaScannerCard({ c, rank, axisLabels }: { c: AlphaCandidate; rank: number; axisLabels?: Record<string, string> }) {
   const g = GRADE_STYLE[c.grade] ?? GRADE_STYLE.BRONZE
   const ev = EARNINGS_KR[c.earnings_verdict] ?? { label: c.earnings_verdict, color: '#6B7280' }
   const rankIcon = rank <= 3 ? ['🥇', '🥈', '🥉'][rank - 1] : null
@@ -92,6 +92,12 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
           <span className="text-[13px] text-[#6B7280]">섹터: {c.sector}</span>
           <span className="text-[13px] text-[#6B7280]">시총: {fmtCap(c.market_cap_억)}</span>
         </div>
+        {c.company_desc && (
+          <p className="text-[13px] text-[#9CA3AF] mt-1">{c.company_desc}</p>
+        )}
+        {c.drop_reason && (
+          <p className="text-[13px] text-[#DC2626]/80 mt-0.5">📉 {c.drop_reason}</p>
+        )}
       </div>
 
       {/* ── Body ── */}
@@ -101,12 +107,13 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
           <div>
             <p className="text-[13px] font-bold text-[#6B7280] mb-3">5축 점수</p>
             <div className="space-y-2">
-              {SCORE_AXES.map(({ key, label, max, color }) => {
+              {SCORE_AXES.map(({ key, label: defaultLabel, max, color }) => {
+                const label = axisLabels?.[key] ?? defaultLabel
                 const val = c.scores?.[key] ?? 0
                 const pct = Math.min((val / max) * 100, 100)
                 return (
                   <div key={key} className="flex items-center gap-2">
-                    <span className="text-[13px] text-[#1A1A2E] w-[60px] shrink-0">{label}</span>
+                    <span className="text-[13px] text-[#1A1A2E] w-[110px] shrink-0">{label}</span>
                     <div className="flex-1 h-4 bg-[#F5F4F0] rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all"

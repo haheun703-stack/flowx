@@ -14,9 +14,11 @@ const GRADE_TABS = [
 export default function AlphaScannerPanel({
   candidates,
   gradeSummary,
+  axisLabels,
 }: {
   candidates: AlphaCandidate[]
   gradeSummary: { GOLD: number; SILVER: number; BRONZE: number }
+  axisLabels?: Record<string, string>
 }) {
   const [filter, setFilter] = useState<string>('ALL')
 
@@ -76,7 +78,7 @@ export default function AlphaScannerPanel({
       ) : (
         <div className="space-y-4">
           {filtered.map((c, i) => (
-            <AlphaScannerCard key={c.ticker} c={c} rank={i + 1} />
+            <AlphaScannerCard key={c.ticker} c={c} rank={i + 1} axisLabels={axisLabels} />
           ))}
         </div>
       )}

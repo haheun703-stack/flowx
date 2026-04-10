@@ -56,6 +56,8 @@ export interface AlphaCandidate {
     drawdown: number
     peer_value: number
   }
+  company_desc?: string
+  drop_reason?: string
 }
 
 export interface SmartMoneyItem {
@@ -71,6 +73,7 @@ export interface AlphaScannerData {
   date: string
   generated_at: string
   context: AlphaContext
+  axis_labels?: Record<string, string>
   sector_heat: SectorHeatItem[]
   grade_summary: { GOLD: number; SILVER: number; BRONZE: number }
   candidates: AlphaCandidate[]

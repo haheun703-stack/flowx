@@ -106,6 +106,7 @@ export default function SystemPage() {
                 gradeSummary={
                   data.grade_summary ?? { GOLD: 0, SILVER: 0, BRONZE: 0 }
                 }
+                axisLabels={data.axis_labels}
               />
 
               {/* 영역 4: 하단 보조 (2열) */}
