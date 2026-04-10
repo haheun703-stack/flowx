@@ -69,6 +69,22 @@ export interface SmartMoneyItem {
   change_pct: number
 }
 
+export interface ETFPerformanceEntry {
+  asset_class: string
+  code: string
+  name: string
+  close: number
+  return_1y: number | null
+  return_1m: number | null
+  data_days: number
+}
+
+export interface ETFPerformance {
+  updated_at: string
+  yearly: ETFPerformanceEntry[]
+  monthly: ETFPerformanceEntry[]
+}
+
 export interface AlphaScannerData {
   date: string
   generated_at: string
@@ -87,4 +103,5 @@ export interface AlphaScannerData {
     offense_pct: number
     allocation: Record<string, number>
   }
+  etf_performance?: ETFPerformance
 }

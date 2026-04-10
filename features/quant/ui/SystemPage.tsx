@@ -142,6 +142,7 @@ export default function SystemPage() {
                   defensePct={data.portfolio?.defense_pct ?? 50}
                   offensePct={data.portfolio?.offense_pct ?? 50}
                   allocation={data.portfolio?.allocation ?? {}}
+                  etfPerformance={data.etf_performance}
                 />
               </div>
             </>
