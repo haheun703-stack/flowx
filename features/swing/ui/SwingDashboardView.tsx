@@ -673,55 +673,79 @@ export default function SwingDashboardView() {
         )
       })()}
 
-      {/* NXT 야간매매 종목 — intelligence_nxt_picks TOP 5 */}
-      {nxtPickData && (nxtPickData.picks?.length ?? 0) > 0 && (
-        <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">주목 종목 — 야간 매매 (NXT TOP 5)</h2>
-          <div
-            className="rounded-r-xl p-4"
-            style={{ border: '1px solid var(--border)', borderLeft: '3px solid #7C3AED' }}
-          >
-            {/* NXT 점수 + 신호 */}
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-[14px] font-bold text-[#1A1A2E]">NXT 점수</span>
-              <span className={`text-[17px] font-black tabular-nums ${(nxtPickData.nxt_score ?? 0) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {(nxtPickData.nxt_score ?? 0) > 0 ? '+' : ''}{(nxtPickData.nxt_score ?? 0).toFixed(1)}
+      {/* NXT 야간매수 — intelligence_nxt_picks TOP 5 */}
+      {nxtPickData && (() => {
+        const nxtScore = nxtPickData.nxt_score ?? 0
+        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? '경계' : '회피'
+        const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
+        const picks = nxtPickData.picks ?? []
+        const sectors = nxtPickData.sectors ?? []
+        return (
+          <section className="bg-white rounded-2xl border border-[#E8E6E0] p-5 space-y-4">
+            {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-[17px] font-bold text-[#1A1A2E]">🌙 NXT 야간매수 TOP 5</h2>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
+                {nxtPickData.signal ?? scLabel}
               </span>
-              {nxtPickData.signal && (
-                <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A]">
-                  {nxtPickData.signal}
-                </span>
-              )}
-              {nxtPickData.sectors?.map((s, i) => (
-                <span key={i} className="text-[12px] px-2 py-0.5 rounded-full bg-[#F0F0FF] text-[#4C1D95] font-bold">
-                  {s}
-                </span>
-              ))}
-              <span className="text-[12px] text-[#9CA3AF] ml-auto">{nxtPickData.date}</span>
+              <span className="text-sm text-[#6B7280]">{nxtPickData.date}</span>
             </div>
 
-            {/* TOP 5 카드 */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-              {nxtPickData.picks!.map((p) => {
-                const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
-                const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
-                return (
-                  <div key={p.code} className="rounded-lg p-3 text-center bg-white border border-[var(--border)]">
-                    <span className="text-xl">{medal}</span>
-                    <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
-                    <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
-                    <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
-                      수급 {p.supply_score}점
-                    </span>
-                    <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
-                    <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
-                  </div>
-                )
-              })}
+            {/* NXT Score 바 */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold text-[#1A1A2E]">NXT 점수</span>
+              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden relative">
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 z-10" />
+                <div
+                  className="h-full rounded-full absolute top-0"
+                  style={{
+                    backgroundColor: nxtScore >= 0 ? '#16A34A' : '#DC2626',
+                    left: nxtScore >= 0 ? '50%' : `${50 + (nxtScore / 10) * 50}%`,
+                    width: `${Math.abs(nxtScore / 10) * 50}%`,
+                  }}
+                />
+              </div>
+              <span className={`text-lg font-bold tabular-nums ${nxtScore >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {nxtScore > 0 ? '+' : ''}{nxtScore.toFixed(1)}
+              </span>
             </div>
-          </div>
-        </section>
-      )}
+
+            {/* 추천 섹터 */}
+            {sectors.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-[#6B7280]">추천 섹터</span>
+                {sectors.map((s, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F0F0FF] text-[#4C1D95]">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* TOP 5 카드 */}
+            {picks.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                {picks.map((p) => {
+                  const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
+                  const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
+                  return (
+                    <div key={p.code} className="rounded-lg p-3 text-center bg-[#FAFAF8] border border-[var(--border)]">
+                      <span className="text-xl">{medal}</span>
+                      <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
+                      <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
+                      <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
+                        수급 {p.supply_score}점
+                      </span>
+                      <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
+                      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+        )
+      })()}
 
       {/* ═══ 3행: 매매 타임라인 ═══ */}
       <section>

@@ -3,8 +3,6 @@
 import { useState } from "react"
 import DaytradingPicksPanel from "@/features/daytrading/ui/DaytradingPicksPanel"
 import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerformancePanel"
-import NxtPicksPanel from "@/features/daytrading/ui/NxtPicksPanel"
-import NxtPerformancePanel from "@/features/daytrading/ui/NxtPerformancePanel"
 import SwingDashboardView from "./SwingDashboardView"
 import FibLeadersView from "./FibLeadersView"
 import FibStocksView from "./FibStocksView"
@@ -12,9 +10,8 @@ import SectorRotationView from "./SectorRotationView"
 import StealthScannerView from "./StealthScannerView"
 
 const TABS = [
-  { key: "daytrading", label: "단타 TOP픽" },
-  { key: "nxt", label: "NXT 야간매수" },
   { key: "dashboard", label: "대시보드" },
+  { key: "daytrading", label: "단타 TOP픽" },
   { key: "stealth", label: "선매집 탐지" },
   { key: "fib-leaders", label: "대형주 피보나치" },
   { key: "fib-stocks", label: "전체 피보나치" },
@@ -24,7 +21,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"]
 
 export function SwingTabsView() {
-  const [tab, setTab] = useState<TabKey>("daytrading")
+  const [tab, setTab] = useState<TabKey>("dashboard")
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
@@ -52,12 +49,6 @@ export function SwingTabsView() {
         <>
           <DaytradingPicksPanel />
           <DaytradingPerformancePanel />
-        </>
-      )}
-      {tab === "nxt" && (
-        <>
-          <NxtPicksPanel />
-          <NxtPerformancePanel />
         </>
       )}
       {tab === "dashboard" && <SwingDashboardView />}
