@@ -40,6 +40,14 @@ interface NxtTarget {
   priority: number; supply_score: number; is_etf: boolean
 }
 
+interface NxtPickData {
+  date: string
+  nxt_score: number | null
+  signal: string | null
+  sectors: string[] | null
+  picks: { rank: number; code: string; name: string; sector: string; supply_score: number; entry_price: number }[] | null
+}
+
 interface FxMonitor {
   timestamp: string
   dxy: { value: number; prev: number; chg_1d: number; ma5: number; ma20: number; trend: string }
@@ -299,6 +307,7 @@ export default function SwingDashboardView() {
   const [loading, setLoading] = useState(true)
   const [expandedStock, setExpandedStock] = useState<string | null>(null)
   const [brainExpanded, setBrainExpanded] = useState(false)
+  const [nxtPickData, setNxtPickData] = useState<NxtPickData | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -315,6 +324,11 @@ export default function SwingDashboardView() {
       setLoading(false)
     }
     load()
+    // NXT TOP 5 별도 fetch
+    fetch('/api/intelligence/nxt-picks', { signal: controller.signal })
+      .then(r => r.json())
+      .then(j => setNxtPickData(j.data ?? null))
+      .catch(() => {})
     return () => controller.abort()
   }, [])
 
@@ -342,7 +356,6 @@ export default function SwingDashboardView() {
   const hero = getVerdictHero(data.brain_verdict)
   const hasCategory = data.picks?.some(p => p.category)
   const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
-  const nxtPicks = hasCategory ? data.picks.filter(p => p.category === 'NXT') : []
   const analysisCards = data.analysis ? classifyAnalysis(data.analysis) : null
 
   return (
@@ -660,48 +673,52 @@ export default function SwingDashboardView() {
         )
       })()}
 
-      {/* NXT 야간매매 종목 */}
-      {nxtPicks.length > 0 && (
+      {/* NXT 야간매매 종목 — intelligence_nxt_picks TOP 5 */}
+      {nxtPickData && (nxtPickData.picks?.length ?? 0) > 0 && (
         <section>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">주목 종목 — 야간 매매 (NXT)</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E] mb-3">주목 종목 — 야간 매매 (NXT TOP 5)</h2>
           <div
-            className="rounded-r-xl p-4 space-y-2"
+            className="rounded-r-xl p-4"
             style={{ border: '1px solid var(--border)', borderLeft: '3px solid #7C3AED' }}
           >
-            {nxtPicks.map((p) => {
-              const actionStyle = actionBadgeStyle(p.action)
-              const gradeS = gradeBadgeStyle(p.grade)
-              const targetPct = p.entry_price > 0 ? ((p.target_price - p.entry_price) / p.entry_price * 100) : 0
-              const stopPct = p.entry_price > 0 ? ((p.stop_price - p.entry_price) / p.entry_price * 100) : 0
-              return (
-                <div key={p.code} className="rounded-[10px] p-3" style={{ backgroundColor: '#F5F4F0' }}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      {p.star && <span className="text-[#D97706] text-sm">★</span>}
-                      <span className="text-[16px] font-bold text-[#1A1A2E]">{p.name}</span>
-                      <span className="text-[12px] text-[#6B7280]">{p.code}</span>
-                      {p.action && (
-                        <span className="text-[12px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: actionStyle.bg, color: actionStyle.text }}>
-                          {p.action}
-                        </span>
-                      )}
-                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: gradeS.bg, color: gradeS.text }}>
-                        {p.grade}
-                      </span>
-                    </div>
-                    <span className="text-[16px] font-bold text-[#1A1A2E] tabular-nums">{p.score.toFixed(1)}점</span>
+            {/* NXT 점수 + 신호 */}
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-[14px] font-bold text-[#1A1A2E]">NXT 점수</span>
+              <span className={`text-[17px] font-black tabular-nums ${(nxtPickData.nxt_score ?? 0) >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {(nxtPickData.nxt_score ?? 0) > 0 ? '+' : ''}{(nxtPickData.nxt_score ?? 0).toFixed(1)}
+              </span>
+              {nxtPickData.signal && (
+                <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A]">
+                  {nxtPickData.signal}
+                </span>
+              )}
+              {nxtPickData.sectors?.map((s, i) => (
+                <span key={i} className="text-[12px] px-2 py-0.5 rounded-full bg-[#F0F0FF] text-[#4C1D95] font-bold">
+                  {s}
+                </span>
+              ))}
+              <span className="text-[12px] text-[#9CA3AF] ml-auto">{nxtPickData.date}</span>
+            </div>
+
+            {/* TOP 5 카드 */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {nxtPickData.picks!.map((p) => {
+                const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
+                const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
+                return (
+                  <div key={p.code} className="rounded-lg p-3 text-center bg-white border border-[var(--border)]">
+                    <span className="text-xl">{medal}</span>
+                    <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
+                    <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
+                    <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
+                      수급 {p.supply_score}점
+                    </span>
+                    <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
+                    <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
                   </div>
-                  <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5">
-                    <PriceCell label="현재가" value={p.close ?? p.entry_price} />
-                    <PriceCell label="진입가" value={p.entry_price} />
-                    <PriceCell label="목표가" value={p.target_price} bg="#EFF6FF" sub={targetPct > 0 ? `+${targetPct.toFixed(1)}%` : ''} subColor="#2563EB" />
-                    <PriceCell label="손절가" value={p.stop_price} bg="#FEF2F2" sub={stopPct !== 0 ? `${stopPct.toFixed(1)}%` : ''} subColor="#DC2626" />
-                    <PriceCell label="R:R" value={p.rr_ratio} isRatio />
-                    <PriceCell label="보유일" value={p.hold_days} isDays />
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </section>
       )}
