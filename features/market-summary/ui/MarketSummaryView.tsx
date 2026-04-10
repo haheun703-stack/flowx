@@ -6,6 +6,7 @@ import { HeroChart } from '@/features/dashboard/ui/HeroChart'
 import { useDashboardDaily, useDashboardDailyKosdaq, useInvestorFlow, useInvestorFlowKosdaq } from '@/features/dashboard/api/useDashboard'
 import { SectorHeatmap } from './SectorHeatmap'
 import { SupplyRankPanel } from './SupplyRankPanel'
+import MarketCalendarPanel from './MarketCalendarPanel'
 
 interface MarketOverviewData {
   date: string
@@ -305,7 +306,10 @@ export function MarketSummaryView() {
             </div>
           )}
 
-          {/* ── 5행: 섹터 히트맵(1/2) + 외국인 순매수 TOP 5(1/2) ── */}
+          {/* ── 5행: 시장 이벤트 캘린더 ── */}
+          <MarketCalendarPanel />
+
+          {/* ── 6행: 섹터 히트맵(1/2) + 외국인 순매수 TOP 5(1/2) ── */}
           <div className="flex gap-3">
             <div className="flex-1 fx-card">
               <SectorHeatmap sectors={sectors} />
