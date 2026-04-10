@@ -200,8 +200,8 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
             <div className="mt-4">
               <p className="text-[12px] text-[#6B7280] mb-2">피보나치 위치</p>
 
-              {/* 바 본체 */}
-              <div className="relative h-6 rounded-full overflow-hidden flex">
+              {/* 바 본체 (상단 라벨 공간 확보) */}
+              <div className="relative h-6 rounded-full overflow-hidden flex mt-10">
                 {/* 위험 구간: 52주저 ~ 0.382 */}
                 <div
                   className="h-full"
@@ -248,10 +248,12 @@ export default function AlphaScannerCard({ c, rank }: { c: AlphaCandidate; rank:
                   0.382
                 </span>
                 <span
-                  className="absolute text-[#1A1A2E] font-bold -translate-x-1/2 -top-[18px]"
+                  className="absolute text-[#1A1A2E] font-bold -translate-x-1/2 -top-[34px] text-[12px] whitespace-nowrap"
                   style={{ left: `${curPct}%` }}
                 >
-                  ▼{fmtPrice(c.close)}
+                  {fmtPrice(c.close)}
+                  <br />
+                  <span className="text-[10px]">▼</span>
                 </span>
                 <span
                   className="absolute text-[#059669] font-bold -translate-x-1/2"
