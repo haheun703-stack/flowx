@@ -46,8 +46,9 @@ const NAV_TABS = [
   {
     label: '시스템',
     href: '/quant',
-    match: (p: string) => p.startsWith('/quant') || p.startsWith('/swing'),
+    match: (p: string) => p.startsWith('/quant') || p.startsWith('/swing') || p.startsWith('/discovery'),
     sub: [
+      { label: '종목 발굴', href: '/discovery' },
       { label: '한국 퀀트', href: '/quant' },
       { label: '한국 스윙', href: '/swing' },
     ],
