@@ -1,12 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  createChart,
-  LineSeries,
-  type IChartApi,
-  type UTCTimestamp,
-} from 'lightweight-charts'
+import { useEffect, useMemo, useState } from 'react'
 
 // ── 타입 ─────────────────────────────────────────────────────
 interface UsMarketData {
@@ -65,13 +59,6 @@ interface FlowRow {
   flow_pct?: number
 }
 
-interface IndexHistoryRow {
-  date: string
-  sp500_close: number | null
-  nasdaq_close: number | null
-  dow_close: number | null
-}
-
 // ── 상수 ─────────────────────────────────────────────────────
 const ETF_LIST = [
   { ticker: 'SPY', name: 'S&P500', category: '지수'},
@@ -122,162 +109,55 @@ function Sk({ h = 'h-4', w = 'w-full', className = ''}: { h?: string; w?: string
 // 서브 컴포넌트
 // ══════════════════════════════════════════════════════════════
 
-// ── 미국 지수 차트 (lightweight-charts) ──────────────────────
-const INDEX_LINES = [
-  { key: 'sp500_close' as const, name: 'S&P 500', color: '#D62728' },
-  { key: 'nasdaq_close' as const, name: '나스닥', color: '#2563EB' },
-  { key: 'dow_close' as const, name: '다우존스', color: '#16A34A' },
+// ── 미국 지수 1일 카드 ──────────────────────────────────────
+const INDEX_ITEMS = [
+  { name: 'S&P 500', closeKey: 'sp500_close' as const, changeKey: 'sp500_change' as const, color: '#D62728', sub: '대형주 500' },
+  { name: 'NASDAQ', closeKey: 'nasdaq_close' as const, changeKey: 'nasdaq_change' as const, color: '#2563EB', sub: '기술주 중심' },
+  { name: 'DOW', closeKey: 'dow_close' as const, changeKey: 'dow_change' as const, color: '#16A34A', sub: '전통 대형주' },
 ]
 
-function UsIndexChart({ history }: { history: IndexHistoryRow[] }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<IChartApi | null>(null)
-
-  // 정규화 데이터 (첫 날 기준 % 변화)
-  const normalized = useMemo(() => {
-    if (history.length < 2) return null
-    const result: Record<string, { time: UTCTimestamp; value: number }[]> = {}
-    for (const line of INDEX_LINES) {
-      const vals = history.map(r => r[line.key])
-      const base = vals.find(v => v != null && v > 0)
-      if (!base) continue
-      result[line.key] = history
-        .map((r, i) => {
-          const v = vals[i]
-          if (v == null) return null
-          return {
-            time: Math.floor(new Date(`${r.date}T00:00:00Z`).getTime() / 1000) as UTCTimestamp,
-            value: ((v - base) / base) * 100,
-          }
-        })
-        .filter((p): p is { time: UTCTimestamp; value: number } => p !== null)
-    }
-    return result
-  }, [history])
-
-  // 최신 변화율
-  const latestChanges = useMemo(() => {
-    if (!normalized) return {}
-    const changes: Record<string, number> = {}
-    for (const line of INDEX_LINES) {
-      const pts = normalized[line.key]
-      if (pts && pts.length > 0) changes[line.key] = pts[pts.length - 1].value
-    }
-    return changes
-  }, [normalized])
-
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el || !normalized) return
-
-    const chart = createChart(el, {
-      layout: {
-        background: { color: 'transparent' },
-        textColor: '#9CA3AF',
-        fontFamily: "'Pretendard', -apple-system, system-ui, sans-serif",
-      },
-      grid: {
-        vertLines: { color: '#F0EDE8' },
-        horzLines: { color: '#F0EDE8' },
-      },
-      crosshair: {
-        vertLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
-        horzLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
-      },
-      rightPriceScale: {
-        borderColor: '#E8E6E0',
-        scaleMargins: { top: 0.08, bottom: 0.08 },
-      },
-      timeScale: {
-        borderColor: '#E8E6E0',
-        fixLeftEdge: true,
-        fixRightEdge: true,
-      },
-      width: el.clientWidth,
-      height: 260,
-    })
-
-    for (const line of INDEX_LINES) {
-      const pts = normalized[line.key]
-      if (!pts) continue
-      const series = chart.addSeries(LineSeries, {
-        color: line.color,
-        lineWidth: 2,
-        priceLineVisible: false,
-        lastValueVisible: true,
-        crosshairMarkerBorderColor: '#ffffff',
-        crosshairMarkerBackgroundColor: line.color,
-        crosshairMarkerRadius: 4,
-      })
-      series.setData(pts)
-    }
-
-    chart.timeScale().fitContent()
-    chartRef.current = chart
-
-    let disposed = false
-    const ro = new ResizeObserver(() => {
-      if (!disposed && el) chart.applyOptions({ width: el.clientWidth })
-    })
-    ro.observe(el)
-
-    return () => {
-      disposed = true
-      ro.disconnect()
-      chart.remove()
-      chartRef.current = null
-    }
-  }, [normalized])
-
-  if (!normalized || history.length < 2) return null
-
-  // 최신 종가
-  const last = history[history.length - 1]
-
+function UsIndexPanel({ data }: { data: UsMarketData }) {
   return (
     <div className="fx-card-green">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-        <div>
-          <span className="text-[15px] md:text-[18px] font-black text-[#1A1A2E]">US Market Index</span>
-          <span className="text-[12px] md:text-[14px] font-semibold text-[#B0ADA6] ml-2">
-            {last?.date ?? ''} 기준
-          </span>
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[16px] md:text-[18px] font-black text-[#1A1A2E]">US Market Index</span>
+        <span className="text-[12px] md:text-[13px] font-semibold text-[#B0ADA6]">{data.date} 종가 기준</span>
       </div>
 
-      {/* 최신 종가 카드 */}
-      <div className="flex items-center gap-4 md:gap-6 mb-2 flex-wrap">
-        {INDEX_LINES.map(line => {
-          const close = last?.[line.key]
-          const chgPct = latestChanges[line.key]
+      <div className="grid grid-cols-3 gap-3">
+        {INDEX_ITEMS.map(idx => {
+          const close = data[idx.closeKey]
+          const chg = data[idx.changeKey]
+          const isUp = (chg ?? 0) > 0
+          const isDn = (chg ?? 0) < 0
           return (
-            <div key={line.key} className="flex items-baseline gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: line.color }} />
-              <span className="text-[13px] font-bold text-[#1A1A2E]">{line.name}</span>
-              <span className="text-[18px] md:text-[22px] font-extrabold tabular-nums text-[#1A1A2E]">
-                {close != null ? close.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—'}
-              </span>
-              {chgPct != null && (
-                <span className="text-[14px] font-bold tabular-nums" style={{ color: line.color }}>
-                  {chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%
-                </span>
-              )}
+            <div key={idx.name} className="text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: idx.color }} />
+                <span className="text-[14px] md:text-[16px] font-black text-[#1A1A2E]">{idx.name}</span>
+              </div>
+              <div className="text-[11px] text-[#9CA3AF] mb-2">{idx.sub}</div>
+              <div className="text-[24px] md:text-[32px] font-black tabular-nums leading-none" style={{ color: idx.color }}>
+                {changeStr(chg)}
+              </div>
+              <div className="text-[16px] md:text-[20px] font-bold text-[#1A1A2E] mt-1 tabular-nums">
+                {f2(close, 0)}
+              </div>
+              {/* 미니 바 */}
+              <div className="mt-2 mx-auto w-full max-w-[120px]">
+                <div className="h-[6px] bg-[#F0EDE8] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${Math.min(Math.abs(chg ?? 0) * 15, 100)}%`,
+                      backgroundColor: isUp ? '#D62728' : isDn ? '#1565C0' : '#9CA3AF',
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           )
         })}
-      </div>
-
-      {/* lightweight-charts 차트 */}
-      <div ref={containerRef} className="w-full" />
-
-      {/* 범례 */}
-      <div className="flex items-center gap-4 mt-2">
-        {INDEX_LINES.map(line => (
-          <span key={line.key} className="flex items-center gap-1.5">
-            <span className="inline-block w-5 border-t-[3px]" style={{ borderColor: line.color }} />
-            <span className="text-[13px] font-semibold text-[#6B7280]">{line.name}</span>
-          </span>
-        ))}
       </div>
     </div>
   )
@@ -950,18 +830,16 @@ export function UsMarketView() {
   const [market, setMarket] = useState<UsMarketData | null>(null)
   const [calEvents, setCalEvents] = useState<CalEvent[]>([])
   const [flows, setFlows] = useState<FlowRow[]>([])
-  const [history, setHistory] = useState<IndexHistoryRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
       try {
-        const [mRes, cRes, fRes, hRes] = await Promise.allSettled([
+        const [mRes, cRes, fRes] = await Promise.allSettled([
           fetch('/api/us-market/daily', { signal: controller.signal }),
           fetch('/api/us-market/calendar', { signal: controller.signal }),
           fetch('/api/us-market/investor-flow', { signal: controller.signal }),
-          fetch('/api/us-market/history', { signal: controller.signal }),
         ])
         if (mRes.status === 'fulfilled' && mRes.value.ok) {
           const json = await mRes.value.json()
@@ -974,10 +852,6 @@ export function UsMarketView() {
         if (fRes.status === 'fulfilled' && fRes.value.ok) {
           const json = await fRes.value.json()
           setFlows(json.flows ?? [])
-        }
-        if (hRes.status === 'fulfilled' && hRes.value.ok) {
-          const json = await hRes.value.json()
-          setHistory(json.history ?? [])
         }
       } catch {
         /* abort */
@@ -1039,7 +913,7 @@ export function UsMarketView() {
         </div>
       </div>
 
-      {history.length >= 2 && <UsIndexChart history={history} />}
+      <UsIndexPanel data={market} />
       <EtfBar sectorEtf={market.sector_etf} />
       <IndexCards data={market} />
       {market.mag7 && <Mag7Panel mag7={market.mag7} />}
