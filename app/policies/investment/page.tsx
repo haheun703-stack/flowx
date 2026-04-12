@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — 투자 유의사항 및 면책 고지',
+  description: '투자 위험 및 FLOWX 서비스 면책사항 안내',
+}
+
 export default function InvestmentPolicyPage() {
   return (
     <div>

@@ -93,25 +93,3 @@ export const GRADE_ALIAS: Record<GradeNew, Grade[]> = {
   [GRADE_WATCH]: [GRADE_WATCH, GRADE_LEGACY_WATCH_BUY],
   [GRADE_OBSERVE]: [GRADE_OBSERVE],
 }
-
-/* ── Type guard ── */
-export function isBuyableGrade(grade: string): grade is Grade {
-  return (BUYABLE_GRADES as readonly string[]).includes(grade)
-}
-
-/**
- * 구 등급 → 신 등급 정규화.
- * 알 수 없는 등급은 null 반환.
- */
-export function normalizeGrade(grade: string): GradeNew | null {
-  const map: Record<string, GradeNew> = {
-    [GRADE_LEGACY_FORCE_BUY]: GRADE_STRONG_PICK,
-    [GRADE_LEGACY_BUY]: GRADE_PICK,
-    [GRADE_LEGACY_WATCH_BUY]: GRADE_WATCH,
-    [GRADE_STRONG_PICK]: GRADE_STRONG_PICK,
-    [GRADE_PICK]: GRADE_PICK,
-    [GRADE_WATCH]: GRADE_WATCH,
-    [GRADE_OBSERVE]: GRADE_OBSERVE,
-  }
-  return map[grade] ?? null
-}

@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — 개인정보처리방침',
+  description: 'FLOWX 개인정보 수집·이용·보유 및 파기 안내',
+}
 
 export default function PrivacyPage() {
   return (

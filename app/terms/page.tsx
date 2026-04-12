@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — 서비스 이용약관',
+  description: 'FLOWX 서비스 이용 조건 및 회원의 권리·의무',
+}
 
 export default function TermsPage() {
   return (

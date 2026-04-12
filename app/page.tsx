@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { LandingNavbar }           from '@/features/landing/ui/LandingNavbar'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — AI 기반 한국 주식 수급 레이더',
+  description: '외국인·기관 수급 X-Ray로 스마트머니를 추적하세요. AI 종목 스크리닝, 세력 포착, 섹터 모멘텀, ETF 시그널까지.',
+}
 import { HeroSection }             from '@/features/landing/ui/HeroSection'
 import { SocialProofSection }      from '@/features/landing/ui/SocialProofSection'
 import { FeatureCardsSection }     from '@/features/landing/ui/FeatureCardsSection'

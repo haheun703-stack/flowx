@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — 정책 문서',
+  description: 'FLOWX 서비스 운영 정책 문서 허브',
+}
 
 const DOCS = [
   { title: '서비스 이용약관', href: '/terms', required: true, desc: '서비스 이용 조건 및 회원의 권리·의무' },

@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — AI 생성 콘텐츠 고지',
+  description: 'FLOWX AI 기술 활용 범위 및 한계 안내',
+}
+
 export default function AIPolicyPage() {
   return (
     <div>

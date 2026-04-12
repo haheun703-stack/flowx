@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'FLOWX — 유료서비스 이용약관 및 환불정책',
+  description: '요금제, 결제, 구독 해지 및 환불 규정',
+}
+
 export default function PaymentPolicyPage() {
   return (
     <div>
