@@ -323,18 +323,18 @@ function SectorHeatmap({ sectorEtf }: { sectorEtf: Record<string, number> }) {
         <div className="text-[11px] md:text-[12px] text-[#888]">S&P 500 섹터 ETF 등락률 — 진한 빨강일수록 강세</div>
       </div>
       <div className="text-[12px] md:text-[13px] text-[#888] mb-4">빨강 섹터 = 오늘 돈이 몰리는 곳 / 파랑 섹터 = 자금 이탈 중</div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5">
         {sorted.map(({ ticker, name, emoji, kr, change }) => (
-          <div key={ticker} className={`border rounded-xl px-3 py-3 ${getBg(change)}`}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[18px] md:text-[20px]">{emoji}</span>
-              <span className="text-[11px] md:text-[12px] font-bold text-[#888]">{ticker}</span>
+          <div key={ticker} className={`border rounded-lg px-2.5 py-2 ${getBg(change)}`}>
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-[14px]">{emoji}</span>
+              <span className="text-[10px] font-bold text-[#888]">{ticker}</span>
             </div>
-            <div className="text-[14px] md:text-[16px] font-black text-[#1A1A2E]">{name}</div>
-            <div className="text-[22px] md:text-[26px] font-black font-mono my-1" style={{ color: changeColor(change) }}>
+            <div className="text-[12px] md:text-[13px] font-black text-[#1A1A2E]">{name}</div>
+            <div className="text-[17px] md:text-[19px] font-black font-mono my-0.5" style={{ color: changeColor(change) }}>
               {changeStr(change)}
             </div>
-            <div className="text-[10px] md:text-[11px] text-[#888] leading-tight">{kr}</div>
+            <div className="text-[10px] text-[#888] leading-tight">{kr}</div>
           </div>
         ))}
       </div>
