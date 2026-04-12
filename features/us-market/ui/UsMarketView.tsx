@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { UsMultiLineChart, VixFearGreedPanel, UsSummaryCards, type HistoryRow } from './UsIndexChart'
 
 // ── 타입 ─────────────────────────────────────────────────────
 interface UsMarketData {
@@ -828,6 +829,7 @@ function InvestorFlowPanel({ flows }: { flows: FlowRow[] }) {
 // ══════════════════════════════════════════════════════════════
 export function UsMarketView() {
   const [market, setMarket] = useState<UsMarketData | null>(null)
+  const [history, setHistory] = useState<HistoryRow[]>([])
   const [calEvents, setCalEvents] = useState<CalEvent[]>([])
   const [flows, setFlows] = useState<FlowRow[]>([])
   const [loading, setLoading] = useState(true)
@@ -836,14 +838,19 @@ export function UsMarketView() {
     const controller = new AbortController()
     ;(async () => {
       try {
-        const [mRes, cRes, fRes] = await Promise.allSettled([
+        const [mRes, hRes, cRes, fRes] = await Promise.allSettled([
           fetch('/api/us-market/daily', { signal: controller.signal }),
+          fetch('/api/us-market/history', { signal: controller.signal }),
           fetch('/api/us-market/calendar', { signal: controller.signal }),
           fetch('/api/us-market/investor-flow', { signal: controller.signal }),
         ])
         if (mRes.status === 'fulfilled' && mRes.value.ok) {
           const json = await mRes.value.json()
           if (json.date) setMarket(json)
+        }
+        if (hRes.status === 'fulfilled' && hRes.value.ok) {
+          const json = await hRes.value.json()
+          setHistory(json.history ?? [])
         }
         if (cRes.status === 'fulfilled' && cRes.value.ok) {
           const json = await cRes.value.json()
@@ -913,7 +920,9 @@ export function UsMarketView() {
         </div>
       </div>
 
-      <UsIndexPanel data={market} />
+      {history.length >= 2 ? <UsMultiLineChart data={history} /> : <UsIndexPanel data={market} />}
+      {history.length > 0 && <UsSummaryCards data={history[history.length - 1]} />}
+      {history.length >= 2 && <VixFearGreedPanel data={history} />}
       <EtfBar sectorEtf={market.sector_etf} />
       <IndexCards data={market} />
       {market.mag7 && <Mag7Panel mag7={market.mag7} />}
