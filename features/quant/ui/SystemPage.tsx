@@ -7,6 +7,8 @@ import SectorHeatMap from './SectorHeatMap'
 import AlphaScannerPanel from './AlphaScannerPanel'
 import AlphaSmartMoney from './AlphaSmartMoney'
 import AlphaPortfolio from './AlphaPortfolio'
+import MarketRankingPanel, { type MarketRankingData } from '@/features/market-summary/ui/MarketRankingPanel'
+import BluechipCheckupPanel, { type BluechipCheckupData } from './BluechipCheckupPanel'
 import FibLeadersView from '@/features/swing/ui/FibLeadersView'
 import FibStocksView from '@/features/swing/ui/FibStocksView'
 import SectorRotationView from '@/features/swing/ui/SectorRotationView'
@@ -24,20 +26,35 @@ type TabKey = (typeof TABS)[number]['key']
 
 export default function SystemPage() {
   const [data, setData] = useState<AlphaScannerData | null>(null)
+  const [ranking, setRanking] = useState<MarketRankingData | null>(null)
+  const [bluechip, setBluechip] = useState<BluechipCheckupData | null>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<TabKey>('quant')
 
   useEffect(() => {
     const controller = new AbortController()
+    const signal = controller.signal
     async function load() {
       try {
-        const res = await fetch('/api/alpha-scanner', { signal: controller.signal })
-        if (!res.ok) throw new Error(`API error: ${res.status}`)
-        const json = await res.json()
-        setData(json.data ?? null)
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return
-        setData(null)
+        const [scannerRes, rankingRes, bluechipRes] = await Promise.allSettled([
+          fetch('/api/alpha-scanner', { signal }),
+          fetch('/api/quant/market-ranking', { signal }),
+          fetch('/api/quant/bluechip-checkup', { signal }),
+        ])
+        if (scannerRes.status === 'fulfilled' && scannerRes.value.ok) {
+          const json = await scannerRes.value.json()
+          setData(json.data ?? null)
+        }
+        if (rankingRes.status === 'fulfilled' && rankingRes.value.ok) {
+          const json = await rankingRes.value.json()
+          if (json.data) setRanking(json.data)
+        }
+        if (bluechipRes.status === 'fulfilled' && bluechipRes.value.ok) {
+          const json = await bluechipRes.value.json()
+          if (json.data) setBluechip(json.data)
+        }
+      } catch {
+        /* abort or network error */
       }
       setLoading(false)
     }
@@ -149,6 +166,12 @@ export default function SystemPage() {
               </div>
             </>
           )}
+
+          {/* 영역 5: 시장 순위 (퀀트봇) */}
+          {ranking && <MarketRankingPanel data={ranking} />}
+
+          {/* 영역 6: 대형주 종합점검 (퀀트봇) */}
+          {bluechip && <BluechipCheckupPanel data={bluechip} />}
         </>
       )}
     </div>

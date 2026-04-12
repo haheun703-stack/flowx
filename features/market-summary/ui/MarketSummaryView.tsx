@@ -11,7 +11,6 @@ import FearGreedPanel from './FearGreedPanel'
 import HighsLowsPanel from './HighsLowsPanel'
 import ProgramTradingPanel from './ProgramTradingPanel'
 import SectorInvestorPanel from './SectorInvestorPanel'
-import MarketRankingPanel, { type MarketRankingData } from './MarketRankingPanel'
 
 interface MarketOverviewData {
   date: string
@@ -63,16 +62,11 @@ export function MarketSummaryView() {
 
   // Market overview data
   const [overview, setOverview] = useState<{ latest: MarketOverviewData | null; history: MarketOverviewData[] } | null>(null)
-  const [ranking, setRanking] = useState<MarketRankingData | null>(null)
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/market-overview', { signal: controller.signal })
       .then(r => r.json())
       .then(json => setOverview(json))
-      .catch(() => {})
-    fetch('/api/quant/market-ranking', { signal: controller.signal })
-      .then(r => r.json())
-      .then(json => { if (json.data) setRanking(json.data) })
       .catch(() => {})
     return () => controller.abort()
   }, [])
@@ -335,9 +329,6 @@ export function MarketSummaryView() {
               <SectorInvestorPanel />
             </div>
           </div>
-
-          {/* ── 시장 순위 (퀀트봇) ── */}
-          {ranking && <MarketRankingPanel data={ranking} />}
 
           {/* ── 5행: 시장 이벤트 캘린더 ── */}
           <MarketCalendarPanel />
