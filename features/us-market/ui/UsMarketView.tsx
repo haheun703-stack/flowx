@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // ── 타입 ─────────────────────────────────────────────────────
 interface UsMarketData {
@@ -40,46 +40,23 @@ interface UsMarketData {
   us_news: Array<{ title: string; source?: string; impact?: string }> | null
 }
 
-interface DaytradingData {
-  date: string
-  mode: string
-  gap_signal: string
-  gap_est_pct: number
-  risk_level: number
-  risk_score: number
-  watch_sectors: string[]
-  avoid_sectors: string[]
-  reasons_good: string[]
-  reasons_bad: string[]
-  relay_picks: unknown[]
-  risk_flags: string[]
+interface CalEvent {
+  id: number
+  event_date: string
+  event_type: string
+  market: string
+  title: string
+  description: string
+  importance: string
+  ticker: string | null
 }
 
-interface QuantData {
+interface FlowRow {
   date: string
-  /* v2 필드 */
-  strategy_mode?: string
-  macro_score?: number
-  position_limit?: number
-  hold_days_min?: number
-  hold_days_max?: number
-  sector_overweight?: string[]
-  sector_underweight?: string[]
-  yield_signal?: string
-  yield_level?: number | null
-  dollar_signal?: string
-  dxy?: number | null
-  vix_env?: string
-  vix?: number | null
-  weekly_outlook?: string
-  entry_conditions?: Record<string, unknown>
-  /* v1 하위 호환 */
-  mode?: string
-  score?: number
-  slots?: number
-  summary?: string
-  indicators?: Record<string, unknown>
-  sector_boost?: Record<string, unknown>
+  etf: string
+  net_flow: number
+  aum?: number
+  flow_pct?: number
 }
 
 // ── 상수 ─────────────────────────────────────────────────────
@@ -305,168 +282,6 @@ function SectorHeatmap({ sectorEtf }: { sectorEtf: Record<string, number> }) {
             <div className="text-[10px] md:text-[11px] text-[#888] leading-tight">{kr}</div>
           </div>
         ))}
-      </div>
-    </div>
-  )
-}
-
-function SystemPanels({ dt, qt }: { dt: DaytradingData | null; qt: QuantData | null }) {
-  const modeColor: Record<string, string> = {
-    AGGRESSIVE: '#00843D', NORMAL: '#1565C0', DEFENSIVE: '#B07D00', HALT: '#D62728',
-    BULL_AGGRESSIVE: '#00843D', BULL_NORMAL: '#1565C0', BEAR_DEFENSIVE: '#B07D00', BEAR_CASH: '#D62728',
-  }
-  const stratLabel: Record<string, string> = {
-    BULL_AGGRESSIVE: '공격 매수', BULL_NORMAL: '기본 운영',
-    NEUTRAL: '선별 진입', BEAR_DEFENSIVE: '방어 운영', BEAR_CASH: '현금 보유',
-    AGGRESSIVE: '공격 매수', NORMAL: '기본 운영', DEFENSIVE: '방어 운영', HALT: '거래 중지',
-  }
-
-  const qMode = qt?.strategy_mode ?? qt?.mode ?? null
-  const qScore = qt?.macro_score ?? qt?.score ?? null
-  const qSlots = qt?.position_limit ?? qt?.slots ?? null
-  const qHoldMin = qt?.hold_days_min ?? null
-  const qHoldMax = qt?.hold_days_max ?? null
-  const qOverweight = qt?.sector_overweight ?? []
-  const qUnderweight = qt?.sector_underweight ?? []
-  const qOutlook = qt?.weekly_outlook ?? qt?.summary ?? null
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      {/* 스윙시스템 */}
-      <div className="fx-card px-4 py-4">
-        <div className="text-[17px] md:text-[20px] font-black text-[#1A1A2E]">스윙시스템</div>
-        <div className="text-[12px] md:text-[13px] text-[#888] mb-4">단기 1~3일 트레이딩 신호</div>
-        {dt ? (
-          <>
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <div className="text-[12px] md:text-[13px] text-[#888] font-bold">진입 모드</div>
-                <div className="text-[22px] md:text-[30px] font-black font-mono" style={{ color: modeColor[dt.mode] ?? '#888'}}>{dt.mode}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-[12px] md:text-[13px] text-[#888] font-bold">위험점수</div>
-                <div className="text-[22px] md:text-[30px] font-black font-mono text-[#1A1A2E]">
-                  {dt.risk_score}<span className="text-[15px] text-[#aaa]">/100</span>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              <div className="bg-[#F0FFF4] rounded-lg p-3">
-                <div className="text-[12px] font-black text-[#1A1A2E] mb-2">✅ 좋은 신호</div>
-                {dt.reasons_good?.slice(0, 3).map((r, i) => (
-                  <div key={i} className="text-[12px] text-[#555] leading-tight mb-1">• {r}</div>
-                ))}
-              </div>
-              <div className="bg-[#FFF8F8] rounded-lg p-3">
-                <div className="text-[12px] font-black text-[#1A1A2E] mb-2">⚠ 주의 신호</div>
-                {dt.reasons_bad?.slice(0, 3).map((r, i) => (
-                  <div key={i} className="text-[12px] text-[#555] leading-tight mb-1">• {r}</div>
-                ))}
-              </div>
-            </div>
-            {dt.risk_flags?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {dt.risk_flags.map((f, i) => (
-                  <span key={i} className="text-[12px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{f}</span>
-                ))}
-              </div>
-            )}
-            <div className="bg-[#F0F7FF] rounded-xl p-3 border-l-4" style={{ borderColor: modeColor[dt.mode] ?? '#888'}}>
-              <div className="text-[13px] font-black text-[#1A1A2E]">오늘 전략</div>
-              <div className="text-[13px] text-[#444] mt-1 leading-relaxed">
-                {(dt.mode === 'AGGRESSIVE'|| dt.mode === 'BULL_AGGRESSIVE') && 'VIX 안정, 시장 우호적. 수급 좋은 종목 적극 진입.'}
-                {(dt.mode === 'NORMAL'|| dt.mode === 'BULL_NORMAL') && 'VIX 주의구간. 수급 확인 후 포지션 50% 이내로.'}
-                {(dt.mode === 'DEFENSIVE'|| dt.mode === 'BEAR_DEFENSIVE') && '시장 불안정. A+ 수급 종목만, 손절 타이트하게.'}
-                {(dt.mode === 'HALT'|| dt.mode === 'BEAR_CASH') && '극단 위험. 신규 진입 금지. 현금 보유 권장.'}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="py-6 text-center text-[14px] text-[#888]">
-            스윙시스템 데이터 로딩 중...<br />
-            <span className="text-[12px] text-[#aaa]">단타봇 실행 후 표시됩니다</span>
-          </div>
-        )}
-      </div>
-
-      {/* 퀀트시스템 */}
-      <div className="fx-card px-4 py-4">
-        <div className="text-[17px] md:text-[20px] font-black text-[#1A1A2E]">퀀트시스템</div>
-        <div className="text-[12px] md:text-[13px] text-[#888] mb-4">중기 5~10일 스윙 매크로 분석</div>
-        {qt ? (
-          <>
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <div className="text-[13px] text-[#888] font-bold">이번 주 전략</div>
-                <div className="text-[20px] md:text-[24px] font-black text-[#1A1A2E]">{stratLabel[qMode ?? ''] ?? qMode ?? '—'}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-[13px] text-[#888] font-bold">최대 보유</div>
-                <div className="text-[20px] md:text-[24px] font-black text-[#1A1A2E]">{qSlots ?? '—'}종목</div>
-                {qHoldMin != null && qHoldMax != null && (
-                  <div className="text-[12px] text-[#888]">{qHoldMin}~{qHoldMax}일</div>
-                )}
-              </div>
-            </div>
-            {qScore != null && (
-              <div className="mb-4">
-                <div className="flex justify-between text-[13px] font-black text-[#1A1A2E] mb-1">
-                  <span>매크로 환경 점수</span>
-                  <span className="font-mono">{qScore}/100</span>
-                </div>
-                <div className="h-3 bg-[#F0EEE8] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${qScore}%`, background: qScore >= 65 ? '#00843D': qScore >= 45 ? '#888': '#B07D00'}} />
-                </div>
-                <div className="flex justify-between text-[11px] text-[#bbb] mt-1">
-                  <span>현금보유</span><span>방어</span><span>중립</span><span>기본</span><span>공격</span>
-                </div>
-              </div>
-            )}
-            {qt.yield_signal && (
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                {[
-                  { label: '3년물 금리', value: qt.yield_level != null ? `${qt.yield_level.toFixed(2)}%` : '—', signal: qt.yield_signal },
-                  { label: 'DXY 달러', value: qt.dxy != null ? qt.dxy.toFixed(1) : '—', signal: qt.dollar_signal ?? ''},
-                  { label: 'VIX 공포', value: qt.vix != null ? qt.vix.toFixed(1) : '—', signal: qt.vix_env ?? ''},
-                ].map(({ label, value, signal }) => (
-                  <div key={label} className="bg-[#F8F7F3] rounded-lg p-2 text-center">
-                    <div className="text-[12px] font-black text-[#1A1A2E]">{label}</div>
-                    <div className="text-[17px] md:text-[20px] font-black font-mono text-[#1A1A2E]">{value}</div>
-                    <div className="text-[11px] text-[#888] truncate">{signal}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {qOverweight.length > 0 && (
-              <div className="mb-2">
-                <div className="text-[12px] font-black text-[#00843D] mb-1">▲ 비중 확대 섹터</div>
-                <div className="flex flex-wrap gap-1">
-                  {qOverweight.map((s: string) => (
-                    <span key={s} className="text-[12px] font-bold bg-[#E6F9EE] text-[#00843D] px-2 py-0.5 rounded-full">{s}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {qUnderweight.length > 0 && (
-              <div className="mb-3">
-                <div className="text-[12px] font-black text-[#D62728] mb-1">▼ 회피 섹터</div>
-                <div className="flex flex-wrap gap-1">
-                  {qUnderweight.map((s: string) => (
-                    <span key={s} className="text-[12px] font-bold bg-[#FFEEEE] text-[#C0392B] px-2 py-0.5 rounded-full">{s}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {qOutlook && (
-              <div className="bg-[#F8F7F3] rounded-lg p-3 text-[13px] text-[#444] leading-relaxed">{qOutlook}</div>
-            )}
-          </>
-        ) : (
-          <div className="py-6 text-center text-[14px] text-[#888]">
-            퀀트시스템 데이터 로딩 중...<br />
-            <span className="text-[12px] text-[#aaa]">퀀트봇 실행 후 표시됩니다</span>
-          </div>
-        )}
       </div>
     </div>
   )
@@ -706,35 +521,283 @@ function NewsPanel({ news }: { news: NonNullable<UsMarketData['us_news']> }) {
   )
 }
 
+// ── 캘린더 패널 (한국시장 패턴 동일) ─────────────────────
+const CAL_TYPE_CFG: Record<string, { icon: string; color: string; dot: string; label: string }> = {
+  earnings:       { icon: '📊', color: '#2563EB', dot: '#2563EB', label: '실적 발표' },
+  options_expiry: { icon: '⚠️', color: '#DC2626', dot: '#DC2626', label: '옵션 만기' },
+  central_bank:   { icon: '🏦', color: '#7C3AED', dot: '#7C3AED', label: '중앙은행' },
+  economic:       { icon: '📈', color: '#D97706', dot: '#D97706', label: '경제지표' },
+  holiday:        { icon: '🔴', color: '#9CA3AF', dot: '#9CA3AF', label: '휴장' },
+  ipo:            { icon: '🆕', color: '#16A34A', dot: '#16A34A', label: 'IPO' },
+  dividend:       { icon: '💰', color: '#0891B2', dot: '#0891B2', label: '배당' },
+  etc:            { icon: '📌', color: '#6B7280', dot: '#6B7280', label: '기타' },
+}
+const CAL_GROUP_ORDER: Record<string, { icon: string; label: string; order: number }> = {
+  central_bank:   { icon: '🏦', label: '중앙은행', order: 1 },
+  earnings:       { icon: '📊', label: '실적발표', order: 2 },
+  options_expiry: { icon: '⚠️', label: '옵션만기', order: 3 },
+  economic:       { icon: '📈', label: '경제지표', order: 4 },
+  holiday:        { icon: '🔴', label: '휴장일', order: 5 },
+  ipo:            { icon: '🆕', label: 'IPO', order: 6 },
+  dividend:       { icon: '💰', label: '배당', order: 7 },
+  etc:            { icon: '📌', label: '기타', order: 8 },
+}
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
+function calCfg(type: string) { return CAL_TYPE_CFG[type] ?? CAL_TYPE_CFG.etc }
+function calGrp(type: string) { return CAL_GROUP_ORDER[type] ?? CAL_GROUP_ORDER.etc }
+
+function UsCalendarPanel({ events }: { events: CalEvent[] }) {
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const [yearMonth, setYearMonth] = useState(today.slice(0, 7))
+  const [selectedDate, setSelectedDate] = useState(today)
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set())
+
+  const filtered = useMemo(() => events.filter(e => e.event_date.startsWith(yearMonth)), [events, yearMonth])
+
+  const eventsByDate = useMemo(() => {
+    const map: Record<string, CalEvent[]> = {}
+    for (const ev of filtered) {
+      const d = ev.event_date
+      if (!map[d]) map[d] = []
+      map[d].push(ev)
+    }
+    return map
+  }, [filtered])
+
+  const selectedEvents = eventsByDate[selectedDate] ?? []
+
+  const groupedEvents = useMemo(() => {
+    const map: Record<string, CalEvent[]> = {}
+    for (const ev of filtered) {
+      const t = ev.event_type
+      if (!map[t]) map[t] = []
+      map[t].push(ev)
+    }
+    return Object.entries(map).sort(([a, aEvs], [b, bEvs]) => {
+      const aH = aEvs.some(e => e.importance === 'high') ? 0 : 1
+      const bH = bEvs.some(e => e.importance === 'high') ? 0 : 1
+      if (aH !== bH) return aH - bH
+      return calGrp(a).order - calGrp(b).order
+    })
+  }, [filtered])
+
+  useEffect(() => {
+    if (groupedEvents.length > 0) {
+      const max = groupedEvents.reduce((a, b) => b[1].length > a[1].length ? b : a)
+      setOpenGroups(new Set([max[0]]))
+    }
+  }, [groupedEvents])
+
+  const [year, month] = yearMonth.split('-').map(Number)
+  const firstDay = new Date(year, month - 1, 1).getDay()
+  const daysInMonth = new Date(year, month, 0).getDate()
+  const cells: (number | null)[] = []
+  for (let i = 0; i < firstDay; i++) cells.push(null)
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+
+  function moveMonth(delta: number) {
+    const d = new Date(year, month - 1 + delta, 1)
+    setYearMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
+  }
+
+  return (
+    <div className="fx-card">
+      <span className="fx-card-title">시장 이벤트 캘린더</span>
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 mt-3" style={{ minHeight: 340 }}>
+        {/* 캘린더 */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-3">
+            <button onClick={() => moveMonth(-1)} className="text-[#6B7280] hover:text-[#1A1A2E] font-bold px-2">‹</button>
+            <span className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E]">{year}년 {month}월</span>
+            <button onClick={() => moveMonth(1)} className="text-[#6B7280] hover:text-[#1A1A2E] font-bold px-2">›</button>
+          </div>
+          <div className="grid grid-cols-7 text-center text-[12px] font-bold text-[#9CA3AF] mb-1">
+            {WEEKDAYS.map(w => <div key={w}>{w}</div>)}
+          </div>
+          <div className="grid grid-cols-7 gap-[2px]">
+            {cells.map((day, i) => {
+              if (day === null) return <div key={`e${i}`} />
+              const ds = `${yearMonth}-${String(day).padStart(2, '0')}`
+              const dayEvs = eventsByDate[ds] ?? []
+              const isToday = ds === today
+              const isSel = ds === selectedDate
+              const hasHigh = dayEvs.some(e => e.importance === 'high')
+              return (
+                <button key={ds} onClick={() => setSelectedDate(ds)}
+                  className={`relative flex flex-col items-center py-1.5 rounded-lg text-[14px] font-semibold transition-colors
+                    ${isSel ? 'bg-[#00FF88] text-[#1A1A2E]' : isToday ? 'bg-[#F0FDF4] text-[#1A1A2E]' : 'text-[#1A1A2E] hover:bg-[#F5F4F0]'}`}>
+                  <span>{day}</span>
+                  {dayEvs.length > 0 && (
+                    <div className="flex gap-[2px] mt-0.5">
+                      {dayEvs.slice(0, 3).map((ev, j) => (
+                        <span key={j} className="w-[5px] h-[5px] rounded-full"
+                          style={{ backgroundColor: hasHigh && j === 0 ? '#DC2626' : calCfg(ev.event_type).dot }} />
+                      ))}
+                    </div>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+          <div className="mt-3 border-t border-[#E8E6E0] pt-3">
+            <p className="text-[13px] font-bold text-[#6B7280] mb-2">{selectedDate.slice(5).replace('-', '/')} ({WEEKDAYS[new Date(selectedDate).getDay()]})</p>
+            {selectedEvents.length === 0 ? (
+              <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>
+            ) : (
+              <div className="space-y-2">
+                {selectedEvents.map(ev => {
+                  const c = calCfg(ev.event_type)
+                  return (
+                    <div key={ev.id} className="flex items-start gap-2">
+                      <span className="text-[14px]">{c.icon}</span>
+                      <div className="min-w-0">
+                        <p className={`text-[13px] font-bold ${ev.importance === 'high' ? 'text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
+                          {ev.title}{ev.ticker && <span className="text-[11px] text-[#9CA3AF] ml-1">{ev.ticker}</span>}
+                        </p>
+                        {ev.description && <p className="text-[12px] text-[#9CA3AF] truncate">{ev.description}</p>}
+                      </div>
+                      <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto"
+                        style={{ backgroundColor: `${c.color}15`, color: c.color }}>{c.label}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+        {/* 아코디언 */}
+        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E8E6E0] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
+          <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">{month}월 이벤트</p>
+          {groupedEvents.length === 0 ? (
+            <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>
+          ) : (
+            <div className="space-y-1">
+              {groupedEvents.map(([type, evs]) => {
+                const g = calGrp(type)
+                const c = calCfg(type)
+                const isOpen = openGroups.has(type)
+                return (
+                  <div key={type}>
+                    <button onClick={() => setOpenGroups(prev => {
+                      const next = new Set(prev)
+                      if (next.has(type)) next.delete(type); else next.add(type)
+                      return next
+                    })} className="w-full flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-[#F5F4F0] transition-colors">
+                      <span className="text-[13px]">{g.icon}</span>
+                      <span className="text-[13px] font-bold text-[#1A1A2E]">{g.label}</span>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
+                        style={{ backgroundColor: `${c.color}15`, color: c.color }}>{evs.length}</span>
+                      <span className="ml-auto text-[11px] text-[#9CA3AF]">{isOpen ? '▼' : '▶'}</span>
+                    </button>
+                    {isOpen && (
+                      <div className="ml-4 pl-2 border-l-2 space-y-1 pb-1" style={{ borderColor: `${c.color}30` }}>
+                        {evs.map(ev => {
+                          const dl = `${new Date(ev.event_date).getMonth() + 1}/${new Date(ev.event_date).getDate()}`
+                          return (
+                            <button key={ev.id} onClick={() => setSelectedDate(ev.event_date)} className="w-full text-left py-0.5 group">
+                              <p className={`text-[12px] group-hover:text-[#1A1A2E] transition-colors ${ev.importance === 'high' ? 'font-bold text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
+                                <span className="text-[#9CA3AF] tabular-nums mr-1">{dl}</span>{ev.title}
+                              </p>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── ETF 투자자 흐름 패널 ─────────────────────────────────
+const FLOW_ETF_LABELS: Record<string, string> = {
+  SPY: 'S&P 500', QQQ: '나스닥 100', DIA: '다우존스',
+  IWM: '러셀 2000', TLT: '장기국채', GLD: '금',
+  XLK: '기술', XLF: '금융', XLE: '에너지', SOXX: '반도체',
+}
+
+function InvestorFlowPanel({ flows }: { flows: FlowRow[] }) {
+  if (flows.length === 0) return null
+
+  // 최신 날짜 기준 ETF별 순매수 집계
+  const latestDate = flows.reduce((a, b) => a > b.date ? a : b.date, '')
+  const latest = flows.filter(f => f.date === latestDate)
+  const sorted = [...latest].sort((a, b) => b.net_flow - a.net_flow)
+  const maxAbs = Math.max(...sorted.map(s => Math.abs(s.net_flow)), 1)
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-1">
+        <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">ETF 자금 흐름</span>
+        <span className="text-[11px] md:text-[12px] text-[#888]">{latestDate} 기준 · 순유입/유출</span>
+      </div>
+      <div className="space-y-2">
+        {sorted.map(row => {
+          const pct = (row.net_flow / maxAbs) * 100
+          const isPos = row.net_flow >= 0
+          const label = FLOW_ETF_LABELS[row.etf] ?? row.etf
+          const flowStr = Math.abs(row.net_flow) >= 1e9
+            ? `${(row.net_flow / 1e9).toFixed(1)}B`
+            : `${(row.net_flow / 1e6).toFixed(0)}M`
+          return (
+            <div key={row.etf}>
+              <div className="flex items-center justify-between text-[13px] mb-0.5">
+                <span className="font-bold text-[#1A1A2E]">{row.etf} <span className="font-normal text-[#888]">{label}</span></span>
+                <span className="font-black font-mono" style={{ color: isPos ? '#D62728' : '#1565C0' }}>
+                  {isPos ? '+' : ''}{flowStr}
+                </span>
+              </div>
+              <div className="h-2 bg-[#F0EEE8] rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${Math.abs(pct)}%`,
+                    backgroundColor: isPos ? '#D62728' : '#1565C0',
+                    marginLeft: isPos ? '0' : 'auto',
+                  }} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className="text-[11px] text-[#888] mt-3">양수 = 자금 유입(빨강) · 음수 = 자금 유출(파랑) · 단위: USD</div>
+    </div>
+  )
+}
+
 // ══════════════════════════════════════════════════════════════
 // 메인 뷰
 // ══════════════════════════════════════════════════════════════
 export function UsMarketView() {
   const [market, setMarket] = useState<UsMarketData | null>(null)
-  const [dt, setDt] = useState<DaytradingData | null>(null)
-  const [qt, setQt] = useState<QuantData | null>(null)
+  const [calEvents, setCalEvents] = useState<CalEvent[]>([])
+  const [flows, setFlows] = useState<FlowRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
       try {
-        const [mRes, dRes, qRes] = await Promise.allSettled([
+        const [mRes, cRes, fRes] = await Promise.allSettled([
           fetch('/api/us-market/daily', { signal: controller.signal }),
-          fetch('/api/us-overnight', { signal: controller.signal }),
-          fetch('/api/us-quant-macro', { signal: controller.signal }),
+          fetch('/api/us-market/calendar', { signal: controller.signal }),
+          fetch('/api/us-market/investor-flow', { signal: controller.signal }),
         ])
-        if (mRes.status === 'fulfilled'&& mRes.value.ok) {
+        if (mRes.status === 'fulfilled' && mRes.value.ok) {
           const json = await mRes.value.json()
           if (json.date) setMarket(json)
         }
-        if (dRes.status === 'fulfilled'&& dRes.value.ok) {
-          const json = await dRes.value.json()
-          if (json.date) setDt(json)
+        if (cRes.status === 'fulfilled' && cRes.value.ok) {
+          const json = await cRes.value.json()
+          setCalEvents(json.events ?? [])
         }
-        if (qRes.status === 'fulfilled'&& qRes.value.ok) {
-          const json = await qRes.value.json()
-          if (json.date) setQt(json)
+        if (fRes.status === 'fulfilled' && fRes.value.ok) {
+          const json = await fRes.value.json()
+          setFlows(json.flows ?? [])
         }
       } catch {
         /* abort */
@@ -760,7 +823,7 @@ export function UsMarketView() {
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-10 text-center">
         <div className="text-[#D62728] text-sm font-bold">미국장 데이터 없음</div>
-        <div className="text-[#888] text-xs mt-1">정보봇 실행 후 다시 확인해주세요</div>
+        <div className="text-[#888] text-xs mt-1">데이터 수집 후 다시 확인해주세요</div>
       </div>
     )
   }
@@ -792,7 +855,7 @@ export function UsMarketView() {
         </div>
         <div className="text-left md:text-right shrink-0">
           <div className="text-[11px] md:text-[13px] text-[#888]">{market.date} 기준</div>
-          <div className="text-[11px] md:text-[13px] font-black text-[#00843D] mt-1">● 정보봇 자동수집</div>
+          <div className="text-[11px] md:text-[13px] font-black text-[#00843D] mt-1">● FLOWX 자동수집</div>
         </div>
       </div>
 
@@ -805,10 +868,11 @@ export function UsMarketView() {
       <ForexCryptoPanel forex={market.forex} crypto={market.crypto} />
       <SectorHeatmap sectorEtf={market.sector_etf} />
       {market.us_news && market.us_news.length > 0 && <NewsPanel news={market.us_news} />}
-      <SystemPanels dt={dt} qt={qt} />
+      {calEvents.length > 0 && <UsCalendarPanel events={calEvents} />}
+      {flows.length > 0 && <InvestorFlowPanel flows={flows} />}
 
       <div className="text-center text-[12px] text-[#bbb] py-1">
-        본 정보는 투자 권유가 아니며 최종 판단은 투자자 본인에게 있습니다 · FLOWX 정보봇 자동수집
+        본 정보는 투자 권유가 아니며 최종 판단은 투자자 본인에게 있습니다 · FLOWX 자동수집
       </div>
     </div>
   )
