@@ -27,6 +27,7 @@ export async function GET() {
       crypto: data.crypto ?? null,
       forex: data.forex ?? null,
       yield_curve: data.yield_curve ?? null,
+      breadth: data.breadth ?? null,
       us_news: data.us_news ?? null,
     })
   } catch (err) {

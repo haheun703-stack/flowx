@@ -26,6 +26,18 @@ interface UsMarketData {
   sector_etf: Record<string, number>
   kr_impact: string | null
   risk_flags: string[]
+  mag7: Record<string, { close: number; change_pct: number; volume_ratio?: number }> | null
+  futures: Record<string, { price?: number; change_pct: number }> | null
+  crypto: Record<string, { price: number; change_24h_pct: number }> | null
+  forex: Record<string, { rate: number; change_pct: number }> | null
+  yield_curve: Record<string, number> & { inverted?: boolean } | null
+  breadth: {
+    sp500_advance?: number; sp500_decline?: number; sp500_unchanged?: number
+    sp500_new_52w_high?: number; sp500_new_52w_low?: number
+    nasdaq_advance?: number; nasdaq_decline?: number
+    put_call_ratio?: number; mcclellan_osc?: number
+  } | null
+  us_news: Array<{ title: string; source?: string; impact?: string }> | null
 }
 
 interface DaytradingData {
@@ -460,6 +472,240 @@ function SystemPanels({ dt, qt }: { dt: DaytradingData | null; qt: QuantData | n
   )
 }
 
+// ── MAG7 패널 ─────────────────────────────────────────
+function Mag7Panel({ mag7 }: { mag7: NonNullable<UsMarketData['mag7']> }) {
+  const tickers = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA']
+  const names: Record<string, string> = {
+    AAPL: '애플', MSFT: '마이크로소프트', GOOGL: '알파벳', AMZN: '아마존',
+    NVDA: '엔비디아', META: '메타', TSLA: '테슬라',
+  }
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-1">
+        <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">MAG 7 — 빅테크 7인방</span>
+        <span className="text-[11px] md:text-[12px] text-[#888]">미국장을 움직이는 핵심 7종목</span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+        {tickers.map(t => {
+          const d = mag7[t]
+          if (!d) return null
+          const chg = d.change_pct
+          const volHigh = (d.volume_ratio ?? 1) >= 1.3
+          return (
+            <div key={t} className="border rounded-lg px-2 py-2 text-center"
+              style={{ borderColor: chg >= 0 ? '#FFBBBB' : '#BBCCEE', backgroundColor: chg >= 0 ? '#FFF8F8' : '#F4F7FF' }}>
+              <div className="text-[13px] md:text-[14px] font-black text-[#1A1A2E]">{t}</div>
+              <div className="text-[11px] text-[#888]">{names[t]}</div>
+              <div className="text-[18px] md:text-[20px] font-black font-mono my-0.5" style={{ color: changeColor(chg) }}>
+                {changeStr(chg)}
+              </div>
+              <div className="text-[11px] font-bold text-[#1A1A2E] tabular-nums">${f2(d.close, 0)}</div>
+              {volHigh && (
+                <div className="text-[10px] text-[#D62728] font-bold mt-0.5">거래량 {((d.volume_ratio ?? 1) * 100).toFixed(0)}%</div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ── Breadth 패널 ──────────────────────────────────────
+function BreadthPanel({ breadth }: { breadth: NonNullable<UsMarketData['breadth']> }) {
+  const adv = breadth.sp500_advance ?? 0
+  const dec = breadth.sp500_decline ?? 0
+  const total = adv + dec + (breadth.sp500_unchanged ?? 0)
+  const advPct = total > 0 ? (adv / total * 100) : 50
+  const h52 = breadth.sp500_new_52w_high ?? 0
+  const l52 = breadth.sp500_new_52w_low ?? 0
+  const pcr = breadth.put_call_ratio
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">시장 폭 (Market Breadth)</div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* 상승/하락 게이지 */}
+        <div>
+          <div className="flex justify-between text-[12px] font-bold mb-1">
+            <span className="text-[#D62728]">상승 {adv}</span>
+            <span className="text-[#1565C0]">하락 {dec}</span>
+          </div>
+          <div className="h-3 rounded-full overflow-hidden flex">
+            <div className="h-full bg-[#D62728] transition-all" style={{ width: `${advPct}%` }} />
+            <div className="h-full bg-[#1565C0] flex-1" />
+          </div>
+          <div className="text-[11px] text-[#888] mt-1 text-center">S&P 500 종목 기준</div>
+        </div>
+
+        {/* 52주 신고/신저가 */}
+        <div className="text-center">
+          <div className="text-[12px] font-bold text-[#888] mb-1">52주 신고/신저가</div>
+          <div className="flex items-center justify-center gap-4">
+            <div>
+              <div className="text-[22px] md:text-[26px] font-black text-[#D62728]">{h52}</div>
+              <div className="text-[11px] text-[#888]">신고가</div>
+            </div>
+            <div className="text-[16px] text-[#ccc]">/</div>
+            <div>
+              <div className="text-[22px] md:text-[26px] font-black text-[#1565C0]">{l52}</div>
+              <div className="text-[11px] text-[#888]">신저가</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Put/Call Ratio */}
+        <div className="text-center">
+          <div className="text-[12px] font-bold text-[#888] mb-1">풋콜 비율</div>
+          <div className="text-[26px] md:text-[30px] font-black font-mono" style={{
+            color: pcr == null ? '#888' : pcr >= 1.0 ? '#D62728' : pcr <= 0.7 ? '#9333ea' : '#00843D',
+          }}>
+            {pcr != null ? pcr.toFixed(2) : '—'}
+          </div>
+          <div className="text-[11px] text-[#888]">
+            {pcr == null ? '' : pcr >= 1.0 ? '공포 구간' : pcr <= 0.7 ? '과열 — 탐욕' : '중립'}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── 금리 커브 패널 ────────────────────────────────────
+function YieldCurvePanel({ yc }: { yc: NonNullable<UsMarketData['yield_curve']> }) {
+  const keys = ['us_1m', 'us_3m', 'us_6m', 'us_1y', 'us_2y', 'us_3y', 'us_5y', 'us_7y', 'us_10y', 'us_20y', 'us_30y']
+  const labels = ['1M', '3M', '6M', '1Y', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y']
+  const values = keys.map(k => yc[k] ?? null).filter((v): v is number => v != null)
+  if (values.length < 3) return null
+
+  const min = Math.min(...values) - 0.2
+  const max = Math.max(...values) + 0.2
+  const range = max - min || 1
+
+  // SVG 패스
+  const w = 320, h = 80, px = 10
+  const step = (w - px * 2) / (values.length - 1)
+  const pts = values.map((v, i) => ({
+    x: px + i * step,
+    y: h - px - ((v - min) / range) * (h - px * 2),
+  }))
+  const path = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ')
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-1">
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">미국 국채 금리 커브</span>
+          {yc.inverted && (
+            <span className="text-[11px] font-bold bg-[#FFEEEE] text-[#D62728] px-2 py-0.5 rounded-full">역전</span>
+          )}
+        </div>
+        <span className="text-[11px] md:text-[12px] text-[#888]">단기→장기 금리 구조</span>
+      </div>
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full max-w-[400px]">
+        <path d={path} fill="none" stroke={yc.inverted ? '#D62728' : '#00843D'} strokeWidth="2" />
+        {pts.map((p, i) => (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="3" fill={yc.inverted ? '#D62728' : '#00843D'} />
+            <text x={p.x} y={h - 1} textAnchor="middle" fontSize="7" fill="#888">{labels[i]}</text>
+            <text x={p.x} y={p.y - 6} textAnchor="middle" fontSize="7" fontWeight="bold" fill="#1A1A2E">
+              {values[i].toFixed(1)}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+// ── 환율/암호화폐 미니 패널 ───────────────────────────
+function ForexCryptoPanel({ forex, crypto }: { forex: UsMarketData['forex']; crypto: UsMarketData['crypto'] }) {
+  if (!forex && !crypto) return null
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* 환율 */}
+      {forex && Object.keys(forex).length > 0 && (
+        <div className="fx-card px-4 py-4">
+          <div className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">주요 환율</div>
+          <div className="space-y-2">
+            {Object.entries(forex).map(([pair, d]) => {
+              const label: Record<string, string> = {
+                USD_KRW: '달러/원', USD_JPY: '달러/엔', EUR_USD: '유로/달러',
+              }
+              return (
+                <div key={pair} className="flex items-center justify-between">
+                  <span className="text-[13px] font-bold text-[#1A1A2E]">{label[pair] ?? pair.replace('_', '/')}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[15px] font-black font-mono text-[#1A1A2E]">
+                      {d.rate.toLocaleString('en-US', { minimumFractionDigits: pair === 'EUR_USD' ? 4 : 2, maximumFractionDigits: pair === 'EUR_USD' ? 4 : 2 })}
+                    </span>
+                    <span className="text-[13px] font-bold" style={{ color: changeColor(d.change_pct) }}>
+                      {changeStr(d.change_pct)}
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 암호화폐 */}
+      {crypto && Object.keys(crypto).length > 0 && (
+        <div className="fx-card px-4 py-4">
+          <div className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">주요 암호화폐</div>
+          <div className="space-y-2">
+            {Object.entries(crypto).map(([coin, d]) => (
+              <div key={coin} className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-[#1A1A2E]">{coin}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[15px] font-black font-mono text-[#1A1A2E]">
+                    ${d.price.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                  </span>
+                  <span className="text-[13px] font-bold" style={{ color: changeColor(d.change_24h_pct) }}>
+                    {changeStr(d.change_24h_pct)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── 뉴스 패널 ─────────────────────────────────────────
+function NewsPanel({ news }: { news: NonNullable<UsMarketData['us_news']> }) {
+  if (news.length === 0) return null
+  const impactColor: Record<string, string> = { positive: '#00843D', negative: '#D62728', neutral: '#888' }
+  const impactLabel: Record<string, string> = { positive: '호재', negative: '악재', neutral: '중립' }
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">주요 뉴스</div>
+      <div className="space-y-2">
+        {news.slice(0, 5).map((n, i) => (
+          <div key={i} className="flex items-start gap-2 text-[13px]">
+            {n.impact && (
+              <span className="shrink-0 text-[11px] font-bold px-1.5 py-0.5 rounded mt-0.5"
+                style={{ backgroundColor: n.impact === 'positive' ? '#E6F9EE' : n.impact === 'negative' ? '#FFEEEE' : '#F1F0EA', color: impactColor[n.impact] ?? '#888' }}>
+                {impactLabel[n.impact] ?? n.impact}
+              </span>
+            )}
+            <div className="flex-1">
+              <span className="text-[#1A1A2E] font-bold">{n.title}</span>
+              {n.source && <span className="text-[11px] text-[#aaa] ml-2">{n.source}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ══════════════════════════════════════════════════════════════
 // 메인 뷰
 // ══════════════════════════════════════════════════════════════
@@ -552,8 +798,13 @@ export function UsMarketView() {
 
       <EtfBar sectorEtf={market.sector_etf} />
       <IndexCards data={market} />
+      {market.mag7 && <Mag7Panel mag7={market.mag7} />}
       <MarketVitals data={market} />
+      {market.breadth && <BreadthPanel breadth={market.breadth} />}
+      {market.yield_curve && <YieldCurvePanel yc={market.yield_curve} />}
+      <ForexCryptoPanel forex={market.forex} crypto={market.crypto} />
       <SectorHeatmap sectorEtf={market.sector_etf} />
+      {market.us_news && market.us_news.length > 0 && <NewsPanel news={market.us_news} />}
       <SystemPanels dt={dt} qt={qt} />
 
       <div className="text-center text-[12px] text-[#bbb] py-1">
