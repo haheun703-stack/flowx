@@ -3,6 +3,8 @@ import { getSessionFromRequest, unauthorized } from '@/lib/api-auth'
 import { requestBilling, TIER_PRICES, isTossConfigured } from '@/lib/toss'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/payments/subscribe
  * 구독 생성 + 첫 결제

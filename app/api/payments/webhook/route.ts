@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { createHmac } from 'crypto'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/payments/webhook
  * Toss Payments 웹훅 수신 (결제 실패/취소 등)

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSessionFromRequest, unauthorized } from '@/lib/api-auth'
 import { issueBillingKey, isTossConfigured } from '@/lib/toss'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/payments/billing-key
  * 카드 등록 위젯에서 받은 authKey → billingKey 교환

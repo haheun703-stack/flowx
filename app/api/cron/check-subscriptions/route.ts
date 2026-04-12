@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { requestBilling, TIER_PRICES } from '@/lib/toss'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/cron/check-subscriptions
  * 매일 자정 실행: 만료 구독 갱신 or 다운그레이드

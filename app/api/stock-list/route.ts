@@ -3,6 +3,8 @@ import fs from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 
+export const dynamic = 'force-dynamic'
+
 interface StockRow {
   code: string
   name: string

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getSessionFromRequest, unauthorized } from '@/lib/api-auth'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/payments/cancel
  * 구독 해지 (현재 기간 끝까지 유지, 갱신 안 함)

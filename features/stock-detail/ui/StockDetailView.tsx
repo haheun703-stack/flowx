@@ -376,7 +376,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
                 {technicals.macd_histogram > 0 ? "+" : ""}{technicals.macd_histogram.toFixed(2)}
               </span>
               <span className="text-[10px] text-[var(--text-muted)] block">
-                {technicals.macd_histogram > 0 ? "매수 흐름" : "매도 흐름"}
+                {technicals.macd_histogram > 0 ? "상승 흐름" : "하락 흐름"}
               </span>
             </div>
 
