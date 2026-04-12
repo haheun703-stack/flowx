@@ -12,9 +12,9 @@
 
 /** 패딩 포함 — 자체 컨텐츠만 있는 카드 */
 export const CARD = {
-  L: 'bg-white rounded-2xl p-8 min-h-[160px] border border-[var(--border)] shadow-sm',
-  M: 'bg-white rounded-xl p-6 min-h-[280px] border border-[var(--border)] shadow-sm',
-  S: 'bg-white rounded-xl p-5 min-h-[200px] border border-[var(--border)] shadow-sm',
+  L: 'bg-white rounded-2xl p-4 md:p-8 min-h-[120px] md:min-h-[160px] border border-[var(--border)] shadow-sm',
+  M: 'bg-white rounded-xl p-4 md:p-6 min-h-[200px] md:min-h-[280px] border border-[var(--border)] shadow-sm',
+  S: 'bg-white rounded-xl p-3 md:p-5 min-h-[160px] md:min-h-[200px] border border-[var(--border)] shadow-sm',
 } as const
 
 /** 패딩 없음 — header border-b가 있는 패널용 */
@@ -31,10 +31,10 @@ export const GRID = {
 } as const
 
 /** 페이지 컨테이너 */
-export const CONTAINER = 'max-w-[1400px] mx-auto px-6' as const
+export const CONTAINER = 'max-w-[1400px] mx-auto px-3 md:px-6' as const
 
 /** 페이지 공통 wrapper */
 export const PAGE = 'min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] pb-8' as const
 
 /** 페이지 헤더 */
-export const PAGE_HEADER = 'px-6 py-4 border-b border-[var(--border)]' as const
+export const PAGE_HEADER = 'px-3 md:px-6 py-4 border-b border-[var(--border)]' as const

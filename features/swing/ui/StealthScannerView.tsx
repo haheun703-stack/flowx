@@ -171,7 +171,7 @@ export default function StealthScannerView() {
   /* 로딩 */
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-6">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6">
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="animate-pulse rounded-xl bg-gray-100 h-24" />
@@ -184,7 +184,7 @@ export default function StealthScannerView() {
   /* 데이터 없음 */
   if (!data) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-10 text-center">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-10 text-center">
         <div className="text-[var(--text-muted,#6B7280)] text-sm font-mono">
           선매집 데이터 없음 (장마감 후 갱신)
         </div>
@@ -195,12 +195,12 @@ export default function StealthScannerView() {
   const { summary, timestamp } = data
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-4">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-3 md:space-y-4">
       {/* 헤더 */}
       <div className="bg-white rounded-xl border-2 border-[#00FF88] px-5 py-4 shadow-sm">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h2 className="text-[16px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono tracking-wide">
+            <h2 className="text-[14px] md:text-[16px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono tracking-wide">
               기관 선매집 탐지
             </h2>
             <p className="text-[11px] text-[var(--text-dim,#9CA3AF)] font-mono mt-0.5">
@@ -225,7 +225,7 @@ export default function StealthScannerView() {
       </div>
 
       {/* 서브 탭: 잠복 / 움직임 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <nav className="flex gap-1 bg-[#F5F4F0] rounded-lg p-1 border border-[#E8E6E0]">
           <button
             onClick={() => setSubTab('stealth')}
@@ -267,7 +267,7 @@ export default function StealthScannerView() {
       )}
 
       {/* 쌍매수 범례 */}
-      <div className="flex items-center gap-4 text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E8E6E0)]">
+      <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E8E6E0)]">
         <span>&#9889; 금테 = 쌍매수(기관+외인 동시)</span>
         <span className="text-[#DC2626]">I = 기관 순매수</span>
         <span className="text-[#2563EB]">F = 외인 순매수</span>

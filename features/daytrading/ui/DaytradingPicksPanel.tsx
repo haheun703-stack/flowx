@@ -101,7 +101,7 @@ export default function DaytradingPicksPanel() {
   /* ── Loading ── */
   if (loading)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-8">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-8">
         <div className="animate-pulse space-y-4">
           <div className="h-24 bg-gray-100 rounded-2xl" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -114,7 +114,7 @@ export default function DaytradingPicksPanel() {
   /* ── No data (휴장일 등) ── */
   if (!data)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-16 text-center">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-16 text-center">
         <p className="text-2xl mb-2">📅</p>
         <p className="text-[#6B7280]">오늘은 장이 닫힌 날이거나 아직 데이터가 발행되지 않았습니다.</p>
       </div>
@@ -123,7 +123,7 @@ export default function DaytradingPicksPanel() {
   /* ── Empty picks ── */
   if (data.picks_count === 0)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-16 text-center">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-16 text-center">
         <p className="text-2xl mb-2">🔍</p>
         <p className="text-[#6B7280]">오늘은 필터 통과 종목이 없습니다. ({data.date})</p>
       </div>
@@ -145,7 +145,7 @@ export default function DaytradingPicksPanel() {
   ]
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-5">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-4 md:space-y-5">
       {/* ── Header ── */}
       <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
         <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -188,7 +188,7 @@ export default function DaytradingPicksPanel() {
       </div>
 
       {/* ── Track Filter ── */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {TRACK_TABS.map((t) => (
           <button
             key={t.key}

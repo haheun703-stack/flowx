@@ -43,7 +43,7 @@ export default function MacroDashboardView() {
       </header>
 
       {/* ── 섹션 렌더링 ── */}
-      <main className="max-w-[1400px] mx-auto px-6 pb-20 space-y-16">
+      <main className="max-w-[1400px] mx-auto px-3 md:px-6 pb-20 space-y-16">
         {SECTIONS.map(({ id, label, title, sub, Component }) => (
           <section key={id} id={id}>
             {/* 섹션 타이틀 */}

@@ -69,14 +69,14 @@ export default function DaytradingPerformancePanel() {
 
   if (loading)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
         <div className="animate-pulse h-40 bg-gray-100 rounded-2xl" />
       </div>
     )
 
   if (!latest)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
         <div className="bg-white rounded-2xl border border-[#E8E6E0] p-6 text-center">
           <p className="text-[#6B7280] text-sm">📊 성적표 데이터가 아직 없습니다. 첫 발행은 다음 거래일 16:30입니다.</p>
         </div>
@@ -86,7 +86,7 @@ export default function DaytradingPerformancePanel() {
   const items = latest.items ?? []
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-4 space-y-5">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4 space-y-4 md:space-y-5">
       {/* ── 오늘의 성적표 ── */}
       <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
         <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -103,7 +103,7 @@ export default function DaytradingPerformancePanel() {
             {items.map((it) => (
               <div
                 key={it.code}
-                className="flex items-center gap-3 bg-[#FAFAF8] rounded-lg px-3 py-2 text-sm"
+                className="flex items-center gap-3 flex-wrap bg-[#FAFAF8] rounded-lg px-3 py-2 text-sm"
               >
                 <span className="w-6 text-center">{rankMedal(it.rank)}</span>
                 <span className="font-semibold text-[#1A1A2E] min-w-[80px]">{it.name}</span>
@@ -120,7 +120,7 @@ export default function DaytradingPerformancePanel() {
         )}
 
         {/* 최고/최저 + 주간/월간 배지 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-green-50 rounded-lg p-3 text-center">
             <p className="text-[11px] text-[#6B7280]">최고 수익</p>
             <p className="font-bold text-green-600 text-sm">{latest.best_pick}</p>

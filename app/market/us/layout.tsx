@@ -15,7 +15,7 @@ export default function UsMarketLayout({ children }: { children: React.ReactNode
   return (
     <div>
       <div className="sticky top-0 z-10 bg-[#F5F4F0] border-b border-[#E8E6E0]">
-        <div className="max-w-[1400px] mx-auto px-6">
+        <div className="max-w-[1400px] mx-auto px-3 md:px-6">
           <div className="flex gap-1 py-2">
             {TABS.map(tab => {
               const isActive = pathname === tab.href

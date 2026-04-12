@@ -54,7 +54,7 @@ export default function SniperView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
@@ -64,7 +64,7 @@ export default function SniperView() {
 
   if (!items.length) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[var(--text-muted)]">스나이퍼워치 데이터가 아직 없습니다.</p>
         <p className="text-[var(--text-muted)] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -72,7 +72,7 @@ export default function SniperView() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[var(--text-primary)] text-2xl font-bold">스나이퍼워치</h1>

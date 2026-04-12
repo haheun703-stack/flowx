@@ -53,7 +53,7 @@ export default function RelayView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
@@ -63,7 +63,7 @@ export default function RelayView() {
 
   if (!items.length) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[var(--text-muted)]">릴레이 데이터가 아직 없습니다.</p>
         <p className="text-[var(--text-muted)] text-sm mt-1">매일 16:35 업데이트됩니다.</p>
       </div>
@@ -74,26 +74,26 @@ export default function RelayView() {
   const otherSignals = items.filter((i) => !i.signal_type.includes(GRADE_LEGACY_BUY) && !i.signal_type.includes(GRADE_PICK) && i.signal_type !== '관심 구간')
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4 md:space-y-8">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
-          <h1 className="text-[var(--text-primary)] text-2xl font-bold">섹터 릴레이</h1>
+          <h1 className="text-[var(--text-primary)] text-xl md:text-2xl font-bold">섹터 릴레이</h1>
           <p className="text-[var(--text-muted)] text-sm mt-1">선행→후행 섹터 순환 괴리율 추적 (Lead-Lag)</p>
         </div>
         {date && <span className="text-[var(--text-muted)] text-sm">{date}</span>}
       </div>
 
       {/* 요약 카드 */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <SummaryCard label="포착 기회" count={buySignals.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
         <SummaryCard label="기타 시그널" count={otherSignals.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
         <SummaryCard label="전체 쌍" count={items.length} color="text-[var(--text-primary)]" bg="bg-gray-50" />
       </div>
 
       {/* 릴레이 테이블 */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto table-scroll">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="text-[var(--text-muted)] text-xs border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">선행 → 후행</th>

@@ -135,7 +135,7 @@ export default function MarketCalendarPanel() {
     <div className="fx-card">
       <span className="fx-card-title">시장 이벤트 캘린더</span>
 
-      <div className="flex gap-4 mt-3" style={{ minHeight: 340 }}>
+      <div className="flex flex-col md:flex-row gap-3 md:gap-4 mt-3" style={{ minHeight: 340 }}>
         {/* ── 왼쪽: 캘린더 ── */}
         <div className="flex-1 min-w-0">
           {/* 월 네비 */}
@@ -143,7 +143,7 @@ export default function MarketCalendarPanel() {
             <button onClick={() => moveMonth(-1)} className="text-[#6B7280] hover:text-[#1A1A2E] font-bold px-2">
               ‹
             </button>
-            <span className="text-[16px] font-bold text-[#1A1A2E]">
+            <span className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E]">
               {year}년 {month}월
             </span>
             <button onClick={() => moveMonth(1)} className="text-[#6B7280] hover:text-[#1A1A2E] font-bold px-2">
@@ -230,7 +230,7 @@ export default function MarketCalendarPanel() {
         </div>
 
         {/* ── 오른쪽: 타입별 아코디언 ── */}
-        <div className="w-[300px] shrink-0 border-l border-[#E8E6E0] pl-4 overflow-y-auto">
+        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E8E6E0] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
           <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">{month}월 이벤트</p>
           {groupedEvents.length === 0 ? (
             <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>

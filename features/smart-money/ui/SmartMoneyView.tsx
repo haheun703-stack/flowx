@@ -58,7 +58,7 @@ export default function SmartMoneyView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-3">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="h-16 bg-[var(--bg-row)] rounded-xl" />
         ))}
@@ -68,7 +68,7 @@ export default function SmartMoneyView() {
 
   if (!items.length) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[var(--text-muted)]">세력 포착 데이터가 아직 없습니다.</p>
         <p className="text-[var(--text-muted)] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -80,26 +80,26 @@ export default function SmartMoneyView() {
   const inst = items.filter((i) => i.signal_type === 'INST_BUY' || i.signal_type === 'INST_FLOW')
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4 md:space-y-8">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
-          <h1 className="text-[var(--text-primary)] text-2xl font-bold">세력 포착 스캐너</h1>
+          <h1 className="text-[var(--text-primary)] text-xl md:text-2xl font-bold">세력 포착 스캐너</h1>
           <p className="text-[var(--text-muted)] text-sm mt-1">외국인/기관 연속 순매수 종목 추적</p>
         </div>
         {date && <span className="text-[var(--text-muted)] text-sm">{date}</span>}
       </div>
 
       {/* 요약 카드 */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <SummaryCard label="쌍끌이 흐름" count={dual.length} color="text-[var(--up)]" bg="bg-[var(--up-bg)]" />
         <SummaryCard label="외인 유입" count={foreign.length} color="text-[var(--green)]" bg="bg-green-50" />
         <SummaryCard label="기관 유입" count={inst.length} color="text-[var(--down)]" bg="bg-[var(--down-bg)]" />
       </div>
 
       {/* 종목 리스트 */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto table-scroll">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="text-[var(--text-muted)] text-xs border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">종목</th>

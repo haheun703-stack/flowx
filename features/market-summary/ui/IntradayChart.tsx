@@ -75,9 +75,9 @@ export function IntradayChart({ data, currentPrice, changePercent }: Props) {
     <div className="flex flex-col bg-white">
       {/* 헤더 */}
       <div className="px-5 py-4 border-b border-[var(--border)]" style={{ fontFamily: 'var(--font-terminal)' }}>
-        <div className="flex items-baseline gap-3">
+        <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
           <span className="text-xs font-bold tracking-widest text-[var(--text-dim)]">KOSPI</span>
-          <span className="text-4xl font-bold text-[var(--text-primary)]">
+          <span className="text-2xl md:text-4xl font-bold text-[var(--text-primary)]">
             {currentPrice ? currentPrice.toLocaleString() : '—'}
           </span>
           {currentPrice > 0 && (

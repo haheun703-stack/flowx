@@ -55,7 +55,7 @@ export default function SectorInvestorPanel() {
 
   return (
     <div className="fx-card">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <span className="fx-card-title">업종별 투자자 수급</span>
         <div className="flex items-center gap-2">
           {date && <span className="text-[13px] text-[#9CA3AF]">{date}</span>}

@@ -20,13 +20,13 @@ export function SwingTabsView() {
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* 탭 바 */}
-      <div className="max-w-[1400px] mx-auto px-6 pt-6">
-        <nav className="flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6">
+        <nav className="tab-scroll flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit max-w-full">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`shrink-0 py-2.5 px-5 rounded-lg text-[15px] font-bold transition-colors whitespace-nowrap ${
+              className={`shrink-0 py-2 md:py-2.5 px-3 md:px-5 rounded-lg text-[13px] md:text-[15px] font-bold transition-colors whitespace-nowrap ${
                 tab === t.key
                   ? "bg-[#00FF88] text-[#1A1A2E]"
                   : "text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white"

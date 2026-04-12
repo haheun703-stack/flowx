@@ -56,7 +56,7 @@ export default function SectorRotationView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-3">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-3">
         <div className="h-8 w-48 bg-[var(--bg-row)] rounded-lg" />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {[1,2,3,4,5,6].map(i => <div key={i} className="h-48 bg-[var(--bg-row)] rounded-xl" />)}
@@ -69,7 +69,7 @@ export default function SectorRotationView() {
 
   if (sectors.length === 0) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 text-center py-12">
         <p className="text-[#6B7280]">섹터 로테이션 데이터가 아직 없습니다.</p>
         <p className="text-[#9CA3AF] text-sm mt-1">매일 16:45 업데이트됩니다.</p>
       </div>
@@ -77,13 +77,13 @@ export default function SectorRotationView() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6">
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
         <div>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E]">섹터 로테이션 맵</h2>
+          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">섹터 로테이션 맵</h2>
           <p className="text-[12px] text-[#6B7280]">자금 흐름 예측 · 피보나치 + 수급 + 모멘텀</p>
         </div>
-        <div className="flex items-center gap-3 text-[12px] text-[#6B7280]">
+        <div className="flex items-center gap-3 flex-wrap text-[12px] text-[#6B7280]">
           <span>{rotation!.total_sectors}개 섹터 · {rotation!.total_stocks}종목</span>
           <span>{rotation!.timestamp}</span>
         </div>
@@ -122,7 +122,7 @@ export default function SectorRotationView() {
               </div>
 
               {/* 점수 구성 3칸 */}
-              <div className="grid grid-cols-3 gap-1.5 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mb-3">
                 <div className="bg-white/70 rounded-lg p-2 text-center">
                   <p className="text-[10px] font-bold text-[#6B7280]">모멘텀</p>
                   <p className="text-[14px] font-black tabular-nums" style={{ color: '#2563EB' }}>

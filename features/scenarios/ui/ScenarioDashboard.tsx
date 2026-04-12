@@ -104,7 +104,7 @@ export default function ScenarioDashboardView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-4">
         <div className="h-40 bg-gray-200 rounded-2xl" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => <div key={i} className="h-28 bg-gray-200 rounded-lg" />)}
@@ -116,7 +116,7 @@ export default function ScenarioDashboardView() {
 
   if (!data) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[#9CA3AF]">시나리오 데이터가 아직 없습니다.</p>
         <p className="text-[#9CA3AF] text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -127,7 +127,7 @@ export default function ScenarioDashboardView() {
   const firstAnalysis = data.deep_analyses?.[0]
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-4">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-3 md:space-y-4">
 
       {/* ═══ Row 1: 30초 요약 히어로 ═══ */}
       {firstScenario && (

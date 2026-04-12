@@ -56,14 +56,14 @@ export default function NxtPicksPanel() {
 
   if (loading)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
         <div className="animate-pulse h-40 bg-gray-100 rounded-2xl" />
       </div>
     )
 
   if (!data)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-8 text-center">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-8 text-center">
         <p className="text-2xl mb-2">🌙</p>
         <p className="text-[#6B7280]">NXT 야간매수 데이터가 아직 없습니다.</p>
         <p className="text-xs text-[#9CA3AF] mt-1">매일 16:40 발행됩니다.</p>
@@ -76,7 +76,7 @@ export default function NxtPicksPanel() {
   const sc = scoreColor(nxtScore)
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-4 space-y-5">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4 space-y-5">
       {/* ── Header: NXT 종합 점수 + 신호 ── */}
       <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
         <div className="flex flex-wrap items-center gap-3 mb-3">

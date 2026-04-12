@@ -97,17 +97,17 @@ export function MarketSummaryView() {
   return (
     <div className="flex relative">
       <main className={`${sidebarOpen ? 'w-3/4' : 'w-full'} transition-[width] duration-300`}>
-        <div className="p-4 space-y-[14px] max-w-[1400px] mx-auto">
+        <div className="p-2 md:p-4 space-y-[10px] md:space-y-[14px] max-w-[1400px] mx-auto">
 
           {/* ── 1행: KOSPI/KOSDAQ 30일 차트 (풀너비, 녹색 라인) ── */}
           <div className="fx-card-green">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
               <div className="flex gap-1.5">
                 {(['KOSPI', 'KOSDAQ'] as const).map(idx => (
                   <button
                     key={idx}
                     onClick={() => setActiveIndex(idx)}
-                    className={`px-3 py-1 text-[15px] font-bold rounded transition-colors ${
+                    className={`px-3 py-1 text-[13px] md:text-[15px] font-bold rounded transition-colors ${
                       activeIndex === idx
                         ? 'bg-[#00FF88] text-[#0A3D23]'
                         : 'bg-[#F0EDE8] text-[#9CA3AF] hover:text-[#6B7280]'
@@ -117,13 +117,13 @@ export function MarketSummaryView() {
                   </button>
                 ))}
               </div>
-              <span className="text-[14px] font-semibold text-[#B0ADA6]">
+              <span className="text-[12px] md:text-[14px] font-semibold text-[#B0ADA6]">
                 30일 차트 | {chartData?.lastDate ?? ''} 종가 기준
               </span>
             </div>
 
-            <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-[40px] font-extrabold text-[#1A1A2E] tabular-nums">
+            <div className="flex items-baseline gap-2 md:gap-3 mb-1 flex-wrap">
+              <span className="text-[28px] md:text-[40px] font-extrabold text-[#1A1A2E] tabular-nums">
                 {chartData?.currentPrice ? chartData.currentPrice.toLocaleString() : '---'}
               </span>
               {chartData && chartData.currentPrice > 0 && (
@@ -159,7 +159,7 @@ export function MarketSummaryView() {
               const toEok = (v: number) => Math.round(v / 100)
               const fmt = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString()}억`
               return (
-                <div className="mt-2 text-[14px] font-semibold text-[#B0ADA6] flex gap-3">
+                <div className="mt-2 text-[12px] md:text-[14px] font-semibold text-[#B0ADA6] flex gap-2 md:gap-3 flex-wrap">
                   <span>외국인 <span className={toEok(l.foreign_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.foreign_net))}</span></span>
                   <span>기관 <span className={toEok(l.inst_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.inst_net))}</span></span>
                   <span>개인 <span className={toEok(l.indiv_net) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(toEok(l.indiv_net))}</span></span>
@@ -169,14 +169,14 @@ export function MarketSummaryView() {
           </div>
 
           {/* ── 2행: 미니 지수 카드 6개 (3x2 그리드) ── */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {miniIndices.map((idx) => (
               <div key={idx.name} className="bg-[#F5F4F0] rounded-lg p-[10px]">
                 <div className="text-[14px] font-semibold text-[#9CA3AF] mb-1">{idx.name}</div>
-                <div className="text-[24px] font-bold text-[#1A1A2E] tabular-nums">
+                <div className="text-[18px] md:text-[24px] font-bold text-[#1A1A2E] tabular-nums">
                   {idx.price > 0 ? idx.price.toLocaleString(undefined, { maximumFractionDigits: idx.price >= 100 ? 0 : 2 }) : '—'}
                 </div>
-                <div className={`text-[16px] font-bold tabular-nums ${
+                <div className={`text-[14px] md:text-[16px] font-bold tabular-nums ${
                   idx.change >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                 }`}>
                   {idx.change >= 0 ? '+' : ''}{Number(idx.change).toFixed(2)}%
@@ -186,7 +186,7 @@ export function MarketSummaryView() {
           </div>
 
           {/* ── 시장 심리: 공포/탐욕 + 52주 신고저 ── */}
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1">
               <FearGreedPanel />
             </div>
@@ -196,21 +196,21 @@ export function MarketSummaryView() {
           </div>
 
           {/* ── 3행: 시장 체온(1/2) + 투자자 순매수(1/2) ── */}
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             {/* 시장 체온 */}
             <div className="flex-1 fx-card">
               <span className="fx-card-title">시장 체온 (전체 종목 등락 비율)</span>
               {latest ? (
                 <>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-[36px] font-extrabold tabular-nums" style={{ color: temp.color }}>
+                  <div className="flex items-baseline gap-2 mb-2 flex-wrap">
+                    <span className="text-[28px] md:text-[36px] font-extrabold tabular-nums" style={{ color: temp.color }}>
                       {breadthPct.toFixed(1)}%
                     </span>
-                    <span className="text-[18px] font-bold" style={{ color: temp.color }}>
+                    <span className="text-[15px] md:text-[18px] font-bold" style={{ color: temp.color }}>
                       {temp.text}
                     </span>
                   </div>
-                  <div className="text-[15px] font-semibold text-[#9CA3AF] mb-2">
+                  <div className="text-[13px] md:text-[15px] font-semibold text-[#9CA3AF] mb-2">
                     전체 {totalStocks.toLocaleString()} 종목 중 상승 종목 비율
                   </div>
                   {/* 온도 바 */}
@@ -223,7 +223,7 @@ export function MarketSummaryView() {
                       </>
                     )}
                   </div>
-                  <div className="text-[14px] font-semibold text-[#B0ADA6] flex gap-3">
+                  <div className="text-[13px] md:text-[14px] font-semibold text-[#B0ADA6] flex gap-2 md:gap-3 flex-wrap">
                     <span>상승 {latest.stocks_up?.toLocaleString()}개</span>
                     <span>보합 {latest.stocks_flat?.toLocaleString()}개</span>
                     <span>하락 {latest.stocks_down?.toLocaleString()}개</span>
@@ -250,9 +250,9 @@ export function MarketSummaryView() {
                     <div key={inv.name} className="flex items-center justify-between py-2.5 border-b border-[#F5F4F0] last:border-0">
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: inv.dotColor }} />
-                        <span className="text-[16px] font-semibold text-[#1A1A2E]">{inv.name}</span>
+                        <span className="text-[14px] md:text-[16px] font-semibold text-[#1A1A2E]">{inv.name}</span>
                       </div>
-                      <span className={`text-[22px] font-bold tabular-nums ${
+                      <span className={`text-[18px] md:text-[22px] font-bold tabular-nums ${
                         inv.value >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
                       }`}>
                         {formatBil(inv.value)}
@@ -273,8 +273,8 @@ export function MarketSummaryView() {
           {history.length > 0 && (
             <div className="fx-card">
               <span className="fx-card-title">최근 3일 추이</span>
-              <div className="overflow-x-auto">
-                <table className="w-full text-[15px] font-semibold">
+              <div className="overflow-x-auto table-scroll">
+                <table className="w-full text-[13px] md:text-[15px] font-semibold min-w-[600px]">
                   <thead>
                     <tr className="text-[#9CA3AF] text-[14px] font-bold border-b border-[#F0EDE8]">
                       <th className="text-left py-2 px-2 font-bold">날짜</th>
@@ -321,7 +321,7 @@ export function MarketSummaryView() {
           )}
 
           {/* ── 수급 분석: 프로그램 매매 + 업종별 수급 ── */}
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1">
               <ProgramTradingPanel />
             </div>
@@ -334,7 +334,7 @@ export function MarketSummaryView() {
           <MarketCalendarPanel />
 
           {/* ── 6행: 섹터 히트맵(1/2) + 외국인 순매수 TOP 5(1/2) ── */}
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1 fx-card">
               <SectorHeatmap sectors={sectors} />
             </div>

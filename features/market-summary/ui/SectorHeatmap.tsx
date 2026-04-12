@@ -24,7 +24,7 @@ export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
     <div>
       <span className="fx-card-title">섹터별 등락 한눈에 (5일 기준)</span>
 
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
         {sectors.slice(0, 9).map((sector, i) => {
           const style = getHeatStyle(sector.changePercent)
           return (
@@ -33,7 +33,7 @@ export function SectorHeatmap({ sectors }: { sectors: SectorData[] }) {
               className="rounded-md p-[10px] text-center transition-all hover:brightness-95"
               style={{ background: style.bg }}
             >
-              <div className="text-[15px] font-semibold mb-0.5" style={{ color: style.text }}>
+              <div className="text-[13px] md:text-[15px] font-semibold mb-0.5" style={{ color: style.text }}>
                 {sector.name}
               </div>
               <div className="text-[18px] font-bold tabular-nums" style={{ color: style.text }}>

@@ -160,20 +160,20 @@ export default function FearGreedPanel() {
 
   return (
     <div className="fx-card">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <span className="fx-card-title">공포/탐욕 지수</span>
         <span className="text-[13px] text-[#9CA3AF]">{latest.date}</span>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col sm:flex-row gap-3 md:gap-6">
         {/* 좌: 게이지 */}
         <div className="flex-1 flex flex-col items-center">
           <SemiGauge score={latest.score} />
           <div className="text-center -mt-2">
-            <span className="text-[36px] font-extrabold tabular-nums" style={{ color }}>
+            <span className="text-[28px] md:text-[36px] font-extrabold tabular-nums" style={{ color }}>
               {latest.score.toFixed(0)}
             </span>
-            <span className="text-[18px] font-bold ml-2" style={{ color }}>
+            <span className="text-[15px] md:text-[18px] font-bold ml-2" style={{ color }}>
               {labelKr}
             </span>
           </div>

@@ -41,7 +41,7 @@ export default function FibLeadersView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-4">
         <div className="h-12 bg-[var(--bg-row)] rounded-xl" />
         <div className="h-64 bg-[var(--bg-row)] rounded-xl" />
       </div>
@@ -50,7 +50,7 @@ export default function FibLeadersView() {
 
   if (!stocks.length) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[#6B7280]">대형주 피보나치 데이터가 없습니다.</p>
         <p className="text-[#9CA3AF] text-sm mt-1">다음 갱신 시 업데이트됩니다.</p>
       </div>
@@ -77,25 +77,25 @@ export default function FibLeadersView() {
   ]
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-4">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4">
 
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
-          <h2 className="text-[17px] font-bold text-[#1A1A2E]">
+          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">
             대형주 피보나치 — 시총 상위 대장주
           </h2>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">
+          <p className="text-[12px] md:text-[13px] text-[#6B7280] mt-0.5">
             시총 상위 {stocks.length}종목 · 하락률 무관 · 피보나치 되돌림 분석
             {date && <span className="ml-2">· {date} 기준</span>}
           </p>
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-1 shrink-0">
           {SORT_OPTIONS.map(opt => (
             <button
               key={opt.key}
               onClick={() => setSortKey(opt.key)}
-              className="text-[12px] font-bold px-2.5 py-1 rounded-md transition-colors"
+              className="text-[11px] md:text-[12px] font-bold px-2 md:px-2.5 py-1 rounded-md transition-colors"
               style={{
                 backgroundColor: sortKey === opt.key ? '#F0EDE8' : 'transparent',
                 color: sortKey === opt.key ? '#1A1A2E' : '#9CA3AF',
@@ -108,7 +108,7 @@ export default function FibLeadersView() {
       </div>
 
       {/* zone별 분포 요약 */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {zoneCounts.map(({ zone, count }) => {
           const cfg = ZONE_CONFIG[zone]
           return (
@@ -126,8 +126,8 @@ export default function FibLeadersView() {
       </div>
 
       {/* 단일 테이블 (시총순 기본) */}
-      <div className="rounded-xl overflow-hidden border border-[#E8E6E0]">
-        <table className="w-full text-[14px]">
+      <div className="table-scroll rounded-xl border border-[#E8E6E0]">
+        <table className="w-full text-[13px] md:text-[14px] min-w-[800px]">
           <thead>
             <tr style={{ backgroundColor: '#F5F4F0' }}>
               <th className="text-center py-2 px-2 text-[12px] font-bold text-[#6B7280] w-8">#</th>

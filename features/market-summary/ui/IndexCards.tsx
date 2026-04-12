@@ -5,7 +5,7 @@ import { IndexCard } from '../types'
 export function IndexCards({ indices }: { indices: IndexCard[] }) {
   if (!indices.length) {
     return (
-      <div className="grid grid-cols-3 gap-px border-b border-[var(--border)]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-px border-b border-[var(--border)]">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="px-5 py-4 animate-pulse bg-white">
             <div className="h-3 bg-gray-200 rounded w-16 mb-3" />
@@ -17,7 +17,7 @@ export function IndexCards({ indices }: { indices: IndexCard[] }) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-px border-b border-[var(--border)]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-px border-b border-[var(--border)]">
       {indices.map((idx, i) => (
         <div
           key={i}

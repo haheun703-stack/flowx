@@ -47,7 +47,7 @@ export default function SystemPage() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-6">
         <div className="h-12 bg-gray-200 rounded-xl" />
         <div className="h-14 bg-gray-200 rounded-xl" />
         <div className="h-64 bg-gray-200 rounded-xl" />
@@ -60,7 +60,7 @@ export default function SystemPage() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-6">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-6">
       {/* 상단 그라데이션 라인 */}
       <div
         className="h-[2px] rounded-full"
@@ -73,23 +73,25 @@ export default function SystemPage() {
       />
 
       {/* 탭 바 */}
-      <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`px-5 py-2.5 rounded-lg text-[15px] font-bold transition-colors whitespace-nowrap ${
-              tab === t.key
-                ? 'bg-[#00FF88] text-[#1A1A2E]'
-                : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-        {data?.date && (
-          <span className="text-[13px] text-[#9CA3AF] ml-3">{data.date}</span>
-        )}
+      <div className="tab-scroll">
+        <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-3 md:px-5 py-2 md:py-2.5 rounded-lg text-[13px] md:text-[15px] font-bold transition-colors whitespace-nowrap ${
+                tab === t.key
+                  ? 'bg-[#00FF88] text-[#1A1A2E]'
+                  : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+          {data?.date && (
+            <span className="text-[12px] md:text-[13px] text-[#9CA3AF] ml-2 md:ml-3 shrink-0">{data.date}</span>
+          )}
+        </div>
       </div>
 
       {/* 급락반등 */}

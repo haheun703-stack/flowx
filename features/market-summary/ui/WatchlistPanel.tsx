@@ -12,7 +12,7 @@ export function WatchlistPanel({ items }: { items: WatchItem[] }) {
   )
 
   return (
-    <div className="flex flex-col w-72 shrink-0 border-l border-[var(--border)] h-full bg-white"
+    <div className="flex flex-col w-full md:w-72 shrink-0 border-l border-[var(--border)] h-full bg-white"
       style={{ fontFamily: 'var(--font-terminal)' }}>
 
       {/* 터미널 스타일 헤더 */}

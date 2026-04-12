@@ -641,7 +641,7 @@ export function StockTreemap({
   }
 
   return (
-    <div ref={containerRef} className="relative w-full h-full" style={{ minHeight: 400 }}>
+    <div ref={containerRef} className="relative w-full h-full" style={{ minHeight: 280 }}>
       <canvas
         ref={canvasRef}
         className="w-full h-full cursor-grab active:cursor-grabbing"

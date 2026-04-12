@@ -495,7 +495,7 @@ export function UsMarketView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-4">
         <Sk h="h-8" w="w-48" />
         <Sk h="h-20" />
         <div className="grid grid-cols-6 gap-2">{Array.from({ length: 12 }).map((_, i) => <Sk key={i} h="h-24" />)}</div>
@@ -506,7 +506,7 @@ export function UsMarketView() {
 
   if (!market) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-10 text-center">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-10 text-center">
         <div className="text-[#D62728] text-sm font-bold">미국장 데이터 없음</div>
         <div className="text-[#888] text-xs mt-1">정보봇 실행 후 다시 확인해주세요</div>
       </div>
@@ -518,7 +518,7 @@ export function UsMarketView() {
   const overallDn = nqChg <= -0.5
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-[14px]">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       {/* 히어로 배너 */}
       <div className="bg-white rounded-xl border-2 border-[#00FF88] px-5 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-4">

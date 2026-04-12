@@ -67,14 +67,14 @@ export default function NxtPerformancePanel() {
 
   if (loading)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
         <div className="animate-pulse h-40 bg-gray-100 rounded-2xl" />
       </div>
     )
 
   if (!latest)
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
         <div className="bg-white rounded-2xl border border-[#E8E6E0] p-6 text-center">
           <p className="text-[#6B7280] text-sm">📊 NXT 성적표 데이터가 아직 없습니다. 첫 발행은 다음 거래일 16:30입니다.</p>
         </div>
@@ -84,7 +84,7 @@ export default function NxtPerformancePanel() {
   const items = latest.items ?? []
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-4 space-y-5">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4 space-y-5">
       {/* ── 성적표 카드 ── */}
       <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
         <div className="flex flex-wrap items-center gap-3 mb-4">

@@ -311,7 +311,7 @@ export function UsSwingSystemView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-4">
         {Array.from({ length: 4 }).map((_, i) => <Sk key={i} h="h-32" />)}
       </div>
     )
@@ -322,7 +322,7 @@ export function UsSwingSystemView() {
     .map(([etf]) => etf)
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-[14px]">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       <div className="flex items-center gap-2">
         <div className="text-[22px] font-black text-[#1A1A2E]"> 미국 스윙시스템</div>
         <div className="text-[13px] text-[#888] bg-[#F1F0EA] px-2 py-1 rounded font-bold">단기 1~3일</div>

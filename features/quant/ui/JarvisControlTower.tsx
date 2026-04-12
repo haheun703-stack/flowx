@@ -501,7 +501,7 @@ export default function JarvisControlTower() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-6">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-6">
         <div className="h-20 bg-gray-200 rounded-lg" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
@@ -515,7 +515,7 @@ export default function JarvisControlTower() {
 
   if (!data || !data.picks) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 text-center py-12">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 text-center py-12">
         <p className="text-[var(--text-muted)]">퀀트 데이터가 아직 없습니다.</p>
         <p className="text-gray-600 text-sm mt-1">매일 장마감 후 업데이트됩니다.</p>
       </div>
@@ -543,7 +543,7 @@ export default function JarvisControlTower() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-6">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-6">
       {/* ★ 시장 맥락 배너 */}
       {market_guide && <MarketGuideBanner guide={market_guide} regimeInfo={regimeInfo} />}
 
@@ -560,21 +560,23 @@ export default function JarvisControlTower() {
       </section>
 
       {/* 탭 네비게이션 */}
-      <nav className="flex gap-1 bg-gray-100 rounded-lg p-1 border border-[var(--border)] overflow-x-auto">
-        {TAB_ITEMS.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`shrink-0 py-2 px-3 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === tab.key
-                ? "bg-blue-600 text-white"
-                : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
-            }`}
-          >
-            {tab.icon} {tab.label}
-          </button>
-        ))}
-      </nav>
+      <div className="tab-scroll">
+        <nav className="flex gap-1 bg-gray-100 rounded-lg p-1 border border-[var(--border)] w-fit max-w-full">
+          {TAB_ITEMS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`shrink-0 px-2 md:px-4 py-1.5 md:py-2 rounded-md text-[12px] md:text-[14px] font-medium transition-colors whitespace-nowrap ${
+                activeTab === tab.key
+                  ? "bg-blue-600 text-white"
+                  : "text-[var(--text-dim)] hover:text-[var(--text-primary)] hover:bg-gray-50"
+              }`}
+            >
+              {tab.icon} {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
 
       {/* 탭 콘텐츠 */}
       {activeTab === "killer-picks" && (
@@ -586,7 +588,7 @@ export default function JarvisControlTower() {
           {etf_picks && <ETFSection etf={etf_picks} />}
 
           <section>
-            <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">
+            <h2 className="text-[var(--text-primary)] text-[15px] md:text-lg font-bold mb-3">
               {buyable.length > 0
                 ? `개별종목 스크리닝 (${buyable.length}건)`
                 : "전체 관망 — 조건 강화 대기"}
@@ -642,7 +644,7 @@ export default function JarvisControlTower() {
 
           {accuracy && (
             <section>
-              <h2 className="text-[var(--text-primary)] text-lg font-bold mb-3">매매 신호 적중률</h2>
+              <h2 className="text-[var(--text-primary)] text-[15px] md:text-lg font-bold mb-3">매매 신호 적중률</h2>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {Object.entries(accuracy)
                   .filter(([, v]) => typeof v === "object" && v !== null && ((v as Record<string, number>).total ?? 0) > 0)
@@ -743,7 +745,7 @@ function MarketGuideBanner({
         </div>
       )}
 
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 mb-3">
         <div>
           <p className={`${summaryColor} text-sm font-bold`}>
             {summaryIcon} {guide.summary}
@@ -885,7 +887,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 
   return (
     <div className="bg-white rounded-lg p-4 border border-[var(--border)]">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-3">
           <span className={`text-sm px-2 py-0.5 rounded font-bold ${GRADE_BADGE_CLASS[pick.grade] || "bg-gray-100 text-[var(--text-dim)]"}`}>
             {pick.grade}
@@ -958,8 +960,8 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 text-lg font-bold">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <h2 className="text-gray-900 text-[15px] md:text-[17px] font-bold">
           {ICO.CHART_DOWN} 업종 모멘텀 TOP 10
         </h2>
         {sectors.date && (
@@ -977,7 +979,7 @@ function SectorsTab({ sectors }: { sectors: NonNullable<JarvisData["sectors"]> }
 
             return (
               <div key={s.sector} className={`bg-white rounded-xl p-4 ${isAccel ? "ring-1 ring-orange-200" : ""}`}>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-gray-500 text-sm font-mono w-6">{s.rank}</span>
                     <span className="text-gray-900 font-bold">
@@ -1187,7 +1189,7 @@ function PerformanceTab({ performance, cfo, cto }: {
       {/* CFO 포트폴리오 건강 */}
       {cfo && (
         <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
             <h3 className="text-[var(--text-primary)] text-sm font-bold">CFO 포트폴리오 건강</h3>
             <span className={`text-sm font-bold ${
               DRAWDOWN_STYLE[cfo.drawdown_action]?.color ?? "text-[var(--text-dim)]"
@@ -1196,7 +1198,7 @@ function PerformanceTab({ performance, cfo, cto }: {
             </span>
           </div>
 
-          <div className="grid grid-cols-4 gap-3 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             {/* 건강 점수 게이지 */}
             <div className="text-center">
               <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full border-4 ${
@@ -1247,7 +1249,7 @@ function PerformanceTab({ performance, cfo, cto }: {
       {/* CTO 시스템 성과 */}
       {cto && (
         <div className="bg-white rounded-xl p-4 border border-[var(--border)]">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
             <h3 className="text-[var(--text-primary)] text-sm font-bold">CTO \uC2DC\uC2A4\uD15C \uC131\uACFC</h3>
             <div className="flex items-center gap-2">
               <span className={`text-sm font-mono ${
@@ -1486,12 +1488,12 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
       {/* 턴어라운드 — Strong */}
       {turnaround?.strong && turnaround.strong.length > 0 && (
         <div className="bg-white rounded-xl border border-[var(--border)] overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex flex-col md:flex-row md:items-center justify-between gap-2">
             <span className="text-sm font-bold text-[var(--text-primary)]">적자→흑자 전환 (강력)</span>
             <span className="text-sm text-gray-500">{turnaround.candidates_found}종목 중 {turnaround.strong.length}건</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full min-w-[600px] text-sm">
               <thead>
                 <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
@@ -1531,8 +1533,8 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
             <span className="text-sm font-bold text-[var(--text-primary)]">적자 축소 중 (EARLY)</span>
             <span className="text-sm text-gray-500 ml-2">{turnaround.early.length}건</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full min-w-[600px] text-sm">
               <thead>
                 <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
@@ -1572,8 +1574,8 @@ function FundamentalsTab({ fundamentals }: { fundamentals: JarvisData["fundament
             <span className="text-sm font-bold text-[var(--text-primary)]">실적 가속 종목</span>
             <span className="text-sm text-gray-500 ml-2">{earnings.accelerating.length}건</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-scroll">
+            <table className="w-full min-w-[600px] text-sm">
               <thead>
                 <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
                   <th className="text-left py-2 px-3">종목</th>
@@ -1627,8 +1629,8 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 text-lg font-bold">ETF 자금흐름 시그널</h2>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <h2 className="text-gray-900 text-[15px] md:text-[17px] font-bold">ETF 자금흐름 시그널</h2>
         {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
@@ -1647,8 +1649,8 @@ function EtfSignalsTabContent({ data }: { data: { items: EtfSignalItem[]; date: 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="table-scroll bg-white rounded-xl">
+        <table className="w-full min-w-[600px] text-sm">
           <thead>
             <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">ETF</th>
@@ -1703,8 +1705,8 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 text-lg font-bold">섹터 릴레이 (Lead-Lag)</h2>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <h2 className="text-gray-900 text-[15px] md:text-[17px] font-bold">섹터 릴레이 (Lead-Lag)</h2>
         {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
@@ -1723,8 +1725,8 @@ function RelayTabContent({ data }: { data: { items: RelayItem[]; date: string | 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="table-scroll bg-white rounded-xl">
+        <table className="w-full min-w-[600px] text-sm">
           <thead>
             <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">선행 → 후행</th>
@@ -1783,8 +1785,8 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-gray-900 text-lg font-bold">스나이퍼워치</h2>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <h2 className="text-gray-900 text-[15px] md:text-[17px] font-bold">스나이퍼워치</h2>
         {date && <span className="text-gray-500 text-sm">{date}</span>}
       </div>
 
@@ -1803,8 +1805,8 @@ function SniperTabContent({ data }: { data: { items: SniperItem[]; date: string 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="table-scroll bg-white rounded-xl">
+        <table className="w-full min-w-[700px] text-sm">
           <thead>
             <tr className="text-gray-500 text-[12px] border-b border-[var(--border)]">
               <th className="text-left py-2 px-2">종목</th>
@@ -1938,9 +1940,9 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <div>
-          <h2 className="text-lg font-black text-[var(--text-primary)]">
+          <h2 className="text-[15px] md:text-[17px] font-black text-[var(--text-primary)]">
             킬러픽 — {kp.target_label ?? kp.date ?? ""}
           </h2>
           <p className="text-sm text-[var(--text-muted)] mt-0.5">
@@ -2039,7 +2041,7 @@ function KillerPicksTab({ kp }: { kp?: KillerPicksData | null }) {
           <div className="space-y-3">
             {cross.map((c) => (
               <div key={c.ticker} className="bg-white rounded-xl border border-[var(--border)] p-4">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-[var(--text-muted)] font-mono">#{c.rank}</span>
                     <span className="text-sm font-black text-[var(--text-primary)]">{c.name}</span>

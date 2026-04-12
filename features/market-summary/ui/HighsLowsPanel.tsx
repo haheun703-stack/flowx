@@ -61,7 +61,7 @@ export default function HighsLowsPanel() {
 
   return (
     <div className="fx-card">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <span className="fx-card-title">52주 신고가 / 신저가</span>
         <span className="text-[13px] text-[#9CA3AF]">{data.date}</span>
       </div>

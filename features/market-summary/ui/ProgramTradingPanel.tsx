@@ -62,7 +62,7 @@ export default function ProgramTradingPanel() {
 
   return (
     <div className="fx-card">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <span className="fx-card-title">프로그램 매매 동향</span>
         <div className="flex gap-1">
           {(['KOSPI', 'KOSDAQ'] as const).map((m) => (
@@ -82,7 +82,7 @@ export default function ProgramTradingPanel() {
       </div>
 
       {/* 오늘 요약 */}
-      <div className="flex gap-4 mb-4 text-[14px]">
+      <div className="flex gap-3 md:gap-4 mb-4 text-[13px] md:text-[14px] flex-wrap">
         <div>
           <span className="text-[#6B7280]">전체 </span>
           <span className={`font-bold ${latest.total_net_amt >= 0 ? 'text-[#3B82F6]' : 'text-[#EF4444]'}`}>

@@ -170,7 +170,7 @@ function SectorDrillDown({ sector, sizeBy, onClose }: { sector: TreemapSector; s
   return (
     <div className="fx-card-green animate-[slideDown_0.3s_ease]">
       {/* 헤더 */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-3">
           <span className="text-sm font-black text-[#1A1A2E]">{sector.name}</span>
           <span className="text-sm font-black tabular-nums" style={{ color: changeColor }}>
@@ -186,7 +186,7 @@ function SectorDrillDown({ sector, sizeBy, onClose }: { sector: TreemapSector; s
       </div>
 
       {/* 메타 */}
-      <div className="flex gap-3 text-[10px] text-[#6B7280] mb-3">
+      <div className="flex gap-2 md:gap-3 text-[10px] text-[#6B7280] mb-3 flex-wrap">
         <span><b className="text-[#1A1A2E]">{sector.stocks.length}</b>종목</span>
         <span>시총 <b className="text-[#1A1A2E]">{fmtCap(sector.marketCap)}</b></span>
         <span>외국인 <b className={foreignTotal >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'}>{fmt(foreignTotal)}</b></span>

@@ -93,7 +93,7 @@ export default function CrashBounceView() {
 
   if (loading) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 animate-pulse space-y-4">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 animate-pulse space-y-4">
         <div className="h-24 bg-gray-200 rounded-xl" />
         <div className="h-64 bg-gray-200 rounded-xl" />
       </div>
@@ -102,7 +102,7 @@ export default function CrashBounceView() {
 
   if (!items.length) {
     return (
-      <div className="max-w-[1400px] mx-auto px-6 pt-6 text-center py-16">
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 text-center py-16">
         <p className="text-[28px] mb-3">🔍</p>
         <p className="text-[17px] font-bold text-[#1A1A2E]">오늘은 급락반등 시그널이 없습니다</p>
         <p className="text-[14px] text-[#6B7280] mt-1">
@@ -131,7 +131,7 @@ export default function CrashBounceView() {
   const watchItems = filtered.filter(i => i.grade === GRADE_WATCH)
 
   return (
-    <div className="max-w-[1400px] mx-auto px-6 pt-6 space-y-5">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-5">
 
       {/* ① 상단 배너 — 백테스트 신뢰도 */}
       <div className="rounded-xl p-5 border border-[#E8E6E0] bg-white">
