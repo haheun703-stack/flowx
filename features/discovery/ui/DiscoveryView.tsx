@@ -342,62 +342,62 @@ export default function DiscoveryView() {
 
       {/* ═══ 1행: 등급 요약 카드 3개 ═══ */}
       {summary && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {/* S등급 — 금색 */}
           <button onClick={() => setFGrade(fGrade === 'S' ? 'all' : 'S')}
-            className={`rounded-xl p-4 text-center transition-all border-2 ${
+            className={`rounded-lg p-2.5 text-center transition-all border-2 ${
               fGrade === 'S' ? 'ring-2 ring-[#FFD700] shadow-lg' : ''
             }`}
             style={{ background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', borderColor: '#FFD700' }}>
-            <div className="text-[13px] font-bold text-[#D97706]">S등급 최고 확신</div>
-            <div className="text-[32px] font-black text-[#92400E] tabular-nums">{summary.S}</div>
+            <div className="text-[11px] font-bold text-[#D97706]">S등급 최고 확신</div>
+            <div className="text-[26px] font-black text-[#92400E] tabular-nums leading-tight">{summary.S}</div>
             {gradeNames.S.length > 0 && (
-              <div className="text-[12px] font-semibold text-[#D97706] truncate">{gradeNames.S.join(' · ')}</div>
+              <div className="text-[11px] font-semibold text-[#D97706] truncate">{gradeNames.S.join(' · ')}</div>
             )}
           </button>
           {/* A등급 — 녹색 */}
           <button onClick={() => setFGrade(fGrade === 'A' ? 'all' : 'A')}
-            className={`rounded-xl p-4 text-center transition-all border ${
+            className={`rounded-lg p-2.5 text-center transition-all border ${
               fGrade === 'A' ? 'ring-2 ring-[#00FF88] shadow-lg' : ''
             }`}
             style={{ background: '#F0FDF4', borderColor: '#BBF7D0' }}>
-            <div className="text-[13px] font-bold text-[#16A34A]">A등급 우선 관심</div>
-            <div className="text-[32px] font-black text-[#1A1A2E] tabular-nums">{summary.A}</div>
+            <div className="text-[11px] font-bold text-[#16A34A]">A등급 우선 관심</div>
+            <div className="text-[26px] font-black text-[#1A1A2E] tabular-nums leading-tight">{summary.A}</div>
             {gradeNames.A.length > 0 && (
-              <div className="text-[12px] font-semibold text-[#16A34A] truncate">{gradeNames.A.slice(0, 3).join(' · ')}</div>
+              <div className="text-[11px] font-semibold text-[#16A34A] truncate">{gradeNames.A.slice(0, 3).join(' · ')}</div>
             )}
           </button>
           {/* B등급 — 파랑 */}
           <button onClick={() => setFGrade(fGrade === 'B' ? 'all' : 'B')}
-            className={`rounded-xl p-4 text-center transition-all border ${
+            className={`rounded-lg p-2.5 text-center transition-all border ${
               fGrade === 'B' ? 'ring-2 ring-[#3B82F6] shadow-lg' : ''
             }`}
             style={{ background: '#EFF6FF', borderColor: '#BFDBFE' }}>
-            <div className="text-[13px] font-bold text-[#2563EB]">B등급 관심 후보</div>
-            <div className="text-[32px] font-black text-[#1A1A2E] tabular-nums">{summary.B}</div>
+            <div className="text-[11px] font-bold text-[#2563EB]">B등급 관심 후보</div>
+            <div className="text-[26px] font-black text-[#1A1A2E] tabular-nums leading-tight">{summary.B}</div>
             {gradeNames.B.length > 0 && (
-              <div className="text-[12px] font-semibold text-[#2563EB] truncate">{gradeNames.B.slice(0, 3).join(' · ')}</div>
+              <div className="text-[11px] font-semibold text-[#2563EB] truncate">{gradeNames.B.slice(0, 3).join(' · ')}</div>
             )}
           </button>
         </div>
       )}
 
       {/* ═══ 2행: 필터 바 ═══ */}
-      <div className="bg-white rounded-xl border border-[#E8E6E0] p-4 space-y-2.5">
-        <div className="flex flex-wrap gap-2 items-center">
+      <div className="bg-white rounded-xl border border-[#E8E6E0] p-3 space-y-2">
+        <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#6B7280] w-[36px] shrink-0">등급</span>
           {['all', 'S', 'A', 'B', 'C'].map(g => (
             <FilterChip key={g} label={g === 'all' ? '전체' : g}
               active={fGrade === g} onClick={() => setFGrade(g)} />
           ))}
         </div>
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#6B7280] w-[36px] shrink-0">시장</span>
           {[['all', '전체'], ['KOSPI', 'KOSPI'], ['KOSDAQ', 'KOSDAQ']].map(([k, l]) => (
             <FilterChip key={k} label={l} active={fMarket === k} onClick={() => setFMarket(k)} />
           ))}
         </div>
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#6B7280] w-[36px] shrink-0">규모</span>
           {[['all', '전체'], ['large_cap', '대형주'], ['mid_cap', '중형주'], ['small_cap', '소형주'], ['micro_cap', '초소형']].map(([k, l]) => (
             <FilterChip key={k} label={l} active={fCategory === k} onClick={() => setFCategory(k)} />
