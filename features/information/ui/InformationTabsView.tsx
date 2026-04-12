@@ -11,11 +11,9 @@ import { ScenarioFlowPanel } from './ScenarioFlowPanel'
 import { HotIssuesPanel } from './HotIssuesPanel'
 import { SupplyScoringPanel } from './SupplyScoringPanel'
 import { DisclosuresPanel } from './DisclosuresPanel'
-import DiscoveryView from '@/features/discovery/ui/DiscoveryView'
 
 const TABS = [
   { key: 'signal', label: '시그널' },
-  { key: 'discovery', label: '종목 발굴' },
   { key: 'supply', label: '수급' },
   { key: 'dart', label: '다트 공시' },
   { key: 'edgar', label: '에드가 공시' },
@@ -90,7 +88,6 @@ export function InformationTabsView() {
             <DisclosuresPanel source="EDGAR" title="EDGAR 공시" accentColor="#a855f7" />
           </div>
         )}
-        {tab === 'discovery' && <DiscoveryView />}
       </div>
     </div>
   )
