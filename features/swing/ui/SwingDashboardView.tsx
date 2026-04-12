@@ -8,6 +8,7 @@ import {
   GRADE_WATCH,
   GRADE_LEGACY_BUY,
   GRADE_LEGACY_WATCH_BUY,
+  GRADE_CAUTION,
 } from '@/shared/constants/grades'
 
 /* ── 타입 ── */
@@ -591,7 +592,7 @@ export default function SwingDashboardView() {
           [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
           '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
           '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
-          '경계': { backgroundColor: '#eab308', color: '#FFF' },
+          [GRADE_CAUTION]: { backgroundColor: '#eab308', color: '#FFF' },
           '회피': { backgroundColor: '#ef4444', color: '#FFF' },
         }
         const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
@@ -676,7 +677,7 @@ export default function SwingDashboardView() {
       {/* NXT 야간매수 — intelligence_nxt_picks TOP 5 */}
       {nxtPickData && (() => {
         const nxtScore = nxtPickData.nxt_score ?? 0
-        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? '경계' : '회피'
+        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
         const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
         const picks = nxtPickData.picks ?? []
         const sectors = nxtPickData.sectors ?? []
@@ -831,17 +832,17 @@ export default function SwingDashboardView() {
           <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
             <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              <MetricCard label="VIX" value={data.vix.toFixed(1)} bg={data.vix >= 25 ? '#FEF2F2' : data.vix >= 18 ? '#FFFBEB' : '#DBEAFE'} color={data.vix >= 25 ? '#DC2626' : data.vix >= 18 ? '#D97706' : '#2563EB'} />
-              <MetricCard label="NASDAQ" value={`${data.nasdaq_pct >= 0 ? '+' : ''}${data.nasdaq_pct.toFixed(2)}%`} color={data.nasdaq_pct >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="USD/KRW" value={data.usdkrw.toFixed(0)} color="#1A1A2E" />
-              <MetricCard label="유가" value={`${data.oil_pct >= 0 ? '+' : ''}${data.oil_pct.toFixed(2)}%`} color={data.oil_pct >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="금" value={`${data.gold_pct >= 0 ? '+' : ''}${data.gold_pct.toFixed(2)}%`} color={data.gold_pct >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="스트레스" value={data.stress_index.toFixed(1)} bg={data.stress_level === 'HIGH' ? '#FEF2F2' : '#F5F4F0'} color={data.stress_level === 'HIGH' ? '#DC2626' : data.stress_level === 'ELEVATED' ? '#D97706' : '#059669'} />
+              <MetricCard label="VIX" value={(data.vix ?? 0).toFixed(1)} bg={(data.vix ?? 0) >= 25 ? '#FEF2F2' : (data.vix ?? 0) >= 18 ? '#FFFBEB' : '#DBEAFE'} color={(data.vix ?? 0) >= 25 ? '#DC2626' : (data.vix ?? 0) >= 18 ? '#D97706' : '#2563EB'} />
+              <MetricCard label="NASDAQ" value={`${(data.nasdaq_pct ?? 0) >= 0 ? '+' : ''}${(data.nasdaq_pct ?? 0).toFixed(2)}%`} color={(data.nasdaq_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="USD/KRW" value={(data.usdkrw ?? 0).toFixed(0)} color="#1A1A2E" />
+              <MetricCard label="유가" value={`${(data.oil_pct ?? 0) >= 0 ? '+' : ''}${(data.oil_pct ?? 0).toFixed(2)}%`} color={(data.oil_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="금" value={`${(data.gold_pct ?? 0) >= 0 ? '+' : ''}${(data.gold_pct ?? 0).toFixed(2)}%`} color={(data.gold_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="스트레스" value={(data.stress_index ?? 0).toFixed(1)} bg={data.stress_level === 'HIGH' ? '#FEF2F2' : '#F5F4F0'} color={data.stress_level === 'HIGH' ? '#DC2626' : data.stress_level === 'ELEVATED' ? '#D97706' : '#059669'} />
             </div>
             {/* 위험 경고 */}
             {data.stress_level === 'HIGH' && (
               <div className="mt-3 rounded-r-md text-[12px] px-3 py-2" style={{ backgroundColor: '#FEF2F2', borderLeft: '3px solid #EF4444', color: '#DC2626' }}>
-                위험 신호: 스트레스 {data.stress_level} ({data.stress_index.toFixed(1)})
+                위험 신호: 스트레스 {data.stress_level} ({(data.stress_index ?? 0).toFixed(1)})
               </div>
             )}
           </div>

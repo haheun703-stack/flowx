@@ -20,9 +20,11 @@ export async function GET(req: Request) {
 
     // 4 pages ≈ 40 rows → 30일 이상 커버
     for (let page = 1; page <= 4; page++) {
-      const url = `https://finance.naver.com/sise/investorDealTrendDay.nhn?bizdate=20260330&sosok=&page=${page}`
+      const bizdate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' }).replace(/-/g, '')
+      const url = `https://finance.naver.com/sise/investorDealTrendDay.nhn?bizdate=${bizdate}&sosok=&page=${page}`
       const res = await fetch(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+        signal: AbortSignal.timeout(10000),
       })
       if (!res.ok) continue
 

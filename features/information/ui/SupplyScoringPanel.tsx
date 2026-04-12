@@ -1,7 +1,7 @@
 'use client'
 
 import { useSupplyScoring, type SupplyScoringItem } from '../api/useInformation'
-import { GRADE_LEGACY_BUY } from '@/shared/constants/grades'
+import { GRADE_LEGACY_BUY, GRADE_CAUTION } from '@/shared/constants/grades'
 
 const GRADE_COLOR: Record<string, string> = {
   'A+': '#dc2626',
@@ -93,7 +93,7 @@ function ScoringRow({ item, rank }: { item: SupplyScoringItem; rank: number }) {
           {formatAmt(item.foreign_net_amt)}
         </div>
         {item.foreign_days !== 0 && (
-          <div className="text-[10px] text-gray-400">{item.foreign_days > 0 ? GRADE_LEGACY_BUY : '매도'} {Math.abs(item.foreign_days)}일</div>
+          <div className="text-[10px] text-gray-400">{item.foreign_days > 0 ? GRADE_LEGACY_BUY : GRADE_CAUTION} {Math.abs(item.foreign_days)}일</div>
         )}
       </td>
 
@@ -103,7 +103,7 @@ function ScoringRow({ item, rank }: { item: SupplyScoringItem; rank: number }) {
           {formatAmt(item.inst_net_amt)}
         </div>
         {item.inst_days !== 0 && (
-          <div className="text-[10px] text-gray-400">{item.inst_days > 0 ? GRADE_LEGACY_BUY : '매도'} {Math.abs(item.inst_days)}일</div>
+          <div className="text-[10px] text-gray-400">{item.inst_days > 0 ? GRADE_LEGACY_BUY : GRADE_CAUTION} {Math.abs(item.inst_days)}일</div>
         )}
       </td>
 

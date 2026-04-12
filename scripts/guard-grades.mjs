@@ -52,6 +52,8 @@ const FORBIDDEN = [
   '보류',
   '적극매수',
   '매수',
+  '매도',
+  '경계',
   // '관심'은 일반 단어와 충돌이 커서 제외 (CrashBounceView.GRADE_CONFIG는 SSoT 이관 대상)
 ]
 

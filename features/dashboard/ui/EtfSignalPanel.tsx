@@ -7,13 +7,14 @@ import {
   GRADE_PICK,
   GRADE_LEGACY_FORCE_BUY,
   GRADE_LEGACY_BUY,
+  GRADE_CAUTION,
 } from '@/shared/constants/grades'
 
 const GRADE_STYLE: Record<string, string> = {
   [GRADE_LEGACY_FORCE_BUY]: 'text-[#16A34A] bg-[#E8F5E9]', [GRADE_STRONG_PICK]: 'text-[#16A34A] bg-[#E8F5E9]',
   [GRADE_LEGACY_BUY]: 'text-[#16A34A] bg-[#E8F5E9]', [GRADE_PICK]: 'text-[#16A34A] bg-[#E8F5E9]',
   '관망': 'text-[#9CA3AF] bg-[#F5F4F0]',
-  '매도': 'text-[#DC2626] bg-[#FEE2E2]', '경계': 'text-[#DC2626] bg-[#FEE2E2]',
+  [GRADE_CAUTION]: 'text-[#DC2626] bg-[#FEE2E2]',
   '적극매도': 'text-[#DC2626] bg-[#FEE2E2]', '위험': 'text-[#DC2626] bg-[#FEE2E2]',
 }
 

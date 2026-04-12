@@ -234,7 +234,7 @@ export default function SystemPage() {
                 </div>
               )}
 
-              {/* 노다지 TOP 2 */}
+              {/* 밸류 헌터 TOP 2 */}
               {nug2.length > 0 && (
                 <div className="mb-4">
                   <p className="text-[11px] font-bold text-[#92400E] mb-2">저평가 발굴 (밸류 헌터 TOP 2)</p>
@@ -310,9 +310,9 @@ export default function SystemPage() {
                           {entry > 0 && <div><span className="text-[#9CA3AF]">진입</span> <span className="font-bold text-[#1A1A2E] tabular-nums">{fmtP(entry)}</span></div>}
                           {target > 0 && <div><span className="text-[#9CA3AF]">목표</span> <span className="font-bold text-[#16A34A] tabular-nums">{fmtP(target)}</span></div>}
                           {stop > 0 && <div><span className="text-[#9CA3AF]">손절</span> <span className="font-bold text-[#DC2626] tabular-nums">{fmtP(stop)}</span></div>}
-                          <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{p.rsi.toFixed(0)}</span></div>
-                          <div><span className="text-[#9CA3AF]">외인5일</span> <span className={`font-bold tabular-nums ${p.foreign_5d > 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>{p.foreign_5d > 0 ? '+' : ''}{p.foreign_5d.toFixed(0)}</span></div>
-                          <div><span className="text-[#9CA3AF]">기관5일</span> <span className={`font-bold tabular-nums ${p.inst_5d > 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>{p.inst_5d > 0 ? '+' : ''}{p.inst_5d.toFixed(0)}</span></div>
+                          <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
+                          <div><span className="text-[#9CA3AF]">외인5일</span> <span className={`font-bold tabular-nums ${(p.foreign_5d ?? 0) > 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>{(p.foreign_5d ?? 0) > 0 ? '+' : ''}{(p.foreign_5d ?? 0).toFixed(0)}</span></div>
+                          <div><span className="text-[#9CA3AF]">기관5일</span> <span className={`font-bold tabular-nums ${(p.inst_5d ?? 0) > 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>{(p.inst_5d ?? 0) > 0 ? '+' : ''}{(p.inst_5d ?? 0).toFixed(0)}</span></div>
                         </div>
                       ) : (
                         <div className="text-[11px] text-[#6B7280]">{p.reasons.slice(0, 2).join(' + ')}</div>

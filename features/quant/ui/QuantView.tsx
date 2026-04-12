@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuantDashboard, type QuantDashboardState, type Zone2Item, type Zone7MarketHeader, type Zone7EtfItem, type Zone5SdPattern } from '@/features/dashboard/api/useDashboard'
-import { GRADE_LEGACY_BUY, GRADE_OBSERVE } from '@/shared/constants/grades'
+import { GRADE_LEGACY_BUY, GRADE_OBSERVE, GRADE_CAUTION } from '@/shared/constants/grades'
 
 /* ── 라이트 테마 색상 (Dashboard 기준 통일) ── */
 const C = {
@@ -31,7 +31,7 @@ function moneyStr(v: number | undefined | null): string {
 
 const pctColor = (v: number) => v > 0 ? C.green : v < 0 ? C.red : C.text
 const pctSign = (v: number) => v > 0 ? '+' : ''
-const signalColor = (s: string) => s === GRADE_LEGACY_BUY ? C.green : s === '매도' ? C.red : s === GRADE_OBSERVE ? C.blue : C.amber
+const signalColor = (s: string) => s === GRADE_LEGACY_BUY ? C.green : s === GRADE_CAUTION ? C.red : s === GRADE_OBSERVE ? C.blue : C.amber
 const trustColor = (v: number) => v >= 60 ? C.green : v >= 45 ? C.amber : C.red
 
 /* ── Skeleton ── */
@@ -108,7 +108,7 @@ function Zone({ label, title, children }: { label: string; title: string; childr
    Zone 1: 오늘의 판단
    ════════════════════════════════════════ */
 function VerdictZone({ z1 }: { z1: QuantDashboardState['zone1'] }) {
-  const vc = z1.verdict === GRADE_LEGACY_BUY ? 'buy' : z1.verdict === '매도' || z1.verdict === '회피' ? 'sell' : 'watch'
+  const vc = z1.verdict === GRADE_LEGACY_BUY ? 'buy' : z1.verdict === GRADE_CAUTION || z1.verdict === '회피' ? 'sell' : 'watch'
   const vcColor = vc === 'buy' ? C.green : vc === 'sell' ? C.red : C.amber
   const vcBg = vc === 'buy' ? C.green3 : vc === 'sell' ? C.red2 : C.amber2
 
@@ -160,7 +160,7 @@ function InfoRow({ tag, tagBg, tagColor, last, children }: { tag: string; tagBg:
    ════════════════════════════════════════ */
 function StockCard({ a }: { a: Zone2Item }) {
   const act = (a.action || 'WATCH').toUpperCase()
-  const actKr = act === 'BUY' ? GRADE_LEGACY_BUY : act === 'SELL' ? '매도' : GRADE_OBSERVE
+  const actKr = act === 'BUY' ? GRADE_LEGACY_BUY : act === 'SELL' ? GRADE_CAUTION : GRADE_OBSERVE
   const stratKr = a.strategy === 'AI_BRAIN' ? 'AI 판단' : a.strategy === 'SCAN' ? '스캔 발굴' : a.strategy
   const borderColor = act === 'BUY' ? 'rgba(22,163,74,0.3)' : act === 'SELL' ? 'rgba(220,38,38,0.3)' : 'rgba(217,119,6,0.25)'
   const bg = act === 'BUY' ? C.green3 : act === 'SELL' ? C.red2 : C.amber2
