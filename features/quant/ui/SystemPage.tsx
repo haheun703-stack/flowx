@@ -205,7 +205,7 @@ export default function SystemPage() {
             style={{ borderLeft: '3px solid #7C3AED' }}>
             <div className="px-5 py-4">
               <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">이 종목을 반드시 주목합시다</h2>
-              <p className="text-[10px] text-[#6B7280] mb-4">파워스코어 + 노다지 + ETF에서 뽑은 오늘의 핵심 추천</p>
+              <p className="text-[10px] text-[#6B7280] mb-4">파워스코어 + 밸류 헌터 + ETF에서 뽑은 오늘의 핵심 추천</p>
 
               {/* 파워스코어 TOP 3 */}
               {top3.length > 0 && (
@@ -237,7 +237,7 @@ export default function SystemPage() {
               {/* 노다지 TOP 2 */}
               {nug2.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-[11px] font-bold text-[#92400E] mb-2">저평가 발굴 (노다지 TOP 2)</p>
+                  <p className="text-[11px] font-bold text-[#92400E] mb-2">저평가 발굴 (밸류 헌터 TOP 2)</p>
                   <div className="space-y-2">
                     {nug2.map((n) => {
                       const badge = NUGGET_BADGE[n.grade] ?? NUGGET_BADGE.BRONZE
@@ -447,7 +447,7 @@ export default function SystemPage() {
               />
             </Accordion>
 
-            <Accordion id="nugget" title="노다지 리포트 — 5축 저평가 발굴 전체" open={openAcc === 'nugget'} onToggle={toggleAcc}>
+            <Accordion id="nugget" title="밸류 헌터 — 5축 저평가 발굴 전체" open={openAcc === 'nugget'} onToggle={toggleAcc}>
               {nuggets.length > 0 ? (
                 <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4 space-y-2">
                   {nuggets.map((n) => {
@@ -465,7 +465,7 @@ export default function SystemPage() {
                     )
                   })}
                 </div>
-              ) : <p className="text-[13px] text-[#9CA3AF] p-4">노다지 데이터 없음</p>}
+              ) : <p className="text-[13px] text-[#9CA3AF] p-4">밸류 헌터 데이터 없음</p>}
             </Accordion>
 
             <Accordion id="portfolio" title="포트폴리오 배분 — 방어/공격 비율" open={openAcc === 'portfolio'} onToggle={toggleAcc}>
