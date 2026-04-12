@@ -371,7 +371,7 @@ export default function SystemPage() {
                 <div className="space-y-2">
                   {dualTop3.map((m) => (
                     <div key={m.ticker} className="flex items-center gap-2 text-[12px]">
-                      <span className="font-bold text-[#1A1A2E] truncate flex-1">{m.name}</span>
+                      <span className="font-bold text-[#1A1A2E] truncate flex-1">{m.name && !/^\d{5,6}$/.test(m.name) ? m.name : m.ticker}</span>
                       {m.inst_5d_억 !== 0 && <span className="text-[#EA580C] font-bold shrink-0">기관{m.inst_5d_억 > 0 ? '+' : ''}{m.inst_5d_억.toFixed(0)}억</span>}
                       {m.foreign_5d_억 !== 0 && <span className="text-[#2563EB] font-bold shrink-0">외인{m.foreign_5d_억 > 0 ? '+' : ''}{m.foreign_5d_억.toFixed(0)}억</span>}
                     </div>

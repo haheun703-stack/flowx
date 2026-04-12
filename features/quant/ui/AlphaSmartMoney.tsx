@@ -12,12 +12,13 @@ function fmtPrice(n: number): string {
 }
 
 function MoneyRow({ item }: { item: SmartMoneyItem }) {
+  const displayName = item.name && !/^\d{5,6}$/.test(item.name) ? item.name : item.ticker
   return (
     <div className="py-2 space-y-0.5">
       {/* 1행: 종목명 + 가격 + 등락률 */}
       <div className="flex items-center gap-2">
         <span className="text-[14px] font-bold text-[#1A1A2E] truncate flex-1">
-          {item.name}
+          {displayName}
         </span>
         <span className="text-[13px] text-[#1A1A2E] tabular-nums shrink-0">
           {fmtPrice(item.close)}
