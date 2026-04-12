@@ -896,27 +896,87 @@ export function UsMarketView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       {/* 히어로 배너 */}
-      <div className="bg-white rounded-xl border-2 border-[#00FF88] px-4 md:px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-2 shadow-sm">
-        <div>
-          <div className="text-[11px] md:text-[13px] font-black text-[#888] tracking-widest uppercase">오늘 미국장 한줄 요약</div>
-          <div className="text-[17px] md:text-[22px] font-black text-[#1A1A2E] mt-1 leading-snug">
-            {overallUp ? `나스닥 ${nqChg >= 0 ? '+': ''}${nqChg.toFixed(1)}% 상승, ${market.soxx_change && market.soxx_change > 0 ? '반도체 강세': '기술주 주도'}`
-             : overallDn ? `나스닥 ${nqChg.toFixed(1)}% 하락, 시장 조정 중`
-             : '나스닥 보합, 방향 탐색 중'}
-            <span className={`text-[12px] md:text-[14px] px-2 md:px-3 py-0.5 md:py-1 rounded-full font-black ml-2 md:ml-3 inline-block mt-1 md:mt-0 ${
-              overallUp ? 'bg-[#E6F9EE] text-[#00843D]'
-              : overallDn ? 'bg-[#FFEEEE] text-[#C0392B]'
-              : 'bg-[#F1F0EA] text-[#555]'}`}>
-              {overallUp ? '↑ 긍정': overallDn ? '↓ 주의': '→ 중립'}
-            </span>
+      <div className="relative overflow-hidden rounded-2xl" style={{
+        background: overallUp
+          ? 'linear-gradient(135deg, #0F2027 0%, #0A3D2E 40%, #1A4A35 100%)'
+          : overallDn
+          ? 'linear-gradient(135deg, #1A0A0A 0%, #2D1117 40%, #3B1522 100%)'
+          : 'linear-gradient(135deg, #0F1419 0%, #1A1F2E 40%, #1E2538 100%)',
+      }}>
+        {/* 배경 글로우 */}
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-20 blur-[80px]" style={{
+          background: overallUp ? '#00FF88' : overallDn ? '#FF4444' : '#3B82F6',
+        }} />
+        <div className="absolute bottom-0 left-0 w-[200px] h-[200px] rounded-full opacity-10 blur-[60px]" style={{
+          background: overallUp ? '#10B981' : overallDn ? '#DC2626' : '#6366F1',
+        }} />
+
+        <div className="relative z-10 px-5 md:px-8 py-5 md:py-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1">
+              {/* 상단 라벨 */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{
+                  backgroundColor: overallUp ? '#00FF88' : overallDn ? '#FF4444' : '#3B82F6',
+                }} />
+                <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase" style={{
+                  color: overallUp ? '#00FF88' : overallDn ? '#FF6B6B' : '#93C5FD',
+                }}>
+                  US MARKET BRIEF
+                </span>
+                <span className="text-[10px] text-white/30 ml-1">{market.date}</span>
+              </div>
+
+              {/* 메인 헤드라인 */}
+              <div className="text-[20px] md:text-[28px] font-black text-white leading-tight tracking-tight">
+                {overallUp
+                  ? <>나스닥 <span style={{ color: '#00FF88' }}>{nqChg >= 0 ? '+' : ''}{nqChg.toFixed(1)}%</span> 상승{market.soxx_change && market.soxx_change > 0 ? ', 반도체 강세' : ''}</>
+                  : overallDn
+                  ? <>나스닥 <span style={{ color: '#FF6B6B' }}>{nqChg.toFixed(1)}%</span> 하락, 시장 조정 중</>
+                  : <>나스닥 보합, <span className="text-white/60">방향 탐색 중</span></>}
+              </div>
+
+              {/* 지수 뱃지 행 */}
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                {[
+                  { label: 'S&P', value: market.sp500_change },
+                  { label: 'NDX', value: market.nasdaq_change },
+                  { label: 'DOW', value: market.dow_change },
+                  { label: 'SOXX', value: market.soxx_change },
+                ].map(idx => (
+                  <div key={idx.label} className="flex items-center gap-1.5 bg-white/8 backdrop-blur-sm rounded-lg px-2.5 py-1 border border-white/10">
+                    <span className="text-[11px] font-bold text-white/50">{idx.label}</span>
+                    <span className="text-[13px] font-black tabular-nums" style={{
+                      color: idx.value == null ? '#888' : idx.value > 0 ? '#00FF88' : idx.value < 0 ? '#FF6B6B' : '#93C5FD',
+                    }}>
+                      {changeStr(idx.value)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 우측 시그널 */}
+            <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:gap-2 shrink-0">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{
+                backgroundColor: overallUp ? 'rgba(0,255,136,0.15)' : overallDn ? 'rgba(255,68,68,0.15)' : 'rgba(59,130,246,0.15)',
+                border: `1px solid ${overallUp ? 'rgba(0,255,136,0.3)' : overallDn ? 'rgba(255,68,68,0.3)' : 'rgba(59,130,246,0.3)'}`,
+              }}>
+                <span className="text-[20px] md:text-[24px]">
+                  {overallUp ? '📈' : overallDn ? '📉' : '📊'}
+                </span>
+                <div>
+                  <div className="text-[16px] md:text-[18px] font-black" style={{
+                    color: overallUp ? '#00FF88' : overallDn ? '#FF6B6B' : '#93C5FD',
+                  }}>
+                    {overallUp ? '긍정' : overallDn ? '주의' : '중립'}
+                  </div>
+                  <div className="text-[10px] text-white/40 font-bold">SIGNAL</div>
+                </div>
+              </div>
+              <div className="text-[10px] text-white/30 font-bold">FLOWX Auto</div>
+            </div>
           </div>
-          <div className="text-[11px] md:text-[13px] text-[#777] mt-1">
-            S&P500 {changeStr(market.sp500_change)} · 나스닥 {changeStr(market.nasdaq_change)} · SOXX {changeStr(market.soxx_change)}
-          </div>
-        </div>
-        <div className="text-left md:text-right shrink-0">
-          <div className="text-[11px] md:text-[13px] text-[#888]">{market.date} 기준</div>
-          <div className="text-[11px] md:text-[13px] font-black text-[#00843D] mt-1">● FLOWX 자동수집</div>
         </div>
       </div>
 
