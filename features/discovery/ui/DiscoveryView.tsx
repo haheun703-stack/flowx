@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { CONTAINER, CARD } from '@/shared/lib/card-styles'
+import Link from 'next/link'
 
 // ── 타입 ─────────────────────────────────────────────
 interface DiscoveryItem {
@@ -14,20 +14,21 @@ interface DiscoveryItem {
   price: number
   theme_score: number
   theme_keywords: string[] | null
-  theme_details: Record<string, unknown> | null
+  theme_details: { matched_themes?: string[]; keyword_hits?: number } | null
   order_score: number
-  order_details: Record<string, unknown> | null
+  order_details: { count?: number; total_amount?: number; items?: { title: string; amount: number; date: string }[] } | null
   earnings_score: number
-  earnings_details: Record<string, unknown> | null
+  earnings_details: { op_yoy?: number; latest_op?: number; prev_op?: number; quarters?: { year: string; amount: number }[] } | null
   supply_score: number
-  supply_details: Record<string, unknown> | null
+  supply_details: { foreign_net?: number; institution_net?: number; dual_buy?: boolean; dual_sell?: boolean } | null
   technical_score: number
-  technical_details: Record<string, unknown> | null
+  technical_details: { rsi?: number; adx?: number; macd_histogram?: number; bb_pct?: number; volume_ratio?: number; alignment?: string; patterns?: string[] } | null
   global_score: number
-  global_details: Record<string, unknown> | null
+  global_details: { relevant_symbols?: string[]; bullish_count?: number; total_tracked?: number; global_bullish_ratio?: number; positive_surprises?: number } | null
   total_score: number
   grade: string
   summary: string | null
+  scenario: string | null
   category: string
 }
 
@@ -38,14 +39,14 @@ interface Summary {
 // ── 상수 ─────────────────────────────────────────────
 const GRADE_STYLE: Record<string, { bg: string; text: string; label: string }> = {
   S: { bg: 'bg-[#FFD700]', text: 'text-[#1A1A2E]', label: '최고 확신' },
-  A: { bg: 'bg-[#FF4444]', text: 'text-white',     label: '매우 유망' },
-  B: { bg: 'bg-[#FF8800]', text: 'text-white',     label: '관심 종목' },
+  A: { bg: 'bg-[#3B82F6]', text: 'text-white',     label: '우선 관심' },
+  B: { bg: 'bg-[#10B981]', text: 'text-white',     label: '관심 후보' },
   C: { bg: 'bg-[#888888]', text: 'text-white',     label: '잠재력' },
   D: { bg: 'bg-[#CCCCCC]', text: 'text-[#555]',    label: '관망' },
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
-  large_cap: '대형주', mid_cap: '중형주', small_cap: '소형주', micro_cap: '소형주2',
+  large_cap: '대형주', mid_cap: '중형주', small_cap: '소형주', micro_cap: '초소형',
 }
 
 const THEME_LIST = [
@@ -79,7 +80,6 @@ function RadarChart({ scores }: { scores: number[] }) {
 
   const bgPoints = angles.map(a => `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`).join(' ')
 
-  // 격자선 (20%, 40%, 60%, 80%)
   const grids = [0.2, 0.4, 0.6, 0.8].map(pct =>
     angles.map(a => `${cx + r * pct * Math.cos(a)},${cy + r * pct * Math.sin(a)}`).join(' ')
   )
@@ -91,22 +91,15 @@ function RadarChart({ scores }: { scores: number[] }) {
 
   return (
     <svg viewBox="0 0 160 160" className="w-full max-w-[180px] mx-auto">
-      {/* 격자 */}
       {grids.map((g, i) => (
         <polygon key={i} points={g} fill="none" stroke="#E8E6E0" strokeWidth="0.5" />
       ))}
       <polygon points={bgPoints} fill="none" stroke="#D1D5DB" strokeWidth="1" />
-
-      {/* 축선 */}
       {angles.map((a, i) => (
         <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(a)} y2={cy + r * Math.sin(a)}
           stroke="#E8E6E0" strokeWidth="0.5" />
       ))}
-
-      {/* 데이터 */}
       <polygon points={dataPoints} fill="rgba(0,255,136,0.2)" stroke="#00FF88" strokeWidth="2" />
-
-      {/* 라벨 */}
       {angles.map((a, i) => {
         const lx = cx + (r + 16) * Math.cos(a)
         const ly = cy + (r + 16) * Math.sin(a)
@@ -152,14 +145,33 @@ function ScoreBar({ score, label, weight }: { score: number; label: string; weig
 // ── 상세 확장 패널 ───────────────────────────────────
 function DetailPanel({ item }: { item: DiscoveryItem }) {
   const scores = LAYER_KEYS.map(k => item[k] as number)
-  const sd = item.supply_details as { foreign_5d?: number; inst_5d?: number; dual_buy?: boolean; consec_days?: number } | null
-  const ed = item.earnings_details as { op_yoy?: number; op_qoq?: number; revenue_yoy?: number } | null
-  const td = item.technical_details as { rsi?: number; macd_signal?: string; alignment?: string; adx?: number } | null
-  const gd = item.global_details as { analyst_consensus?: string; earnings_surprise?: number; supply_chain?: string[] } | null
-  const od = item.order_details as { count?: number; total_amount?: number } | null
+  const sd = item.supply_details
+  const ed = item.earnings_details
+  const td = item.technical_details
+  const gd = item.global_details
+  const od = item.order_details
 
   return (
     <div className="bg-[#FAFAF8] border-t border-[#E8E6E0] px-4 py-4">
+      {/* 시나리오 */}
+      {item.scenario && (
+        <div className="fx-card-green mb-4">
+          <div className="text-[13px] font-black text-[#1A1A2E] mb-1.5">투자 시나리오</div>
+          <p className="text-[13px] text-[#555] leading-relaxed whitespace-pre-line">{item.scenario}</p>
+        </div>
+      )}
+
+      {/* summary 태그 */}
+      {item.summary && (
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {item.summary.split('|').map((s, i) => (
+            <span key={i} className="bg-[#E8F5E9] text-[#00843D] text-[11px] font-bold px-2 py-0.5 rounded-full">
+              {s.trim()}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row gap-4">
         {/* 좌: 레이더 차트 */}
         <div className="w-full md:w-[200px] shrink-0">
@@ -201,8 +213,11 @@ function DetailPanel({ item }: { item: DiscoveryItem }) {
             {od && od.count != null && od.count > 0 && (
               <div className="bg-white rounded-lg p-2 border border-[#E8E6E0]">
                 <div className="font-black text-[#1A1A2E] mb-1">수주</div>
-                <div className="text-[#555]">
-                  수주 {od.count}건{od.total_amount ? `, 총 ${fmtCap(Math.round(od.total_amount / 100000000))}` : ''}
+                <div className="text-[#555] space-y-0.5">
+                  <div>수주 {od.count}건{od.total_amount ? `, 총 ${fmtCap(Math.round(od.total_amount / 100000000))}` : ''}</div>
+                  {od.items && od.items.length > 0 && od.items.slice(0, 2).map((it, i) => (
+                    <div key={i} className="text-[10px] text-[#888]">{it.date} {it.title}</div>
+                  ))}
                 </div>
               </div>
             )}
@@ -212,9 +227,14 @@ function DetailPanel({ item }: { item: DiscoveryItem }) {
               <div className="bg-white rounded-lg p-2 border border-[#E8E6E0]">
                 <div className="font-black text-[#1A1A2E] mb-1">실적</div>
                 <div className="text-[#555] space-y-0.5">
-                  {ed.op_yoy != null && <div>영업이익 YoY {ed.op_yoy >= 0 ? '+' : ''}{ed.op_yoy.toFixed(0)}%</div>}
-                  {ed.op_qoq != null && <div>영업이익 QoQ {ed.op_qoq >= 0 ? '+' : ''}{ed.op_qoq.toFixed(0)}%</div>}
-                  {ed.revenue_yoy != null && <div>매출 YoY {ed.revenue_yoy >= 0 ? '+' : ''}{ed.revenue_yoy.toFixed(0)}%</div>}
+                  {ed.op_yoy != null && (
+                    <div>영업이익 YoY <span className="font-bold" style={{ color: ed.op_yoy >= 0 ? '#D62728' : '#1565C0' }}>
+                      {ed.op_yoy >= 0 ? '+' : ''}{ed.op_yoy.toFixed(0)}%
+                    </span></div>
+                  )}
+                  {ed.latest_op != null && (
+                    <div className="text-[10px] text-[#888]">최근 영업이익: {(ed.latest_op / 100000000).toFixed(0)}억</div>
+                  )}
                 </div>
               </div>
             )}
@@ -224,10 +244,14 @@ function DetailPanel({ item }: { item: DiscoveryItem }) {
               <div className="bg-white rounded-lg p-2 border border-[#E8E6E0]">
                 <div className="font-black text-[#1A1A2E] mb-1">수급</div>
                 <div className="text-[#555] space-y-0.5">
-                  {sd.foreign_5d != null && <div>외인 5일 {sd.foreign_5d >= 0 ? '+' : ''}{sd.foreign_5d.toLocaleString()}억</div>}
-                  {sd.inst_5d != null && <div>기관 5일 {sd.inst_5d >= 0 ? '+' : ''}{sd.inst_5d.toLocaleString()}억</div>}
+                  {sd.foreign_net != null && (
+                    <div>외인 {sd.foreign_net >= 0 ? '+' : ''}{sd.foreign_net.toLocaleString()}백만</div>
+                  )}
+                  {sd.institution_net != null && (
+                    <div>기관 {sd.institution_net >= 0 ? '+' : ''}{sd.institution_net.toLocaleString()}백만</div>
+                  )}
                   {sd.dual_buy && <div className="text-[#D62728] font-bold">쌍끌이 매수</div>}
-                  {sd.consec_days != null && sd.consec_days >= 3 && <div>연속 {sd.consec_days}일</div>}
+                  {sd.dual_sell && <div className="text-[#1565C0] font-bold">쌍끌이 매도</div>}
                 </div>
               </div>
             )}
@@ -236,9 +260,21 @@ function DetailPanel({ item }: { item: DiscoveryItem }) {
             {td && (
               <div className="bg-white rounded-lg p-2 border border-[#E8E6E0]">
                 <div className="font-black text-[#1A1A2E] mb-1">기술적</div>
-                <div className="text-[#555]">
-                  {[td.alignment, td.rsi != null ? `RSI ${td.rsi.toFixed(0)}` : null, td.macd_signal, td.adx != null ? `ADX ${td.adx.toFixed(0)}` : null]
-                    .filter(Boolean).join(' | ')}
+                <div className="text-[#555] space-y-0.5">
+                  {td.alignment && <div className="font-bold">{td.alignment}</div>}
+                  <div className="flex flex-wrap gap-1 text-[10px]">
+                    {td.rsi != null && <span className="bg-[#F0EDE8] px-1 py-0.5 rounded">RSI {td.rsi.toFixed(0)}</span>}
+                    {td.adx != null && <span className="bg-[#F0EDE8] px-1 py-0.5 rounded">ADX {td.adx.toFixed(0)}</span>}
+                    {td.volume_ratio != null && <span className="bg-[#F0EDE8] px-1 py-0.5 rounded">거래량 {td.volume_ratio.toFixed(1)}x</span>}
+                    {td.bb_pct != null && <span className="bg-[#F0EDE8] px-1 py-0.5 rounded">BB% {td.bb_pct.toFixed(0)}</span>}
+                  </div>
+                  {td.patterns && td.patterns.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-0.5">
+                      {td.patterns.map((p, i) => (
+                        <span key={i} className="text-[10px] bg-[#E8F5E9] text-[#00843D] px-1 py-0.5 rounded font-bold">{p}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -248,20 +284,23 @@ function DetailPanel({ item }: { item: DiscoveryItem }) {
               <div className="bg-white rounded-lg p-2 border border-[#E8E6E0]">
                 <div className="font-black text-[#1A1A2E] mb-1">글로벌</div>
                 <div className="text-[#555] space-y-0.5">
-                  {gd.analyst_consensus && <div>{gd.analyst_consensus}</div>}
-                  {gd.earnings_surprise != null && <div>실적 서프라이즈 {gd.earnings_surprise >= 0 ? '+' : ''}{gd.earnings_surprise.toFixed(0)}%</div>}
-                  {gd.supply_chain && gd.supply_chain.length > 0 && <div>연관: {gd.supply_chain.slice(0, 3).join(', ')}</div>}
+                  {gd.relevant_symbols && gd.relevant_symbols.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {gd.relevant_symbols.slice(0, 5).map(s => (
+                        <span key={s} className="text-[10px] bg-[#EEF4FF] text-[#3B82F6] px-1 py-0.5 rounded font-bold">{s}</span>
+                      ))}
+                    </div>
+                  )}
+                  {gd.bullish_count != null && gd.total_tracked != null && (
+                    <div>{gd.bullish_count}/{gd.total_tracked} 강세 ({gd.global_bullish_ratio?.toFixed(0) ?? '—'}%)</div>
+                  )}
+                  {gd.positive_surprises != null && gd.positive_surprises > 0 && (
+                    <div>실적 서프라이즈 {gd.positive_surprises}건</div>
+                  )}
                 </div>
               </div>
             )}
           </div>
-
-          {/* AI 코멘트 */}
-          {item.summary && (
-            <div className="bg-[#F0F7FF] rounded-lg p-2 border-l-4 border-[#0ea5e9] text-[12px] text-[#444]">
-              {item.summary}
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -292,7 +331,7 @@ export default function DiscoveryView() {
   const [summary, setSummary] = useState<Summary | null>(null)
   const [date, setDate] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [expanded, setExpanded] = useState<string | null>(null) // ticker
+  const [expanded, setExpanded] = useState<string | null>(null)
 
   // 필터 상태
   const [fGrade, setFGrade] = useState<string>('all')
@@ -325,7 +364,7 @@ export default function DiscoveryView() {
   const filtered = useMemo(() => {
     let result = items
     if (fGrade !== 'all') result = result.filter(i => i.grade === fGrade)
-    else result = result.filter(i => i.grade !== 'D') // 기본: D 제외
+    else result = result.filter(i => i.grade !== 'D')
     if (fMarket !== 'all') result = result.filter(i => i.market === fMarket)
     if (fCategory !== 'all') result = result.filter(i => i.category === fCategory)
     if (fTheme !== 'all') result = result.filter(i => i.theme_keywords?.some(k => k.includes(fTheme)))
@@ -343,7 +382,6 @@ export default function DiscoveryView() {
   const availableThemes = useMemo(() => {
     const set = new Set<string>()
     items.forEach(i => i.theme_keywords?.forEach(k => set.add(k)))
-    // THEME_LIST 순서 우선, 추가 테마는 뒤에
     const ordered = THEME_LIST.filter(t => set.has(t))
     set.forEach(t => { if (!ordered.includes(t)) ordered.push(t) })
     return ordered
@@ -351,7 +389,7 @@ export default function DiscoveryView() {
 
   if (loading) {
     return (
-      <div className={`${CONTAINER} pt-6 space-y-4`}>
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4">
         <div className="animate-pulse space-y-4">
           <div className="h-8 w-48 bg-gray-200 rounded-xl" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -365,7 +403,7 @@ export default function DiscoveryView() {
   }
 
   return (
-    <div className={`${CONTAINER} pt-6 pb-8 space-y-4`}>
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-8 space-y-4">
       {/* 헤더 */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
@@ -374,7 +412,7 @@ export default function DiscoveryView() {
         </div>
         {date && (
           <div className="text-[12px] text-[#888] shrink-0">
-            {date} 기준 · <span className="text-[#00843D] font-bold">● 정보봇 자동수집</span>
+            {date} 기준 · <span className="text-[#00843D] font-bold">FLOWX 정보봇</span>
           </div>
         )}
       </div>
@@ -386,14 +424,14 @@ export default function DiscoveryView() {
             const s = GRADE_STYLE[g]
             return (
               <button key={g} onClick={() => setFGrade(fGrade === g ? 'all' : g)}
-                className={`${CARD.S} text-center cursor-pointer transition-all min-h-0 ${fGrade === g ? 'ring-2 ring-[#00FF88]' : ''}`}>
+                className={`fx-card text-center cursor-pointer transition-all ${fGrade === g ? 'ring-2 ring-[#00FF88]' : ''}`}>
                 <GradeBadge grade={g} />
                 <div className="text-[28px] md:text-[32px] font-black text-[#1A1A2E] mt-1">{summary[g]}</div>
                 <div className="text-[11px] text-[#888]">{s.label}</div>
               </button>
             )
           })}
-          <div className={`${CARD.S} text-center min-h-0`}>
+          <div className="fx-card text-center">
             <span className="text-[12px] font-bold text-[#888]">전체</span>
             <div className="text-[28px] md:text-[32px] font-black text-[#1A1A2E] mt-1">{summary.total}</div>
             <div className="text-[11px] text-[#888]">분석 종목</div>
@@ -402,7 +440,7 @@ export default function DiscoveryView() {
       )}
 
       {/* 필터 바 */}
-      <div className="space-y-2">
+      <div className="fx-card space-y-2">
         {/* 등급 */}
         <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#888] w-[40px] shrink-0">등급</span>
@@ -421,7 +459,7 @@ export default function DiscoveryView() {
         {/* 카테고리 */}
         <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#888] w-[40px] shrink-0">규모</span>
-          {[['all', '전체'], ['large_cap', '대형주'], ['mid_cap', '중형주'], ['small_cap', '소형주'], ['micro_cap', '소형주2']].map(([k, l]) => (
+          {[['all', '전체'], ['large_cap', '대형주'], ['mid_cap', '중형주'], ['small_cap', '소형주'], ['micro_cap', '초소형']].map(([k, l]) => (
             <FilterChip key={k} label={l} active={fCategory === k} onClick={() => setFCategory(k)} />
           ))}
         </div>
@@ -483,8 +521,19 @@ export default function DiscoveryView() {
                 <div className="hidden md:grid grid-cols-[40px_1fr_80px_60px_70px_50px_50px_50px_50px_50px_50px_60px] gap-1 px-3 py-2.5 items-center border-b border-[#F0EDE8] text-[13px]">
                   <GradeBadge grade={item.grade} size="sm" />
                   <div>
-                    <span className="font-black text-[#1A1A2E]">{item.name}</span>
+                    <Link
+                      href={`/stock/${item.ticker}`}
+                      onClick={e => e.stopPropagation()}
+                      className="font-black text-[#1A1A2E] hover:text-[#00FF88] transition-colors"
+                    >
+                      {item.name}
+                    </Link>
                     <span className="text-[11px] text-[#aaa] ml-1">{item.ticker}</span>
+                    {item.theme_keywords && item.theme_keywords.length > 0 && (
+                      <span className="text-[10px] text-[#00843D] ml-1.5">
+                        {item.theme_keywords[0].replace(/_/g, ' ')}
+                      </span>
+                    )}
                   </div>
                   <span className="text-[12px] text-[#6B7280]">{item.sector}</span>
                   <span className="text-[11px] text-[#888]">{item.market}</span>
@@ -507,7 +556,13 @@ export default function DiscoveryView() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <GradeBadge grade={item.grade} size="sm" />
-                      <span className="font-black text-[14px] text-[#1A1A2E]">{item.name}</span>
+                      <Link
+                        href={`/stock/${item.ticker}`}
+                        onClick={e => e.stopPropagation()}
+                        className="font-black text-[14px] text-[#1A1A2E] hover:text-[#00FF88]"
+                      >
+                        {item.name}
+                      </Link>
                       <span className="text-[11px] text-[#aaa]">{item.ticker}</span>
                     </div>
                     <span className="text-[16px] font-black tabular-nums" style={{ color: scoreColor(item.total_score) }}>
@@ -517,12 +572,13 @@ export default function DiscoveryView() {
                   <div className="flex items-center gap-2 text-[11px] text-[#888]">
                     <span>{item.sector}</span>
                     <span>{item.market}</span>
+                    <span>{CATEGORY_LABEL[item.category] ?? item.category}</span>
                     <span>{fmtCap(item.market_cap)}</span>
                     <span className="ml-auto">{item.price.toLocaleString()}원</span>
                   </div>
                   {/* 미니 점수 바 */}
                   <div className="flex gap-1 mt-1.5">
-                    {LAYER_KEYS.map((k, i) => {
+                    {LAYER_KEYS.map(k => {
                       const v = item[k] as number
                       return (
                         <div key={k} className="flex-1">
