@@ -217,20 +217,20 @@ function IndexCards({ data }: { data: UsMarketData }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {cards.map(card => (
-        <div key={card.name} className="fx-card px-4 py-4" style={{ borderTop: `3px solid ${changeColor(card.change)}` }}>
-          <div className="flex items-center justify-between sm:block">
+        <div key={card.name} className="fx-card px-3 py-2.5" style={{ borderTop: `3px solid ${changeColor(card.change)}` }}>
+          <div className="flex items-center justify-between">
             <div>
-              <div className="text-[14px] sm:text-[16px] font-bold text-[#1A1A2E] tracking-wide">{card.name}</div>
-              <div className="text-[11px] sm:text-[12px] text-[#888] mb-1 sm:mb-2">{card.sub}</div>
+              <div className="text-[13px] font-bold text-[#1A1A2E]">{card.name}</div>
+              <div className="text-[10px] text-[#888]">{card.sub}</div>
             </div>
-            <div className="text-right sm:text-left">
-              <div className="text-[28px] sm:text-[36px] font-black leading-none" style={{ color: changeColor(card.change) }}>
+            <div className="text-right">
+              <div className="text-[20px] font-black leading-none" style={{ color: changeColor(card.change) }}>
                 {changeStr(card.change)}
               </div>
-              <div className="text-[18px] sm:text-[22px] font-bold text-[#1A1A2E] mt-1 font-mono">{f2(card.close, 0)}</div>
+              <div className="text-[14px] font-bold text-[#1A1A2E] mt-0.5 font-mono">{f2(card.close, 0)}</div>
             </div>
           </div>
-          <div className="text-[11px] sm:text-[12px] text-[#888] mt-2">{card.note}</div>
+          <div className="text-[10px] text-[#888] mt-1">{card.note}</div>
         </div>
       ))}
     </div>
