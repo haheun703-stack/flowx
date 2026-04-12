@@ -896,19 +896,19 @@ export function UsMarketView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       {/* 히어로 배너 */}
-      <div className="relative overflow-hidden rounded-2xl" style={{
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] shadow-sm" style={{
         background: overallUp
-          ? 'linear-gradient(135deg, #0F2027 0%, #0A3D2E 40%, #1A4A35 100%)'
+          ? 'linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 40%, #F0FDFA 100%)'
           : overallDn
-          ? 'linear-gradient(135deg, #1A0A0A 0%, #2D1117 40%, #3B1522 100%)'
-          : 'linear-gradient(135deg, #0F1419 0%, #1A1F2E 40%, #1E2538 100%)',
+          ? 'linear-gradient(135deg, #FFF5F5 0%, #FEF2F2 40%, #FFF1F2 100%)'
+          : 'linear-gradient(135deg, #F0F9FF 0%, #EFF6FF 40%, #F5F3FF 100%)',
       }}>
         {/* 배경 글로우 */}
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-20 blur-[80px]" style={{
-          background: overallUp ? '#00FF88' : overallDn ? '#FF4444' : '#3B82F6',
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full opacity-[0.15] blur-[80px]" style={{
+          background: overallUp ? '#10B981' : overallDn ? '#EF4444' : '#3B82F6',
         }} />
-        <div className="absolute bottom-0 left-0 w-[200px] h-[200px] rounded-full opacity-10 blur-[60px]" style={{
-          background: overallUp ? '#10B981' : overallDn ? '#DC2626' : '#6366F1',
+        <div className="absolute bottom-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.08] blur-[60px]" style={{
+          background: overallUp ? '#059669' : overallDn ? '#DC2626' : '#6366F1',
         }} />
 
         <div className="relative z-10 px-5 md:px-8 py-5 md:py-6">
@@ -917,23 +917,23 @@ export function UsMarketView() {
               {/* 상단 라벨 */}
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{
-                  backgroundColor: overallUp ? '#00FF88' : overallDn ? '#FF4444' : '#3B82F6',
+                  backgroundColor: overallUp ? '#16a34a' : overallDn ? '#dc2626' : '#3B82F6',
                 }} />
                 <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase" style={{
-                  color: overallUp ? '#00FF88' : overallDn ? '#FF6B6B' : '#93C5FD',
+                  color: overallUp ? '#16a34a' : overallDn ? '#dc2626' : '#3B82F6',
                 }}>
                   US MARKET BRIEF
                 </span>
-                <span className="text-[10px] text-white/30 ml-1">{market.date}</span>
+                <span className="text-[10px] text-[#999] ml-1">{market.date}</span>
               </div>
 
               {/* 메인 헤드라인 */}
-              <div className="text-[20px] md:text-[28px] font-black text-white leading-tight tracking-tight">
+              <div className="text-[20px] md:text-[28px] font-black text-[#1A1A2E] leading-tight tracking-tight">
                 {overallUp
-                  ? <>나스닥 <span style={{ color: '#00FF88' }}>{nqChg >= 0 ? '+' : ''}{nqChg.toFixed(1)}%</span> 상승{market.soxx_change && market.soxx_change > 0 ? ', 반도체 강세' : ''}</>
+                  ? <>나스닥 <span style={{ color: '#16a34a' }}>{nqChg >= 0 ? '+' : ''}{nqChg.toFixed(1)}%</span> 상승{market.soxx_change && market.soxx_change > 0 ? ', 반도체 강세' : ''}</>
                   : overallDn
-                  ? <>나스닥 <span style={{ color: '#FF6B6B' }}>{nqChg.toFixed(1)}%</span> 하락, 시장 조정 중</>
-                  : <>나스닥 보합, <span className="text-white/60">방향 탐색 중</span></>}
+                  ? <>나스닥 <span style={{ color: '#dc2626' }}>{nqChg.toFixed(1)}%</span> 하락, 시장 조정 중</>
+                  : <>나스닥 보합, <span className="text-[#888]">방향 탐색 중</span></>}
               </div>
 
               {/* 지수 뱃지 행 */}
@@ -944,10 +944,10 @@ export function UsMarketView() {
                   { label: 'DOW', value: market.dow_change },
                   { label: 'SOXX', value: market.soxx_change },
                 ].map(idx => (
-                  <div key={idx.label} className="flex items-center gap-1.5 bg-white/8 backdrop-blur-sm rounded-lg px-2.5 py-1 border border-white/10">
-                    <span className="text-[11px] font-bold text-white/50">{idx.label}</span>
+                  <div key={idx.label} className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-lg px-2.5 py-1 border border-[#E8E6E0]">
+                    <span className="text-[11px] font-bold text-[#999]">{idx.label}</span>
                     <span className="text-[13px] font-black tabular-nums" style={{
-                      color: idx.value == null ? '#888' : idx.value > 0 ? '#00FF88' : idx.value < 0 ? '#FF6B6B' : '#93C5FD',
+                      color: idx.value == null ? '#888' : idx.value > 0 ? '#16a34a' : idx.value < 0 ? '#dc2626' : '#3B82F6',
                     }}>
                       {changeStr(idx.value)}
                     </span>
@@ -959,22 +959,22 @@ export function UsMarketView() {
             {/* 우측 시그널 */}
             <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:gap-2 shrink-0">
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{
-                backgroundColor: overallUp ? 'rgba(0,255,136,0.15)' : overallDn ? 'rgba(255,68,68,0.15)' : 'rgba(59,130,246,0.15)',
-                border: `1px solid ${overallUp ? 'rgba(0,255,136,0.3)' : overallDn ? 'rgba(255,68,68,0.3)' : 'rgba(59,130,246,0.3)'}`,
+                backgroundColor: overallUp ? 'rgba(22,163,74,0.08)' : overallDn ? 'rgba(220,38,38,0.08)' : 'rgba(59,130,246,0.08)',
+                border: `1px solid ${overallUp ? 'rgba(22,163,74,0.2)' : overallDn ? 'rgba(220,38,38,0.2)' : 'rgba(59,130,246,0.2)'}`,
               }}>
                 <span className="text-[20px] md:text-[24px]">
                   {overallUp ? '📈' : overallDn ? '📉' : '📊'}
                 </span>
                 <div>
                   <div className="text-[16px] md:text-[18px] font-black" style={{
-                    color: overallUp ? '#00FF88' : overallDn ? '#FF6B6B' : '#93C5FD',
+                    color: overallUp ? '#16a34a' : overallDn ? '#dc2626' : '#3B82F6',
                   }}>
                     {overallUp ? '긍정' : overallDn ? '주의' : '중립'}
                   </div>
-                  <div className="text-[10px] text-white/40 font-bold">SIGNAL</div>
+                  <div className="text-[10px] text-[#999] font-bold">SIGNAL</div>
                 </div>
               </div>
-              <div className="text-[10px] text-white/30 font-bold">FLOWX Auto</div>
+              <div className="text-[10px] text-[#bbb] font-bold">FLOWX Auto</div>
             </div>
           </div>
         </div>
