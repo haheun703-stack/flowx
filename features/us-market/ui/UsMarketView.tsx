@@ -1,6 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  createChart,
+  LineSeries,
+  type IChartApi,
+  type UTCTimestamp,
+} from 'lightweight-charts'
 
 // ── 타입 ─────────────────────────────────────────────────────
 interface UsMarketData {
@@ -116,7 +122,7 @@ function Sk({ h = 'h-4', w = 'w-full', className = ''}: { h?: string; w?: string
 // 서브 컴포넌트
 // ══════════════════════════════════════════════════════════════
 
-// ── 3대 지수 멀티라인 차트 ──────────────────────────────────
+// ── 미국 지수 차트 (lightweight-charts) ──────────────────────
 const INDEX_LINES = [
   { key: 'sp500_close' as const, name: 'S&P 500', color: '#D62728' },
   { key: 'nasdaq_close' as const, name: '나스닥', color: '#2563EB' },
@@ -124,114 +130,155 @@ const INDEX_LINES = [
 ]
 
 function UsIndexChart({ history }: { history: IndexHistoryRow[] }) {
-  if (history.length < 2) return null
+  const containerRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<IChartApi | null>(null)
 
-  const W = 700, H = 220, PX = 48, PY = 20
-  const chartW = W - PX * 2, chartH = H - PY * 2
-
-  // 각 지수를 첫 날 기준 %변화로 정규화
+  // 정규화 데이터 (첫 날 기준 % 변화)
   const normalized = useMemo(() => {
-    const result: Record<string, number[]> = {}
+    if (history.length < 2) return null
+    const result: Record<string, { time: UTCTimestamp; value: number }[]> = {}
     for (const line of INDEX_LINES) {
       const vals = history.map(r => r[line.key])
       const base = vals.find(v => v != null && v > 0)
-      if (!base) { result[line.key] = []; continue }
-      result[line.key] = vals.map(v => v != null ? ((v - base) / base) * 100 : NaN)
+      if (!base) continue
+      result[line.key] = history
+        .map((r, i) => {
+          const v = vals[i]
+          if (v == null) return null
+          return {
+            time: Math.floor(new Date(`${r.date}T00:00:00Z`).getTime() / 1000) as UTCTimestamp,
+            value: ((v - base) / base) * 100,
+          }
+        })
+        .filter((p): p is { time: UTCTimestamp; value: number } => p !== null)
     }
     return result
   }, [history])
 
-  // Y축 범위
-  const allVals = Object.values(normalized).flat().filter(v => !isNaN(v))
-  if (allVals.length === 0) return null
-  const yMin = Math.min(...allVals)
-  const yMax = Math.max(...allVals)
-  const yPad = Math.max((yMax - yMin) * 0.15, 0.5)
-  const domainMin = yMin - yPad
-  const domainMax = yMax + yPad
+  // 최신 변화율
+  const latestChanges = useMemo(() => {
+    if (!normalized) return {}
+    const changes: Record<string, number> = {}
+    for (const line of INDEX_LINES) {
+      const pts = normalized[line.key]
+      if (pts && pts.length > 0) changes[line.key] = pts[pts.length - 1].value
+    }
+    return changes
+  }, [normalized])
 
-  const toX = (i: number) => PX + (i / (history.length - 1)) * chartW
-  const toY = (v: number) => PY + (1 - (v - domainMin) / (domainMax - domainMin)) * chartH
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || !normalized) return
 
-  // Y축 그리드
-  const yTicks: number[] = []
-  const step = (domainMax - domainMin) / 4
-  for (let i = 0; i <= 4; i++) yTicks.push(domainMin + step * i)
+    const chart = createChart(el, {
+      layout: {
+        background: { color: 'transparent' },
+        textColor: '#9CA3AF',
+        fontFamily: "'Pretendard', -apple-system, system-ui, sans-serif",
+      },
+      grid: {
+        vertLines: { color: '#F0EDE8' },
+        horzLines: { color: '#F0EDE8' },
+      },
+      crosshair: {
+        vertLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
+        horzLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
+      },
+      rightPriceScale: {
+        borderColor: '#E8E6E0',
+        scaleMargins: { top: 0.08, bottom: 0.08 },
+      },
+      timeScale: {
+        borderColor: '#E8E6E0',
+        fixLeftEdge: true,
+        fixRightEdge: true,
+      },
+      width: el.clientWidth,
+      height: 260,
+    })
 
-  // X축 라벨 (5개)
-  const xLabels: { i: number; label: string }[] = []
-  const xStep = Math.max(1, Math.floor((history.length - 1) / 4))
-  for (let i = 0; i < history.length; i += xStep) {
-    xLabels.push({ i, label: history[i].date.slice(5) }) // MM-DD
-  }
-  if (xLabels[xLabels.length - 1]?.i !== history.length - 1) {
-    xLabels.push({ i: history.length - 1, label: history[history.length - 1].date.slice(5) })
-  }
+    for (const line of INDEX_LINES) {
+      const pts = normalized[line.key]
+      if (!pts) continue
+      const series = chart.addSeries(LineSeries, {
+        color: line.color,
+        lineWidth: 2,
+        priceLineVisible: false,
+        lastValueVisible: true,
+        crosshairMarkerBorderColor: '#ffffff',
+        crosshairMarkerBackgroundColor: line.color,
+        crosshairMarkerRadius: 4,
+      })
+      series.setData(pts)
+    }
+
+    chart.timeScale().fitContent()
+    chartRef.current = chart
+
+    let disposed = false
+    const ro = new ResizeObserver(() => {
+      if (!disposed && el) chart.applyOptions({ width: el.clientWidth })
+    })
+    ro.observe(el)
+
+    return () => {
+      disposed = true
+      ro.disconnect()
+      chart.remove()
+      chartRef.current = null
+    }
+  }, [normalized])
+
+  if (!normalized || history.length < 2) return null
+
+  // 최신 종가
+  const last = history[history.length - 1]
 
   return (
-    <div className="fx-card px-4 py-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-1">
-        <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">3대 지수 추이</span>
-        <div className="flex items-center gap-3">
-          {INDEX_LINES.map(l => (
-            <span key={l.key} className="flex items-center gap-1 text-[12px] text-[#555]">
-              <span className="w-3 h-[3px] rounded-full inline-block" style={{ backgroundColor: l.color }} />
-              {l.name}
-            </span>
-          ))}
+    <div className="fx-card-green">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+        <div>
+          <span className="text-[15px] md:text-[18px] font-black text-[#1A1A2E]">US Market Index</span>
+          <span className="text-[12px] md:text-[14px] font-semibold text-[#B0ADA6] ml-2">
+            {last?.date ?? ''} 기준
+          </span>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ minWidth: 400, maxHeight: 240 }}>
-          {/* 그리드 + Y라벨 */}
-          {yTicks.map(v => (
-            <g key={v}>
-              <line x1={PX} x2={W - PX} y1={toY(v)} y2={toY(v)} stroke="#E8E6E0" strokeWidth={1} />
-              <text x={PX - 6} y={toY(v) + 4} textAnchor="end" fill="#9CA3AF" fontSize={10}>
-                {v >= 0 ? '+' : ''}{v.toFixed(1)}%
-              </text>
-            </g>
-          ))}
-          {/* 0%선 강조 */}
-          {domainMin <= 0 && domainMax >= 0 && (
-            <line x1={PX} x2={W - PX} y1={toY(0)} y2={toY(0)} stroke="#888" strokeWidth={1} strokeDasharray="4,3" />
-          )}
-          {/* X라벨 */}
-          {xLabels.map(({ i, label }) => (
-            <text key={i} x={toX(i)} y={H - 2} textAnchor="middle" fill="#9CA3AF" fontSize={10}>{label}</text>
-          ))}
-          {/* 라인 */}
-          {INDEX_LINES.map(line => {
-            const vals = normalized[line.key]
-            if (!vals || vals.length === 0) return null
-            const points = vals
-              .map((v, i) => (!isNaN(v) ? `${toX(i)},${toY(v)}` : null))
-              .filter(Boolean)
-              .join(' ')
-            return (
-              <polyline key={line.key} points={points} fill="none"
-                stroke={line.color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
-            )
-          })}
-          {/* 최신값 점 + 라벨 */}
-          {INDEX_LINES.map(line => {
-            const vals = normalized[line.key]
-            if (!vals || vals.length === 0) return null
-            const lastIdx = vals.length - 1
-            const lastVal = vals[lastIdx]
-            if (isNaN(lastVal)) return null
-            return (
-              <g key={`dot-${line.key}`}>
-                <circle cx={toX(lastIdx)} cy={toY(lastVal)} r={3.5} fill={line.color} />
-                <text x={toX(lastIdx) + 6} y={toY(lastVal) + 4} fill={line.color} fontSize={10} fontWeight="bold">
-                  {lastVal >= 0 ? '+' : ''}{lastVal.toFixed(1)}%
-                </text>
-              </g>
-            )
-          })}
-        </svg>
+
+      {/* 최신 종가 카드 */}
+      <div className="flex items-center gap-4 md:gap-6 mb-2 flex-wrap">
+        {INDEX_LINES.map(line => {
+          const close = last?.[line.key]
+          const chgPct = latestChanges[line.key]
+          return (
+            <div key={line.key} className="flex items-baseline gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: line.color }} />
+              <span className="text-[13px] font-bold text-[#1A1A2E]">{line.name}</span>
+              <span className="text-[18px] md:text-[22px] font-extrabold tabular-nums text-[#1A1A2E]">
+                {close != null ? close.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—'}
+              </span>
+              {chgPct != null && (
+                <span className="text-[14px] font-bold tabular-nums" style={{ color: line.color }}>
+                  {chgPct >= 0 ? '+' : ''}{chgPct.toFixed(2)}%
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
-      <div className="text-[11px] text-[#888] mt-1">첫 날 대비 등락률 (%) · 최근 {history.length}일</div>
+
+      {/* lightweight-charts 차트 */}
+      <div ref={containerRef} className="w-full" />
+
+      {/* 범례 */}
+      <div className="flex items-center gap-4 mt-2">
+        {INDEX_LINES.map(line => (
+          <span key={line.key} className="flex items-center gap-1.5">
+            <span className="inline-block w-5 border-t-[3px]" style={{ borderColor: line.color }} />
+            <span className="text-[13px] font-semibold text-[#6B7280]">{line.name}</span>
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
