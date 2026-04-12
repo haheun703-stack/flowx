@@ -42,13 +42,13 @@ interface UsMarketData {
 
 interface CalEvent {
   id: number
-  event_date: string
-  event_type: string
-  market: string
+  date: string
+  type: string
   title: string
-  description: string
-  importance: string
-  ticker: string | null
+  detail?: string
+  impact?: string
+  market?: string
+  ticker?: string | null
 }
 
 interface FlowRow {
@@ -552,12 +552,12 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
   const [selectedDate, setSelectedDate] = useState(today)
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set())
 
-  const filtered = useMemo(() => events.filter(e => e.event_date.startsWith(yearMonth)), [events, yearMonth])
+  const filtered = useMemo(() => events.filter(e => e.date.startsWith(yearMonth)), [events, yearMonth])
 
   const eventsByDate = useMemo(() => {
     const map: Record<string, CalEvent[]> = {}
     for (const ev of filtered) {
-      const d = ev.event_date
+      const d = ev.date
       if (!map[d]) map[d] = []
       map[d].push(ev)
     }
@@ -569,13 +569,13 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
   const groupedEvents = useMemo(() => {
     const map: Record<string, CalEvent[]> = {}
     for (const ev of filtered) {
-      const t = ev.event_type
+      const t = ev.type
       if (!map[t]) map[t] = []
       map[t].push(ev)
     }
     return Object.entries(map).sort(([a, aEvs], [b, bEvs]) => {
-      const aH = aEvs.some(e => e.importance === 'high') ? 0 : 1
-      const bH = bEvs.some(e => e.importance === 'high') ? 0 : 1
+      const aH = aEvs.some(e => e.impact === 'high') ? 0 : 1
+      const bH = bEvs.some(e => e.impact === 'high') ? 0 : 1
       if (aH !== bH) return aH - bH
       return calGrp(a).order - calGrp(b).order
     })
@@ -621,7 +621,7 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
               const dayEvs = eventsByDate[ds] ?? []
               const isToday = ds === today
               const isSel = ds === selectedDate
-              const hasHigh = dayEvs.some(e => e.importance === 'high')
+              const hasHigh = dayEvs.some(e => e.impact === 'high')
               return (
                 <button key={ds} onClick={() => setSelectedDate(ds)}
                   className={`relative flex flex-col items-center py-1.5 rounded-lg text-[14px] font-semibold transition-colors
@@ -631,7 +631,7 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
                     <div className="flex gap-[2px] mt-0.5">
                       {dayEvs.slice(0, 3).map((ev, j) => (
                         <span key={j} className="w-[5px] h-[5px] rounded-full"
-                          style={{ backgroundColor: hasHigh && j === 0 ? '#DC2626' : calCfg(ev.event_type).dot }} />
+                          style={{ backgroundColor: hasHigh && j === 0 ? '#DC2626' : calCfg(ev.type).dot }} />
                       ))}
                     </div>
                   )}
@@ -646,15 +646,15 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
             ) : (
               <div className="space-y-2">
                 {selectedEvents.map(ev => {
-                  const c = calCfg(ev.event_type)
+                  const c = calCfg(ev.type)
                   return (
                     <div key={ev.id} className="flex items-start gap-2">
                       <span className="text-[14px]">{c.icon}</span>
                       <div className="min-w-0">
-                        <p className={`text-[13px] font-bold ${ev.importance === 'high' ? 'text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
+                        <p className={`text-[13px] font-bold ${ev.impact === 'high' ? 'text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
                           {ev.title}{ev.ticker && <span className="text-[11px] text-[#9CA3AF] ml-1">{ev.ticker}</span>}
                         </p>
-                        {ev.description && <p className="text-[12px] text-[#9CA3AF] truncate">{ev.description}</p>}
+                        {ev.detail && <p className="text-[12px] text-[#9CA3AF] truncate">{ev.detail}</p>}
                       </div>
                       <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto"
                         style={{ backgroundColor: `${c.color}15`, color: c.color }}>{c.label}</span>
@@ -692,10 +692,10 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
                     {isOpen && (
                       <div className="ml-4 pl-2 border-l-2 space-y-1 pb-1" style={{ borderColor: `${c.color}30` }}>
                         {evs.map(ev => {
-                          const dl = `${new Date(ev.event_date).getMonth() + 1}/${new Date(ev.event_date).getDate()}`
+                          const dl = `${new Date(ev.date).getMonth() + 1}/${new Date(ev.date).getDate()}`
                           return (
-                            <button key={ev.id} onClick={() => setSelectedDate(ev.event_date)} className="w-full text-left py-0.5 group">
-                              <p className={`text-[12px] group-hover:text-[#1A1A2E] transition-colors ${ev.importance === 'high' ? 'font-bold text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
+                            <button key={ev.id} onClick={() => setSelectedDate(ev.date)} className="w-full text-left py-0.5 group">
+                              <p className={`text-[12px] group-hover:text-[#1A1A2E] transition-colors ${ev.impact === 'high' ? 'font-bold text-[#1A1A2E]' : 'text-[#6B7280]'}`}>
                                 <span className="text-[#9CA3AF] tabular-nums mr-1">{dl}</span>{ev.title}
                               </p>
                             </button>
