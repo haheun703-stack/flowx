@@ -59,6 +59,13 @@ interface FlowRow {
   flow_pct?: number
 }
 
+interface IndexHistoryRow {
+  date: string
+  sp500_close: number | null
+  nasdaq_close: number | null
+  dow_close: number | null
+}
+
 // ── 상수 ─────────────────────────────────────────────────────
 const ETF_LIST = [
   { ticker: 'SPY', name: 'S&P500', category: '지수'},
@@ -108,6 +115,126 @@ function Sk({ h = 'h-4', w = 'w-full', className = ''}: { h?: string; w?: string
 // ══════════════════════════════════════════════════════════════
 // 서브 컴포넌트
 // ══════════════════════════════════════════════════════════════
+
+// ── 3대 지수 멀티라인 차트 ──────────────────────────────────
+const INDEX_LINES = [
+  { key: 'sp500_close' as const, name: 'S&P 500', color: '#D62728' },
+  { key: 'nasdaq_close' as const, name: '나스닥', color: '#2563EB' },
+  { key: 'dow_close' as const, name: '다우존스', color: '#16A34A' },
+]
+
+function UsIndexChart({ history }: { history: IndexHistoryRow[] }) {
+  if (history.length < 2) return null
+
+  const W = 700, H = 220, PX = 48, PY = 20
+  const chartW = W - PX * 2, chartH = H - PY * 2
+
+  // 각 지수를 첫 날 기준 %변화로 정규화
+  const normalized = useMemo(() => {
+    const result: Record<string, number[]> = {}
+    for (const line of INDEX_LINES) {
+      const vals = history.map(r => r[line.key])
+      const base = vals.find(v => v != null && v > 0)
+      if (!base) { result[line.key] = []; continue }
+      result[line.key] = vals.map(v => v != null ? ((v - base) / base) * 100 : NaN)
+    }
+    return result
+  }, [history])
+
+  // Y축 범위
+  const allVals = Object.values(normalized).flat().filter(v => !isNaN(v))
+  if (allVals.length === 0) return null
+  const yMin = Math.min(...allVals)
+  const yMax = Math.max(...allVals)
+  const yPad = Math.max((yMax - yMin) * 0.15, 0.5)
+  const domainMin = yMin - yPad
+  const domainMax = yMax + yPad
+
+  const toX = (i: number) => PX + (i / (history.length - 1)) * chartW
+  const toY = (v: number) => PY + (1 - (v - domainMin) / (domainMax - domainMin)) * chartH
+
+  // Y축 그리드
+  const yTicks: number[] = []
+  const step = (domainMax - domainMin) / 4
+  for (let i = 0; i <= 4; i++) yTicks.push(domainMin + step * i)
+
+  // X축 라벨 (5개)
+  const xLabels: { i: number; label: string }[] = []
+  const xStep = Math.max(1, Math.floor((history.length - 1) / 4))
+  for (let i = 0; i < history.length; i += xStep) {
+    xLabels.push({ i, label: history[i].date.slice(5) }) // MM-DD
+  }
+  if (xLabels[xLabels.length - 1]?.i !== history.length - 1) {
+    xLabels.push({ i: history.length - 1, label: history[history.length - 1].date.slice(5) })
+  }
+
+  return (
+    <div className="fx-card px-4 py-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-1">
+        <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">3대 지수 추이</span>
+        <div className="flex items-center gap-3">
+          {INDEX_LINES.map(l => (
+            <span key={l.key} className="flex items-center gap-1 text-[12px] text-[#555]">
+              <span className="w-3 h-[3px] rounded-full inline-block" style={{ backgroundColor: l.color }} />
+              {l.name}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ minWidth: 400, maxHeight: 240 }}>
+          {/* 그리드 + Y라벨 */}
+          {yTicks.map(v => (
+            <g key={v}>
+              <line x1={PX} x2={W - PX} y1={toY(v)} y2={toY(v)} stroke="#E8E6E0" strokeWidth={1} />
+              <text x={PX - 6} y={toY(v) + 4} textAnchor="end" fill="#9CA3AF" fontSize={10}>
+                {v >= 0 ? '+' : ''}{v.toFixed(1)}%
+              </text>
+            </g>
+          ))}
+          {/* 0%선 강조 */}
+          {domainMin <= 0 && domainMax >= 0 && (
+            <line x1={PX} x2={W - PX} y1={toY(0)} y2={toY(0)} stroke="#888" strokeWidth={1} strokeDasharray="4,3" />
+          )}
+          {/* X라벨 */}
+          {xLabels.map(({ i, label }) => (
+            <text key={i} x={toX(i)} y={H - 2} textAnchor="middle" fill="#9CA3AF" fontSize={10}>{label}</text>
+          ))}
+          {/* 라인 */}
+          {INDEX_LINES.map(line => {
+            const vals = normalized[line.key]
+            if (!vals || vals.length === 0) return null
+            const points = vals
+              .map((v, i) => (!isNaN(v) ? `${toX(i)},${toY(v)}` : null))
+              .filter(Boolean)
+              .join(' ')
+            return (
+              <polyline key={line.key} points={points} fill="none"
+                stroke={line.color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+            )
+          })}
+          {/* 최신값 점 + 라벨 */}
+          {INDEX_LINES.map(line => {
+            const vals = normalized[line.key]
+            if (!vals || vals.length === 0) return null
+            const lastIdx = vals.length - 1
+            const lastVal = vals[lastIdx]
+            if (isNaN(lastVal)) return null
+            return (
+              <g key={`dot-${line.key}`}>
+                <circle cx={toX(lastIdx)} cy={toY(lastVal)} r={3.5} fill={line.color} />
+                <text x={toX(lastIdx) + 6} y={toY(lastVal) + 4} fill={line.color} fontSize={10} fontWeight="bold">
+                  {lastVal >= 0 ? '+' : ''}{lastVal.toFixed(1)}%
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      <div className="text-[11px] text-[#888] mt-1">첫 날 대비 등락률 (%) · 최근 {history.length}일</div>
+    </div>
+  )
+}
 
 function EtfBar({ sectorEtf }: { sectorEtf: Record<string, number> }) {
   const getCategoryBg = (cat: string) => ({
@@ -776,16 +903,18 @@ export function UsMarketView() {
   const [market, setMarket] = useState<UsMarketData | null>(null)
   const [calEvents, setCalEvents] = useState<CalEvent[]>([])
   const [flows, setFlows] = useState<FlowRow[]>([])
+  const [history, setHistory] = useState<IndexHistoryRow[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
       try {
-        const [mRes, cRes, fRes] = await Promise.allSettled([
+        const [mRes, cRes, fRes, hRes] = await Promise.allSettled([
           fetch('/api/us-market/daily', { signal: controller.signal }),
           fetch('/api/us-market/calendar', { signal: controller.signal }),
           fetch('/api/us-market/investor-flow', { signal: controller.signal }),
+          fetch('/api/us-market/history', { signal: controller.signal }),
         ])
         if (mRes.status === 'fulfilled' && mRes.value.ok) {
           const json = await mRes.value.json()
@@ -798,6 +927,10 @@ export function UsMarketView() {
         if (fRes.status === 'fulfilled' && fRes.value.ok) {
           const json = await fRes.value.json()
           setFlows(json.flows ?? [])
+        }
+        if (hRes.status === 'fulfilled' && hRes.value.ok) {
+          const json = await hRes.value.json()
+          setHistory(json.history ?? [])
         }
       } catch {
         /* abort */
@@ -859,6 +992,7 @@ export function UsMarketView() {
         </div>
       </div>
 
+      {history.length >= 2 && <UsIndexChart history={history} />}
       <EtfBar sectorEtf={market.sector_etf} />
       <IndexCards data={market} />
       {market.mag7 && <Mag7Panel mag7={market.mag7} />}
