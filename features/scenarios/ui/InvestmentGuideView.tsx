@@ -59,7 +59,7 @@ export default function InvestmentGuideView() {
         <line x1="80" y1="100" x2="110" y2="100" stroke="#60a5fa" strokeWidth="2" />
         <text className="au-txt-p" x="120" y="110" fontSize="13" fontWeight="700">PHASE 1: 반도체</text>
         <text className="au-txt-s" x="120" y="128" fontSize="10">병목: GPU 수급 부족 → HBM 폭발적 수요</text>
-        <text fill="#60a5fa" x="120" y="150" fontSize="10" fontWeight="500">SK하이닉스 +180% · 한미반도체 +250%</text>
+        <text fill="#60a5fa" x="120" y="150" fontSize="10" fontWeight="500">SK하이닉스 +634% · 한미반도체 +378%</text>
         <text className="au-txt-m" x="120" y="170" fontSize="9">주린이 교훈: 대형주가 먼저, 소부장은 3~6개월 후행</text>
         <path d="M240,195 L240,222" fill="none" stroke="#60a5fa" strokeWidth="2" className="au-fl3" markerEnd="url(#au-arr2)" />
         <text className="au-txt-m" x="260" y="216" fontSize="9">병목 이동 ▼</text>
@@ -71,7 +71,7 @@ export default function InvestmentGuideView() {
         <line x1="80" y1="280" x2="130" y2="280" stroke="#f87171" strokeWidth="2" />
         <text className="au-txt-p" x="140" y="278" fontSize="13" fontWeight="700">PHASE 2: 전력 / 변압기</text>
         <text className="au-txt-s" x="140" y="296" fontSize="10">병목: DC 전력 수요 175%↑, 변압기 납기 2년+</text>
-        <text fill="#f87171" x="140" y="318" fontSize="10" fontWeight="500">HD현대일렉트릭 +320% · 일진전기 +200%</text>
+        <text fill="#f87171" x="140" y="318" fontSize="10" fontWeight="500">HD현대일렉트릭 +1,177% · 일진전기 +670%</text>
         <text className="au-txt-m" x="140" y="340" fontSize="9">주린이 교훈: 수주잔고 확인! 실적은 2~3분기 후행</text>
         <path d="M270,365 L270,392" fill="none" stroke="#f87171" strokeWidth="2" className="au-fl3" markerEnd="url(#au-arr2)" />
         <text className="au-txt-m" x="290" y="386" fontSize="9">병목 이동 ▼</text>
@@ -170,7 +170,7 @@ export default function InvestmentGuideView() {
         <div className="px-3.5 pb-3">
           <p className="text-[11px] leading-relaxed text-[#5f5e5a] mb-2.5">
             AI 수익화 지연 → 빅테크 실적 미스 → CAPEX 삭감 → 전 공급망 급락.<br />
-            SMIC CEO: &quot;10년치 용량을 1~2년 만에 구축... 수요 없는 빈 껍데기 전락 우려&quot;
+            SMIC co-CEO 조해군(Zhao Haijun): &quot;10년치 용량을 1~2년 만에 구축... 수요 없는 빈 껍데기 전락 우려&quot;
           </p>
           <div className="flex items-center gap-1 flex-wrap mb-2.5">
             <span className="text-[10px] px-2 py-0.5 rounded-[5px] whitespace-nowrap border border-[rgba(239,68,68,0.4)] bg-[rgba(239,68,68,0.12)] text-[#ef4444] font-semibold">CAPEX 삭감</span>
@@ -242,7 +242,7 @@ export default function InvestmentGuideView() {
         <div className="px-3.5 pb-3">
           <p className="text-[11px] leading-relaxed text-[#5f5e5a] mb-2.5">
             301조 관세 + 반도체 수출 규제 강화 → 한국 반도체 중국 매출 타격 → 방산 반사이익<br />
-            한국 관세 10% 적용 중 + 한미 무역합의 국회 미비준 → 25% 인상 가능성
+            한국 상호관세 25%→15%(2025.8 협상)→미 대법원 위법 판결(2026.2), 법적 불확실성 지속
           </p>
           <div className="flex items-center gap-1 flex-wrap mb-2.5">
             <span className="text-[10px] px-2 py-0.5 rounded-[5px] whitespace-nowrap border border-[rgba(239,68,68,0.4)] bg-[rgba(239,68,68,0.12)] text-[#ef4444] font-semibold">수출 규제 강화</span>
@@ -324,7 +324,7 @@ export default function InvestmentGuideView() {
           ═══════════════════════════════════════════════════════════ */}
       <div className="border-t border-[#E8E6E0] mt-10 pt-6 text-center">
         <h3 className="text-[16px] font-black text-[#1A1A2E]">PART 3 — 섹터 간 연쇄반응</h3>
-        <p className="text-[11px] text-[#9CA3AF] mt-1 mb-4">하나의 뉴스가 어떻게 종목까지 전파되는지, 인과관계 체인을 따라가세요</p>
+        <p className="text-[11px] text-[#9CA3AF] mt-1 mb-4">하나의 뉴스가 어떻게 종목까지 전파되는지, 인과관계 체인을 따라가세요<br />※ PART 1(산업 파급)은 년 단위, PART 3(주가 반응)은 일 단위 — 측정 척도가 다릅니다</p>
       </div>
 
       {/* 예시 1: NVIDIA 실적 서프라이즈 */}

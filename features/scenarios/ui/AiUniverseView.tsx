@@ -173,6 +173,7 @@ export default function AiUniverseView() {
         <g className="au-hovg"><rect className="au-tag-bg" x="12" y="670" width="88" height="24" rx="6" strokeWidth=".5" /><circle cx="24" cy="682" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="31" y="686" fontSize="10">네패스아크</text></g>
         <g className="au-hovg"><rect className="au-tag-bg" x="106" y="670" width="68" height="24" rx="6" strokeWidth=".5" /><circle cx="118" cy="682" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="125" y="686" fontSize="10">테크윙</text></g>
         <g className="au-hovg"><rect className="au-tag-bg" x="180" y="670" width="72" height="24" rx="6" strokeWidth=".5" /><circle cx="192" cy="682" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="199" y="686" fontSize="10">삼성전기</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="12" y="698" width="52" height="24" rx="6" strokeWidth=".5" /><circle cx="24" cy="710" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="31" y="714" fontSize="10">고영</text></g>
 
         {/* ─── STEP 2: 전력/원전 ─── */}
         <g transform="translate(390,510)">
@@ -212,10 +213,10 @@ export default function AiUniverseView() {
         </g>
         {/* 냉각 종목 */}
         <g className="au-hovg"><rect className="au-tag-bg" x="574" y="614" width="86" height="24" rx="6" strokeWidth=".5" /><circle cx="586" cy="626" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="593" y="630" fontSize="10" fontWeight="600">한온시스템</text></g>
-        <g className="au-hovg"><rect className="au-tag-bg" x="666" y="614" width="82" height="24" rx="6" strokeWidth=".5" /><circle cx="678" cy="626" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="685" y="630" fontSize="10" fontWeight="600">삼성E&amp;A</text></g>
+        {/* 삼성E&A는 건설/인프라 섹터로 이동 */}
         <g className="au-hovg"><rect className="au-tag-bg" x="574" y="642" width="62" height="24" rx="6" strokeWidth=".5" /><circle cx="586" cy="654" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="593" y="658" fontSize="10">에이텍</text></g>
         <g className="au-hovg"><rect className="au-tag-bg" x="642" y="642" width="62" height="24" rx="6" strokeWidth=".5" /><circle cx="654" cy="654" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="661" y="658" fontSize="10">월덱스</text></g>
-        <g className="au-hovg"><rect className="au-tag-bg" x="710" y="642" width="52" height="24" rx="6" strokeWidth=".5" /><circle cx="722" cy="654" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="729" y="658" fontSize="10">고영</text></g>
+        {/* 고영은 반도체(검사장비) 섹터로 이동 */}
 
         {/* 구분 라벨 */}
         <text className="au-txt-m" x="390" y="730" textAnchor="middle" fontSize="9">▼ 인프라 구축 후 연결 · 운영 단계 ▼</text>
@@ -269,6 +270,7 @@ export default function AiUniverseView() {
         <g className="au-hovg"><rect className="au-tag-bg" x="388" y="918" width="76" height="24" rx="6" strokeWidth=".5" /><circle cx="400" cy="930" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="407" y="934" fontSize="10" fontWeight="600">현대건설</text></g>
         <g className="au-hovg"><rect className="au-tag-bg" x="314" y="946" width="86" height="24" rx="6" strokeWidth=".5" /><circle cx="326" cy="958" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="333" y="962" fontSize="10">케이피에프</text></g>
         <g className="au-hovg"><rect className="au-tag-bg" x="406" y="946" width="76" height="24" rx="6" strokeWidth=".5" /><circle cx="418" cy="958" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="425" y="962" fontSize="10">서전기전</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="314" y="974" width="82" height="24" rx="6" strokeWidth=".5" /><circle cx="326" cy="986" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="333" y="990" fontSize="10" fontWeight="600">삼성E&amp;A</text></g>
 
         {/* ─── STEP 6: 로봇 ─── */}
         <g transform="translate(640,815)">
