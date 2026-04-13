@@ -9,12 +9,12 @@ import { MoneyFlowMapPanel } from './MoneyFlowMapPanel'
 import { SupplyDemandPanel } from './SupplyDemandPanel'
 import { ScenarioFlowPanel } from './ScenarioFlowPanel'
 import { HotIssuesPanel } from './HotIssuesPanel'
-import { SupplyScoringPanel } from './SupplyScoringPanel'
+import { DeepBriefingPanel } from './DeepBriefingPanel'
 import { DisclosuresPanel } from './DisclosuresPanel'
 
 const TABS = [
   { key: 'signal', label: '시그널' },
-  { key: 'supply', label: '수급' },
+  { key: 'briefing', label: '심층 브리핑' },
   { key: 'dart', label: '다트 공시' },
   { key: 'edgar', label: '에드가 공시' },
 ] as const
@@ -73,9 +73,9 @@ export function InformationTabsView() {
       {/* 탭 콘텐츠 */}
       <div className={`${CONTAINER} pt-6 pb-8`}>
         {tab === 'signal' && <SignalTab />}
-        {tab === 'supply' && (
+        {tab === 'briefing' && (
           <div className={`${CARD_INNER.M} !min-h-[600px]`}>
-            <SupplyScoringPanel />
+            <DeepBriefingPanel />
           </div>
         )}
         {tab === 'dart' && (
