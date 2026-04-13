@@ -4,6 +4,8 @@
    AI 데이터센터 공급망 유니버스 — 비주얼 다이어그램 버전
    ══════════════════════════════════════════════════════════════ */
 
+import InvestmentGuideView from './InvestmentGuideView'
+
 export default function AiUniverseView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-8">
@@ -325,6 +327,9 @@ export default function AiUniverseView() {
         <text className="au-txt-m" textAnchor="middle" x="390" y="1210" fontSize="8" opacity=".5">본 자료는 투자 권유가 아닌 정보 제공 목적입니다 · FLOWX</text>
         <text className="au-txt-m" textAnchor="middle" x="390" y="1224" fontSize="8" opacity=".4">종목 정보는 2026년 4월 기준이며 변동될 수 있습니다</text>
       </svg>
+
+      {/* 투자 가이드: 타이밍 · 리스크 · 연쇄반응 (접는 타입 X — 모두 펼침) */}
+      <InvestmentGuideView />
     </div>
   )
 }
