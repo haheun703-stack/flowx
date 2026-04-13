@@ -56,16 +56,16 @@ export default function AiUniverseView() {
 
         {/* ─── 연결선 ─── */}
         {/* 빅테크 → 데이터센터 */}
-        <line x1="130" y1="105" x2="310" y2="210" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="260" y1="105" x2="340" y2="210" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="390" y1="105" x2="380" y2="210" stroke="#a78bfa" strokeWidth="2.5" className="au-fl" opacity=".55" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="520" y1="105" x2="400" y2="210" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="650" y1="105" x2="430" y2="210" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="130" y1="105" x2="300" y2="202" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="260" y1="105" x2="330" y2="202" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="390" y1="105" x2="380" y2="202" stroke="#a78bfa" strokeWidth="2.5" className="au-fl" opacity=".55" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="520" y1="105" x2="420" y2="202" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="650" y1="105" x2="450" y2="202" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
 
         {/* 데이터센터 → 1차 공급망 */}
-        <line x1="330" y1="330" x2="140" y2="450" stroke="#60a5fa" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="390" y1="340" x2="390" y2="450" stroke="#f87171" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
-        <line x1="450" y1="330" x2="640" y2="450" stroke="#34d399" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="320" y1="340" x2="140" y2="450" stroke="#60a5fa" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="390" y1="345" x2="390" y2="450" stroke="#f87171" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="460" y1="340" x2="640" y2="450" stroke="#34d399" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
 
         {/* 1차 → 2차 공급망 */}
         <line x1="140" y1="570" x2="140" y2="760" stroke="#8b5cf6" strokeWidth="2" className="au-fl2" opacity=".4" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
@@ -122,23 +122,23 @@ export default function AiUniverseView() {
 
         {/* ─── LAYER 1: AI 데이터센터 ─── */}
         <g transform="translate(390,270)">
-          <rect x="-110" y="-60" width="220" height="120" rx="16" className="au-node-fill" strokeWidth="1.5" />
-          <rect x="-110" y="-60" width="220" height="120" rx="16" fill="none" stroke="#60a5fa" strokeWidth="1" opacity=".3" className="au-pd2" />
-          <rect x="-90" y="-45" width="70" height="90" rx="6" className="au-surface" stroke="#60a5fa" strokeWidth="1" opacity=".6" />
-          <rect x="-82" y="-38" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
-          <rect x="-82" y="-22" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
-          <rect x="-82" y="-6" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
-          <rect x="-82" y="10" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
-          <rect x="-82" y="26" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
-          <circle cx="-34" cy="-32" r="2.5" fill="#3b82f6" className="au-pd" />
-          <circle cx="-34" cy="-16" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.3s' }} />
-          <circle cx="-34" cy="0" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.5s' }} />
-          <circle cx="-34" cy="16" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.7s' }} />
-          <circle cx="-34" cy="32" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.9s' }} />
-          <text className="au-txt-p" x="30" y="-22" fontSize="16" fontWeight="700">AI 데이터센터</text>
-          <text className="au-txt-s" x="30" y="-4" fontSize="10">GPU 수만 장 · 100MW+</text>
-          <text className="au-txt-s" x="30" y="12" fontSize="10">24시간 풀가동</text>
-          <text className="au-txt-m" x="30" y="36" fontSize="9">▼ 구동에 필요한 6가지 ▼</text>
+          <rect x="-140" y="-68" width="280" height="136" rx="16" className="au-node-fill" strokeWidth="1.5" />
+          <rect x="-140" y="-68" width="280" height="136" rx="16" fill="none" stroke="#60a5fa" strokeWidth="1" opacity=".3" className="au-pd2" />
+          <rect x="-120" y="-50" width="75" height="100" rx="6" className="au-surface" stroke="#60a5fa" strokeWidth="1" opacity=".6" />
+          <rect x="-112" y="-42" width="58" height="14" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-112" y="-24" width="58" height="14" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-112" y="-6" width="58" height="14" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-112" y="12" width="58" height="14" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-112" y="30" width="58" height="14" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <circle cx="-60" cy="-35" r="2.5" fill="#3b82f6" className="au-pd" />
+          <circle cx="-60" cy="-17" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.3s' }} />
+          <circle cx="-60" cy="1" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.5s' }} />
+          <circle cx="-60" cy="19" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.7s' }} />
+          <circle cx="-60" cy="37" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.9s' }} />
+          <text className="au-txt-p" x="-20" y="-25" fontSize="18" fontWeight="800">AI 데이터센터</text>
+          <text className="au-txt-s" x="-20" y="-4" fontSize="12">GPU 수만 장 · 100MW+</text>
+          <text className="au-txt-s" x="-20" y="14" fontSize="12">24시간 풀가동</text>
+          <text className="au-txt-m" x="-20" y="40" fontSize="10">▼ 구동에 필요한 6가지 ▼</text>
         </g>
 
         {/* ─── STEP 1: 반도체 ─── */}
