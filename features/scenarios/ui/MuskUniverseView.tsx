@@ -90,14 +90,14 @@ export default function MuskUniverseView() {
           <circle cx="600" cy="440" r="380" fill="none" stroke="#f0f2f8" strokeWidth="1" strokeDasharray="3 8" />
 
           {/* Animated connection lines */}
-          <line x1="600" y1="440" x2="250" y2="200" stroke="rgba(217,32,40,0.2)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="600" y1="440" x2="950" y2="200" stroke="rgba(26,95,180,0.2)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="600" y1="440" x2="180" y2="540" stroke="rgba(124,58,237,0.2)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="600" y1="440" x2="1020" y2="540" stroke="rgba(8,145,178,0.2)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="600" y1="440" x2="330" y2="760" stroke="rgba(219,39,119,0.18)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="600" y1="440" x2="870" y2="760" stroke="rgba(217,119,6,0.2)" strokeWidth="2" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
-          <line x1="950" y1="200" x2="1020" y2="540" stroke="rgba(8,145,178,0.12)" strokeWidth="1.5" strokeDasharray="4 4"><animate attributeName="stroke-dashoffset" values="0;-16" dur="3s" repeatCount="indefinite" /></line>
-          <line x1="180" y1="540" x2="1020" y2="540" stroke="rgba(124,58,237,0.08)" strokeWidth="1" strokeDasharray="3 6" />
+          <line x1="600" y1="440" x2="250" y2="200" stroke="rgba(217,32,40,0.45)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="600" y1="440" x2="950" y2="200" stroke="rgba(26,95,180,0.45)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="600" y1="440" x2="180" y2="540" stroke="rgba(124,58,237,0.45)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="600" y1="440" x2="1020" y2="540" stroke="rgba(8,145,178,0.45)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="600" y1="440" x2="330" y2="760" stroke="rgba(219,39,119,0.4)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="600" y1="440" x2="870" y2="760" stroke="rgba(217,119,6,0.45)" strokeWidth="2.5" strokeDasharray="6 4"><animate attributeName="stroke-dashoffset" values="0;-20" dur="2.5s" repeatCount="indefinite" /></line>
+          <line x1="950" y1="200" x2="1020" y2="540" stroke="rgba(8,145,178,0.3)" strokeWidth="2" strokeDasharray="4 4"><animate attributeName="stroke-dashoffset" values="0;-16" dur="3s" repeatCount="indefinite" /></line>
+          <line x1="180" y1="540" x2="1020" y2="540" stroke="rgba(124,58,237,0.2)" strokeWidth="1.5" strokeDasharray="3 6" />
 
           {/* CENTER — ELON MUSK */}
           <circle cx="600" cy="440" r="58" fill="white" stroke="#e5e7ef" strokeWidth="2" filter="url(#mu-card)" />
@@ -164,11 +164,11 @@ export default function MuskUniverseView() {
           <text x="870" y="798" textAnchor="middle" fill="#d97706" fontSize="9" fontWeight="500">비상장 | 인프라</text>
 
           {/* Connection Labels */}
-          <text x="390" y="308" textAnchor="middle" fill="rgba(217,32,40,0.45)" fontSize="8" fontWeight="500" transform="rotate(-30 390 308)">FSD·배터리 기술 공유</text>
-          <text x="810" y="308" textAnchor="middle" fill="rgba(26,95,180,0.45)" fontSize="8" fontWeight="500" transform="rotate(30 810 308)">우주 데이터센터</text>
-          <text x="370" y="508" textAnchor="middle" fill="rgba(124,58,237,0.45)" fontSize="8" fontWeight="500">AI 모델·Grok</text>
-          <text x="830" y="508" textAnchor="middle" fill="rgba(8,145,178,0.45)" fontSize="8" fontWeight="500">위성 네트워크</text>
-          <text x="1002" y="365" textAnchor="middle" fill="rgba(8,145,178,0.35)" fontSize="7.5" transform="rotate(60 1002 365)">Starlink↔SpaceX 캐시카우</text>
+          <text x="390" y="308" textAnchor="middle" fill="rgba(217,32,40,0.8)" fontSize="11" fontWeight="700" transform="rotate(-30 390 308)">FSD·배터리 기술 공유</text>
+          <text x="810" y="308" textAnchor="middle" fill="rgba(26,95,180,0.8)" fontSize="11" fontWeight="700" transform="rotate(30 810 308)">우주 데이터센터</text>
+          <text x="370" y="508" textAnchor="middle" fill="rgba(124,58,237,0.8)" fontSize="11" fontWeight="700">AI 모델·Grok</text>
+          <text x="830" y="508" textAnchor="middle" fill="rgba(8,145,178,0.8)" fontSize="11" fontWeight="700">위성 네트워크</text>
+          <text x="1002" y="365" textAnchor="middle" fill="rgba(8,145,178,0.7)" fontSize="10" fontWeight="700" transform="rotate(60 1002 365)">Starlink↔SpaceX 캐시카우</text>
 
           {/* Legend */}
           <rect x="30" y="30" width="200" height="90" rx="10" fill="white" stroke="#e5e7ef" strokeWidth="1" filter="url(#mu-soft)" />
