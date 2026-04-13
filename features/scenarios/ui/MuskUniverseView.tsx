@@ -483,6 +483,153 @@ export default function MuskUniverseView() {
         </div>
       </div>
 
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 7 — "일론 Inc." 합병 시나리오
+          ═══════════════════════════════════════════════════════════ */}
+      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+        <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#fef2f2] text-[#d92028] mb-2">🔥 보너스 SECTION 07</div>
+        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">{'"'}일론 Inc.{'"'} — 테슬라 × 스페이스X 합병 시나리오</h3>
+        <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">월가가 가장 뜨겁게 논의 중인 {'"'}역사상 최대 합병{'"'} — 성사 시 시총 3,200조원 초대형 기업 탄생</p>
+      </div>
+
+      {/* 머스크 발언 인용 박스 */}
+      <div className="bg-white border border-[rgba(184,134,11,0.3)] rounded-xl overflow-hidden mb-5">
+        <div className="h-1 bg-[#b8860b]/50" />
+        <div className="px-6 py-5 text-center">
+          <div className="text-[15px] font-bold text-[#b8860b] mb-2">💬 머스크: {'"'}내 기업들은 점차 하나로 수렴하고 있다{'"'}</div>
+          <div className="text-[13px] text-[#5b6178] mb-1">— WSJ 인용 | 머스크는 X.com(페이팔 전신) 시절부터 모든 것을 {'"'}X{'"'} 하나로 묶겠다는 비전을 품어왔습니다</div>
+          <div className="text-[12px] text-[#9ca3b8]">스페이스X, 모델 X, 트위터→X, xAI, 아들 이름까지 X — 알파벳 X에 대한 집착이 곧 {'"'}통합 제국{'"'}의 설계도</div>
+        </div>
+      </div>
+
+      {/* 합병 구조도 */}
+      <div className="mb-5">
+        <div className="text-[16px] font-black text-[#1A1A2E] mb-4 text-center">📐 합병 구조도 — 이미 진행 중인 것과 남은 한 발</div>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+          <div className="bg-white border-2 border-[#7c3aed] rounded-xl px-6 py-4 text-center min-w-[200px]">
+            <div className="text-[14px] font-bold text-[#7c3aed]">① xAI + 스페이스X</div>
+            <div className="text-[12px] text-[#5b6178] mt-0.5">2026.02 합병 완료 ✅ (1,720조원)</div>
+          </div>
+          <span className="text-[24px] text-[#b8860b] font-bold">→</span>
+          <div className="bg-white border-2 border-[#1a5fb4] rounded-xl px-6 py-4 text-center min-w-[240px]">
+            <div className="text-[14px] font-bold text-[#1a5fb4]">② 테슬라 → 스페이스X 지분 취득</div>
+            <div className="text-[12px] text-[#5b6178] mt-0.5">2026.03 미국 공정위 서류 확인 ✅</div>
+          </div>
+          <span className="text-[24px] text-[#b8860b] font-bold">→</span>
+          <div className="bg-white border-2 border-dashed border-[#d92028] rounded-xl px-6 py-4 text-center min-w-[280px] animate-pulse">
+            <div className="text-[14px] font-black text-[#d92028]">③ 테슬라 + 스페이스X = {'"'}일론 Inc.{'"'}</div>
+            <div className="text-[12px] text-[#b8860b] mt-0.5">⏳ 2027년 이후 가능성 — 웨드부시 댄 아이브스</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 장점 vs 단점 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+        {/* 장점 */}
+        <div className="bg-white border border-[#22c55e] rounded-xl overflow-hidden">
+          <div className="h-1 bg-[#22c55e]/60" />
+          <div className="p-5">
+            <div className="text-[16px] font-black text-[#22c55e] mb-3">✅ 합병 시 장점 (왜 기대하나?)</div>
+            <div className="flex flex-col gap-3">
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">1. 시총 3,200조원+ 세계 최대 기업 탄생</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">테슬라(1,500조) + 스페이스X(1,720조) → 역사상 최대 합병</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">2. 자율주행 + 스타링크 = 완벽한 궁합</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">테슬라 자율주행에 필요한 초저지연 통신을 스타링크 위성이 제공</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">3. 공동 AI 칩 공장 {'"'}테라팹{'"'} 시너지</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">텍사스 오스틴에 반도체 공장을 공동 건설 → AI 칩 자급자족</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">4. 옵티머스 로봇 → 우주 데이터센터 건설</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">테슬라 로봇이 우주 인프라 건설 인력 대체 → 비용 혁신</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">5. xAI가 모든 것의 {'"'}두뇌{'"'} 역할</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">전기차·로켓·위성·로봇 전부를 하나의 AI가 제어하는 통합 생태계</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 단점 */}
+        <div className="bg-white border border-[#d92028] rounded-xl overflow-hidden">
+          <div className="h-1 bg-[#d92028]/60" />
+          <div className="p-5">
+            <div className="text-[16px] font-black text-[#d92028] mb-3">⚠️ 합병 시 단점 (왜 걱정하나?)</div>
+            <div className="flex flex-col gap-3">
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">1. {'"'}최저 배수 법칙{'"'} — 테슬라 주주 25% 손실 가능</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">합병 기업은 낮은 배수로 거래됨 → 테슬라 프리미엄이 깎일 수 있음</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">2. 반독점 심사 — 미국 공정위·법무부 개입</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">스페이스X는 국방부 계약 보유 → 외국인 투자 제한 규정도 변수</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">3. 테슬라 주주 투표 필요 — xAI 때와 다름</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">상장사라서 주주 승인 필수. 기존 소송(자원 전용 의혹)이 걸림돌</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">4. 복합기업(재벌) 디스카운트 위험</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">과거 실패한 대기업처럼 될 수 있음. {'"'}각각 투자가 더 가치있다{'"'}는 반론</div>
+              </div>
+              <div>
+                <div className="text-[14px] font-bold text-[#1A1A2E]">5. 머스크 집중력 분산 우려</div>
+                <div className="text-[13px] text-[#5b6178] pl-3">이미 6개 기업 운영 중 → 합병 후 관리 복잡성 기하급수적 증가</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 합병 시나리오 수혜주 */}
+      <div className="text-[16px] font-black text-[#b8860b] mb-3 text-center">🏆 합병 시나리오 수혜주 — {'"'}일론 Inc.{'"'}가 현실이 되면 누가 오를까?</div>
+
+      <div className="flex flex-col gap-3 mb-5">
+        {/* 1순위 */}
+        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
+          <div className="text-[14px] font-bold text-[#d92028] mb-2.5">🔥 1순위: 합병 직접 수혜</div>
+          <div className="flex flex-wrap gap-2">
+            <MergerChip color="#d92028" bold>TSLA 테슬라 (본주)</MergerChip>
+            <MergerChip color="#1a5fb4" bold>🇰🇷 미래에셋벤처투자 (대장)</MergerChip>
+            <MergerChip color="#1a5fb4">🇰🇷 미래에셋증권</MergerChip>
+            <MergerChip color="#1a5fb4">🇺🇸 SATS 에코스타 (지분)</MergerChip>
+          </div>
+        </div>
+
+        {/* 2순위 */}
+        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
+          <div className="text-[14px] font-bold text-[#0891b2] mb-2.5">🔥 2순위: AI + 위성 통합 수혜</div>
+          <div className="flex flex-wrap gap-2">
+            <MergerChip color="#7c3aed">🇰🇷 SK하이닉스 (AI메모리)</MergerChip>
+            <MergerChip color="#7c3aed">🇰🇷 삼성전자 (반도체)</MergerChip>
+            <MergerChip color="#0891b2">🇰🇷 한화시스템 (위성통신)</MergerChip>
+            <MergerChip color="#0891b2">🇺🇸 ASTS 스페이스모바일</MergerChip>
+          </div>
+        </div>
+
+        {/* 3순위 */}
+        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
+          <div className="text-[14px] font-bold text-[#db2777] mb-2.5">🔥 3순위: 로봇 + 배터리 수혜</div>
+          <div className="flex flex-wrap gap-2">
+            <MergerChip color="#db2777">🇰🇷 로보티즈 (로봇부품)</MergerChip>
+            <MergerChip color="#db2777">🇰🇷 에스피지 (감속기)</MergerChip>
+            <MergerChip color="#d92028">🇰🇷 나노팀 (열관리)</MergerChip>
+            <MergerChip color="#d92028">🇰🇷 LG에너지솔루션 (배터리)</MergerChip>
+          </div>
+        </div>
+      </div>
+
+      {/* 월가 코멘트 */}
+      <div className="bg-white border border-[#e5e7ef] rounded-xl px-6 py-5 text-center mb-3">
+        <div className="text-[13px] text-[#5b6178] mb-1.5">💬 웨드부시 댄 아이브스: {'"'}테슬라-스페이스X 합병은 머스크 파괴적 기술 제국을 완성하는 성배(Holy Grail)다. 2027년 현실화 가능{'"'}</div>
+        <div className="text-[12px] text-[#9ca3b8]">💬 바클레이즈 댄 레비: {'"'}투자자들의 가장 큰 질문은 {'"'}일론 Inc.{'"'}를 만들 계획이 있느냐다. 당장은 낮지만 장기적으로는 가능하다{'"'}</div>
+      </div>
+
       {/* 면책 */}
       <div className="text-center pt-6 pb-2">
         <div className="inline-block bg-[#fef2f2] border border-[rgba(217,32,40,0.15)] text-[#d92028] px-4 py-2 rounded-lg text-[12px] font-medium mb-2">
@@ -514,6 +661,17 @@ function ChainNode({ color, children }: { color?: string; children: React.ReactN
     <span
       className="px-3 py-1 rounded-lg text-[12px] font-semibold bg-[#f0f2f8] border border-[#e5e7ef]"
       style={color ? { borderColor: color, color } : undefined}
+    >
+      {children}
+    </span>
+  )
+}
+
+function MergerChip({ color, bold, children }: { color: string; bold?: boolean; children: React.ReactNode }) {
+  return (
+    <span
+      className="inline-flex items-center px-4 py-2 rounded-lg bg-white border-[1.5px] text-[13px] shadow-sm"
+      style={{ borderColor: color, color, fontWeight: bold ? 700 : 600 }}
     >
       {children}
     </span>
