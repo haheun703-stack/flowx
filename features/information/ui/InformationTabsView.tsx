@@ -5,8 +5,6 @@ import { CARD_INNER, GRID, CONTAINER } from '@/shared/lib/card-styles'
 import { MarketVerdictHero } from './MarketVerdictHero'
 import { NewsTop3Panel } from './NewsTop3Panel'
 import { MacroGaugePanel } from './MacroGaugePanel'
-import { MoneyFlowMapPanel } from './MoneyFlowMapPanel'
-import { SupplyDemandPanel } from './SupplyDemandPanel'
 import { ScenarioFlowPanel } from './ScenarioFlowPanel'
 import { HotIssuesPanel } from './HotIssuesPanel'
 import { DeepBriefingPanel } from './DeepBriefingPanel'
@@ -28,10 +26,6 @@ function SignalTab() {
       <div className="grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-3">
         <NewsTop3Panel />
         <MacroGaugePanel />
-      </div>
-      <MoneyFlowMapPanel />
-      <div className={CARD_INNER.M}>
-        <SupplyDemandPanel />
       </div>
       <ScenarioFlowPanel />
       <div className={GRID.col2}>
