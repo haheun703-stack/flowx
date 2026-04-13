@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import ScenarioDashboardView from './ScenarioDashboard'
 import AiUniverseView from './AiUniverseView'
+import MuskUniverseView from './MuskUniverseView'
 
 const TABS = [
   { key: 'dashboard', label: '이란-미국 전쟁' },
   { key: 'ai-universe', label: 'AI 데이터센터 공급망' },
+  { key: 'musk-universe', label: '머스크 유니버스' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -38,6 +40,7 @@ export default function ScenarioTabsView() {
       {/* 탭 콘텐츠 */}
       {tab === 'dashboard' && <ScenarioDashboardView />}
       {tab === 'ai-universe' && <AiUniverseView />}
+      {tab === 'musk-universe' && <MuskUniverseView />}
     </div>
   )
 }
