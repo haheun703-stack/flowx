@@ -5,7 +5,7 @@ import ScenarioDashboardView from './ScenarioDashboard'
 import AiUniverseView from './AiUniverseView'
 
 const TABS = [
-  { key: 'dashboard', label: '시나리오 분석' },
+  { key: 'dashboard', label: '이란-미국 전쟁' },
   { key: 'ai-universe', label: 'AI 데이터센터 공급망' },
 ] as const
 
