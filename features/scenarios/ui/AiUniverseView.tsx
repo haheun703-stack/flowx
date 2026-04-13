@@ -1,572 +1,348 @@
 'use client'
 
 /* ══════════════════════════════════════════════════════════════
-   AI 데이터센터 공급망 유니버스 — 완전판 (4개 섹션 통합)
-   Section 1: 공급망 유니버스 맵 (비주얼 다이어그램 SVG)
-   Section 2: 투자 타이밍 로드맵 (병목의 이동)
-   Section 3: 리스크 시나리오 (4가지 위기)
-   Section 4: 섹터 간 연쇄반응 맵 (인과관계 체인)
+   AI 데이터센터 공급망 유니버스 — 비주얼 다이어그램 버전
+   전체가 하나의 거대한 SVG 다이어그램
+   빅테크(5개) → 데이터센터(서버랙) → 6개 섹터 → 종목 태그
    ══════════════════════════════════════════════════════════════ */
 
-import { useState } from 'react'
-
-// ─── 타입 ───
-interface Stock { name: string; type: 'big' | 'small' }
-
-interface SupplyStep {
-  step: number
-  label: string
-  color: string
-  title: string
-  sub: string
-  stocks: Stock[]
-}
-
-interface Phase {
-  num: number
-  title: string
-  color: string
-  badge: string
-  badgeBg: string
-  blink?: boolean
-  desc: string
-  lesson: string
-}
-
-interface RiskScenario {
-  id: string
-  color: string
-  title: string
-  prob: string
-  desc: string
-  chain: ChainNode[]
-  impacts: Impact[]
-  tip: string
-  tipLabel: string
-}
-
-interface ChainNode { text: string; type: 'trigger' | 'hit' | 'safe' | 'neutral' }
-interface Impact { label: string; type: 'dead' | 'hurt' | 'ok' }
-
-interface ChainReaction {
-  num: number
-  color: string
-  title: string
-  chain: ChainNode[]
-  tip: string
-}
-
-interface Law { num: number; color: string; title: string; desc: string }
-
-// ─── 데이터 ───
-const SUPPLY_STEPS: SupplyStep[] = [
-  {
-    step: 1, label: 'STEP 1 — 연산', color: '#3b82f6', title: '반도체', sub: 'GPU / HBM / 패키징',
-    stocks: [
-      { name: 'SK하이닉스', type: 'big' }, { name: '삼성전자', type: 'big' },
-      { name: '한미반도체', type: 'small' }, { name: 'ISC', type: 'small' },
-      { name: '리노공업', type: 'small' }, { name: '네패스아크', type: 'small' },
-      { name: '테크윙', type: 'small' }, { name: '삼성전기', type: 'small' },
-    ],
-  },
-  {
-    step: 2, label: 'STEP 2 — 에너지', color: '#f87171', title: '전력 / 원전', sub: '변압기 / 송배전 / SMR',
-    stocks: [
-      { name: '두산에너빌리티', type: 'big' }, { name: '한국전력', type: 'big' },
-      { name: 'HD현대일렉트릭', type: 'small' }, { name: 'LS일렉트릭', type: 'small' },
-      { name: '일진전기', type: 'small' }, { name: '대한전선', type: 'small' }, { name: '제룡전기', type: 'small' },
-    ],
-  },
-  {
-    step: 3, label: 'STEP 3 — 열관리', color: '#34d399', title: '냉각', sub: '액침냉각 / 열교환기',
-    stocks: [
-      { name: '한온시스템', type: 'big' }, { name: '삼성E&A', type: 'big' },
-      { name: '에이텍', type: 'small' }, { name: '월덱스', type: 'small' },
-    ],
-  },
-  {
-    step: 4, label: 'STEP 4 — 연결', color: '#8b5cf6', title: '통신 / 광케이블', sub: '광인터커넥트 / 스위치',
-    stocks: [
-      { name: 'SK텔레콤', type: 'big' }, { name: 'KT', type: 'big' },
-      { name: '우리로', type: 'small' }, { name: '옵티시스', type: 'small' }, { name: '오이솔루션', type: 'small' },
-    ],
-  },
-  {
-    step: 5, label: 'STEP 5 — 시설', color: '#eab308', title: '건설 / 인프라', sub: 'DC 시설 / 토목 / 전기',
-    stocks: [
-      { name: '삼성물산', type: 'big' }, { name: '현대건설', type: 'big' },
-      { name: '케이피에프', type: 'small' }, { name: '서전기전', type: 'small' },
-    ],
-  },
-  {
-    step: 6, label: 'STEP 6 — 운영', color: '#f97316', title: '로봇 / 자동화', sub: 'DC 운영 / 산업용',
-    stocks: [
-      { name: '현대차', type: 'big' },
-      { name: '레인보우로보틱스', type: 'small' }, { name: '두산로보틱스', type: 'small' },
-    ],
-  },
-]
-
-const BIG_TECHS = [
-  { name: 'NVIDIA', abbr: 'NV', color: '#76b900' },
-  { name: 'Google', abbr: 'G', color: '#4285f4' },
-  { name: 'Microsoft', abbr: 'MS', color: '#00a4ef' },
-  { name: 'Amazon', abbr: 'AM', color: '#ff9900' },
-  { name: 'Meta', abbr: 'MT', color: '#1877f2' },
-]
-
-const PHASES: Phase[] = [
-  { num: 1, title: 'PHASE 1: 반도체', color: '#60a5fa', badge: '이미 움직임 \u2713', badgeBg: 'rgba(96,165,250,.1)', desc: '병목: GPU 수급 부족 → HBM 폭발적 수요. SK하이닉스 +180%, 한미반도체 +250%.', lesson: '대형주가 먼저, 소부장은 3~6개월 후행' },
-  { num: 2, title: 'PHASE 2: 전력 / 변압기', color: '#f87171', badge: '지금 피크 !', badgeBg: 'rgba(248,113,113,.15)', blink: true, desc: '병목: DC 전력 수요 175%↑, 변압기 납기 2년+. HD현대일렉트릭 +320%.', lesson: '수주잔고 확인! 실적은 2~3분기 후행' },
-  { num: 3, title: 'PHASE 3: 냉각 + 건설', color: '#34d399', badge: '다음 차례 →', badgeBg: 'rgba(52,211,153,.1)', desc: '병목: GPU 1장 = 1,000W+ 발열. 전력의 40% 냉각 소모. 한온시스템 · 에이텍 · 삼성물산.', lesson: '아직 저평가 구간, 선제 진입 타이밍 (2026.4월 현재)' },
-  { num: 4, title: 'PHASE 4~5: 통신 → 로봇', color: '#8b5cf6', badge: '준비~초기', badgeBg: 'rgba(139,92,246,.1)', desc: '광케이블 교체 수요 + DC 자동화. 우리로, 레인보우로보틱스 등.', lesson: '"이미 오른 섹터" 추격 말고 "다음 병목" 선점하라' },
-]
-
-const RISK_SCENARIOS: RiskScenario[] = [
-  {
-    id: 'A', color: '#ef4444', title: 'AI 버블 붕괴 — 빅테크 CAPEX 축소', prob: '확률 20~30%',
-    desc: 'AI 수익화 지연 → 빅테크 실적 미스 → CAPEX 삭감 → 전 공급망 급락. SMIC CEO: "수요 없는 빈 껍데기 전락 우려"',
-    chain: [
-      { text: 'CAPEX 삭감', type: 'trigger' }, { text: 'GPU 주문 취소', type: 'hit' },
-      { text: '반도체 재고↑', type: 'hit' }, { text: 'DC 건설 중단', type: 'hit' },
-      { text: '기수주분 유지', type: 'safe' },
-    ],
-    impacts: [
-      { label: '반도체 –40%', type: 'dead' }, { label: '로봇 –35%', type: 'dead' },
-      { label: '건설 –20%', type: 'hurt' }, { label: '전력(기수주) –5%', type: 'ok' },
-    ],
-    tipLabel: '방어법', tip: 'PER 30배↑ 소부장 정리 / 수주잔고 2년+ 전력주 홀딩 / 현금 40%↑',
-  },
-  {
-    id: 'B', color: '#f59e0b', title: '금리 인상 / 스태그플레이션', prob: '확률 35~45%',
-    desc: '이란 전쟁 → 유가 $120+ → 인플레 재점화 → 금리 동결/인상 → 성장주 밸류에이션 붕괴',
-    chain: [
-      { text: '유가 $120+', type: 'trigger' }, { text: 'DC 건설비↑', type: 'hit' },
-      { text: '프로젝트 지연', type: 'hit' }, { text: 'PER 압축', type: 'hit' },
-      { text: '에너지주 수혜', type: 'safe' },
-    ],
-    impacts: [
-      { label: '건설 –30%', type: 'dead' }, { label: '로봇 –25%', type: 'hurt' },
-      { label: '반도체 –20%', type: 'hurt' }, { label: '에너지주 +20%', type: 'ok' },
-    ],
-    tipLabel: '방어법', tip: '에너지(S-Oil) 헤지 편입 / 배당주 리밸런싱 / 유가 $100 돌파 시 건설 절반 축소',
-  },
-  {
-    id: 'C', color: '#8b5cf6', title: '미중 기술전쟁 격화', prob: '확률 40~50%',
-    desc: '301조 관세 + 반도체 수출 규제 강화 → 한국 반도체 중국 매출 타격 → 방산 반사이익',
-    chain: [
-      { text: '수출 규제 강화', type: 'trigger' }, { text: '중국 매출↓', type: 'hit' },
-      { text: '소부장 연쇄', type: 'hit' }, { text: '국내DC 가속', type: 'safe' },
-      { text: '방산 +25%', type: 'safe' },
-    ],
-    impacts: [
-      { label: '반도체(중국↑) –30%', type: 'dead' }, { label: '건설(국내DC) +10%', type: 'ok' },
-      { label: '방산주 +25%', type: 'ok' },
-    ],
-    tipLabel: '방어법', tip: '중국 매출 30%↑ 종목 체크 / 미국향 기업 선호 / 방산 헤지 20%',
-  },
-  {
-    id: 'D', color: '#f97316', title: '전력 공급 실패 — DC 건설 병목', prob: '확률 50~60%',
-    desc: 'DC 건설 속도 > 전력 인프라 확충 → 계통 병목 → DC 가동 지연. 위기 = 전력주 기회!',
-    chain: [
-      { text: '전력 계통 병목', type: 'trigger' }, { text: 'DC 가동 지연', type: 'hit' },
-      { text: '변압기 수주 폭증', type: 'safe' }, { text: '원전/SMR 가속', type: 'safe' },
-    ],
-    impacts: [
-      { label: '건설 –10%', type: 'hurt' }, { label: '전력 +30%↑', type: 'ok' },
-      { label: '원전/SMR +40%↑', type: 'ok' },
-    ],
-    tipLabel: '기회', tip: '가장 높은 확률(50~60%). 전력 병목 심화 → HD현대일렉트릭, 두산에너빌리티 추가 수혜',
-  },
-]
-
-const CHAIN_REACTIONS: ChainReaction[] = [
-  {
-    num: 1, color: '#60a5fa', title: '트리거: NVIDIA 실적 서프라이즈',
-    chain: [
-      { text: 'NVIDIA +15%', type: 'trigger' },
-      { text: 'SK하이닉스 +8%\nD+0~1', type: 'neutral' },
-      { text: '한미반도체 +12%\nD+1~3', type: 'neutral' },
-      { text: '전력주 +5%\nD+1~5', type: 'neutral' },
-      { text: '냉각주 +3%\nD+5~14', type: 'neutral' },
-    ],
-    tip: '대형주(D+0) → 소부장(D+1~3) → 후방산업(D+5~14). 대형주 급등 보고 소부장 진입 = 타이밍!',
-  },
-  {
-    num: 2, color: '#eab308', title: '트리거: 빅테크 "DC 100개 신규 건설" 발표',
-    chain: [
-      { text: 'CAPEX 확대', type: 'trigger' },
-      { text: '삼성물산 +6%', type: 'neutral' },
-      { text: '일진전기 +8%', type: 'neutral' },
-      { text: '한온시스템 +3%', type: 'neutral' },
-      { text: '우리로 +4%', type: 'neutral' },
-    ],
-    tip: '전력은 "병목 프리미엄"으로 건설보다 더 크게 반응할 때가 있음 (일진전기 +8% > 삼성물산 +6%)',
-  },
-  {
-    num: 3, color: '#ef4444', title: '역방향: NVIDIA 가이던스 하향',
-    chain: [
-      { text: 'NVIDIA –12%', type: 'trigger' },
-      { text: 'SK하이닉스 –10%', type: 'hit' },
-      { text: '한미반도체 –15%', type: 'hit' },
-      { text: '전력주 –5%', type: 'hit' },
-      { text: '방산주 +2%', type: 'safe' },
-    ],
-    tip: '하락 시 소부장이 대형주보다 1.5배 더 빠진다 (레버리지 효과). 소부장은 양날의 검!',
-  },
-]
-
-const LAWS: Law[] = [
-  { num: 1, color: '#60a5fa', title: '선행 후행', desc: '대형주가 먼저, 소부장 1~7일 후행\n대형주 급등 → 소부장 진입 타이밍' },
-  { num: 2, color: '#f87171', title: '감쇄의 법칙', desc: '트리거에서 멀수록 반응↓\n예외: 병목 섹터는 오히려 증폭' },
-  { num: 3, color: '#eab308', title: '레버리지', desc: '소부장 = 대형주의 1.5~2배 진폭\n+15% 올라갈 때 –15%도 각오' },
-  { num: 4, color: '#22c55e', title: '역상관', desc: 'AI 하락 → 방산/에너지 상승\n역상관 종목 20% 편입 = 보험' },
-]
-
-// ─── 서브 컴포넌트 ───
-
-function SectionDivider({ title }: { title: string }) {
-  return (
-    <div className="relative text-center py-8">
-      <div className="absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[#a78bfa33] to-transparent" />
-      <span className="relative bg-white px-4 text-[14px] font-bold text-[#1A1A2E]">{title}</span>
-    </div>
-  )
-}
-
-function StockTag({ name, type }: Stock) {
-  const dotColor = type === 'big' ? '#3b82f6' : '#f59e0b'
-  return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] bg-[#F5F4F0] border border-[#E8E6E0]">
-      <span className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: dotColor }} />
-      <span className={type === 'big' ? 'font-bold text-[#1A1A2E]' : 'text-[#374151]'}>{name}</span>
-    </span>
-  )
-}
-
-function ChainNodeBadge({ node }: { node: ChainNode }) {
-  const styles: Record<string, string> = {
-    trigger: 'bg-red-50 border-red-300 text-[#ef4444] font-bold',
-    hit: 'bg-red-50/50 border-red-200 text-[#ef4444]',
-    safe: 'bg-green-50/50 border-green-200 text-[#22c55e]',
-    neutral: 'bg-[#F5F4F0] border-[#E8E6E0] text-[#374151]',
-  }
-  return (
-    <span className={`inline-block text-[10px] px-2 py-1 rounded border whitespace-pre-line leading-tight ${styles[node.type] ?? styles.neutral}`}>
-      {node.text}
-    </span>
-  )
-}
-
-function ImpactBadge({ impact }: { impact: Impact }) {
-  const styles: Record<string, { bg: string; dotColor: string; text: string }> = {
-    dead: { bg: 'bg-red-50', dotColor: '#ef4444', text: 'text-[#ef4444]' },
-    hurt: { bg: 'bg-amber-50', dotColor: '#f59e0b', text: 'text-[#f59e0b]' },
-    ok: { bg: 'bg-green-50', dotColor: '#22c55e', text: 'text-[#22c55e]' },
-  }
-  const s = styles[impact.type]
-  return (
-    <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded ${s.bg} ${s.text}`}>
-      <span className="w-[5px] h-[5px] rounded-full shrink-0" style={{ background: s.dotColor }} />
-      {impact.label}
-    </span>
-  )
-}
-
-// ─── 섹션 1: 공급망 유니버스 맵 ───
-
-function SupplyChainMap() {
-  return (
-    <div className="space-y-4">
-      {/* 범례 */}
-      <div className="flex gap-3 justify-center flex-wrap text-[11px] text-[#6B7280]">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#a78bfa]" />빅테크</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#3b82f6]" />대형주</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#f59e0b]" />소부장주</span>
-      </div>
-
-      {/* STEP 0: 빅테크 발주처 */}
-      <div className="bg-[#F5F4F0] rounded-2xl p-4 border border-[#E8E6E0]">
-        <p className="text-center text-[10px] font-bold text-[#9CA3AF] tracking-wider mb-3">STEP 0 — 최초 발주처</p>
-        <div className="flex justify-center gap-3 flex-wrap">
-          {BIG_TECHS.map(t => (
-            <div key={t.abbr} className="flex flex-col items-center gap-1">
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center text-white text-[11px] font-bold"
-                style={{ background: t.color }}
-              >{t.abbr}</div>
-              <span className="text-[10px] text-[#6B7280]">{t.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 화살표 */}
-      <p className="text-center text-[10px] text-[#9CA3AF]">▼ CAPEX 발주 / 투자 ▼</p>
-
-      {/* AI 데이터센터 허브 */}
-      <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5 text-center">
-        <p className="text-[18px] font-black text-[#1A1A2E]">AI 데이터센터</p>
-        <p className="text-[11px] text-[#6B7280] mt-1">GPU 수만 장 · 100MW+</p>
-        <p className="text-[10px] text-[#9CA3AF] mt-2">▼ 구동에 필요한 6가지 ▼</p>
-      </div>
-
-      {/* STEP 1~3: 핵심 인프라 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {SUPPLY_STEPS.slice(0, 3).map(s => (
-          <SupplyStepCard key={s.step} step={s} />
-        ))}
-      </div>
-
-      <p className="text-center text-[10px] text-[#9CA3AF]">▼ 인프라 구축 후 연결 · 운영 단계 ▼</p>
-
-      {/* STEP 4~6: 연결 · 운영 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {SUPPLY_STEPS.slice(3).map(s => (
-          <SupplyStepCard key={s.step} step={s} />
-        ))}
-      </div>
-
-      {/* 밸류체인 요약 */}
-      <div className="bg-[#F5F4F0] rounded-2xl p-4 border border-[#E8E6E0] text-center">
-        <p className="text-[12px] font-bold text-[#1A1A2E]">
-          밸류체인 흐름: 빅테크 발주 → GPU 주문 → DC 건설 → 전력 확보 → 냉각 설치 → 광케이블 연결 → 운영 자동화
-        </p>
-        <p className="text-[10px] text-[#9CA3AF] mt-1">2030년까지 글로벌 DC 전력 수요 175% 증가 전망 (골드만삭스)</p>
-      </div>
-    </div>
-  )
-}
-
-function SupplyStepCard({ step }: { step: SupplyStep }) {
-  return (
-    <div className="bg-white rounded-2xl border border-[#E8E6E0] p-4 relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: step.color }} />
-      <p className="text-[9px] font-bold tracking-wider mb-2" style={{ color: step.color }}>{step.label}</p>
-      <p className="text-[16px] font-black text-[#1A1A2E]">{step.title}</p>
-      <p className="text-[10px] text-[#6B7280] mb-3">{step.sub}</p>
-      <div className="flex flex-wrap gap-1">
-        {step.stocks.map(s => <StockTag key={s.name} {...s} />)}
-      </div>
-    </div>
-  )
-}
-
-// ─── 섹션 2: 투자 타이밍 로드맵 ───
-
-function InvestmentRoadmap() {
-  return (
-    <div className="space-y-2">
-      <p className="text-center text-[12px] text-[#6B7280] mb-3">
-        GPU 병목이 풀리면 → 다음 병목이 투자 기회. 돈은 병목을 따라 이동한다.
-      </p>
-      {PHASES.map(p => (
-        <div
-          key={p.num}
-          className="bg-white rounded-xl border border-[#E8E6E0] p-4"
-          style={{ borderLeft: `3px solid ${p.color}` }}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
-              style={{ background: p.color }}
-            >{p.num}</div>
-            <span className="text-[14px] font-black text-[#1A1A2E]">{p.title}</span>
-            <span
-              className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded shrink-0 ${p.blink ? 'animate-pulse' : ''}`}
-              style={{ background: p.badgeBg, color: p.color }}
-            >{p.badge}</span>
-          </div>
-          <p className="text-[12px] text-[#6B7280] leading-relaxed">
-            {p.desc}
-            <br />
-            <strong className="text-[#1A1A2E]">주린이 교훈: {p.lesson}</strong>
-          </p>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ─── 섹션 3: 리스크 시나리오 ───
-
-function RiskScenarios() {
-  return (
-    <div className="space-y-3">
-      <p className="text-center text-[12px] text-[#6B7280] mb-3">
-        주린이는 오를 때만 보지만, 프로는 빠질 때를 먼저 본다
-      </p>
-
-      {RISK_SCENARIOS.map(r => (
-        <div
-          key={r.id}
-          className="bg-white rounded-xl border border-[#E8E6E0] overflow-hidden"
-          style={{ borderLeft: `3px solid ${r.color}` }}
-        >
-          {/* 헤더 */}
-          <div className="px-4 py-3 flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0"
-              style={{ background: r.color }}
-            >{r.id}</div>
-            <p className="text-[14px] font-black text-[#1A1A2E] flex-1">{r.title}</p>
-            <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
-              style={{ background: `${r.color}18`, color: r.color }}
-            >{r.prob}</span>
-          </div>
-
-          {/* 바디 */}
-          <div className="px-4 pb-4 space-y-3">
-            <p className="text-[11px] text-[#6B7280] leading-relaxed">{r.desc}</p>
-
-            {/* 연쇄 체인 */}
-            <div className="flex items-center gap-1 flex-wrap">
-              {r.chain.map((c, i) => (
-                <span key={i} className="contents">
-                  <ChainNodeBadge node={c} />
-                  {i < r.chain.length - 1 && <span className="text-[11px] text-[#9CA3AF]">→</span>}
-                </span>
-              ))}
-            </div>
-
-            {/* 임팩트 */}
-            <div className="flex flex-wrap gap-1">
-              {r.impacts.map((imp, i) => <ImpactBadge key={i} impact={imp} />)}
-            </div>
-
-            {/* 팁 */}
-            <div className="bg-[#F5F4F0] rounded-lg p-3 text-[11px] text-[#6B7280]">
-              <strong className="text-[#1A1A2E]">{r.tipLabel}:</strong> {r.tip}
-            </div>
-          </div>
-        </div>
-      ))}
-
-      {/* 방어/위험 요약 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div className="bg-white rounded-xl border border-[#E8E6E0] p-3" style={{ borderLeft: '3px solid #22c55e' }}>
-          <p className="text-[13px] font-bold text-[#22c55e] mb-1">어떤 시나리오든 버티는 종목</p>
-          <p className="text-[11px] text-[#6B7280]">수주잔고 2년+ <strong className="text-[#1A1A2E]">전력 인프라주</strong>, AI 무관 <strong className="text-[#1A1A2E]">방산주</strong></p>
-        </div>
-        <div className="bg-white rounded-xl border border-[#E8E6E0] p-3" style={{ borderLeft: '3px solid #ef4444' }}>
-          <p className="text-[13px] font-bold text-[#ef4444] mb-1">어떤 시나리오든 위험한 종목</p>
-          <p className="text-[11px] text-[#6B7280]">PER 30배+ <strong className="text-[#1A1A2E]">실적 미검증 소부장</strong>. 분기 흑자 전환 + 수주잔고 없으면 위험.</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── 섹션 4: 섹터 간 연쇄반응 맵 ───
-
-function ChainReactionMap() {
-  return (
-    <div className="space-y-3">
-      <p className="text-center text-[12px] text-[#6B7280] mb-3">
-        하나의 뉴스가 어떻게 종목까지 전파되는지, 인과관계 체인을 따라가세요
-      </p>
-
-      {CHAIN_REACTIONS.map(cr => (
-        <div
-          key={cr.num}
-          className="bg-white rounded-xl border border-[#E8E6E0] p-4"
-          style={{ borderLeft: `3px solid ${cr.color}` }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0"
-              style={{ background: cr.color }}
-            >{cr.num}</div>
-            <p className="text-[14px] font-black text-[#1A1A2E]">{cr.title}</p>
-          </div>
-
-          <div className="flex items-center gap-1 flex-wrap mb-3">
-            {cr.chain.map((c, i) => (
-              <span key={i} className="contents">
-                <ChainNodeBadge node={c} />
-                {i < cr.chain.length - 1 && <span className="text-[11px] text-[#9CA3AF]">→</span>}
-              </span>
-            ))}
-          </div>
-
-          <div className="bg-[#F5F4F0] rounded-lg p-3 text-[11px] text-[#6B7280]">
-            <strong className="text-[#1A1A2E]">법칙:</strong> {cr.tip}
-          </div>
-        </div>
-      ))}
-
-      {/* 4법칙 요약 */}
-      <div className="bg-white rounded-xl border border-[#E8E6E0] p-4">
-        <p className="text-[14px] font-black text-center text-[#1A1A2E] mb-3">주린이가 외워야 할 연쇄반응 4법칙</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {LAWS.map(l => (
-            <div key={l.num} className="bg-[#F5F4F0] rounded-lg p-3 border border-[#E8E6E0]">
-              <p className="text-[12px] font-bold mb-1" style={{ color: l.color }}>법칙 {l.num}: {l.title}</p>
-              <p className="text-[10px] text-[#6B7280] leading-relaxed whitespace-pre-line">{l.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── 메인: 아코디언 구조 ───
-
-const SECTIONS = [
-  { id: 'map', title: '공급망 유니버스 맵', Component: SupplyChainMap },
-  { id: 'roadmap', title: '투자 타이밍 로드맵 — 병목의 이동', Component: InvestmentRoadmap },
-  { id: 'risk', title: '리스크 시나리오 — 뭐가 터지면 어디가 무너지나', Component: RiskScenarios },
-  { id: 'chain', title: '섹터 간 연쇄반응 — A가 오르면 B도 오른다', Component: ChainReactionMap },
-] as const
-
 export default function AiUniverseView() {
-  const [openSection, setOpenSection] = useState<string | null>('map')
-
-  function toggle(id: string) {
-    setOpenSection(prev => (prev === id ? null : id))
-  }
-
   return (
-    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-2 pb-8">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-8">
+      {/* SVG 전용 스타일 */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .au-node-fill{fill:#ffffff;stroke:rgba(0,0,0,0.1)}
+        .au-tag-bg{fill:#ffffff;stroke:rgba(0,0,0,0.1)}
+        .au-txt-p{fill:#1a1a2e}
+        .au-txt-s{fill:#5f5e5a}
+        .au-txt-m{fill:#9ca3af}
+        .au-surface{fill:#f0ede8}
+        @keyframes au-fd{to{stroke-dashoffset:-24}}
+        @keyframes au-p{0%,100%{opacity:.3}50%{opacity:.9}}
+        @keyframes au-p2{0%,100%{opacity:.5}50%{opacity:1}}
+        @media(prefers-reduced-motion:reduce){.au-fl,.au-fl2,.au-pd,.au-pd2{animation:none!important}}
+        .au-fl{stroke-dasharray:6 6;animation:au-fd 1.2s linear infinite}
+        .au-fl2{stroke-dasharray:4 4;animation:au-fd 1.6s linear infinite}
+        .au-pd{animation:au-p 2s ease-in-out infinite}
+        .au-pd2{animation:au-p2 2.5s ease-in-out infinite}
+        .au-hovg{cursor:pointer}
+        .au-hovg:hover{opacity:.85}
+      ` }} />
+
       {/* 헤더 */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-2">
         <h2 className="text-[20px] font-black text-[#1A1A2E]">AI 데이터센터 공급망 유니버스</h2>
-        <p className="text-[12px] text-[#6B7280] mt-1">빅테크 발주 → 데이터센터 구축 → 6개 공급망 | 투자 타이밍 · 리스크 · 연쇄반응까지</p>
+        <p className="text-[12px] text-[#6B7280] mt-1">빅테크 발주 → 데이터센터 구축 → 6개 공급망 흐름을 한눈에</p>
       </div>
 
-      {/* 아코디언 */}
-      {SECTIONS.map(({ id, title, Component }) => {
-        const isOpen = openSection === id
-        return (
-          <div key={id} className="mb-1">
-            <button
-              onClick={() => toggle(id)}
-              className="w-full flex items-center justify-between rounded-lg px-4 py-3 transition-colors"
-              style={{
-                background: isOpen ? '#ECEAE4' : '#F5F4F0',
-                cursor: 'pointer',
-              }}
-            >
-              <span className="text-[15px] font-black text-[#1A1A2E]">{title}</span>
-              <span className="text-[12px] font-bold text-[#00CC6A]">
-                {isOpen ? '접기 ▲' : '펼치기 ▼'}
-              </span>
-            </button>
-            {isOpen && (
-              <div className="rounded-xl mt-1 p-4 overflow-hidden bg-white border border-[#E8E6E0]">
-                <Component />
-              </div>
-            )}
-          </div>
-        )
-      })}
+      {/* 범례 */}
+      <div className="flex gap-3 justify-center flex-wrap text-[11px] text-[#6B7280] mb-2">
+        <span className="flex items-center gap-1"><span className="w-[7px] h-[7px] rounded-full bg-[#a78bfa]" />빅테크(발주처)</span>
+        <span className="flex items-center gap-1"><span className="w-[7px] h-[7px] rounded-full bg-[#3b82f6]" />대형주</span>
+        <span className="flex items-center gap-1"><span className="w-[7px] h-[7px] rounded-full bg-[#f59e0b]" />소부장주</span>
+        <span className="flex items-center gap-1">
+          <svg width="18" height="6"><line x1="0" y1="3" x2="18" y2="3" stroke="#60a5fa" strokeWidth="2" strokeDasharray="3 3" /></svg>
+          공급흐름
+        </span>
+      </div>
 
-      {/* 면책 */}
-      <p className="text-center text-[9px] text-[#9CA3AF] pt-4">
-        본 자료는 투자 권유가 아닌 정보 제공 목적입니다 · 수치는 과거 패턴 기반 예시 · 종목 정보는 2026년 4월 기준 · FLOWX
-      </p>
+      {/* 메인 SVG 다이어그램 */}
+      <svg width="100%" viewBox="0 0 780 1260" xmlns="http://www.w3.org/2000/svg" className="max-w-[820px] mx-auto block">
+
+        {/* ─── Defs ─── */}
+        <defs>
+          <marker id="au-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1.5L8 5L2 8.5" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </marker>
+          <filter id="au-gl"><feGaussianBlur stdDeviation="2.5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+        </defs>
+
+        {/* ─── 연결선 ─── */}
+        {/* 빅테크 → 데이터센터 */}
+        <line x1="130" y1="95" x2="310" y2="195" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="260" y1="95" x2="340" y2="195" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="390" y1="95" x2="380" y2="195" stroke="#a78bfa" strokeWidth="2.5" className="au-fl" opacity=".55" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="520" y1="95" x2="400" y2="195" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="650" y1="95" x2="430" y2="195" stroke="#a78bfa" strokeWidth="2" className="au-fl" opacity=".45" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+
+        {/* 데이터센터 → 1차 공급망 */}
+        <line x1="330" y1="310" x2="140" y2="430" stroke="#60a5fa" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="390" y1="320" x2="390" y2="430" stroke="#f87171" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="450" y1="310" x2="640" y2="430" stroke="#34d399" strokeWidth="2.5" className="au-fl" opacity=".5" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+
+        {/* 1차 → 2차 공급망 */}
+        <line x1="140" y1="540" x2="140" y2="730" stroke="#8b5cf6" strokeWidth="2" className="au-fl2" opacity=".4" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="390" y1="540" x2="390" y2="730" stroke="#eab308" strokeWidth="2" className="au-fl2" opacity=".4" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+        <line x1="640" y1="540" x2="640" y2="730" stroke="#f97316" strokeWidth="2" className="au-fl2" opacity=".4" filter="url(#au-gl)" markerEnd="url(#au-arrow)" />
+
+        {/* 횡적 연결 */}
+        <path d="M210,485 Q270,460 310,485" fill="none" stroke="#a78bfa" strokeWidth="1" opacity=".2" strokeDasharray="3 4" />
+        <path d="M460,485 Q540,460 570,485" fill="none" stroke="#a78bfa" strokeWidth="1" opacity=".2" strokeDasharray="3 4" />
+        <path d="M210,785 Q270,760 310,785" fill="none" stroke="#a78bfa" strokeWidth="1" opacity=".2" strokeDasharray="3 4" />
+        <path d="M460,785 Q540,760 570,785" fill="none" stroke="#a78bfa" strokeWidth="1" opacity=".2" strokeDasharray="3 4" />
+
+        {/* 펄스 점 */}
+        <circle className="au-pd" cx="250" cy="150" r="3.5" fill="#a78bfa" />
+        <circle className="au-pd" cx="410" cy="150" r="3.5" fill="#a78bfa" style={{ animationDelay: '.3s' }} />
+        <circle className="au-pd" cx="235" cy="370" r="3" fill="#60a5fa" style={{ animationDelay: '.5s' }} />
+        <circle className="au-pd" cx="390" cy="375" r="3" fill="#f87171" style={{ animationDelay: '.7s' }} />
+        <circle className="au-pd" cx="545" cy="370" r="3" fill="#34d399" style={{ animationDelay: '.9s' }} />
+        <circle className="au-pd" cx="140" cy="635" r="3" fill="#8b5cf6" style={{ animationDelay: '.4s' }} />
+        <circle className="au-pd" cx="390" cy="635" r="3" fill="#eab308" style={{ animationDelay: '.6s' }} />
+        <circle className="au-pd" cx="640" cy="635" r="3" fill="#f97316" style={{ animationDelay: '.8s' }} />
+
+        {/* ─── LAYER 0: 빅테크 ─── */}
+        <rect className="au-surface" x="50" y="18" width="680" height="85" rx="14" opacity=".5" />
+        <text className="au-txt-m" x="390" y="38" textAnchor="middle" fontSize="10" fontWeight="600" letterSpacing="1">STEP 0 — 최초 발주처</text>
+
+        {/* NVIDIA */}
+        <g className="au-hovg" transform="translate(130,70)">
+          <circle r="22" fill="#76b900" opacity=".85" /><circle r="22" fill="none" stroke="#76b900" strokeWidth="1" opacity=".4" className="au-pd2" />
+          <text textAnchor="middle" y="4" fontSize="10" fontWeight="700" fill="#fff">NV</text>
+          <text className="au-txt-s" textAnchor="middle" y="38" fontSize="9">NVIDIA</text>
+        </g>
+        {/* Google */}
+        <g className="au-hovg" transform="translate(260,70)">
+          <circle r="22" fill="#4285f4" opacity=".85" /><circle r="22" fill="none" stroke="#4285f4" strokeWidth="1" opacity=".4" className="au-pd2" style={{ animationDelay: '.2s' }} />
+          <text textAnchor="middle" y="4" fontSize="10" fontWeight="700" fill="#fff">G</text>
+          <text className="au-txt-s" textAnchor="middle" y="38" fontSize="9">Google</text>
+        </g>
+        {/* Microsoft */}
+        <g className="au-hovg" transform="translate(390,70)">
+          <circle r="22" fill="#00a4ef" opacity=".85" /><circle r="22" fill="none" stroke="#00a4ef" strokeWidth="1" opacity=".4" className="au-pd2" style={{ animationDelay: '.4s' }} />
+          <text textAnchor="middle" y="4" fontSize="10" fontWeight="700" fill="#fff">MS</text>
+          <text className="au-txt-s" textAnchor="middle" y="38" fontSize="9">Microsoft</text>
+        </g>
+        {/* Amazon */}
+        <g className="au-hovg" transform="translate(520,70)">
+          <circle r="22" fill="#ff9900" opacity=".85" /><circle r="22" fill="none" stroke="#ff9900" strokeWidth="1" opacity=".4" className="au-pd2" style={{ animationDelay: '.6s' }} />
+          <text textAnchor="middle" y="4" fontSize="10" fontWeight="700" fill="#fff">AM</text>
+          <text className="au-txt-s" textAnchor="middle" y="38" fontSize="9">Amazon</text>
+        </g>
+        {/* Meta */}
+        <g className="au-hovg" transform="translate(650,70)">
+          <circle r="22" fill="#1877f2" opacity=".85" /><circle r="22" fill="none" stroke="#1877f2" strokeWidth="1" opacity=".4" className="au-pd2" style={{ animationDelay: '.8s' }} />
+          <text textAnchor="middle" y="4" fontSize="10" fontWeight="700" fill="#fff">MT</text>
+          <text className="au-txt-s" textAnchor="middle" y="38" fontSize="9">Meta</text>
+        </g>
+
+        <text className="au-txt-m" x="390" y="140" textAnchor="middle" fontSize="9">▼ CAPEX 발주 / 투자 ▼</text>
+
+        {/* ─── LAYER 1: AI 데이터센터 ─── */}
+        <g transform="translate(390,255)">
+          <rect x="-110" y="-60" width="220" height="120" rx="16" className="au-node-fill" strokeWidth="1.5" />
+          <rect x="-110" y="-60" width="220" height="120" rx="16" fill="none" stroke="#60a5fa" strokeWidth="1" opacity=".3" className="au-pd2" />
+          {/* 서버랙 */}
+          <rect x="-90" y="-45" width="70" height="90" rx="6" className="au-surface" stroke="#60a5fa" strokeWidth="1" opacity=".6" />
+          <rect x="-82" y="-38" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-82" y="-22" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-82" y="-6" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-82" y="10" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          <rect x="-82" y="26" width="54" height="12" rx="2" fill="#60a5fa" opacity=".08" stroke="#60a5fa" strokeWidth=".3" />
+          {/* LED */}
+          <circle cx="-34" cy="-32" r="2.5" fill="#3b82f6" className="au-pd" />
+          <circle cx="-34" cy="-16" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.3s' }} />
+          <circle cx="-34" cy="0" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.5s' }} />
+          <circle cx="-34" cy="16" r="2.5" fill="#22c55e" className="au-pd" style={{ animationDelay: '.7s' }} />
+          <circle cx="-34" cy="32" r="2.5" fill="#3b82f6" className="au-pd" style={{ animationDelay: '.9s' }} />
+          <text className="au-txt-p" x="30" y="-22" fontSize="16" fontWeight="700">AI 데이터센터</text>
+          <text className="au-txt-s" x="30" y="-4" fontSize="10">GPU 수만 장 · 100MW+</text>
+          <text className="au-txt-s" x="30" y="12" fontSize="10">24시간 풀가동</text>
+          <text className="au-txt-m" x="30" y="36" fontSize="9">▼ 구동에 필요한 6가지 ▼</text>
+        </g>
+
+        {/* ─── STEP 1: 반도체 ─── */}
+        <g transform="translate(140,485)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#60a5fa" strokeWidth="1.2" opacity=".4" />
+          {/* 칩 */}
+          <rect x="-22" y="-22" width="44" height="44" rx="6" fill="#60a5fa" opacity=".1" stroke="#60a5fa" strokeWidth=".8" />
+          <rect x="-13" y="-13" width="26" height="26" rx="3" fill="#60a5fa" opacity=".25" />
+          <text textAnchor="middle" y="2" fontSize="9" fontWeight="700" fill="#60a5fa" opacity=".7">AI</text>
+          {/* 핀 */}
+          <line x1="-22" y1="-10" x2="-40" y2="-10" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="-22" y1="0" x2="-40" y2="0" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="-22" y1="10" x2="-40" y2="10" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="22" y1="-10" x2="40" y2="-10" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="22" y1="0" x2="40" y2="0" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="22" y1="10" x2="40" y2="10" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="-10" y1="-22" x2="-10" y2="-40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="0" y1="-22" x2="0" y2="-40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="10" y1="-22" x2="10" y2="-40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="-10" y1="22" x2="-10" y2="40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="0" y1="22" x2="0" y2="40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <line x1="10" y1="22" x2="10" y2="40" stroke="#60a5fa" strokeWidth="1.5" opacity=".4" />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#60a5fa">STEP 1 — 연산</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">반도체</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">GPU / HBM / 패키징</text>
+        </g>
+        {/* 반도체 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="14" y="588" width="82" height="20" rx="5" strokeWidth=".5" /><circle cx="24" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="31" y="602" fontSize="10" fontWeight="600">SK하이닉스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="100" y="588" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="110" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="117" y="602" fontSize="10" fontWeight="600">삼성전자</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="14" y="612" width="82" height="20" rx="5" strokeWidth=".5" /><circle cx="24" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="31" y="626" fontSize="10">한미반도체</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="100" y="612" width="40" height="20" rx="5" strokeWidth=".5" /><circle cx="110" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="117" y="626" fontSize="10">ISC</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="144" y="612" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="154" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="161" y="626" fontSize="10">리노공업</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="14" y="636" width="74" height="20" rx="5" strokeWidth=".5" /><circle cx="24" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="31" y="650" fontSize="10">네패스아크</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="92" y="636" width="58" height="20" rx="5" strokeWidth=".5" /><circle cx="102" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="109" y="650" fontSize="10">테크윙</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="154" y="636" width="58" height="20" rx="5" strokeWidth=".5" /><circle cx="164" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="171" y="650" fontSize="10">삼성전기</text></g>
+
+        {/* ─── STEP 2: 전력/원전 ─── */}
+        <g transform="translate(390,485)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#f87171" strokeWidth="1.2" opacity=".4" />
+          {/* 원전 냉각탑 */}
+          <path d="M-18,28 Q-18,-4 -10,-24 L-4,-24 Q4,-4 4,28 Z" fill="#f87171" opacity=".1" stroke="#f87171" strokeWidth=".8" />
+          <path d="M8,28 Q8,-4 16,-24 L22,-24 Q30,-4 30,28 Z" fill="#f87171" opacity=".1" stroke="#f87171" strokeWidth=".8" />
+          {/* 번개 */}
+          <path d="M-6,-30 L-14,-6 L-4,-6 L-10,18 L6,-10 L-2,-10 L4,-30 Z" fill="#f87171" opacity=".4" />
+          {/* 수증기 */}
+          <path d="M-10,-30 Q-6,-38 -2,-30" fill="none" stroke="#f87171" strokeWidth="1" opacity=".25" />
+          <path d="M14,-30 Q18,-38 22,-30" fill="none" stroke="#f87171" strokeWidth="1" opacity=".25" />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#f87171">STEP 2 — 에너지</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">전력 / 원전</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">변압기 / 송배전 / SMR</text>
+        </g>
+        {/* 전력 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="302" y="588" width="92" height="20" rx="5" strokeWidth=".5" /><circle cx="312" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="319" y="602" fontSize="10" fontWeight="600">두산에너빌리티</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="398" y="588" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="408" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="415" y="602" fontSize="10" fontWeight="600">한국전력</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="290" y="612" width="104" height="20" rx="5" strokeWidth=".5" /><circle cx="300" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="307" y="626" fontSize="10">HD현대일렉트릭</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="398" y="612" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="408" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="415" y="626" fontSize="10">LS일렉트릭</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="302" y="636" width="58" height="20" rx="5" strokeWidth=".5" /><circle cx="312" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="319" y="650" fontSize="10">일진전기</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="364" y="636" width="58" height="20" rx="5" strokeWidth=".5" /><circle cx="374" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="381" y="650" fontSize="10">대한전선</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="426" y="636" width="58" height="20" rx="5" strokeWidth=".5" /><circle cx="436" cy="646" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="443" y="650" fontSize="10">제룡전기</text></g>
+
+        {/* ─── STEP 3: 냉각 ─── */}
+        <g transform="translate(640,485)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#34d399" strokeWidth="1.2" opacity=".4" />
+          {/* 눈꽃 */}
+          <line x1="0" y1="-28" x2="0" y2="28" stroke="#34d399" strokeWidth="2" opacity=".45" />
+          <line x1="-24" y1="-14" x2="24" y2="14" stroke="#34d399" strokeWidth="2" opacity=".45" />
+          <line x1="-24" y1="14" x2="24" y2="-14" stroke="#34d399" strokeWidth="2" opacity=".45" />
+          <circle cx="0" cy="0" r="5" fill="#34d399" opacity=".2" />
+          <path d="M-26,8 Q-16,2 -6,8 Q4,14 14,8 Q24,2 30,8" fill="none" stroke="#34d399" strokeWidth="1.2" opacity=".25" />
+          <path d="M-26,16 Q-16,10 -6,16 Q4,22 14,16 Q24,10 30,16" fill="none" stroke="#34d399" strokeWidth="1" opacity=".15" />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#34d399">STEP 3 — 열관리</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">냉각</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">액침냉각 / 열교환기</text>
+        </g>
+        {/* 냉각 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="580" y="588" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="590" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="597" y="602" fontSize="10" fontWeight="600">한온시스템</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="656" y="588" width="70" height="20" rx="5" strokeWidth=".5" /><circle cx="666" cy="598" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="673" y="602" fontSize="10" fontWeight="600">삼성E&amp;A</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="586" y="612" width="52" height="20" rx="5" strokeWidth=".5" /><circle cx="596" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="603" y="626" fontSize="10">에이텍</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="642" y="612" width="52" height="20" rx="5" strokeWidth=".5" /><circle cx="652" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="659" y="626" fontSize="10">월덱스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="698" y="612" width="46" height="20" rx="5" strokeWidth=".5" /><circle cx="708" cy="622" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="715" y="626" fontSize="10">고영</text></g>
+
+        {/* 구분 라벨 */}
+        <text className="au-txt-m" x="390" y="700" textAnchor="middle" fontSize="9">▼ 인프라 구축 후 연결 · 운영 단계 ▼</text>
+
+        {/* ─── STEP 4: 통신 ─── */}
+        <g transform="translate(140,785)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#8b5cf6" strokeWidth="1.2" opacity=".4" />
+          {/* 광섬유 */}
+          <path d="M-30,-14 Q-16,-28 0,-14 Q16,0 30,-14" fill="none" stroke="#8b5cf6" strokeWidth="2.5" opacity=".55" />
+          <path d="M-30,0 Q-16,-14 0,0 Q16,14 30,0" fill="none" stroke="#8b5cf6" strokeWidth="2" opacity=".35" />
+          <path d="M-30,14 Q-16,0 0,14 Q16,28 30,14" fill="none" stroke="#8b5cf6" strokeWidth="1.5" opacity=".25" />
+          <rect x="-36" y="-18" width="8" height="8" rx="2" fill="#8b5cf6" opacity=".4" />
+          <rect x="28" y="-18" width="8" height="8" rx="2" fill="#8b5cf6" opacity=".4" />
+          <circle cx="-16" cy="-21" r="2" fill="#8b5cf6" opacity=".5" className="au-pd" />
+          <circle cx="16" cy="-7" r="2" fill="#8b5cf6" opacity=".5" className="au-pd" style={{ animationDelay: '.5s' }} />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#8b5cf6">STEP 4 — 연결</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">통신 / 광케이블</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">광인터커넥트 / 스위치</text>
+        </g>
+        {/* 통신 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="20" y="888" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="30" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="37" y="902" fontSize="10" fontWeight="600">SK텔레콤</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="96" y="888" width="36" height="20" rx="5" strokeWidth=".5" /><circle cx="106" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="113" y="902" fontSize="10" fontWeight="600">KT</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="136" y="888" width="76" height="20" rx="5" strokeWidth=".5" /><circle cx="146" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="153" y="902" fontSize="10" fontWeight="600">LG유플러스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="20" y="912" width="52" height="20" rx="5" strokeWidth=".5" /><circle cx="30" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="37" y="926" fontSize="10">우리로</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="76" y="912" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="86" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="93" y="926" fontSize="10">옵티시스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="142" y="912" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="152" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="159" y="926" fontSize="10">오이솔루션</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="42" y="936" width="52" height="20" rx="5" strokeWidth=".5" /><circle cx="52" cy="946" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="59" y="950" fontSize="10">쏠리드</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="98" y="936" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="108" cy="946" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="115" y="950" fontSize="10">에치에프알</text></g>
+
+        {/* ─── STEP 5: 건설 ─── */}
+        <g transform="translate(390,785)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#eab308" strokeWidth="1.2" opacity=".4" />
+          {/* 빌딩 + 크레인 */}
+          <rect x="-16" y="-22" width="32" height="44" rx="3" fill="#eab308" opacity=".1" stroke="#eab308" strokeWidth=".8" />
+          <rect x="-10" y="-16" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="2" y="-16" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="-10" y="-6" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="2" y="-6" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="-10" y="4" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="2" y="4" width="8" height="6" rx="1" fill="#eab308" opacity=".2" />
+          <rect x="-4" y="14" width="8" height="8" rx="1" fill="#eab308" opacity=".35" />
+          <line x1="24" y1="-36" x2="24" y2="22" stroke="#eab308" strokeWidth="2" opacity=".35" />
+          <line x1="24" y1="-36" x2="-8" y2="-36" stroke="#eab308" strokeWidth="2" opacity=".35" />
+          <line x1="-8" y1="-36" x2="-8" y2="-22" stroke="#eab308" strokeWidth="1" opacity=".25" strokeDasharray="2 2" />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#eab308">STEP 5 — 시설</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">건설 / 인프라</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">DC 시설 / 토목 / 전기</text>
+        </g>
+        {/* 건설 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="310" y="888" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="320" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="327" y="902" fontSize="10" fontWeight="600">삼성물산</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="376" y="888" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="386" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="393" y="902" fontSize="10" fontWeight="600">현대건설</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="316" y="912" width="72" height="20" rx="5" strokeWidth=".5" /><circle cx="326" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="333" y="926" fontSize="10">케이피에프</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="392" y="912" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="402" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="409" y="926" fontSize="10">서전기전</text></g>
+
+        {/* ─── STEP 6: 로봇 ─── */}
+        <g transform="translate(640,785)">
+          <rect x="-55" y="-55" width="110" height="110" rx="16" className="au-node-fill" strokeWidth="1" />
+          <rect x="-55" y="-55" width="110" height="110" rx="16" fill="none" stroke="#f97316" strokeWidth="1.2" opacity=".4" />
+          {/* 로봇팔 */}
+          <circle cx="0" cy="20" r="8" fill="#f97316" opacity=".12" stroke="#f97316" strokeWidth=".8" />
+          <line x1="0" y1="12" x2="-14" y2="-8" stroke="#f97316" strokeWidth="3.5" strokeLinecap="round" opacity=".4" />
+          <line x1="-14" y1="-8" x2="10" y2="-24" stroke="#f97316" strokeWidth="3" strokeLinecap="round" opacity=".4" />
+          <circle cx="-14" cy="-8" r="4" fill="#f97316" opacity=".2" />
+          <circle cx="10" cy="-24" r="5" fill="#f97316" opacity=".25" />
+          <line x1="10" y1="-24" x2="4" y2="-34" stroke="#f97316" strokeWidth="2" strokeLinecap="round" opacity=".3" />
+          <line x1="10" y1="-24" x2="18" y2="-33" stroke="#f97316" strokeWidth="2" strokeLinecap="round" opacity=".3" />
+          <circle cx="6" cy="-30" r="1.5" fill="#f97316" className="au-pd" opacity=".4" />
+          <text className="au-txt-m" textAnchor="middle" y="-62" fontSize="9" fontWeight="600" fill="#f97316">STEP 6 — 운영</text>
+          <text className="au-txt-p" textAnchor="middle" y="68" fontSize="14" fontWeight="700">로봇 / 자동화</text>
+          <text className="au-txt-s" textAnchor="middle" y="82" fontSize="9">DC 운영 / 산업용</text>
+        </g>
+        {/* 로봇 종목 */}
+        <g className="au-hovg"><rect className="au-tag-bg" x="580" y="888" width="54" height="20" rx="5" strokeWidth=".5" /><circle cx="590" cy="898" r="3.5" fill="#3b82f6" /><text className="au-txt-p" x="597" y="902" fontSize="10" fontWeight="600">현대차</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="574" y="912" width="96" height="20" rx="5" strokeWidth=".5" /><circle cx="584" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="591" y="926" fontSize="10">레인보우로보틱스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="674" y="912" width="82" height="20" rx="5" strokeWidth=".5" /><circle cx="684" cy="922" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="691" y="926" fontSize="10">두산로보틱스</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="590" y="936" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="600" cy="946" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="607" y="950" fontSize="10">로보스타</text></g>
+        <g className="au-hovg"><rect className="au-tag-bg" x="656" y="936" width="62" height="20" rx="5" strokeWidth=".5" /><circle cx="666" cy="946" r="3.5" fill="#f59e0b" /><text className="au-txt-p" x="673" y="950" fontSize="10">뉴로메카</text></g>
+
+        {/* ─── 밸류체인 흐름도 ─── */}
+        <rect className="au-surface" x="50" y="990" width="680" height="100" rx="14" opacity=".5" />
+        <text className="au-txt-p" textAnchor="middle" x="390" y="1012" fontSize="12" fontWeight="600">밸류체인 흐름도 — 전체 순서</text>
+
+        <rect x="60" y="1024" width="72" height="22" rx="6" fill="#a78bfa" opacity=".15" stroke="#a78bfa" strokeWidth=".5" />
+        <text textAnchor="middle" x="96" y="1039" fontSize="9" fontWeight="500" fill="#a78bfa">0. 빅테크 발주</text>
+        <text className="au-txt-m" x="136" y="1039" fontSize="11">→</text>
+        <rect x="148" y="1024" width="68" height="22" rx="6" fill="#60a5fa" opacity=".1" stroke="#60a5fa" strokeWidth=".5" />
+        <text textAnchor="middle" x="182" y="1039" fontSize="9" fill="#60a5fa">1. GPU 주문</text>
+        <text className="au-txt-m" x="220" y="1039" fontSize="11">→</text>
+        <rect x="232" y="1024" width="60" height="22" rx="6" fill="#eab308" opacity=".1" stroke="#eab308" strokeWidth=".5" />
+        <text textAnchor="middle" x="262" y="1039" fontSize="9" fill="#eab308">5. DC 건설</text>
+        <text className="au-txt-m" x="296" y="1039" fontSize="11">→</text>
+        <rect x="308" y="1024" width="60" height="22" rx="6" fill="#f87171" opacity=".1" stroke="#f87171" strokeWidth=".5" />
+        <text textAnchor="middle" x="338" y="1039" fontSize="9" fill="#f87171">2. 전력 확보</text>
+        <text className="au-txt-m" x="372" y="1039" fontSize="11">→</text>
+        <rect x="384" y="1024" width="60" height="22" rx="6" fill="#34d399" opacity=".1" stroke="#34d399" strokeWidth=".5" />
+        <text textAnchor="middle" x="414" y="1039" fontSize="9" fill="#34d399">3. 냉각 설치</text>
+        <text className="au-txt-m" x="448" y="1039" fontSize="11">→</text>
+        <rect x="460" y="1024" width="76" height="22" rx="6" fill="#8b5cf6" opacity=".1" stroke="#8b5cf6" strokeWidth=".5" />
+        <text textAnchor="middle" x="498" y="1039" fontSize="9" fill="#8b5cf6">4. 광케이블 연결</text>
+        <text className="au-txt-m" x="540" y="1039" fontSize="11">→</text>
+        <rect x="552" y="1024" width="76" height="22" rx="6" fill="#f97316" opacity=".1" stroke="#f97316" strokeWidth=".5" />
+        <text textAnchor="middle" x="590" y="1039" fontSize="9" fill="#f97316">6. 운영 자동화</text>
+
+        <text className="au-txt-m" textAnchor="middle" x="390" y="1072" fontSize="9">2030년까지 글로벌 DC 전력 수요 175% 증가 전망 (골드만삭스) · 국내 DC 시장 2028년 10조원 돌파</text>
+
+        {/* 면책 */}
+        <text className="au-txt-m" textAnchor="middle" x="390" y="1120" fontSize="8" opacity=".5">본 자료는 투자 권유가 아닌 정보 제공 목적입니다 · FLOWX</text>
+        <text className="au-txt-m" textAnchor="middle" x="390" y="1134" fontSize="8" opacity=".4">종목 정보는 2026년 4월 기준이며 변동될 수 있습니다</text>
+      </svg>
     </div>
   )
 }
