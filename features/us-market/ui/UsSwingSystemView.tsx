@@ -167,8 +167,8 @@ function EtfDrillBlock({ etf, stocks }: { etf: string; stocks: DrilldownStock[] 
             <div className="w-5 text-center text-[13px] font-black text-[#aaa]">{i + 1}</div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-[16px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                <span className="text-[12px] text-[#888]">{s.name}</span>
+                <span className="text-[16px] font-black text-[#1A1A2E]">{s.name || s.ticker}</span>
+                <span className="text-[12px] text-[#888]">{s.name ? s.ticker : ''}</span>
               </div>
             </div>
             <div className="w-20 text-right">
@@ -223,8 +223,8 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
             <div key={s.ticker} className="flex items-center gap-3 py-2 border-b border-[#F0EEE8] last:border-0">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                  <span className="text-[12px] text-[#888]">{s.name}</span>
+                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.name || s.ticker}</span>
+                  <span className="text-[12px] text-[#888]">{s.name ? s.ticker : ''}</span>
                   <span className="text-[11px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
                 </div>
                 <div className="flex gap-2 mt-0.5">
@@ -252,8 +252,8 @@ function SwingPicksPanel({ stocks }: { stocks: SwingSignal[] }) {
             <div key={s.ticker} className="flex items-center gap-3 py-2 border-b border-[#F0EEE8] last:border-0">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                  <span className="text-[12px] text-[#888]">{s.name}</span>
+                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.name || s.ticker}</span>
+                  <span className="text-[12px] text-[#888]">{s.name ? s.ticker : ''}</span>
                   <span className="text-[11px] bg-[#F1F0EA] text-[#555] px-1.5 py-0.5 rounded font-bold">{s.sector}</span>
                 </div>
               </div>

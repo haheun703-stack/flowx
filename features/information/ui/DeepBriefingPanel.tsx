@@ -280,8 +280,7 @@ export function DeepBriefingPanel() {
             <table className="w-full text-[12px]">
               <thead>
                 <tr className="border-b border-[#e5e7ef] bg-[#fafafa]">
-                  <th className="text-left px-4 py-2 font-semibold text-[#5b6178] w-[80px]">티커</th>
-                  <th className="text-left px-3 py-2 font-semibold text-[#5b6178]">종목명</th>
+                  <th className="text-left px-4 py-2 font-semibold text-[#5b6178]">종목</th>
                   <th className="text-left px-3 py-2 font-semibold text-[#5b6178]">사유</th>
                   <th className="text-center px-3 py-2 font-semibold text-[#5b6178] w-[80px]">방향</th>
                 </tr>
@@ -296,13 +295,13 @@ export function DeepBriefingPanel() {
                       <td className="px-4 py-2.5">
                         {href ? (
                           <a href={href} className="text-blue-600 hover:underline font-medium">
-                            {w.ticker}
+                            {w.name || w.ticker}
                           </a>
                         ) : (
-                          <span className="font-medium text-[#1A1A2E]">{w.ticker}</span>
+                          <span className="font-medium text-[#1A1A2E]">{w.name || w.ticker}</span>
                         )}
+                        {w.name && <span className="text-[11px] text-[#9CA3AF] ml-1">{w.ticker}</span>}
                       </td>
-                      <td className="px-3 py-2.5 text-[#1A1A2E]">{w.name}</td>
                       <td className="px-3 py-2.5 text-[#5b6178]">{w.reason}</td>
                       <td className={`text-center px-3 py-2.5 font-bold text-[11px] ${dir.color}`}>
                         {dir.icon}

@@ -301,8 +301,8 @@ function QuantPicksPanel({ stocks, qt }: { stocks: StockSignal[]; qt: QuantData 
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.ticker}</span>
-                  <span className="text-[12px] text-[#888]">{s.name}</span>
+                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.name || s.ticker}</span>
+                  <span className="text-[12px] text-[#888]">{s.name ? s.ticker : ''}</span>
                   <span className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                         style={{ background: inOw ? '#E6F9EE': '#F1F0EA', color: inOw ? '#00843D': '#555'}}>
                     {inOw ? '▲ ': ''}{s.sector}
