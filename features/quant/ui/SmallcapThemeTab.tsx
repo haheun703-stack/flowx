@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { BluechipCheckupData } from './BluechipCheckupPanel'
-import { FibStock, ZONE_ORDER, ZONE_CONFIG, fmtCap as fibFmtCap, FibMiniGauge, FibLegend } from '@/features/swing/ui/FibShared'
+import { fmtCap } from '@/shared/lib/formatters'
+import { FibStock, ZONE_ORDER, ZONE_CONFIG, FibMiniGauge, FibLegend } from '@/features/swing/ui/FibShared'
 
 /* ─── Types ─── */
 interface SmallcapItem {
@@ -23,11 +24,6 @@ const SUPPLY_CFG: Record<string, { bg: string; text: string }> = {
   '매집': { bg: 'bg-orange-100', text: 'text-orange-700' },
   '관망': { bg: 'bg-gray-100', text: 'text-gray-500' },
   'AI추천': { bg: 'bg-green-100', text: 'text-green-700' },
-}
-
-const fmtCap = (v: number) => {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  return `${v.toLocaleString()}억`
 }
 
 type FibFilter = 'all' | 'DEEP' | 'MID' | 'MILD'
@@ -272,7 +268,7 @@ export default function SmallcapThemeTab({ bluechip }: { bluechip: BluechipCheck
                               </Link>
                             </td>
                             <td className="text-center py-2.5 px-2 text-[#6B7280] text-[12px]">{s.sector}</td>
-                            <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums text-[12px]">{fibFmtCap(s.cap ?? 0)}</td>
+                            <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums text-[12px]">{fmtCap(s.cap ?? 0)}</td>
                             <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums text-[12px]">{(s.price ?? 0).toLocaleString()}</td>
                             <td className="text-right py-2.5 px-2 font-bold tabular-nums text-[12px]" style={{ color: '#DC2626' }}>{(s.drop ?? 0).toFixed(1)}%</td>
                             <td className="text-center py-2.5 px-2">

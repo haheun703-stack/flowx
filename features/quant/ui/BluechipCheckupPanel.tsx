@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { fmtCap } from '@/shared/lib/formatters'
 
 /* ─── Types ─── */
 interface ScoreAxis {
@@ -61,11 +62,6 @@ export interface BluechipCheckupData {
 
 /* ─── Helpers ─── */
 const fmtPrice = (v: number) => v.toLocaleString()
-const fmtCap = (v: number) => {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  return `${v.toLocaleString()}억`
-}
-
 const GRADE_COLOR: Record<string, { bg: string; text: string }> = {
   A: { bg: 'bg-red-100', text: 'text-red-700' },
   B: { bg: 'bg-orange-100', text: 'text-orange-700' },

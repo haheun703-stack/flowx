@@ -83,7 +83,7 @@ export function MarketSummaryView() {
     { name: 'KOSDAQ', price: latest?.kosdaq_close ?? 0, change: latest?.kosdaq_change_pct ?? 0 },
     { name: 'S&P 500', price: latest?.sp500_close ?? 0, change: latest?.sp500_change_pct ?? 0 },
     { name: '나스닥', price: latest?.nasdaq_close ?? 0, change: latest?.nasdaq_change_pct ?? 0 },
-    ...(indices.length >= 5 ? [
+    ...(indices.length >= 6 ? [
       { name: '다우', price: indices[4]?.price ?? 0, change: indices[4]?.changePercent ?? 0 },
       { name: '닛케이', price: indices[5]?.price ?? 0, change: indices[5]?.changePercent ?? 0 },
     ] : [

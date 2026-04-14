@@ -70,8 +70,8 @@ export default function RelayView() {
     )
   }
 
-  const buySignals = items.filter((i) => i.signal_type.includes(GRADE_LEGACY_BUY) || i.signal_type.includes(GRADE_PICK) || i.signal_type === '관심 구간')
-  const otherSignals = items.filter((i) => !i.signal_type.includes(GRADE_LEGACY_BUY) && !i.signal_type.includes(GRADE_PICK) && i.signal_type !== '관심 구간')
+  const buySignals = items.filter((i) => i.signal_type?.includes(GRADE_LEGACY_BUY) || i.signal_type?.includes(GRADE_PICK) || i.signal_type === '관심 구간')
+  const otherSignals = items.filter((i) => !i.signal_type?.includes(GRADE_LEGACY_BUY) && !i.signal_type?.includes(GRADE_PICK) && i.signal_type !== '관심 구간')
 
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4 md:space-y-8">

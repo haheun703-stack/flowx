@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { BluechipCheckupData } from './BluechipCheckupPanel'
-import { FibStock, ZONE_ORDER, ZONE_CONFIG, fmtCap as fibFmtCap, FibMiniGauge, FibLegend } from '@/features/swing/ui/FibShared'
+import { fmtCap } from '@/shared/lib/formatters'
+import { FibStock, ZONE_ORDER, ZONE_CONFIG, FibMiniGauge, FibLegend } from '@/features/swing/ui/FibShared'
 
 /* ─── Types ─── */
 interface ScoreAxis { score: number; reason: string }
@@ -37,10 +38,6 @@ const AXIS_LABELS = ['밸류에이션', '실적', '이벤트', '수급', '기술
 const AXIS_KEYS: (keyof BluechipItem['scores'])[] = ['valuation', 'earnings', 'events', 'supply_demand', 'technical']
 
 const fmtPrice = (v: number) => v.toLocaleString()
-const fmtCap = (v: number) => {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  return `${v.toLocaleString()}억`
-}
 
 /* ─── ScoreBar ─── */
 function ScoreBar({ score, max = 20 }: { score: number; max?: number }) {
@@ -336,7 +333,7 @@ export default function BluechipInspectionTab({ bluechip }: { bluechip: Bluechip
                               </Link>
                             </td>
                             <td className="text-center py-2.5 px-2 text-[#6B7280] text-[12px]">{s.sector}</td>
-                            <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums text-[12px]">{fibFmtCap(s.cap ?? 0)}</td>
+                            <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums text-[12px]">{fmtCap(s.cap ?? 0)}</td>
                             <td className="text-right py-2.5 px-2 text-[#1A1A2E] tabular-nums text-[12px]">{(s.price ?? 0).toLocaleString()}</td>
                             <td className="text-right py-2.5 px-2 font-bold tabular-nums text-[12px]" style={{ color: '#DC2626' }}>{(s.drop ?? 0).toFixed(1)}%</td>
                             <td className="text-center py-2.5 px-2">

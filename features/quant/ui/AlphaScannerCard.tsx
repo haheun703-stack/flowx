@@ -1,6 +1,7 @@
 'use client'
 
 import type { AlphaCandidate } from './alpha-types'
+import { fmtCap } from '@/shared/lib/formatters'
 
 /* ── 상수 ── */
 
@@ -28,11 +29,6 @@ const EARNINGS_KR: Record<string, { label: string; color: string }> = {
 
 function fmtPrice(n: number): string {
   return n.toLocaleString('ko-KR')
-}
-
-function fmtCap(v: number): string {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  return `${v.toLocaleString()}억`
 }
 
 function supplyLabel(type: string): string {

@@ -18,10 +18,7 @@ export const ZONE_CONFIG: Record<string, { icon: string; color: string; bg: stri
   SHALLOW: { icon: '🟢', color: '#65A30D', bg: '#F7FEE7', border: '#D9F99D', label: '15~30% 하락 (얕은 조정)' },
 }
 
-export function fmtCap(cap: number): string {
-  if (cap >= 10000) return `${(cap / 10000).toFixed(1)}조`
-  return `${cap.toLocaleString()}억`
-}
+export { fmtCap } from '@/shared/lib/formatters'
 
 export function FibMiniGauge({ stock }: { stock: FibStock }) {
   const range = stock.w52h - stock.w52l

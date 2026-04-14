@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { fmtCap } from '@/shared/lib/formatters'
 
 /* ── 타입 ── */
 interface StealthStock {
@@ -43,11 +44,6 @@ function fmtMoney(val: number): string {
 
 function fmtPrice(val: number): string {
   return val.toLocaleString('ko-KR')
-}
-
-function fmtCap(cap: number): string {
-  if (cap >= 10000) return `${(cap / 10000).toFixed(1)}조`
-  return `${cap.toLocaleString('ko-KR')}억`
 }
 
 /* ── 점수 색상 ── */

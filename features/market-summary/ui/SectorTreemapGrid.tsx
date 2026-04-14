@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { hierarchy, treemap, treemapSquarify } from 'd3-hierarchy'
+import { fmtCap } from '@/shared/lib/formatters'
 import type { TreemapSector, TreemapStock } from '../model/useTreemap'
 import type { SizeBy } from './StockTreemap'
 import { SECTOR_LIST } from '@/lib/chart-tokens'
@@ -36,11 +37,6 @@ function fmt(v: number) {
   if (abs >= 10000) return `${sign}${(abs / 10000).toFixed(1)}조`
   if (abs >= 1) return `${sign}${Math.round(abs).toLocaleString()}억`
   return `${sign}${abs.toFixed(1)}억`
-}
-
-function fmtCap(v: number) {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  return `${Math.round(v).toLocaleString()}억`
 }
 
 // ─── 범례 ───

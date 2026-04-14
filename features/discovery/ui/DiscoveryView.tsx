@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
+import { fmtCap } from '@/shared/lib/formatters'
 
 // ── 타입 ─────────────────────────────────────────────
 interface DiscoveryItem {
@@ -51,11 +52,6 @@ const LAYER_KEYS = ['theme_score', 'order_score', 'earnings_score', 'supply_scor
 const LAYER_WEIGHTS = ['15%', '15%', '25%', '20%', '15%', '10%'] as const
 
 // ── 헬퍼 ─────────────────────────────────────────────
-function fmtCap(v: number) {
-  if (v >= 10000) return `${(v / 10000).toFixed(1)}조`
-  if (v >= 1000) return `${(v / 1000).toFixed(1)}천억`
-  return `${v}억`
-}
 
 function scoreColor(v: number): string {
   if (v >= 70) return '#16A34A'
