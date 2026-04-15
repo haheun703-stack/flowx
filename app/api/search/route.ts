@@ -57,20 +57,41 @@ export async function GET(req: Request) {
 
     // 시그널에서 추가 (중복 제거)
     const seenTickers = new Set(results.map((r) => r.ticker))
+    const sigRows: { ticker: string; name: string; grade: string; score: number; source: string; date: string | undefined; has_why_now: boolean }[] = []
     for (const sig of signals ?? []) {
-      const ticker = sig['코드'] ?? ''
+      const ticker = sig['코드'] ?? sig.code ?? ''
       if (seenTickers.has(ticker)) continue
       seenTickers.add(ticker)
-      results.push({
+      const rawName = sig.name ?? ''
+      sigRows.push({
         ticker,
-        name: sig.name ?? '',
-        grade: sig['등급'] ?? '',
+        name: rawName,
+        grade: sig['등급'] ?? sig.grade ?? '',
         score: sig.total_score ?? 0,
         source: 'signal',
         date: sig.date,
         has_why_now: false,
       })
     }
+
+    // name이 비어있거나 종목코드인 경우 stock_master에서 보정
+    const needsName = sigRows.filter((r) => !r.name || /^\d{6}$/.test(r.name))
+    if (needsName.length > 0) {
+      const codes = [...new Set(needsName.map((r) => r.ticker))]
+      const { data: masters } = await sb
+        .from('stock_master')
+        .select('ticker, name')
+        .in('ticker', codes)
+      if (masters && masters.length > 0) {
+        const nameMap = new Map(masters.map((m) => [m.ticker, m.name]))
+        for (const r of sigRows) {
+          if (!r.name || /^\d{6}$/.test(r.name)) {
+            r.name = nameMap.get(r.ticker) ?? r.name ?? r.ticker
+          }
+        }
+      }
+    }
+    results.push(...sigRows)
 
     return NextResponse.json({
       results,

@@ -39,14 +39,37 @@ export async function GET(request: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // 한글 컬럼(코드, 등급) → 영문(code, grade)으로 매핑하여 프론트엔드 전달
+    // 한글 컬럼(코드, 등급) → 영문(code, grade)으로 매핑
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapped = (data ?? []).map((row: any) => ({
+    const rows = (data ?? []).map((row: any) => ({
       ...row,
-      code: row['\uCF54\uB4DC'] ?? '',
-      grade: row['\uB4F1\uAE09'] ?? 'N/A',
+      code: row['\uCF54\uB4DC'] ?? row.code ?? '',
+      grade: row['\uB4F1\uAE09'] ?? row.grade ?? 'N/A',
     }))
-    return NextResponse.json(mapped)
+
+    // name이 비어있거나 종목코드(숫자6자리)인 경우 stock_master에서 보정
+    const needsName = rows.filter(
+      (r: { name?: string; code: string }) => !r.name || /^\d{6}$/.test(r.name)
+    )
+
+    if (needsName.length > 0) {
+      const codes = [...new Set(needsName.map((r: { code: string }) => r.code))]
+      const { data: masters } = await supabase
+        .from('stock_master')
+        .select('ticker, name')
+        .in('ticker', codes)
+
+      if (masters && masters.length > 0) {
+        const nameMap = new Map(masters.map((m) => [m.ticker, m.name]))
+        for (const row of rows) {
+          if (!row.name || /^\d{6}$/.test(row.name)) {
+            row.name = nameMap.get(row.code) ?? row.name ?? row.code
+          }
+        }
+      }
+    }
+
+    return NextResponse.json(rows)
   } catch (e) {
     console.error('short-signals error:', e)
     return NextResponse.json([])

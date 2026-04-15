@@ -37,10 +37,10 @@ export async function GET(req: Request) {
     const signals = (data ?? []).map((row: any) => ({
       id: row.id,
       bot_type: ['BUY', 'QUANT_SELL'].includes(row.signal_type) ? 'QUANT' : 'DAYTRADING',
-      ticker: row['\uCF54\uB4DC'] ?? '',
+      ticker: row['\uCF54\uB4DC'] ?? row.code ?? '',
       ticker_name: row.name ?? '',
       signal_type: row.signal_type,
-      grade: row['\uB4F1\uAE09'] ?? 'N/A',
+      grade: row['\uB4F1\uAE09'] ?? row.grade ?? 'N/A',
       score: row.total_score,
       multiplier: row.volume_ratio,
       entry_price: row.entry_price,
@@ -55,6 +55,28 @@ export async function GET(req: Request) {
       close_date: null,
       close_reason: null,
     }))
+
+    // ticker_name이 비어있거나 종목코드(숫자6자리)인 경우 stock_master에서 보정
+    const needsName = signals.filter(
+      (s: { ticker_name: string; ticker: string }) => !s.ticker_name || /^\d{6}$/.test(s.ticker_name)
+    )
+
+    if (needsName.length > 0) {
+      const codes = [...new Set(needsName.map((s: { ticker: string }) => s.ticker))]
+      const { data: masters } = await supabase
+        .from('stock_master')
+        .select('ticker, name')
+        .in('ticker', codes)
+
+      if (masters && masters.length > 0) {
+        const nameMap = new Map(masters.map((m) => [m.ticker, m.name]))
+        for (const sig of signals) {
+          if (!sig.ticker_name || /^\d{6}$/.test(sig.ticker_name)) {
+            sig.ticker_name = nameMap.get(sig.ticker) ?? sig.ticker_name ?? sig.ticker
+          }
+        }
+      }
+    }
 
     return NextResponse.json({
       signals,
