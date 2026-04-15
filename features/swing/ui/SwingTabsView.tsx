@@ -4,10 +4,12 @@ import { useState } from "react"
 import DaytradingPicksPanel from "@/features/daytrading/ui/DaytradingPicksPanel"
 import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerformancePanel"
 import SwingDashboardView from "./SwingDashboardView"
+import CycleScanView from "./CycleScanView"
 import StealthScannerView from "./StealthScannerView"
 
 const TABS = [
   { key: "dashboard", label: "대시보드" },
+  { key: "cycle", label: "사이클 감지기" },
   { key: "daytrading", label: "단타 TOP픽" },
   { key: "stealth", label: "선매집 탐지" },
 ] as const
@@ -39,13 +41,14 @@ export function SwingTabsView() {
       </div>
 
       {/* 탭 콘텐츠 */}
+      {tab === "dashboard" && <SwingDashboardView />}
+      {tab === "cycle" && <CycleScanView />}
       {tab === "daytrading" && (
         <>
           <DaytradingPicksPanel />
           <DaytradingPerformancePanel />
         </>
       )}
-      {tab === "dashboard" && <SwingDashboardView />}
       {tab === "stealth" && <StealthScannerView />}
     </div>
   )
