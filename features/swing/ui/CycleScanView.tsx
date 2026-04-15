@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fmtCap } from '@/shared/lib/formatters'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
+import { fmtCap } from '@/shared/lib/formatters'
 
 /* ── 타입 ── */
 interface CycleSignal {
@@ -82,12 +82,7 @@ function scoreBorder(score: number) {
   return 'border-[var(--border)]'
 }
 
-/* ── 시총 포맷 ── */
-function fmtMarketCap(cap_억: number): string {
-  if (cap_억 >= 10000) return `${(cap_억 / 10000).toFixed(1)}조`
-  if (cap_억 >= 1000) return `${(cap_억 / 1000).toFixed(1)}천억`
-  return `${cap_억}억`
-}
+/* fmtCap: shared/lib/formatters.ts SSoT 사용 (cap_억 단위) */
 
 /* ── 종목 카드 ── */
 function CycleCard({ item, theme }: { item: CycleItem; theme: 'surge' | 'accumulate' | 'warning' }) {
@@ -135,7 +130,7 @@ function CycleCard({ item, theme }: { item: CycleItem; theme: 'surge' | 'accumul
         <span className={`font-bold tabular-nums ${item.change_pct >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
           {item.change_pct >= 0 ? '+' : ''}{item.change_pct?.toFixed(1)}%
         </span>
-        <span>시총 {fmtMarketCap(item.cap_억)}</span>
+        <span>시총 {fmtCap(item.cap_억)}</span>
       </div>
       <p className="text-[12px] text-gray-500 mt-1.5">{item.summary}</p>
     </div>

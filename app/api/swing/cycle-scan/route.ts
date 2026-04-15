@@ -15,7 +15,10 @@ export async function GET() {
       .single()
 
     if (error) {
-      console.error('[API /swing/cycle-scan] error:', error.message)
+      // PGRST116 = 행 없음 (정상 — 아직 데이터 미생성)
+      if (error.code !== 'PGRST116') {
+        console.error('[API /swing/cycle-scan] error:', error.message)
+      }
       return NextResponse.json({ data: null })
     }
 
