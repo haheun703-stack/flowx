@@ -13,7 +13,10 @@ export async function GET() {
       .order('trade_date', { ascending: false })
       .limit(50)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[paper-trades] DB error:', error.message)
+      return NextResponse.json({ error: '모의투자 조회 오류' }, { status: 500 })
+    }
 
     const latest = data?.[0]
     return NextResponse.json({

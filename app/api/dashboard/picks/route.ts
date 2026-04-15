@@ -14,7 +14,8 @@ export async function GET() {
       .limit(50)
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error('[dashboard/picks] DB error:', error.message)
+      return NextResponse.json({ error: '추천 종목 조회 오류' }, { status: 500 })
     }
 
     const picks = (data ?? []).map((r: Record<string, unknown>) => ({

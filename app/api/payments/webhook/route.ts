@@ -17,19 +17,19 @@ export async function POST(request: NextRequest) {
   const secret = process.env.TOSS_WEBHOOK_SECRET
   let body: { eventType: string; data: Record<string, string> }
 
-  if (secret) {
-    const rawBody = await request.text()
-    const signature = request.headers.get('toss-signature') ?? ''
-    const expected = createHmac('sha256', secret).update(rawBody).digest('base64')
-    if (signature !== expected) {
-      console.error('webhook signature mismatch')
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 403 })
-    }
-    body = JSON.parse(rawBody)
-  } else {
-    console.warn('TOSS_WEBHOOK_SECRET not set — skipping signature check')
-    body = await request.json()
+  if (!secret) {
+    console.error('TOSS_WEBHOOK_SECRET not configured — rejecting webhook')
+    return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 })
   }
+
+  const rawBody = await request.text()
+  const signature = request.headers.get('toss-signature') ?? ''
+  const expected = createHmac('sha256', secret).update(rawBody).digest('base64')
+  if (signature !== expected) {
+    console.error('webhook signature mismatch')
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 403 })
+  }
+  body = JSON.parse(rawBody)
 
   const { eventType, data } = body
   const supabase = getSupabaseAdmin()

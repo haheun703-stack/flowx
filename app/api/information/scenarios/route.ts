@@ -24,7 +24,10 @@ export async function GET(req: Request) {
       Promise.resolve(supabase.from('scenario_hit_summary').select('*').single()).then(r => r.data).catch(() => null),
     ])
 
-    if (scenarioResult.error) return NextResponse.json({ error: scenarioResult.error.message }, { status: 500 })
+    if (scenarioResult.error) {
+      console.error('[scenarios] DB error:', scenarioResult.error.message)
+      return NextResponse.json({ error: '시나리오 조회 오류' }, { status: 500 })
+    }
 
     return NextResponse.json({
       items: scenarioResult.data ?? [],

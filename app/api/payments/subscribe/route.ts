@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       periodEnd: periodEnd.toISOString(),
     })
   } catch (err) {
-    const message = err instanceof Error ? err.message : '결제 처리 실패'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[subscribe] error:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ error: '결제 처리 실패' }, { status: 500 })
   }
 }

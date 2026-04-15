@@ -25,7 +25,10 @@ export async function GET(req: Request) {
 
     const { data, error } = await query
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[disclosures] DB error:', error.message)
+      return NextResponse.json({ error: '공시 데이터 조회 오류' }, { status: 500 })
+    }
 
     // 봇 컬럼명 → 프론트엔드 타입 매핑
     const items = (data ?? []).map((row: Record<string, unknown>) => {

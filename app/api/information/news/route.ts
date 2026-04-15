@@ -35,7 +35,10 @@ export async function GET(req: Request) {
 
     const { data, error } = await query
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[news] DB error:', error.message)
+      return NextResponse.json({ error: '뉴스 데이터 조회 오류' }, { status: 500 })
+    }
 
     // 날짜별 그루핑
     const latestDate = data?.[0]?.date ?? null

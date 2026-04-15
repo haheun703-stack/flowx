@@ -22,7 +22,10 @@ export async function GET() {
       .eq('date', latest.date)
       .order('score', { ascending: false })
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[heatmap] DB error:', error.message)
+      return NextResponse.json({ error: '히트맵 조회 오류' }, { status: 500 })
+    }
     return NextResponse.json(data)
   } catch (e) {
     console.error('heatmap error:', e)

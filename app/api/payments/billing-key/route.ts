@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       cardNumber: result.cardNumber,
     })
   } catch (err) {
-    const message = err instanceof Error ? err.message : '빌링키 발급 실패'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[billing-key] error:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ error: '빌링키 발급 실패' }, { status: 500 })
   }
 }

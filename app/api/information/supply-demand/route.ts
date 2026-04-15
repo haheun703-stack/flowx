@@ -18,7 +18,10 @@ export async function GET(req: Request) {
       .order('date', { ascending: false })
       .limit(days)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[supply-demand] DB error:', error.message)
+      return NextResponse.json({ error: '수급 데이터 조회 오류' }, { status: 500 })
+    }
     if (!data?.length) return NextResponse.json({ error: 'No data' }, { status: 404 })
 
     // 봇 컬럼명 → 프론트엔드 타입 매핑

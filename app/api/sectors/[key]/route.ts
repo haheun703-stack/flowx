@@ -30,8 +30,14 @@ export async function GET(
         .eq('sector_key', key),
     ])
 
-    if (stocksRes.error) return NextResponse.json({ error: stocksRes.error.message }, { status: 500 })
-    if (linksRes.error) return NextResponse.json({ error: linksRes.error.message }, { status: 500 })
+    if (stocksRes.error) {
+      console.error('[sectors] stocks DB error:', stocksRes.error.message)
+      return NextResponse.json({ error: '섹터 종목 조회 오류' }, { status: 500 })
+    }
+    if (linksRes.error) {
+      console.error('[sectors] links DB error:', linksRes.error.message)
+      return NextResponse.json({ error: '섹터 링크 조회 오류' }, { status: 500 })
+    }
 
     const stocks = stocksRes.data ?? []
     const links = linksRes.data ?? []

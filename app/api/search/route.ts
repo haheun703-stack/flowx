@@ -5,10 +5,12 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const q = searchParams.get('q')?.trim()
-  if (!q || q.length < 1) {
+  const raw = searchParams.get('q')?.trim()
+  if (!raw || raw.length < 1) {
     return NextResponse.json({ results: [] })
   }
+  // PostgREST 필터 인젝션 방지: 제어문자 제거 + 길이 제한
+  const q = raw.replace(/[,()\\]/g, '').slice(0, 50)
 
   try {
     const sb = getSupabaseAdmin()

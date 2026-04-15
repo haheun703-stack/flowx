@@ -41,7 +41,7 @@ export async function POST() {
       periodEnd: sub.period_end,
     })
   } catch (err) {
-    const message = err instanceof Error ? err.message : '구독 해지 처리 실패'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[cancel] error:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ error: '구독 해지 처리 실패' }, { status: 500 })
   }
 }

@@ -37,7 +37,10 @@ export async function GET(request: Request) {
 
     const { data, error } = await query
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[short-signals] DB error:', error.message)
+      return NextResponse.json({ error: '시그널 조회 오류' }, { status: 500 })
+    }
 
     // 한글 컬럼(코드, 등급) → 영문(code, grade)으로 매핑
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
