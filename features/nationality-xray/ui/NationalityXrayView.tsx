@@ -9,7 +9,6 @@ interface NatItem {
   image_url: string | null
   nat_score: number | null
   nat_grade: string | null
-  updated_at: string
 }
 
 function scoreColor(score: number | null) {
