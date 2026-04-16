@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     const { data: items, error } = await supabase
       .from('nationality_charts')
-      .select('date,code,name,image_url,nat_score,nat_grade,updated_at')
+      .select('date,code,name,image_url,nat_score,nat_grade')
       .eq('date', date)
       .order('nat_score', { ascending: false })
       .limit(200)

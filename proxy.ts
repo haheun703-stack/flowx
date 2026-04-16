@@ -7,7 +7,7 @@ const PUBLIC_PATHS = [
   '/dashboard', '/market', '/sectors', '/information',
   '/scenario', '/scenarios', '/macro', '/quant', '/swing', '/chart',
   '/smart-money', '/etf-signals', '/relay', '/stock',
-  '/global-economy',
+  '/global-economy', '/nationality-xray',
 ]
 
 function isPublic(pathname: string): boolean {
