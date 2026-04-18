@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react'
 import CrashBounceView from './CrashBounceView'
 import AlphaSmartMoney from './AlphaSmartMoney'
-import AlphaPortfolio from './AlphaPortfolio'
-import MarketRankingPanel, { type MarketRankingData } from '@/features/market-summary/ui/MarketRankingPanel'
+import { type MarketRankingData } from '@/features/market-summary/ui/MarketRankingPanel'
 import { type BluechipCheckupData } from './BluechipCheckupPanel'
 import SectorRotationView from '@/features/swing/ui/SectorRotationView'
 import type { AlphaScannerData } from './alpha-types'
@@ -17,11 +16,6 @@ interface JarvisData {
   date?: string | null
 }
 
-interface NuggetItem {
-  code: string; name: string; grade: string; total_score: number
-  entry_price: number; stop_loss: number; target_price: number
-  holding_days: number; momentum_regime: string
-}
 
 /* ── NXT / Bottom / ETF Types ── */
 interface NxtPick {
@@ -63,11 +57,6 @@ const TABS = [
 
 type TabKey = (typeof TABS)[number]['key']
 
-const NUGGET_BADGE: Record<string, { bg: string; text: string }> = {
-  GOLD: { bg: 'rgba(255,215,0,0.2)', text: '#92400E' },
-  SILVER: { bg: 'rgba(192,192,192,0.2)', text: '#6B7280' },
-  BRONZE: { bg: 'rgba(205,127,50,0.2)', text: '#78350F' },
-}
 
 const RANK_COLOR = ['#DC2626', '#EF4444', '#F59E0B', '#6B7280', '#6B7280']
 
@@ -105,7 +94,6 @@ export default function SystemPage() {
   const [ranking, setRanking] = useState<MarketRankingData | null>(null)
   const [bluechip, setBluechip] = useState<BluechipCheckupData | null>(null)
   const [jarvis, setJarvis] = useState<JarvisData | null>(null)
-  const [nuggets, setNuggets] = useState<NuggetItem[]>([])
   const [nxtPicks, setNxtPicks] = useState<NxtPick[]>([])
   const [bottomPicks, setBottomPicks] = useState<BottomPick[]>([])
   const [etfStrategy, setEtfStrategy] = useState<EtfStrategy | null>(null)
@@ -126,7 +114,6 @@ export default function SystemPage() {
           fetch('/api/quant/market-ranking', { signal: sig }),
           fetch('/api/quant/bluechip-checkup', { signal: sig }),
           fetch('/api/quant-jarvis', { signal: sig }),
-          fetch('/api/intelligence/value-hunter', { signal: sig }),
           fetch('/api/quant/nxt-picks', { signal: sig }),
           fetch('/api/quant/bottom-picks', { signal: sig }),
           fetch('/api/quant/etf-strategy', { signal: sig }),
@@ -144,16 +131,13 @@ export default function SystemPage() {
           const j = await r[3].value.json(); setJarvis(j ?? null)
         }
         if (r[4].status === 'fulfilled' && r[4].value.ok) {
-          const j = await r[4].value.json(); setNuggets(j.items ?? [])
+          const j = await r[4].value.json(); setNxtPicks(j.items ?? [])
         }
         if (r[5].status === 'fulfilled' && r[5].value.ok) {
-          const j = await r[5].value.json(); setNxtPicks(j.items ?? [])
+          const j = await r[5].value.json(); setBottomPicks(j.items ?? [])
         }
         if (r[6].status === 'fulfilled' && r[6].value.ok) {
-          const j = await r[6].value.json(); setBottomPicks(j.items ?? [])
-        }
-        if (r[7].status === 'fulfilled' && r[7].value.ok) {
-          const j = await r[7].value.json(); setEtfStrategy(j.data ?? null)
+          const j = await r[6].value.json(); setEtfStrategy(j.data ?? null)
         }
       } catch { /* abort */ }
       setLoading(false)
@@ -504,39 +488,6 @@ export default function SystemPage() {
               />
             </Accordion>
 
-            <Accordion id="nugget" title="밸류 헌터 — 5축 저평가 발굴 전체" open={openAcc === 'nugget'} onToggle={toggleAcc}>
-              {nuggets.length > 0 ? (
-                <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4 space-y-2">
-                  {nuggets.map((n) => {
-                    const badge = NUGGET_BADGE[n.grade] ?? NUGGET_BADGE.BRONZE
-                    return (
-                      <div key={n.code} className="flex items-center gap-2 py-1.5 border-b border-[#F5F4F0] last:border-0 flex-wrap">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
-                          style={{ backgroundColor: badge.bg, color: badge.text }}>{n.grade}</span>
-                        <span className="text-[13px] font-bold text-[#1A1A2E]">{n.name}</span>
-                        <span className="text-[12px] font-bold tabular-nums" style={{ color: '#92400E' }}>{n.total_score.toFixed(1)}점</span>
-                        <span className="text-[11px] text-[#1A1A2E] tabular-nums ml-auto">진입 {fmtP(n.entry_price)}</span>
-                        <span className="text-[11px] text-[#DC2626] tabular-nums">손절 {fmtP(n.stop_loss)}</span>
-                        <span className="text-[11px] text-[#16A34A] tabular-nums">목표 {fmtP(n.target_price)}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : <p className="text-[13px] text-[#9CA3AF] p-4">밸류 헌터 데이터 없음</p>}
-            </Accordion>
-
-            <Accordion id="portfolio" title="포트폴리오 배분 — 방어/공격 비율" open={openAcc === 'portfolio'} onToggle={toggleAcc}>
-              <AlphaPortfolio
-                defensePct={data?.portfolio?.defense_pct ?? 50}
-                offensePct={data?.portfolio?.offense_pct ?? 50}
-                allocation={data?.portfolio?.allocation ?? {}}
-                etfPerformance={data?.etf_performance}
-              />
-            </Accordion>
-
-            <Accordion id="ranking" title="시장 순위 — 거래량/급등/체결강도" open={openAcc === 'ranking'} onToggle={toggleAcc}>
-              {ranking ? <MarketRankingPanel data={ranking} /> : <p className="text-[13px] text-[#9CA3AF] p-4">시장 순위 데이터 없음</p>}
-            </Accordion>
 
           </div>
         </div>
