@@ -126,9 +126,9 @@ function CycleCard({ item, theme }: { item: CycleItem; theme: 'surge' | 'accumul
 
       {/* 하단 정보 */}
       <div className="flex items-center gap-3 text-[13px] text-gray-500 border-t border-[var(--border)] pt-2.5">
-        <span className="font-semibold text-[var(--text-primary)]">{item.latest_close?.toLocaleString()}원</span>
-        <span className={`font-bold tabular-nums ${item.change_pct >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
-          {item.change_pct >= 0 ? '+' : ''}{item.change_pct?.toFixed(1)}%
+        <span className="font-semibold text-[var(--text-primary)]">{item.latest_close != null ? `${item.latest_close.toLocaleString()}원` : '—'}</span>
+        <span className={`font-bold tabular-nums ${(item.change_pct ?? 0) >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
+          {item.change_pct != null ? `${item.change_pct >= 0 ? '+' : ''}${item.change_pct.toFixed(1)}%` : '—'}
         </span>
         <span>시총 {fmtCap(item.cap_억)}</span>
       </div>
