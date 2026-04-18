@@ -311,6 +311,10 @@ export default function SystemPage() {
                 const showBull = dir === 'BULL' || dir === 'NEUTRAL'
                 const showBear = dir === 'BEAR' || dir === 'NEUTRAL'
                 const shieldColor: Record<string, string> = { GREEN: '#16A34A', YELLOW: '#F59E0B', RED: '#DC2626' }
+                const safeArr = (v: unknown): EtfItem[] => Array.isArray(v) ? v : []
+                const bullEtfs = safeArr(etfStrategy.bull_etfs)
+                const bearEtfs = safeArr(etfStrategy.bear_etfs)
+                const safeEtfs = safeArr(etfStrategy.safe_etfs)
                 return (
                   <>
                     {/* 상태 배지 */}
@@ -335,11 +339,11 @@ export default function SystemPage() {
 
                     {/* ETF 리스트 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {showBull && (etfStrategy.bull_etfs ?? []).length > 0 && (
+                      {showBull && bullEtfs.length > 0 && (
                         <div>
                           <p className="text-[11px] font-bold text-[#16A34A] mb-1.5">오를 때 ETF</p>
                           <div className="space-y-1">
-                            {(etfStrategy.bull_etfs ?? []).map((e) => (
+                            {bullEtfs.map((e) => (
                               <div key={e.ticker} className={`flex items-center gap-2 text-[12px] px-2 py-1.5 rounded ${dir === 'BULL' ? 'bg-green-50' : ''}`}>
                                 <span className="font-bold text-[#1A1A2E] truncate">{e.name}</span>
                                 {e.desc && <span className="text-[10px] text-[#9CA3AF] shrink-0">{e.desc}</span>}
@@ -348,11 +352,11 @@ export default function SystemPage() {
                           </div>
                         </div>
                       )}
-                      {showBear && (etfStrategy.bear_etfs ?? []).length > 0 && (
+                      {showBear && bearEtfs.length > 0 && (
                         <div>
                           <p className="text-[11px] font-bold text-[#DC2626] mb-1.5">내릴 때 ETF</p>
                           <div className="space-y-1">
-                            {(etfStrategy.bear_etfs ?? []).map((e) => (
+                            {bearEtfs.map((e) => (
                               <div key={e.ticker} className={`flex items-center gap-2 text-[12px] px-2 py-1.5 rounded ${dir === 'BEAR' ? 'bg-red-50' : ''}`}>
                                 <span className="font-bold text-[#1A1A2E] truncate">{e.name}</span>
                                 {e.desc && <span className="text-[10px] text-[#9CA3AF] shrink-0">{e.desc}</span>}
@@ -364,11 +368,11 @@ export default function SystemPage() {
                     </div>
 
                     {/* 안전자산 (중립일 때) */}
-                    {dir === 'NEUTRAL' && (etfStrategy.safe_etfs ?? []).length > 0 && (
+                    {dir === 'NEUTRAL' && safeEtfs.length > 0 && (
                       <div className="mt-3">
                         <p className="text-[11px] font-bold text-[#F59E0B] mb-1.5">안전자산 ETF</p>
                         <div className="flex flex-wrap gap-2">
-                          {(etfStrategy.safe_etfs ?? []).map((e) => (
+                          {safeEtfs.map((e) => (
                             <span key={e.ticker} className="text-[11px] font-bold px-2.5 py-1 rounded bg-amber-50 text-[#92400E]">{e.name}</span>
                           ))}
                         </div>
