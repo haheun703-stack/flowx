@@ -112,7 +112,7 @@ function CycleCard({ item, theme }: { item: CycleItem; theme: 'surge' | 'accumul
 
       {/* 신호 목록 */}
       <div className="space-y-1.5 mb-3">
-        {item.signals.map((sig, i) => (
+        {(Array.isArray(item.signals) ? item.signals : []).map((sig, i) => (
           <div key={i} className={`flex items-center gap-2 text-[13px] px-2.5 py-1.5 rounded-lg ${SIGNAL_BG[sig.name] || 'bg-gray-50 text-gray-600'}`}>
             <span>{SIGNAL_ICON[sig.name] || '\u2022'}</span>
             <span className="font-bold">{sig.name_kr}</span>

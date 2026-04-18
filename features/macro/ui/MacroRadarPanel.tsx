@@ -212,7 +212,7 @@ function SentimentCard({ items }: { items: MacroItem[] }) {
                 {alertCount}건
               </span>
             </div>
-            {alertItem.signals && alertItem.signals.length > 0 && (
+            {Array.isArray(alertItem.signals) && alertItem.signals.length > 0 && (
               <div className="space-y-0.5 mt-1">
                 {alertItem.signals.map((sig, i) => (
                   <div key={i} className="text-xs text-[var(--text-dim)] pl-1">

@@ -923,7 +923,7 @@ export default function SwingDashboardView() {
                       )}
 
                       {/* 근거 태그 */}
-                      {p.reasons?.length ? (
+                      {Array.isArray(p.reasons) && p.reasons.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {p.reasons.map((r, i) => (
                             <span key={i} className="text-[12px] px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#065F46] border border-[#A7F3D0]">

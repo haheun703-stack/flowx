@@ -95,7 +95,7 @@ function NewsDetailModal({ news, onClose }: { news: NewsItem; onClose: () => voi
           )}
 
           {/* 관련 종목 */}
-          {news.related_tickers?.length > 0 && (
+          {Array.isArray(news.related_tickers) && news.related_tickers.length > 0 && (
             <div>
               <div className="text-xs text-[var(--text-dim)] font-bold mb-2">📌 관련 종목</div>
               <div className="border border-[var(--border)] rounded-lg overflow-hidden">
@@ -142,7 +142,7 @@ function HeroNews({ item, onClick }: { item: NewsItem; onClick: () => void }) {
           backgroundColor: info.color + '10', color: info.color,
         }}>{info.label}</span>
         <span className="text-[10px] text-[var(--text-muted)] tabular-nums ml-auto">{renderStars(item.impact_score)}</span>
-        {item.sectors.length > 0 && (
+        {Array.isArray(item.sectors) && item.sectors.length > 0 && (
           <div className="flex gap-1">
             {item.sectors.slice(0, 2).map(s => (
               <span key={s} className="text-[10px] text-[var(--blue)] border border-[var(--blue)]/20 px-1.5 py-0.5 rounded">{s}</span>

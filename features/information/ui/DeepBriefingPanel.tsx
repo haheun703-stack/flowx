@@ -238,7 +238,7 @@ export function DeepBriefingPanel() {
       )}
 
       {/* ── 3-5. 리스크 팩터 ── */}
-      {data.risk_factors.length > 0 && (
+      {Array.isArray(data.risk_factors) && data.risk_factors.length > 0 && (
         <div className="bg-white border border-[#e5e7ef] rounded-xl overflow-hidden">
           <div className="bg-[#f5f4f0] px-4 py-2.5 border-b border-[#e5e7ef]">
             <h4 className="text-[13px] font-bold text-[#1A1A2E]">{'\u26A0\uFE0F'} 리스크 팩터</h4>

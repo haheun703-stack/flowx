@@ -180,7 +180,7 @@ export function NewsTop3Panel() {
                 >
                   {info.label}
                 </span>
-                {item.sectors.slice(0, 1).map(s => (
+                {(Array.isArray(item.sectors) ? item.sectors : []).slice(0, 1).map(s => (
                   <span key={s} className="text-[11px] text-[var(--fx-text-muted)] border border-[var(--fx-border-default)] px-1.5 py-0.5 rounded">
                     {s}
                   </span>
@@ -200,7 +200,7 @@ export function NewsTop3Panel() {
               )}
 
               {/* 관련 종목 */}
-              {item.related_tickers?.length > 0 && (
+              {Array.isArray(item.related_tickers) && item.related_tickers.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {item.related_tickers.slice(0, 3).map(t => (
                     <span key={t.code} className="text-[12px] font-semibold text-[var(--fx-text-muted)]">

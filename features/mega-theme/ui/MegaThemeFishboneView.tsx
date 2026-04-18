@@ -329,7 +329,7 @@ export default function MegaThemeFishboneView() {
             )}
 
             {/* 리스크 팩터 */}
-            {api?.risk_factors && api.risk_factors.length > 0 && (
+            {Array.isArray(api?.risk_factors) && api.risk_factors.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 <span className="text-xs font-bold text-[#DC2626]">RISK</span>
                 {api.risk_factors.map((r, i) => (

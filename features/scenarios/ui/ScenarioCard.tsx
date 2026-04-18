@@ -42,7 +42,7 @@ function PhaseProgressBar({ chain, currentPhase }: { chain: ScenarioPhase[]; cur
 }
 
 function SectorPills({ sectors, type }: { sectors: string[]; type: 'hot' | 'cold' }) {
-  if (!sectors.length) return null
+  if (!Array.isArray(sectors) || !sectors.length) return null
   const style = type === 'hot'
     ? 'text-[var(--up)] border-red-200 bg-red-50'
     : 'text-[var(--down)] border-blue-200 bg-blue-50'
@@ -123,7 +123,7 @@ export default function ScenarioCard({ scenarios, conflicts }: { scenarios: Acti
                 </div>
               )}
 
-              {sc.reasons.length > 0 && (
+              {Array.isArray(sc.reasons) && sc.reasons.length > 0 && (
                 <div>
                   <span className="text-[10px] text-[var(--text-muted)] block mb-1">근거</span>
                   <div className="flex flex-wrap gap-1.5">
@@ -134,7 +134,7 @@ export default function ScenarioCard({ scenarios, conflicts }: { scenarios: Acti
                 </div>
               )}
 
-              {sc.hot_tickers.length > 0 && (
+              {Array.isArray(sc.hot_tickers) && sc.hot_tickers.length > 0 && (
                 <div>
                   <span className="text-[10px] text-[var(--text-muted)] block mb-1">HOT 종목</span>
                   <div className="flex flex-wrap gap-1.5">
@@ -147,7 +147,7 @@ export default function ScenarioCard({ scenarios, conflicts }: { scenarios: Acti
                 </div>
               )}
 
-              {sc.etf.length > 0 && (
+              {Array.isArray(sc.etf) && sc.etf.length > 0 && (
                 <div>
                   <span className="text-[10px] text-[var(--text-muted)] block mb-1">관련 ETF</span>
                   <div className="flex flex-wrap gap-1.5">
@@ -162,7 +162,7 @@ export default function ScenarioCard({ scenarios, conflicts }: { scenarios: Acti
                 <div className="border border-dashed border-[var(--border)] rounded-lg p-3 bg-gray-50">
                   <p className="text-xs text-[var(--text-muted)] mb-1">다음 Phase 프리뷰</p>
                   <p className="text-sm text-[var(--text-primary)]">{sc.next_phase_name}</p>
-                  {sc.next_hot.length > 0 && (
+                  {Array.isArray(sc.next_hot) && sc.next_hot.length > 0 && (
                     <div className="mt-1.5 flex flex-wrap gap-1">
                       {sc.next_hot.map((s) => (
                         <span key={s} className="text-xs text-[var(--text-dim)] bg-gray-100 px-2 py-0.5 rounded">{s}</span>
