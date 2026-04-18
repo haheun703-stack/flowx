@@ -8,33 +8,11 @@ import MarketRankingPanel, { type MarketRankingData } from '@/features/market-su
 import { type BluechipCheckupData } from './BluechipCheckupPanel'
 import SectorRotationView from '@/features/swing/ui/SectorRotationView'
 import type { AlphaScannerData } from './alpha-types'
-import { GRADE_BADGE_CLASS } from '@/shared/constants/grades'
 import BluechipInspectionTab from './BluechipInspectionTab'
 import SmallcapThemeTab from './SmallcapThemeTab'
 
 /* ── Jarvis Types ── */
-interface PickItem {
-  ticker: string; name: string; grade: string; total_score: number
-  sources: string[]; n_sources: number; close: number; rsi: number
-  stoch_k: number; foreign_5d: number; inst_5d: number; reasons: string[]
-  entry_price?: number; stop_loss?: number; target_price?: number
-  entry_info?: { entry: number; stop: number; target: number }
-}
-
-interface KillerEtf {
-  rank: number; ticker: string; name: string
-  category?: string; signal?: string; action?: string; sizing?: string
-}
-
 interface JarvisData {
-  picks?: { picks?: PickItem[] } | null
-  brain?: Record<string, unknown> | null
-  etf_picks?: {
-    regime?: string
-    allocation?: Record<string, number>
-    accelerations?: { sector: string; rank_change: number; score: number; ret_5d: number }[]
-  } | null
-  killer_picks?: { etf_top5?: KillerEtf[] } | null
   date?: string | null
 }
 
@@ -132,7 +110,7 @@ export default function SystemPage() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<TabKey>('quant')
   const [openAcc, setOpenAcc] = useState<string | null>(null)
-  const [showAllPicks, setShowAllPicks] = useState(false)
+
 
   const toggleAcc = (id: string) => setOpenAcc(openAcc === id ? null : id)
 
@@ -197,13 +175,6 @@ export default function SystemPage() {
   }
 
   /* ── derived data ── */
-  const picks = jarvis?.picks?.picks ?? []
-  const sorted = [...picks].sort((a, b) => b.total_score - a.total_score)
-  const top3 = sorted.slice(0, 3)
-  const top5 = sorted.slice(0, 5)
-  const restPicks = sorted.slice(5)
-  const nug2 = [...nuggets].sort((a, b) => b.total_score - a.total_score).slice(0, 2)
-  const etfs = jarvis?.killer_picks?.etf_top5 ?? []
   const sectorHeat = data?.sector_heat ?? []
   const dualTop3 = (data?.smart_money?.dual_buy ?? []).slice(0, 3)
   const volTop3 = (ranking?.volume_rank ?? []).slice(0, 3)
@@ -242,91 +213,6 @@ export default function SystemPage() {
       {/* ═══ 퀀트시스템 탭 ═══ */}
       {tab === 'quant' && (
         <div className="space-y-5">
-
-          {/* ══════ ZONE A: 통합 추천 카드 ══════ */}
-          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
-            style={{ borderLeft: '3px solid #7C3AED' }}>
-            <div className="px-5 py-4">
-              <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">이 종목을 반드시 주목합시다</h2>
-              <p className="text-[10px] text-[#6B7280] mb-4">파워스코어 + 밸류 헌터 + ETF에서 뽑은 오늘의 핵심 추천</p>
-
-              {/* 파워스코어 TOP 3 */}
-              {top3.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-[11px] font-bold text-[#7C3AED] mb-2">종목 추천 (파워스코어 TOP 3)</p>
-                  <div className="space-y-2.5">
-                    {top3.map((p, i) => {
-                      const entry = p.entry_info?.entry ?? p.entry_price ?? 0
-                      return (
-                        <div key={p.ticker} className="flex items-start gap-2.5">
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0 mt-0.5"
-                            style={{ backgroundColor: RANK_COLOR[i] }}>{i + 1}</div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
-                              <span className="text-[16px] font-bold tabular-nums" style={{ color: '#7C3AED' }}>{p.total_score}점</span>
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${GRADE_BADGE_CLASS[p.grade] ?? 'bg-gray-200 text-gray-600'}`}>{p.grade}</span>
-                              {entry > 0 && <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">진입 {fmtP(entry)}원</span>}
-                            </div>
-                            {p.reasons.length > 0 && <p className="text-[10px] text-[#6B7280] mt-0.5">{p.reasons.slice(0, 3).join(' + ')}</p>}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* 밸류 헌터 TOP 2 */}
-              {nug2.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-[11px] font-bold text-[#92400E] mb-2">저평가 발굴 (밸류 헌터 TOP 2)</p>
-                  <div className="space-y-2">
-                    {nug2.map((n) => {
-                      const badge = NUGGET_BADGE[n.grade] ?? NUGGET_BADGE.BRONZE
-                      return (
-                        <div key={n.code} className="flex items-center gap-2.5">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
-                            style={{ backgroundColor: badge.bg, color: badge.text }}>{n.grade}</span>
-                          <span className="text-[14px] font-bold text-[#1A1A2E]">{n.name}</span>
-                          <span className="text-[13px] font-bold tabular-nums" style={{ color: '#92400E' }}>{n.total_score.toFixed(1)}점</span>
-                          {n.entry_price > 0 && <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">진입 {fmtP(n.entry_price)}원</span>}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* ETF 추천 */}
-              {etfs.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-[11px] font-bold text-[#2563EB] mb-2">ETF 추천</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {etfs.slice(0, 4).map((e) => (
-                      <div key={e.ticker} className="flex items-center gap-1.5 text-[11px]">
-                        <span className="font-bold text-[#1A1A2E] truncate">{e.name}</span>
-                        {e.action && (
-                          <span className={`shrink-0 px-1.5 py-0.5 rounded font-bold text-[10px] ${
-                            e.action.includes('FULL') || e.action.includes('BUY') ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'
-                          }`}>{e.sizing ?? e.action}</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {(top3.length > 0 || nug2.length > 0) && (
-                <p className="text-[10px] text-[#9CA3AF] pt-2 border-t border-[#F5F4F0]">
-                  위 추천은 AI 분석 참고 자료이며 투자 조언이 아닙니다
-                </p>
-              )}
-              {top3.length === 0 && nug2.length === 0 && (
-                <p className="text-[13px] text-[#9CA3AF] py-4 text-center">추천 데이터 준비 중</p>
-              )}
-            </div>
-          </div>
 
           {/* ══════ ZONE B: 30초 분석 ══════ */}
 
