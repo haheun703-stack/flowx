@@ -76,12 +76,12 @@ export function MarketJudgmentCard() {
         </div>
       )}
 
-      {/* 조언 박스 */}
+      {/* AI 시장 판단문 또는 기본 조언 */}
       <div
         className="rounded-lg px-3 py-2 text-[14px] font-semibold leading-relaxed mb-3"
         style={{ background: status.tipBg, color: status.text }}
       >
-        {status.advice}
+        {data?.verdict || status.advice}
       </div>
 
       {/* 주요 종목 리스트 */}

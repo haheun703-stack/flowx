@@ -59,7 +59,7 @@ export function useDashboardPicks() {
 
 // --- Market Report ---
 export interface MarketReport {
-  date: string
+  date: string | null
   generated_at: string
   market_stance: string
   us_grade: string
@@ -72,6 +72,8 @@ export interface MarketReport {
   positions_total: number
   buys: number
   sells: number
+  verdict: string | null
+  confidence: number
 }
 
 export function useDashboardMarket() {
