@@ -41,6 +41,10 @@ const ALLOWED_PREFIXES = [
   // 봇 내부 로직 파일(읽기 전용). 실 데이터는 봇이 생성하며 웹봇은 수동으로 동기화.
   // 가드는 웹봇 렌더링 경로를 보호하는 게 목적이라 여기는 화이트리스트.
   'features/bots/',
+  // 매크로 지표·VIX 경고 수준 등 등급 시스템이 아닌 일반 한국어 '경계' 사용
+  'features/macro/',
+  'features/information/ui/MacroGaugePanel',
+  'features/us-market/ui/UsIndexChart',
 ]
 
 /* ── 금지 리터럴 (정확 일치만) ── */

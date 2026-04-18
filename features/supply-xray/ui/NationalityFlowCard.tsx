@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchJson } from '@/shared/lib/fetchJson'
 import { useUserProfile } from '@/shared/lib/useUserProfile'
 import { PaywallBlur } from '@/shared/ui/PaywallBlur'
-import { GRADE_STRONG_PICK, GRADE_PICK, GRADE_LEGACY_BUY } from '@/shared/constants/grades'
+import { GRADE_STRONG_PICK, GRADE_PICK, GRADE_CAUTION, GRADE_LEGACY_BUY } from '@/shared/constants/grades'
 
 interface CountryItem {
   country: string
@@ -89,9 +89,9 @@ const signalLabel = (s: string) => {
     BUY: GRADE_PICK, PICK: GRADE_PICK,
     WEAK_BUY: `약 ${GRADE_PICK}`, WEAK_PICK: `약 ${GRADE_PICK}`,
     NEUTRAL: '중립',
-    WEAK_SELL: '약 경계', WEAK_CAUTION: '약 경계',
-    SELL: '경계', CAUTION: '경계',
-    STRONG_SELL: '강력 경계', STRONG_CAUTION: '강력 경계',
+    WEAK_SELL: `약 ${GRADE_CAUTION}`, WEAK_CAUTION: `약 ${GRADE_CAUTION}`,
+    SELL: GRADE_CAUTION, CAUTION: GRADE_CAUTION,
+    STRONG_SELL: `강력 ${GRADE_CAUTION}`, STRONG_CAUTION: `강력 ${GRADE_CAUTION}`,
   }
   return map[s] || s
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { GRADE_LEGACY_BUY } from "@/shared/constants/grades"
+import { GRADE_LEGACY_BUY, GRADE_LEGACY_SELL } from "@/shared/constants/grades"
 
 interface WhyNow {
   technical: string[]
@@ -346,7 +346,7 @@ export function StockDetailView({ ticker }: { ticker: string }) {
                 <span className={`text-[10px] px-2 py-0.5 rounded border ${
                   technicals.tech_signal.includes(GRADE_LEGACY_BUY) || technicals.tech_signal.includes("반등")
                     ? "bg-[var(--green)]/20 text-[var(--green)] border-[var(--green)]/30"
-                    : technicals.tech_signal.includes("매도") || technicals.tech_signal.includes("하락")
+                    : technicals.tech_signal.includes(GRADE_LEGACY_SELL) || technicals.tech_signal.includes("하락")
                     ? "bg-[var(--red)]/20 text-[var(--red)] border-[var(--red)]/30"
                     : "bg-gray-100 text-[var(--text-dim)] border-[var(--border)]"
                 }`}>

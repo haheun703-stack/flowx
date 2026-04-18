@@ -19,6 +19,7 @@ export const GRADE_CAUTION = '경계' as const
 /* ── 구 등급 (하위호환) ── */
 export const GRADE_LEGACY_FORCE_BUY = '적극매수' as const
 export const GRADE_LEGACY_BUY = '매수' as const
+export const GRADE_LEGACY_SELL = '매도' as const
 export const GRADE_LEGACY_WATCH_BUY = '관심매수' as const
 export const GRADE_LEGACY_RESERVE = '보류' as const
 
