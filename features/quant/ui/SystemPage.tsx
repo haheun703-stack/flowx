@@ -10,6 +10,7 @@ import SectorRotationView from '@/features/swing/ui/SectorRotationView'
 import type { AlphaScannerData } from './alpha-types'
 import BluechipInspectionTab from './BluechipInspectionTab'
 import SmallcapThemeTab from './SmallcapThemeTab'
+import { GRADE_STRONG_PICK, GRADE_PICK } from '@/shared/constants/grades'
 
 /* ── Jarvis Types ── */
 interface JarvisData {
@@ -39,6 +40,7 @@ interface BottomPick {
   foreign_turn: boolean; inst_turn: boolean
   supply_score: number; final_score: number
   nxt_tradable: boolean
+  grade?: string
 }
 
 interface EtfItem { ticker: string; name: string; desc?: string }
@@ -275,6 +277,12 @@ export default function SystemPage() {
                             style={{ backgroundColor: RANK_COLOR[i] ?? '#6B7280' }}>{i + 1}</span>
                           <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
                           <span className="text-[14px] font-bold tabular-nums" style={{ color: '#4CAF50' }}>{p.final_score.toFixed(0)}점</span>
+                          {p.grade && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{
+                              backgroundColor: p.grade === GRADE_STRONG_PICK ? 'rgba(220,38,38,0.15)' : p.grade === GRADE_PICK ? 'rgba(234,88,12,0.15)' : 'rgba(107,114,128,0.15)',
+                              color: p.grade === GRADE_STRONG_PICK ? '#DC2626' : p.grade === GRADE_PICK ? '#EA580C' : '#6B7280',
+                            }}>{p.grade}</span>
+                          )}
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ backgroundColor: zc.bg, color: zc.text }}>{p.fib_zone}</span>
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded"
                             style={{ backgroundColor: p.nxt_tradable ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: p.nxt_tradable ? '#4A90D9' : '#888' }}>
