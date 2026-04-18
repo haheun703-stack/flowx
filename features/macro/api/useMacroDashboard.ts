@@ -64,3 +64,31 @@ export function useCostFloor() {
     staleTime: 1000 * 60 * 30,
   })
 }
+
+// ─── 거시경제 자동 업데이트 데이터 (macro_dashboard 테이블) ───
+
+export interface MacroDashboardData {
+  market: { sp500_price: number | null; sp500_ytd_pct: number | null }
+  fx: { usd_krw: number | null; usd_jpy: number | null }
+  energy: { wti: number | null; brent: number | null }
+  rates: { fed_funds: number | null; bok_base: number | null }
+  inflation: { us_cpi_index: number | null }
+  _meta: { collected_at: string; sources: string[] }
+}
+
+interface MacroDashboardRow {
+  date: string
+  data: MacroDashboardData
+  updated_at: string
+}
+
+export function useMacroDashboardData() {
+  return useQuery<MacroDashboardRow | null>({
+    queryKey: ['macro-dashboard'],
+    queryFn: async () => {
+      const res = await fetchJson<{ data: MacroDashboardRow | null }>('/api/macro/dashboard')
+      return res.data
+    },
+    staleTime: 1000 * 60 * 30,
+  })
+}
