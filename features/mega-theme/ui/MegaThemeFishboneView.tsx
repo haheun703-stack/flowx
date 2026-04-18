@@ -214,7 +214,7 @@ export default function MegaThemeFishboneView() {
   const api = apiData[selected]
 
   /* 서브섹터: API 우선 → 폴백 */
-  const sectors = api?.sectors
+  const sectors = Array.isArray(api?.sectors)
     ? api.sectors.map(s => ({
         id: s.sector_id,
         name: s.sector_name,

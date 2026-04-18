@@ -56,7 +56,7 @@ function NewsDetailModal({ item, onClose }: { item: NewsItem; onClose: () => voi
             <span className="text-[13px] font-semibold text-gray-500">
               영향도 {item.impact_score}/5
             </span>
-            {item.sectors.map(s => (
+            {(Array.isArray(item.sectors) ? item.sectors : []).map(s => (
               <span key={s} className="text-[12px] text-[var(--fx-text-muted)] border border-[var(--fx-border-default)] px-2 py-0.5 rounded">
                 {s}
               </span>

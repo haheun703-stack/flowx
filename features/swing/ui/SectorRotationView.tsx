@@ -65,7 +65,7 @@ export default function SectorRotationView() {
     )
   }
 
-  const sectors = rotation?.sectors ?? []
+  const sectors = Array.isArray(rotation?.sectors) ? rotation.sectors : []
 
   if (sectors.length === 0) {
     return (

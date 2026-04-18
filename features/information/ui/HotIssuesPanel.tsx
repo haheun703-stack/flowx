@@ -81,7 +81,7 @@ function NewsDetailModal({ news, onClose }: { news: NewsItem; onClose: () => voi
           )}
 
           {/* 영향 섹터 */}
-          {news.sectors.length > 0 && (
+          {Array.isArray(news.sectors) && news.sectors.length > 0 && (
             <div>
               <div className="text-xs text-[var(--text-dim)] font-bold mb-2">📊 영향 섹터</div>
               <div className="flex flex-wrap gap-1.5">
