@@ -70,6 +70,7 @@ export default function CrashBounceView() {
   const [date, setDate] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [gradeFilter, setGradeFilter] = useState<string>('전체')
+  const [showAll, setShowAll] = useState(false)
   const [backtestOpen, setBacktestOpen] = useState(false)
 
   useEffect(() => {
@@ -198,7 +199,7 @@ export default function CrashBounceView() {
       {/* ③ 카드 리스트 — 적극매수/매수 */}
       {cardItems.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {cardItems.map(item => {
+          {(showAll ? cardItems : cardItems.slice(0, 5)).map(item => {
             const gc = GRADE_CONFIG[item.grade] ?? GRADE_CONFIG['관심']
             const sc = SIGNAL_CONFIG[item.signal_type] ?? SIGNAL_CONFIG['관심']
             const reasons = parseReasons(item.reasons)
@@ -286,6 +287,24 @@ export default function CrashBounceView() {
             )
           })}
         </div>
+      )}
+
+      {/* 더보기 버튼 */}
+      {cardItems.length > 5 && !showAll && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="w-full py-2.5 rounded-xl border border-[#E8E6E0] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
+        >
+          {cardItems.length - 5}개 더보기
+        </button>
+      )}
+      {showAll && cardItems.length > 5 && (
+        <button
+          onClick={() => setShowAll(false)}
+          className="w-full py-2.5 rounded-xl border border-[#E8E6E0] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
+        >
+          접기
+        </button>
       )}
 
       {/* ④ 관심 등급 — 간결한 테이블 */}

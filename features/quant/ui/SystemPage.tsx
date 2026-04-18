@@ -50,8 +50,8 @@ interface EtfStrategy {
 const TABS = [
   { key: 'quant', label: '퀀트시스템' },
   { key: 'crash', label: '급락반등' },
-  { key: 'bluechip', label: '대형주 점검' },
-  { key: 'smallcap', label: '소형주 테마' },
+  { key: 'bluechip', label: '대형주 피보나치' },
+  { key: 'smallcap', label: '소형주 피보나치' },
   { key: 'sector', label: '섹터 로테이션' },
 ] as const
 
