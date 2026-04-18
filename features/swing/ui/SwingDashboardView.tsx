@@ -149,8 +149,40 @@ function classifyAnalysis(analysis: Record<string, unknown>) {
   return { warning, strategy, sector, commodity, nightwatch, rest }
 }
 
-/* ── 매매 타임라인 데이터 ── */
-const TIMELINE = [
+/* ── 수급 강도 타입 ── */
+interface FlowStock {
+  rank: number; code: string; name: string; market_type: string
+  intensity_pct: number; foreign_3d_억: number; inst_3d_억: number; total_3d_억: number
+  cap_억: number; close: number; pct_5d: number
+  dual_buy: boolean; consec_foreign: number; consec_inst: number; is_overheated: boolean
+}
+
+interface FlowIntensityData {
+  date: string; top_stocks: FlowStock[]; dual_buy_count: number; overheat_count: number
+}
+
+/* ── 스윙시스템 타입 ── */
+interface ActionGuideItem {
+  time: string; action: string; desc: string; tag: string
+}
+
+interface SwingSystemData {
+  date: string
+  action_guide: ActionGuideItem[] | null
+  regime: string | null
+  brain_raw_pct: number | null
+  brain_capped_pct: number | null
+  regime_cap_reason: string | null
+}
+
+/* ── 매매 타임라인 태그→색상 ── */
+const TAG_COLOR: Record<string, string> = {
+  'NXT진입': '#2563EB', '수급확인': '#16A34A', '내일준비': '#7C3AED',
+  '자동알림': '#6B7280', '관망': '#F59E0B', '경고': '#DC2626',
+}
+
+/* ── 매매 타임라인 폴백 데이터 ── */
+const TIMELINE_FALLBACK = [
   { time: '09:00~09:15', color: '#DC2626', action: '시장 방향 확인', desc: '인버스/금 ETF 판단, 갭 확인', badge: '관망/진입' },
   { time: '09:15~09:30', color: '#F59E0B', action: '에너지주 체크', desc: '급락 시 분할 매수 검토', badge: '주시' },
   { time: '09:30~10:00', color: '#2563EB', action: '워치리스트 트리거 체크', desc: 'TV 스캔, 거래량 돌파 감시', badge: '트리거 대기' },
@@ -309,27 +341,36 @@ export default function SwingDashboardView() {
   const [expandedStock, setExpandedStock] = useState<string | null>(null)
   const [brainExpanded, setBrainExpanded] = useState(false)
   const [nxtPickData, setNxtPickData] = useState<NxtPickData | null>(null)
+  const [flowData, setFlowData] = useState<FlowIntensityData | null>(null)
+  const [swingSystem, setSwingSystem] = useState<SwingSystemData | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
+    const sig = controller.signal
     async function load() {
       try {
-        const res = await fetch('/api/swing-dashboard', { signal: controller.signal })
-        if (!res.ok) throw new Error(`API error: ${res.status}`)
-        const json = await res.json()
-        setData(json.data)
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return
-        setData(null)
-      }
+        const r = await Promise.allSettled([
+          fetch('/api/swing-dashboard', { signal: sig }),
+          fetch('/api/intelligence/nxt-picks', { signal: sig }),
+          fetch('/api/intelligence/flow-intensity', { signal: sig }),
+          fetch('/api/intelligence/swing-system', { signal: sig }),
+        ])
+        if (r[0].status === 'fulfilled' && r[0].value.ok) {
+          const j = await r[0].value.json(); setData(j.data ?? null)
+        }
+        if (r[1].status === 'fulfilled' && r[1].value.ok) {
+          const j = await r[1].value.json(); setNxtPickData(j.data ?? null)
+        }
+        if (r[2].status === 'fulfilled' && r[2].value.ok) {
+          const j = await r[2].value.json(); setFlowData(j.data ?? null)
+        }
+        if (r[3].status === 'fulfilled' && r[3].value.ok) {
+          const j = await r[3].value.json(); setSwingSystem(j.data ?? null)
+        }
+      } catch { /* abort */ }
       setLoading(false)
     }
     load()
-    // NXT TOP 5 별도 fetch
-    fetch('/api/intelligence/nxt-picks', { signal: controller.signal })
-      .then(r => r.json())
-      .then(j => setNxtPickData(j.data ?? null))
-      .catch(() => {})
     return () => controller.abort()
   }, [])
 
@@ -367,6 +408,46 @@ export default function SwingDashboardView() {
         <FxMonitorSection fx={data.fx_monitor} />
       )}
 
+      {/* ═══ 0.5행: 수급 인텔리전스 ═══ */}
+      {flowData && flowData.top_stocks?.length > 0 && (
+        <section className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+          style={{ borderLeft: '3px solid #7C3AED' }}>
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">수급 인텔리전스</h2>
+                <p className="text-[10px] text-[#6B7280]">시총 대비 외인+기관 유입 강도 랭킹</p>
+              </div>
+              <div className="flex items-center gap-3 text-[11px]">
+                <span className="text-[#6B7280]">전체 <span className="font-bold text-[#1A1A2E]">{flowData.top_stocks.length}</span>종목</span>
+                <span className="text-[#2563EB]">쌍매수 <span className="font-bold">{flowData.dual_buy_count ?? 0}</span>건</span>
+                {(flowData.overheat_count ?? 0) > 0 && (
+                  <span className="text-[#DC2626]">과열 <span className="font-bold">{flowData.overheat_count}</span>건</span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              {flowData.top_stocks.map((s) => (
+                <div key={s.code} className="flex items-center gap-2 py-2 px-3 rounded-lg border border-[#F0EDE8] text-[12px]">
+                  <span className="w-6 text-[11px] font-bold text-[#9CA3AF] tabular-nums shrink-0">{s.rank}</span>
+                  <span className="font-bold text-[#1A1A2E] truncate min-w-0 flex-1">{s.name}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
+                    style={{ backgroundColor: s.market_type === 'NXT' ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: s.market_type === 'NXT' ? '#4A90D9' : '#888' }}>
+                    {s.market_type === 'NXT' ? 'NXT' : 'KRX전용'}
+                  </span>
+                  <span className="font-bold tabular-nums shrink-0" style={{ color: '#7C3AED' }}>{s.intensity_pct.toFixed(1)}%</span>
+                  <span className={`tabular-nums shrink-0 ${s.foreign_3d_억 >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>외{s.foreign_3d_억 >= 0 ? '+' : ''}{s.foreign_3d_억.toFixed(0)}억</span>
+                  <span className={`tabular-nums shrink-0 ${s.inst_3d_억 >= 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>기{s.inst_3d_억 >= 0 ? '+' : ''}{s.inst_3d_억.toFixed(0)}억</span>
+                  <span className="text-[#9CA3AF] tabular-nums shrink-0">시총{s.cap_억.toLocaleString()}억</span>
+                  {s.dual_buy && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] shrink-0">쌍매수</span>}
+                  {s.is_overheated && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#DC2626] shrink-0">과열주의</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ═══ 1행: BRAIN AI 오늘의 결론 — 히어로 ═══ */}
       <section
         className="rounded-xl p-5"
@@ -389,8 +470,35 @@ export default function SwingDashboardView() {
             <span className="text-[12px] text-[#6B7280]">{data.date}</span>
           </div>
         </div>
+        {/* BRAIN 원점수 vs 매크로캡 게이지 */}
+        {swingSystem && swingSystem.brain_raw_pct != null && swingSystem.brain_capped_pct != null && swingSystem.brain_raw_pct !== swingSystem.brain_capped_pct && (
+          <div className="flex items-center gap-3 mt-3 mb-1">
+            <div className="flex-1">
+              <div className="flex items-center justify-between text-[11px] mb-1">
+                <span className="text-[#6B7280]">BRAIN 원점수</span>
+                <span className="font-bold text-[#1A1A2E]">{swingSystem.brain_raw_pct}%</span>
+              </div>
+              <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${swingSystem.brain_raw_pct}%`, backgroundColor: '#3B82F6' }} />
+              </div>
+            </div>
+            <span className="text-[16px] text-[#9CA3AF]">→</span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between text-[11px] mb-1">
+                <span className="text-[#6B7280]">매크로 캡 적용</span>
+                <span className="font-bold" style={{ color: hero.text }}>{swingSystem.brain_capped_pct}%</span>
+              </div>
+              <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${swingSystem.brain_capped_pct}%`, backgroundColor: hero.text }} />
+              </div>
+            </div>
+          </div>
+        )}
+        {swingSystem?.regime_cap_reason && (
+          <p className="text-[12px] text-[#9CA3AF] mt-1">{swingSystem.regime_cap_reason}</p>
+        )}
         {data.brain_reason && (
-          <p className="text-[15px] font-medium" style={{ color: hero.text }}>{data.brain_reason}</p>
+          <p className="text-[15px] font-medium mt-2" style={{ color: hero.text }}>{data.brain_reason}</p>
         )}
         {data.regime_desc && (
           <p className="text-[13px] text-[#6B7280] mt-2">{data.regime_desc}</p>
@@ -756,7 +864,13 @@ export default function SwingDashboardView() {
             {/* 세로 선 */}
             <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E8E6E0]" />
             <div className="space-y-4">
-              {TIMELINE.map((t, i) => (
+              {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
+                ? swingSystem.action_guide.map((g) => ({
+                    time: g.time, action: g.action, desc: g.desc,
+                    badge: g.tag, color: TAG_COLOR[g.tag] ?? '#6B7280',
+                  }))
+                : TIMELINE_FALLBACK
+              ).map((t, i) => (
                 <div key={i} className="relative">
                   {/* 컬러 점 */}
                   <div
