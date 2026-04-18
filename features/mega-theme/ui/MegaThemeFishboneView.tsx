@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import StockAnalysisModal from './StockAnalysisModal'
 
 /* ═══ Types ═══ */
 interface ApiSector {
@@ -195,6 +195,7 @@ export default function MegaThemeFishboneView() {
   const [selected, setSelected] = useState('ai-datacenter')
   const [apiData, setApiData] = useState<Record<string, ApiTheme>>({})
   const [loading, setLoading] = useState(true)
+  const [analysisTarget, setAnalysisTarget] = useState<{ ticker: string; name: string } | null>(null)
 
   useEffect(() => {
     const ac = new AbortController()
@@ -381,10 +382,10 @@ export default function MegaThemeFishboneView() {
                     {/* 종목 리스트 */}
                     <div className="divide-y divide-[#F9FAFB]">
                       {sec.stocks.map(stock => (
-                        <Link
+                        <button
                           key={stock.ticker}
-                          href={`/stock/${stock.ticker}`}
-                          className="flex items-center justify-between px-4 py-2.5 hover:bg-[#F9FAFB] transition-colors group"
+                          onClick={() => setAnalysisTarget({ ticker: stock.ticker, name: stock.name })}
+                          className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-[#F9FAFB] transition-colors group text-left"
                         >
                           <div className="flex items-center gap-2 min-w-0">
                             <span className="text-sm font-semibold text-[#1A1A2E] group-hover:text-[#2563EB] transition-colors">
@@ -395,7 +396,7 @@ export default function MegaThemeFishboneView() {
                           <span className="text-xs text-[#6B7280] text-right ml-2 shrink-0 max-w-[180px] truncate">
                             {stock.role}
                           </span>
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -450,6 +451,15 @@ export default function MegaThemeFishboneView() {
             </div>
           )}
         </>
+      )}
+
+      {/* 종목 분석 모달 */}
+      {analysisTarget && (
+        <StockAnalysisModal
+          ticker={analysisTarget.ticker}
+          stockName={analysisTarget.name}
+          onClose={() => setAnalysisTarget(null)}
+        />
       )}
     </div>
   )
