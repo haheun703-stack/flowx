@@ -148,9 +148,9 @@ function UltimateChart() {
           <b>6개의 선이 모두 2027~2029년에 교차합니다.</b> 이것은 우연이 아닙니다.<br /><br />
           <span style={{ color: '#ff1744' }}>■</span> <b>인구 붕괴 가속</b> — 2028년부터 연 30만+ 생산인구 감소<br />
           <span style={{ color: '#00c853' }}>■</span> <b>AI 생산성 폭발</b> — J커브 바닥을 지나 급상승<br />
-          <span style={{ color: '#1565c0' }}>■</span> <b>반도체 슈퍼사이클</b> — 설비투자 $427B→$562B. HBM 수요 구조적 확대<br />
+          <span style={{ color: '#1565c0' }}>■</span> <b>반도체 슈퍼사이클</b> — 설비투자 $381B→$650B. HBM 수요 구조적 확대<br />
           <span style={{ color: '#ff6d00' }}>■</span> <b>에너지 전환 임계점</b> — 이란전쟁이 원전·SMR 투자를 강제 가속<br />
-          <span style={{ color: '#d81b60' }}>■</span> <b>가계부채 한계</b> — GDP 105%. 금리 인하에도 소비 회복 제한적<br />
+          <span style={{ color: '#d81b60' }}>■</span> <b>가계부채 한계</b> — GDP ~92%(BIS). 정점 대비 개선 중이나 OECD 상위<br />
           <span style={{ color: '#7c3aed' }}>■</span> <b>지정학적 가치</b> — 미·중 모두에게 필요한 유일한 반도체 국가
         </div>
         <div className="mt-4 p-3 rounded-lg bg-black text-center text-[#ffd600] text-base font-bold tracking-wide">
@@ -177,8 +177,8 @@ function SynthesisRadar() {
         data: {
           labels: ['이익성장\n건전성', '반도체\n경쟁력', 'AI 전환\n속도', '인플레\n안정성', '밸류에이션\n매력', '인구구조\n건전성', '에너지\n자립도', '가계부채\n건전성'],
           datasets: [
-            { label: '한국 현재 (2026)', data: [75, 95, 80, 70, 85, 20, 15, 25], backgroundColor: 'rgba(57,255,20,0.12)', borderColor: 'rgba(0,200,83,0.8)', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#00c853' },
-            { label: '미국 현재 (2026)', data: [85, 70, 90, 55, 30, 65, 90, 70], backgroundColor: 'rgba(21,101,192,0.08)', borderColor: 'rgba(21,101,192,0.7)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#1565c0' },
+            { label: '한국 현재 (2026)', data: [75, 95, 80, 65, 85, 20, 15, 35], backgroundColor: 'rgba(57,255,20,0.12)', borderColor: 'rgba(0,200,83,0.8)', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#00c853' },
+            { label: '미국 현재 (2026)', data: [85, 70, 90, 40, 30, 65, 90, 70], backgroundColor: 'rgba(21,101,192,0.08)', borderColor: 'rgba(21,101,192,0.7)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#1565c0' },
             { label: '한국 위험 임계선', data: [50, 50, 50, 50, 50, 50, 50, 50], backgroundColor: 'transparent', borderColor: 'rgba(255,23,68,0.3)', borderWidth: 1, borderDash: [4, 3], pointRadius: 0 },
           ],
         },
@@ -208,7 +208,7 @@ function AnalysisCards() {
           <b>① [섹션 4+5] 이익성장의 민주화</b> — S&P 7 독주 끝나고 S&P 493이 67% 담당.<br /><br />
           <b>② [섹션 10+19b] 한국 반도체 = 세계의 심장</b> — 수출 $710B 역대최대. AI 설비투자의 최대 수혜가 한국 HBM.<br /><br />
           <b>③ [섹션 9+16] J커브 변곡점 돌파 임박</b> — AI 생산성이 바닥을 찍고 상승 전환 중.<br /><br />
-          <b>④ [섹션 12+17] 인플레 안정화 + 금리 인하 사이클</b> — 미국 2.4%, 한국 2.0%로 2%대 안착.<br /><br />
+          <b>④ [섹션 12+17] 금리 인하 사이클 진행 중</b> — Fed 3.75%, BOK 2.5%. 2025년 2%대 안착 후 2026년 이란전쟁으로 인플레 재반등(3.3%) — 추가 인하 제한적.<br /><br />
           <b>⑤ [섹션 18+22] 한국 = 저평가 자산의 재발견</b> — 버핏지표: 미국 205% vs 한국 95%. 외국인 자금 $20B 복귀.
         </div>
       </MacroCard>
@@ -219,8 +219,8 @@ function AnalysisCards() {
         <h2 className="text-xl font-black text-[#ff1744] mb-3">지금 가장 경계해야 할 5가지 리스크</h2>
         <div className="text-sm leading-relaxed text-[#b71c1c] p-4 rounded-r-lg" style={{ background: 'rgba(255,23,68,0.04)', borderLeft: '4px solid #ff1744' }}>
           <b>① [섹션 11+12+18b] 인플레 재점화 — 이란전쟁 쇼크</b> — 유가 $72→$110(+53%). FOMC 전원 상방 리스크.<br /><br />
-          <b>② [섹션 15+21] 인구절벽 × 가계부채 = 데스 스파이럴</b> — 생산인구 -27% + 가계부채 105% OECD 1위.<br /><br />
-          <b>③ [섹션 22+7] 미국 시장 역대급 과열</b> — 버핏지표 205% + S&P 7 첫 언더퍼폼.<br /><br />
+          <b>② [섹션 15+21] 인구절벽 × 가계부채</b> — 생산인구 -27% + 가계부채 ~92%(BIS) OECD 상위. 정점 대비 개선 추세지만 여전히 높은 수준.<br /><br />
+          <b>③ [섹션 22+7] 미국 시장 과열 지속</b> — 버핏지표 205%. 2025년 S&P 7 +27.5% 2년 연속 강세지만 밸류에이션 부담 누적.<br /><br />
           <b>④ [섹션 20+15+16] 40~50대 대량 실업 시한폭탄</b> — AI 대체 위험도 70%+ 직종에 종사하는 40~50대가 위험.<br /><br />
           <b>⑤ [섹션 17+19+18b] 한국의 에너지 아킬레스건</b> — 원유 100% 수입 + 이란전쟁 + 원화약세.
         </div>
@@ -231,7 +231,7 @@ function AnalysisCards() {
         <div className="font-mono text-[10px] text-[#1565c0] tracking-[3px] uppercase mb-1">🔵 유지되고 있는 점 (구조적 트렌드)</div>
         <h2 className="text-xl font-black text-[#1565c0] mb-3">변하지 않는 3가지 메가트렌드</h2>
         <div className="text-sm leading-relaxed text-[#0d47a1] p-4 rounded-r-lg" style={{ background: 'rgba(21,101,192,0.04)', borderLeft: '4px solid #1565c0' }}>
-          <b>① [섹션 1+2+3] 자본의 대이동: 채권→주식→AI 인프라</b> — Big Tech 설비투자 $427B→$562B. 10년짜리 트렌드.<br /><br />
+          <b>① [섹션 1+2+3] 자본의 대이동: 채권→주식→AI 인프라</b> — Big Tech 설비투자 $381B→$650B(2026E). 10년짜리 트렌드.<br /><br />
           <b>② [섹션 6+10] S&P 7의 경제적 해자는 건재</b> — 순이익률 25.8%(S&P 2배) 유지. 성장은 둔화돼도 수익성은 압도적.<br /><br />
           <b>③ [섹션 14+15] 고령화는 가속만 있고 브레이크 없다</b> — 한국 생산인구 매년 -32만명. 20년간 역전 불가. AI·로봇·이민만이 해법.
         </div>
@@ -250,7 +250,7 @@ function AnalysisCards() {
 
           <b className="text-xl text-[#f57f17]">🏆 JACKPOT #2: &quot;반도체 지정학 레버리지&quot;</b><br />
           <span className="text-[#555]">[섹션 2+3+10+18+18b+19 교집합]</span><br />
-          Big Tech 설비투자 $427B → 핵심 목적지가 <b>HBM/DRAM = 한국</b>. 미국도, 중국도 한국 반도체 없이는 AI를 못 만든다. → <b className="text-[#00c853]">&quot;양쪽 모두에게 필요한 유일한 나라&quot;라는 전략적 위치.</b><br /><br />
+          Big Tech 설비투자 $650B(2026E) → 핵심 목적지가 <b>HBM/DRAM = 한국</b>. 미국도, 중국도 한국 반도체 없이는 AI를 못 만든다. → <b className="text-[#00c853]">&quot;양쪽 모두에게 필요한 유일한 나라&quot;라는 전략적 위치.</b><br /><br />
 
           <b className="text-xl text-[#f57f17]">🏆 JACKPOT #3: &quot;위기의 역설 — 에너지 약점이 만드는 기회&quot;</b><br />
           <span className="text-[#555]">[섹션 12+17+18b+19b+21 교집합]</span><br />

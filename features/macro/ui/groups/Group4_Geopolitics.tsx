@@ -56,7 +56,7 @@ function GlobalFundFlow() {
 function GeopoliticalShock() {
   const labels = ['유가 ($/배럴)', '미국 인플레 (%)', '미국 금리 (%)', '한국 환율 (원/100)', '중국 성장률 (%)', '러시아 성장률 (%)', 'EU 성장률 (%)', '아시아 교역량 증감 (%)', '글로벌 교역량 증감 (%)']
   const preWar = [72, 2.4, 3.75, 13.8, 5.0, 2.0, 1.2, 4.5, 3.2]
-  const warNow = [110, 3.5, 3.75, 14.5, 4.8, 2.8, 0.5, 2.0, 1.5]
+  const warNow = [110, 3.3, 3.75, 14.76, 4.8, 2.8, 0.5, 2.0, 1.5]
   const warLong = [130, 4.5, 4.25, 15.5, 4.5, 3.2, -0.3, 0.5, 0.5]
 
   return (
@@ -66,7 +66,7 @@ function GeopoliticalShock() {
       desc="호르무즈 해협 봉쇄 → 유가·인플레·금리·자금흐름 연쇄 반응"
       full
       source="Wikipedia(Economic impact of 2026 Iran war), Morgan Stanley, Goldman Sachs, CNBC, Bloomberg"
-      insight={`<b>💡 핵심 분석:</b><br>① <b style="color:#ff1744">최대 피해: 미국 소비자.</b> 유가 $110→가솔린 $4.5/갤런. 인플레 재점화 → Fed 금리인하 중단/역행 가능.<br>② <b style="color:#00c853">반사 수혜: 중국·러시아.</b> 러시아 성장률 2.0→3.2% 상승(에너지 수출 호황).<br>③ <b style="color:#ff1744">EU 직격탄:</b> LNG 가격 급등 → 성장률 1.2%→-0.3% 역성장 전환 가능.<br>⚠️ <b style="color:#ff1744">45일 휴전 협상 중(4/7 데드라인)</b> — 결과에 따라 시나리오 급변 가능.`}
+      insight={`<b>💡 핵심 분석:</b><br>① <b style="color:#ff1744">최대 피해: 미국 소비자.</b> 유가 $110→가솔린 $4.5/갤런. 인플레 3.3%로 재점화 → Fed 금리인하 중단.<br>② <b style="color:#00c853">반사 수혜: 중국·러시아.</b> 러시아 성장률 2.0→3.2% 상승(에너지 수출 호황).<br>③ <b style="color:#ff1744">EU 직격탄:</b> LNG 가격 급등 → 성장률 1.2%→-0.3% 역성장 전환 가능.<br>⚠️ <b style="color:#ff1744">호르무즈 해협 봉쇄 지속 중(4월 현재)</b> — 휴전 협상 실패 후 장기전 돌입.`}
     >
       <MacroChart config={{
         type: 'bar',
@@ -202,8 +202,8 @@ function KoreaExport() {
 
 /* ── 🔒 SECRET — 엔 캐리트레이드 ── */
 function YenCarryTrade() {
-  const labels = ['22.1', '22.7', '22.10', '23.1', '23.6', '23.12', '24.3', '24.7', '24.8★', '24.12', '25.3', '25.9', '26E']
-  const usdJpy = [115, 136, 150, 127, 140, 142, 150, 162, 142, 157, 149, 143, 148]
+  const labels = ['22.1', '22.7', '22.10', '23.1', '23.6', '23.12', '24.3', '24.7', '24.8★', '24.12', '25.3', '25.9', '26.4']
+  const usdJpy = [115, 136, 150, 127, 140, 142, 150, 162, 142, 157, 149, 143, 159]
   const foreignNet = [-1, -5, -6, 3, -1, 2, 3, 2, -12, 5, 8, 5, -3]
 
   return (
@@ -213,7 +213,7 @@ function YenCarryTrade() {
       desc="USD/JPY 환율 vs KOSPI 외국인 순매수 (조원) | 2024.8 캐리 언와인드 = 실전 증거"
       full
       source="BOJ, Fed, Bloomberg, KRX, Reuters"
-      insight={`<b>🔒 시크릿 인사이트:</b><br>• <b style="color:#ff1744">엔 캐리트레이드</b> = 엔화 저금리 차입 → 고금리 자산(미국·한국 주식) 투자. 일본 금리 인상 시 역류.<br>• <b style="color:#ff1744">2024.8 증거:</b> USD/JPY 162→142 급락. 동시에 외국인 KOSPI <b>-12조원</b> 역대급 매도. 이것이 캐리 언와인드.<br>• <b style="color:#ff1744">2026E 경고:</b> BOJ 추가 금리인상(0.5→0.75%) + 이란전쟁 리스크 = 2차 언와인드 가능. USD/JPY 148 수준에서 재차 급락 시 외국인 이탈 반복.`}
+      insight={`<b>🔒 시크릿 인사이트:</b><br>• <b style="color:#ff1744">엔 캐리트레이드</b> = 엔화 저금리 차입 → 고금리 자산(미국·한국 주식) 투자. 일본 금리 인상 시 역류.<br>• <b style="color:#ff1744">2024.8 증거:</b> USD/JPY 162→142 급락. 동시에 외국인 KOSPI <b>-12조원</b> 역대급 매도. 이것이 캐리 언와인드.<br>• <b style="color:#ff1744">2026.4 현재:</b> USD/JPY ¥159. 이란전쟁+호르무즈 봉쇄로 엔 약세 재심화. BOJ 금리인상(0.5%) 시 급격한 엔 강세 전환 → 2차 언와인드 경고.`}
     >
       <MacroChart config={{
         type: 'bar',

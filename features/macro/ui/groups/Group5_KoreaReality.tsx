@@ -395,14 +395,14 @@ function HouseholdDebt() {
       title="한국 가계부채/GDP 비율"
       desc="OECD 최상위 — 투자여력·소비에 직결"
       source="BIS, 한국은행, OECD"
-      insight={`<b>💡 심각성:</b> 한국 가계부채/GDP 105%는 OECD 1위권. <b style="color:#ff1744">금리 1%p 상승 = 가계 이자부담 약 17조원 증가.</b> 인구절벽+고부채 = 소비 위축 → 내수 침체 악순환.`}
+      insight={`<b>💡 심각성:</b> 한국 가계부채/GDP ~95%는 OECD 상위권(BIS 기준 89.4%). <b style="color:#ff1744">금리 1%p 상승 = 가계 이자부담 약 17조원 증가.</b> 인구절벽+고부채 = 소비 위축 → 내수 침체 악순환. 다만 2021년 106% 정점 대비 개선 추세.`}
     >
       <MacroChart config={{
         type: 'line',
         data: {
           labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
           datasets: [
-            { label: '한국 가계부채/GDP (%)', data: [87, 91, 93, 95, 103, 106, 105, 102, 104, 105], borderColor: C.red + '1)', backgroundColor: C.red + '0.08)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 3 },
+            { label: '한국 가계부채/GDP (%)', data: [87, 91, 93, 95, 103, 106, 105, 100, 96, 92], borderColor: C.red + '1)', backgroundColor: C.red + '0.08)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 3 },
             { label: '미국 (%)', data: [79, 78, 76, 75, 79, 78, 75, 73, 72, 71], borderColor: C.blue + '1)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 4, pointBackgroundColor: C.blue + '1)', borderWidth: 2 },
             { label: 'OECD 평균 (%)', data: [63, 64, 64, 65, 68, 67, 66, 65, 64, 64], borderColor: C.teal + '0.6)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 3, pointBackgroundColor: C.teal + '1)', borderWidth: 1.5, borderDash: [6, 3] },
           ],
@@ -414,7 +414,7 @@ function HouseholdDebt() {
             legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 14 } },
             annotation: { annotations: {
               a1: ann(4, 110, '코로나\n대출폭증', C.red + '0.15)'),
-              a2: ann(7, 112, '105%\nOECD 1위', C.red + '0.2)'),
+              a2: ann(5, 112, '106%\n정점', C.red + '0.2)'),
               danger: { type: 'line', yMin: 100, yMax: 100, borderColor: C.red + '0.3)', borderWidth: 1, borderDash: [6, 3], label: { display: true, content: '위험선 100%', position: 'end', backgroundColor: 'rgba(255,255,255,.8)', color: '#c62828', font: { size: 9 }, padding: 2 } },
             }},
           },

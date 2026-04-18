@@ -11,9 +11,9 @@ import { C, G, ann, vl } from '../chartHelpers'
 function FomcInflation() {
   const lb = ['Sep18', 'Dec18', 'Mar19', 'Jun19', 'Sep19', 'Dec19', 'Mar20', 'Jun20', 'Sep20', 'Dec20',
     'Mar21', 'Jun21', 'Sep21', 'Dec21', 'Mar22', 'Jun22', 'Sep22', 'Dec22', 'Mar23', 'Jun23',
-    'Sep23', 'Dec23', 'Mar24', 'Jun24', 'Sep24', 'Dec24', 'Mar25', 'Jun25', 'Sep25', 'Dec25']
-  const up = [3, 5, 5, 5, 6, 5, 2, 1, 1, 1, 2, 5, 9, 9, 13, 13, 16, 16, 16, 14, 11, 7, 7, 9, 3, 15, 17, 17, 18, 14]
-  const dn = [3, 3, 6, 6, 9, 5, 13, 13, 10, 4, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 0, 1]
+    'Sep23', 'Dec23', 'Mar24', 'Jun24', 'Sep24', 'Dec24', 'Mar25', 'Jun25', 'Sep25', 'Dec25', 'Mar26']
+  const up = [3, 5, 5, 5, 6, 5, 2, 1, 1, 1, 2, 5, 9, 9, 13, 13, 16, 16, 16, 14, 11, 7, 7, 9, 3, 15, 17, 17, 18, 14, 16]
+  const dn = [3, 3, 6, 6, 9, 5, 13, 13, 10, 4, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 0, 1, 0]
 
   return (
     <MacroCard
@@ -65,15 +65,15 @@ function CpiComparison() {
       desc="소비자물가 전년비(%) — 미국 목표 2% / 한은 목표 2%"
       full
       source="BLS, 통계청, Trading Economics, KDI"
-      insight={`<b>💡 비교:</b> 2022년 미국 <b style="color:#ff1744">8.0%</b> vs 한국 5.1% — 미국이 더 심각. 2025~2026년 양국 모두 2%대 안착 시도 중. 하지만 <b style="color:#ff1744">트럼프 관세·에너지 변동성</b>이 2차 인플레 리스크. 한국은 원/달러 환율 변수 추가.`}
+      insight={`<b>💡 비교:</b> 2022년 미국 <b style="color:#ff1744">8.0%</b> vs 한국 5.1% — 미국이 더 심각. 2025년 양국 모두 2%대 안착했으나, 2026년 <b style="color:#ff1744">이란전쟁+관세 충격</b>으로 미국 CPI 3.3%로 재반등. 한국은 2.2%로 상대적 안정.`}
     >
       <MacroChart config={{
         type: 'line',
         data: {
           labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
           datasets: [
-            { label: '미국 CPI (YoY%)', data: [1.3, 2.1, 2.4, 1.8, 1.2, 4.7, 8.0, 4.1, 2.9, 2.6, 2.4], borderColor: C.blue + '1)', backgroundColor: C.blue + '0.06)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 2.5 },
-            { label: '한국 CPI (YoY%)', data: [1.0, 1.9, 1.5, 0.4, 0.5, 2.5, 5.1, 3.6, 2.3, 2.3, 2.0], borderColor: C.red + '1)', backgroundColor: C.red + '0.04)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 2.5 },
+            { label: '미국 CPI (YoY%)', data: [1.3, 2.1, 2.4, 1.8, 1.2, 4.7, 8.0, 4.1, 2.9, 2.7, 3.3], borderColor: C.blue + '1)', backgroundColor: C.blue + '0.06)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 2.5 },
+            { label: '한국 CPI (YoY%)', data: [1.0, 1.9, 1.5, 0.4, 0.5, 2.5, 5.1, 3.6, 2.3, 2.0, 2.2], borderColor: C.red + '1)', backgroundColor: C.red + '0.04)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 2.5 },
             { label: '중앙은행 목표 (2%)', data: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], borderColor: 'rgba(57,255,20,0.6)', borderWidth: 2, borderDash: [8, 4], pointRadius: 0, fill: false },
           ],
         },
@@ -89,7 +89,7 @@ function CpiComparison() {
               a1: ann(6.5, 9, '美 8.0%\n40년최고', C.red + '0.15)'),
               a2: ann(5.5, 6, '韓 5.1%', C.red + '0.1)'),
               a3: ann(3, 3.5, '韓 0.5%\n디플레우려', C.teal + '0.12)'),
-              a4: ann(9.5, 3.5, '2%대 안착 시도', C.neon + '0.2)'),
+              a4: ann(9.5, 4.2, '美 3.3% 재반등\n이란전쟁 에너지', C.red + '0.15)'),
             }},
           },
           scales: {
@@ -118,9 +118,9 @@ function InterestRateFx() {
         data: {
           labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
           datasets: [
-            { label: '미국 금리 (%)', data: [0.5, 1.0, 2.0, 1.75, 0.25, 0.25, 4.5, 5.5, 4.5, 4.0, 3.75], yAxisID: 'y', borderColor: C.blue + '1)', backgroundColor: C.blue + '0.06)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 3 },
-            { label: '한국 금리 (%)', data: [1.25, 1.25, 1.5, 1.75, 0.5, 0.75, 3.25, 3.5, 3.0, 2.75, 2.5], yAxisID: 'y', borderColor: C.red + '1)', backgroundColor: C.red + '0.04)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 3 },
-            { label: '달러/원 환율 (우축)', data: [1160, 1070, 1100, 1160, 1180, 1190, 1300, 1290, 1380, 1400, 1380], yAxisID: 'y2', borderColor: C.orange + '0.8)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 4, pointBackgroundColor: C.orange + '1)', borderWidth: 2, borderDash: [6, 3] },
+            { label: '미국 금리 (%)', data: [0.5, 1.0, 2.0, 1.75, 0.25, 0.25, 4.5, 5.5, 4.5, 3.75, 3.75], yAxisID: 'y', borderColor: C.blue + '1)', backgroundColor: C.blue + '0.06)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 3 },
+            { label: '한국 금리 (%)', data: [1.25, 1.25, 1.5, 1.75, 0.5, 0.75, 3.25, 3.5, 3.0, 2.5, 2.5], yAxisID: 'y', borderColor: C.red + '1)', backgroundColor: C.red + '0.04)', fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: C.red + '1)', borderWidth: 3 },
+            { label: '달러/원 환율 (우축)', data: [1160, 1070, 1100, 1160, 1180, 1190, 1300, 1290, 1470, 1450, 1476], yAxisID: 'y2', borderColor: C.orange + '0.8)', backgroundColor: 'transparent', fill: false, tension: 0.3, pointRadius: 4, pointBackgroundColor: C.orange + '1)', borderWidth: 2, borderDash: [6, 3] },
           ],
         },
         options: {
@@ -136,7 +136,7 @@ function InterestRateFx() {
           },
           scales: {
             y: { min: 0, max: 6.5, title: { display: true, text: '기준금리 (%)' }, ticks: { callback: (v: number) => v + '%' }, grid: { color: G } },
-            y2: { position: 'right', min: 1000, max: 1500, title: { display: true, text: '달러/원' }, grid: { display: false }, ticks: { callback: (v: number) => v.toLocaleString() + '원' } },
+            y2: { position: 'right', min: 1000, max: 1550, title: { display: true, text: '달러/원' }, grid: { display: false }, ticks: { callback: (v: number) => v.toLocaleString() + '원' } },
             x: { title: { display: true, text: '연도' }, grid: { color: 'rgba(0,0,0,0.03)' } },
           },
         },

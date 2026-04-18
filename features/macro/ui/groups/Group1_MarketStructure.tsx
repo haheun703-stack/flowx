@@ -14,14 +14,14 @@ export function OverviewKPI() {
       num="개요"
       title="핵심 거시 지표 한눈에 보기"
       full
-      insight={`<b>💡 핵심:</b> S&P 7은 S&P 500의 1/3을 차지하지만, 이익 기여도는 줄고 있습니다. '집중 → 분산' 로테이션이 시작되었다는 신호입니다.`}
+      insight={`<b>💡 핵심:</b> S&P 7은 S&P 500의 33.7%를 차지하지만, 이익 기여도는 줄고 있습니다. '집중 → 분산' 로테이션이 시작되었다는 신호입니다.`}
     >
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-        <KPICard value="32.5%" label="S&P 7 S&P 500 비중" color="blue" />
-        <KPICard value="$427B" label="빅테크 설비투자 (2025)" color="green" />
+        <KPICard value="33.7%" label="S&P 7 S&P 500 비중" color="blue" />
+        <KPICard value="$381B" label="빅테크 설비투자 (2025)" color="green" />
         <KPICard value="25.8%" label="S&P 7 순이익률 (역대최고)" color="green" />
         <KPICard value="33%↓" label="이익기여도 (52%→33%)" color="red" />
-        <KPICard value="875%" label="S&P 7 10년 누적수익률" color="green" />
+        <KPICard value="1,140%" label="S&P 7 10년 누적수익률" color="green" />
       </div>
     </MacroCard>
   )
@@ -67,19 +67,19 @@ export function CapexSurge() {
     <MacroCard
       num="02 — 설비투자 급증"
       title="빅테크 설비투자 연도별 추이"
-      desc="AI 인프라 투자 폭발 — $107B → $562B"
+      desc="AI 인프라 투자 폭발 — $107B → $650B"
       source="Bloomberg, RBC Wealth Management, CNBC"
-      insight={`<b>💡 전환점:</b> 2023년 ChatGPT 이후 AI 경쟁 본격화. 2024년부터 전년비 +52% 급증. 2026E $562B은 마샬플랜의 4~8배 규모.`}
+      insight={`<b>💡 전환점:</b> 2023년 ChatGPT 이후 AI 경쟁 본격화. 2025년 $381B 확정. 2026E $650B은 마샬플랜의 5~10배 규모.`}
     >
       <MacroChart config={{
         type: 'bar',
         data: {
-          labels: ['2020', '2021', '2022', '2023', '2024', '2025E', '2026E'],
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026E'],
           datasets: [{
             label: '설비투자 ($B)',
-            data: [107, 143, 172, 168, 256, 427, 562],
-            backgroundColor: ['#90caf9', '#90caf9', '#90caf9', '#90caf9', C.blue + '0.8)', C.neon + '0.45)', C.neon + '0.3)'],
-            borderColor: ['transparent', 'transparent', 'transparent', 'transparent', C.blue + '1)', '#1b5e20', '#2e7d32'],
+            data: [107, 143, 172, 168, 256, 381, 650],
+            backgroundColor: ['#90caf9', '#90caf9', '#90caf9', '#90caf9', C.blue + '0.8)', C.blue + '0.85)', C.neon + '0.4)'],
+            borderColor: ['transparent', 'transparent', 'transparent', 'transparent', C.blue + '1)', C.blue + '1)', '#2e7d32'],
             borderWidth: [0, 0, 0, 0, 2, 2, 2],
             borderRadius: 5,
             borderSkipped: false,
@@ -93,11 +93,11 @@ export function CapexSurge() {
             annotation: { annotations: {
               l1: vl(3, 'ChatGPT 등장→', C.red + '0.4)'),
               a1: ann(4, 310, 'AI 경쟁 본격화\n+52% YoY'),
-              a2: ann(5.5, 520, '$427B\n역대최대', C.neon + '0.25)'),
+              a2: ann(5.5, 580, '$381B→$650B\nAI 투자 폭주', C.neon + '0.25)'),
             }},
           },
           scales: {
-            y: { beginAtZero: true, max: 650, title: { display: true, text: '자본적 지출 ($B)', color: '#888' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
+            y: { beginAtZero: true, max: 750, title: { display: true, text: '자본적 지출 ($B)', color: '#888' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
             x: { title: { display: true, text: '연도' }, grid: { display: false } },
           },
         },
@@ -111,18 +111,18 @@ export function CompanyCapex() {
   return (
     <MacroCard
       num="03 — 기업별 설비투자"
-      title="2025 기업별 설비투자 가이던스"
-      desc="아마존 $125B 선두 — AI 데이터센터 경쟁"
-      source="CNBC, 각사 어닝콜 가이던스"
-      insight={`<b>💡 포인트:</b> 상위 4사 합산 $352B. 테슬라는 $5B — AI 설비투자에선 뒤처지는 구도.`}
+      title="2026E 기업별 설비투자 가이던스"
+      desc="아마존 $200B 선두 — AI 인프라 초경쟁"
+      source="CNBC, 각사 어닝콜 가이던스 (2026E)"
+      insight={`<b>💡 포인트:</b> 상위 4사 합산 $655B. 전년 $381B 대비 +72% 폭증. <b style="color:#00c853">AI 데이터센터 초경쟁 시대 진입.</b>`}
     >
       <MacroChart config={{
         type: 'bar',
         data: {
-          labels: ['Amazon', 'Microsoft', 'Alphabet', 'Meta', 'Tesla'],
+          labels: ['Amazon', 'Alphabet', 'Microsoft', 'Meta'],
           datasets: [{
-            data: [125, 80, 75, 72, 5],
-            backgroundColor: [C.orange + '0.75)', C.blue + '0.75)', C.teal + '0.7)', C.purple + '0.7)', C.red + '0.4)'],
+            data: [200, 185, 145, 125],
+            backgroundColor: [C.orange + '0.75)', C.teal + '0.7)', C.blue + '0.75)', C.purple + '0.7)'],
             borderRadius: 5, borderSkipped: false,
           }],
         },
@@ -132,12 +132,12 @@ export function CompanyCapex() {
             legend: { display: false },
             tooltip: { callbacks: { label: (c: { parsed: { x: number } }) => '$' + c.parsed.x + 'B' } },
             annotation: { annotations: {
-              a1: ann(100, 0, 'AWS 선두', C.orange + '0.2)'),
-              a2: ann(30, 4, 'AI 규모 미미', C.red + '0.15)'),
+              a1: ann(180, 0, 'AWS $200B', C.orange + '0.2)'),
+              a2: ann(160, 1, 'GCP $185B', C.teal + '0.15)'),
             }},
           },
           scales: {
-            x: { beginAtZero: true, max: 150, title: { display: true, text: '2025E 설비투자 ($B)' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
+            x: { beginAtZero: true, max: 230, title: { display: true, text: '2026E 설비투자 ($B)' }, ticks: { callback: (v: number) => '$' + v + 'B' }, grid: { color: G } },
             y: { grid: { display: false } },
           },
         },
@@ -159,7 +159,7 @@ export function EarningsGrowth() {
       <MacroChart config={{
         type: 'bar',
         data: {
-          labels: ['2024', '2025E'],
+          labels: ['2024', '2025'],
           datasets: [
             { label: 'S&P 7', data: [36.8, 17.1], backgroundColor: C.orange + '0.75)', borderRadius: 5, borderSkipped: false },
             { label: 'S&P 493', data: [6.9, 9.2], backgroundColor: C.blue + '0.65)', borderRadius: 5, borderSkipped: false },
@@ -198,7 +198,7 @@ export function Contribution() {
       <MacroChart config={{
         type: 'bar',
         data: {
-          labels: ['2023', '2024', '2025E'],
+          labels: ['2023', '2024', '2025'],
           datasets: [
             { label: 'S&P 7', data: [100, 52, 33], backgroundColor: C.orange + '0.7)', borderRadius: 5, borderSkipped: false },
             { label: 'S&P 493', data: [0, 48, 67], backgroundColor: C.teal + '0.6)', borderRadius: 5, borderSkipped: false },
@@ -236,7 +236,7 @@ export function Profitability() {
       <MacroChart config={{
         type: 'line',
         data: {
-          labels: ["Q3'23", "Q4'23", "Q1'24", "Q2'24", "Q3'24", "Q4'24", "'25E"],
+          labels: ["Q3'23", "Q4'23", "Q1'24", "Q2'24", "Q3'24", "Q4'24", "Q4'25"],
           datasets: [
             { label: 'S&P 7 순이익률', data: [22.5, 23, 23.8, 24.2, 24.8, 25.8, 25.3], borderColor: C.orange + '1)', backgroundColor: C.orange + '0.08)', fill: true, tension: 0.35, pointRadius: 5, pointBackgroundColor: C.orange + '1)', borderWidth: 2.5 },
             { label: 'S&P 500 순이익률', data: [11.8, 12, 12.5, 12.8, 13, 13.4, 13], borderColor: C.blue + '1)', backgroundColor: C.blue + '0.05)', fill: true, tension: 0.35, pointRadius: 5, pointBackgroundColor: C.blue + '1)', borderWidth: 2.5 },
@@ -268,10 +268,10 @@ export function AnnualReturns() {
     <MacroCard
       num="07 — 연간 수익률"
       title="S&P 7 vs S&P 500 연간 수익률 (2016~2025)"
-      desc="10년 중 8년 아웃퍼폼 — 누적 875% vs 235%"
+      desc="10년 중 9년 아웃퍼폼 — 누적 1,140% vs 296%"
       source="Bloomberg, Motley Fool"
       full
-      insight={`<b>💡 주목:</b> 2020 코로나→+65.8%. 2022 금리인상→-41.3%. 2023 ChatGPT→+107% 역대급. <b style="color:#ff1744">2025년은 S&P 7이 처음으로 S&P에 뒤처진 해.</b>`}
+      insight={`<b>💡 주목:</b> 2020 코로나→+65.8%. 2022 금리인상→-41.3%. 2023 ChatGPT→+107% 역대급. 2025년 S&P 7 +27.5%, S&P 500 +17.9% — <b style="color:#00c853">AI 랠리 2년 연속!</b>`}
     >
       <MacroChart config={{
         type: 'bar',
@@ -279,11 +279,11 @@ export function AnnualReturns() {
           labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
           datasets: [
             {
-              label: 'S&P 7', data: [8.8, 50, 3, 55, 65.8, 30, -41.3, 107, 67, -7.7],
-              backgroundColor: [C.orange + '0.6)', C.orange + '0.6)', C.red + '0.4)', C.orange + '0.6)', C.orange + '0.7)', C.orange + '0.6)', C.red + '0.7)', C.neon + '0.4)', C.orange + '0.65)', C.red + '0.5)'],
+              label: 'S&P 7', data: [8.8, 50, 3, 55, 65.8, 30, -41.3, 107, 67, 27.5],
+              backgroundColor: [C.orange + '0.6)', C.orange + '0.6)', C.red + '0.4)', C.orange + '0.6)', C.orange + '0.7)', C.orange + '0.6)', C.red + '0.7)', C.neon + '0.4)', C.orange + '0.65)', C.orange + '0.6)'],
               borderRadius: 3, borderSkipped: false,
             },
-            { label: 'S&P 500', data: [9.5, 19.4, -6.2, 28.9, 16.3, 26.9, -19.4, 24.2, 23.3, -0.7], backgroundColor: C.blue + '0.45)', borderRadius: 3, borderSkipped: false },
+            { label: 'S&P 500', data: [9.5, 19.4, -6.2, 28.9, 16.3, 26.9, -19.4, 24.2, 23.3, 17.9], backgroundColor: C.blue + '0.45)', borderRadius: 3, borderSkipped: false },
           ],
         },
         options: {
@@ -297,7 +297,7 @@ export function AnnualReturns() {
               a1: ann(3.5, 80, '+65.8%\n재택수혜', C.neon + '0.2)'),
               a2: ann(6.5, -35, '-41.3%\n폭락', C.red + '0.15)'),
               a3: ann(7.5, 120, '+107%\n역대급', C.neon + '0.25)'),
-              a4: ann(9, -20, '-7.7%', C.red + '0.15)'),
+              a4: ann(9, 35, '+27.5%', C.neon + '0.2)'),
             }},
           },
           scales: {
@@ -313,14 +313,14 @@ export function AnnualReturns() {
 /* ── 13 Data Table ── */
 export function DataTable() {
   const rows = [
-    { label: 'S&P 500 비중', mag7: '32.5%', sp493: '67.5%', note: '2026.03 기준', hl: false, mg: '', sp: '', nc: '' },
+    { label: 'S&P 500 비중', mag7: '33.7%', sp493: '66.3%', note: '2026.04 기준', hl: false, mg: '', sp: '', nc: '' },
     { label: 'Q4 2024 이익성장률', mag7: '+31.7%', sp493: '+13.0%', note: '전체 +16.9%', hl: true, mg: 'g', sp: 'g', nc: '' },
-    { label: '2025E 이익성장률', mag7: '+17.1%', sp493: '+9.2%', note: '격차 축소!', hl: false, mg: 'g', sp: 'g', nc: 'r' },
+    { label: '2025 이익성장률', mag7: '+17.1%', sp493: '+9.2%', note: '격차 축소!', hl: false, mg: 'g', sp: 'g', nc: 'r' },
     { label: '순이익률 (Q4 2024)', mag7: '25.8%', sp493: '—', note: 'S&P: 13.4%', hl: true, mg: 'g', sp: '', nc: '' },
     { label: '선행 PER', mag7: '28.3x', sp493: '19.7x', note: '프리미엄 44%', hl: false, mg: '', sp: '', nc: '' },
     { label: '선행 PSR', mag7: '7.2x', sp493: '—', note: 'S&P: 2.7x', hl: false, mg: '', sp: '', nc: '' },
-    { label: '이익기여도 (2024→2025E)', mag7: '52% → 33%', sp493: '48% → 67%', note: '로테이션!', hl: true, mg: 'r', sp: 'g', nc: 'g' },
-    { label: '10년 누적수익률', mag7: '875.5%', sp493: '—', note: 'S&P: 234.9%', hl: false, mg: 'g', sp: '', nc: '' },
+    { label: '이익기여도 (2024→2025)', mag7: '52% → 33%', sp493: '48% → 67%', note: '로테이션!', hl: true, mg: 'r', sp: 'g', nc: 'g' },
+    { label: '10년 누적수익률', mag7: '1,140%', sp493: '—', note: 'S&P: 296%', hl: false, mg: 'g', sp: '', nc: '' },
   ]
   const cc = (c: string) => c === 'g' ? 'text-[#00c853] font-semibold' : c === 'r' ? 'text-[#ff1744] font-semibold' : ''
 
