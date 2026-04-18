@@ -479,8 +479,8 @@ export default function SwingDashboardView() {
         const nxtScore = nxtPickData.nxt_score ?? 0
         const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
         const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
-        const picks = nxtPickData.picks ?? []
-        const sectors = nxtPickData.sectors ?? []
+        const picks = Array.isArray(nxtPickData.picks) ? nxtPickData.picks : []
+        const sectors = Array.isArray(nxtPickData.sectors) ? nxtPickData.sectors : []
         return (
           <section className="bg-white rounded-2xl border border-[#E8E6E0] p-4 md:p-5 space-y-3 md:space-y-4">
             {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
