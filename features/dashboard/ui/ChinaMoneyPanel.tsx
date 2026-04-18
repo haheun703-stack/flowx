@@ -1,6 +1,6 @@
 'use client'
 
-import { useDashboardChinaMoney } from '../api/useDashboard'
+import { useChinaFlow } from '../api/useDashboard'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 
 const SIGNAL_KR: Record<string, string> = {
@@ -18,9 +18,10 @@ const SIGNAL_STYLE: Record<string, string> = {
 }
 
 export function ChinaMoneyPanel() {
-  const { data, isLoading } = useDashboardChinaMoney()
-  const items = data?.signals?.filter(s => s.signal !== 'NORMAL').slice(0, 10) ?? []
-  const dateStr = data?.date ?? ''
+  const { data: rawItems, isLoading } = useChinaFlow()
+  const allItems = rawItems ?? []
+  const items = allItems.filter(s => s.signal !== 'NORMAL').slice(0, 10)
+  const dateStr = allItems[0]?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
   const isStale = rel ? rel.daysAgo >= 30 : false
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useDashboardEtf } from '../api/useDashboard'
+import { useEtfSignals } from '../api/useDashboard'
 import { getRelativeDate } from '@/shared/lib/dateUtils'
 import {
   GRADE_STRONG_PICK,
@@ -19,9 +19,9 @@ const GRADE_STYLE: Record<string, string> = {
 }
 
 export function EtfSignalPanel() {
-  const { data, isLoading } = useDashboardEtf()
-  const items = data?.etfs?.slice(0, 5) ?? []
-  const dateStr = data?.updated_at ?? ''
+  const { data, isLoading } = useEtfSignals()
+  const items = data?.items?.slice(0, 5) ?? []
+  const dateStr = data?.date ?? ''
   const rel = dateStr ? getRelativeDate(dateStr) : null
   const isStale = rel ? rel.daysAgo >= 30 : false
 

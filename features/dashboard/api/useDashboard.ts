@@ -57,37 +57,6 @@ export function useDashboardPicks() {
   })
 }
 
-// --- Whale Detect ---
-export interface WhaleItem {
-  ticker: string
-  name: string
-  close: number
-  price_change: number
-  volume: number
-  volume_surge_ratio: number
-  grade: string
-  strength: number
-  pattern_count: number
-  patterns: { pattern: string; strength: number; desc: string }[]
-}
-
-export interface WhaleData {
-  updated_at: string
-  total_scanned: number
-  total_detected: number
-  stats: Record<string, number>
-  items: WhaleItem[]
-}
-
-export function useDashboardWhale() {
-  return useQuery<WhaleData>({
-    queryKey: ['dashboard-whale'],
-    queryFn: () => fetchJson('/api/dashboard/whale'),
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
-  })
-}
-
 // --- Market Report ---
 export interface MarketReport {
   date: string
@@ -159,121 +128,6 @@ export function useDashboardSupply() {
     queryFn: () => fetchJson('/api/dashboard/supply-snapshot'),
     staleTime: 1000 * 30,
     refetchInterval: getRefetchInterval(1000 * 30, 1000 * 60 * 10),
-  })
-}
-
-// --- China Money ---
-export interface ChinaMoneySignal {
-  date: string
-  ticker: string
-  name: string
-  signal: string
-  score: number
-  reasons: string[]
-  foreign_net_5d: number
-  foreign_zscore: number
-  ewy_decouple: boolean
-  consecutive_days: number
-  pct_change_5d: number
-}
-
-export interface ChinaMoneyData {
-  date: string
-  generated_at: string
-  total_stocks: number
-  summary: Record<string, number>
-  signals: ChinaMoneySignal[]
-}
-
-export function useDashboardChinaMoney() {
-  return useQuery<ChinaMoneyData>({
-    queryKey: ['dashboard-china-money'],
-    queryFn: () => fetchJson('/api/dashboard/china-money'),
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
-  })
-}
-
-// --- Sniper Watch ---
-export interface SniperItem {
-  code: string
-  name: string
-  group: string
-  grade: string
-  sector: string
-  thesis: string
-  analysis: {
-    price: number
-    change_pct: number
-    ma_status: string
-    rsi: number
-    verdict: string
-  }
-  scan_date: string
-}
-
-export function useDashboardSniper() {
-  return useQuery<SniperItem[]>({
-    queryKey: ['dashboard-sniper'],
-    queryFn: () => fetchJson('/api/dashboard/sniper'),
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
-  })
-}
-
-// --- ETF Signal ---
-export interface EtfItem {
-  sector: string
-  etf_code: string
-  etf_name: string
-  category: string
-  close: number
-  ret_1: number
-  ret_5: number
-  ret_20: number
-  rsi: number
-  score: number
-  grade: string
-  reasons: string[]
-}
-
-export interface EtfData {
-  updated_at: string
-  etf_count: number
-  etfs: EtfItem[]
-}
-
-export function useDashboardEtf() {
-  return useQuery<EtfData>({
-    queryKey: ['dashboard-etf'],
-    queryFn: () => fetchJson('/api/dashboard/etf'),
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: getRefetchInterval(1000 * 60 * 5, 1000 * 60 * 10),
-  })
-}
-
-// --- Morning News ---
-export interface NewsArticle {
-  date: string
-  title: string
-  source: string
-  impact: string
-  url: string
-}
-
-export interface MorningData {
-  crawled_at: string
-  article_count: number
-  high_impact: number
-  articles: NewsArticle[]
-}
-
-export function useDashboardMorning() {
-  return useQuery<MorningData>({
-    queryKey: ['dashboard-morning'],
-    queryFn: () => fetchJson('/api/dashboard/morning'),
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: 1000 * 60 * 10,
   })
 }
 
@@ -439,8 +293,13 @@ export interface EtfSignalItem {
   reasons: string[]
 }
 
+export interface EtfSignalsResponse {
+  items: EtfSignalItem[]
+  date: string | null
+}
+
 export function useEtfSignals() {
-  return useQuery<EtfSignalItem[]>({
+  return useQuery<EtfSignalsResponse>({
     queryKey: ['etf-signals'],
     queryFn: () => fetchJson('/api/etf-signals'),
     staleTime: 1000 * 60 * 5,
