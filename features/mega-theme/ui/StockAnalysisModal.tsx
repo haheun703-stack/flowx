@@ -61,28 +61,6 @@ function KvRow({ label, value, color }: { label: string; value: string; color?: 
   )
 }
 
-function JsonKv({ data, keys }: { data: Record<string, unknown> | null; keys: [string, string][] }) {
-  if (!data) return <p className="text-[13px] text-[#9CA3AF]">데이터 없음</p>
-  return (
-    <div>
-      {keys.map(([k, label]) => {
-        const v = data[k]
-        if (v == null) return null
-        const isNum = typeof v === 'number'
-        const isPct = typeof k === 'string' && (k.includes('pct') || k.includes('rate') || k.includes('ratio') || k.includes('roe') || k.includes('roa') || k.includes('growth'))
-        return (
-          <KvRow
-            key={k}
-            label={label}
-            value={isPct ? fmtPct(v) : isNum ? fmtNum(v) : String(v)}
-            color={isPct ? pctColor(v) : undefined}
-          />
-        )
-      })}
-    </div>
-  )
-}
-
 /* ── 전체 렌더 (JSONB 필드 자동 탐색) ── */
 function AutoSection({ data }: { data: Record<string, unknown> | null }) {
   if (!data) return <p className="text-[13px] text-[#9CA3AF]">데이터 없음</p>

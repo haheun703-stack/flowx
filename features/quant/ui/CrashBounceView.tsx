@@ -9,7 +9,6 @@ import {
   GRADE_LEGACY_BUY,
   GRADE_LEGACY_WATCH_BUY,
   GRADE_ALIAS as SHARED_GRADE_ALIAS,
-  type GradeNew,
 } from '@/shared/constants/grades'
 
 /* ── 타입 ── */
