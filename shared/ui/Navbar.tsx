@@ -37,10 +37,11 @@ const NAV_TABS = [
   {
     label: '인텔리전스',
     href: '/information',
-    match: (p: string) => p.startsWith('/information') || p.startsWith('/scenario'),
+    match: (p: string) => p.startsWith('/information') || p.startsWith('/scenario') || p.startsWith('/mega-theme'),
     sub: [
       { label: '인포메이션', href: '/information' },
       { label: '시나리오', href: '/scenario' },
+      { label: '메가테마', href: '/mega-theme' },
     ],
   },
   {
