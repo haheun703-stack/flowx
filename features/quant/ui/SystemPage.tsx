@@ -44,6 +44,34 @@ interface NuggetItem {
   holding_days: number; momentum_regime: string
 }
 
+/* ── NXT / Bottom / ETF Types ── */
+interface NxtPick {
+  date: string; ticker: string; name: string; close: number
+  ret_d0: number; vol_ratio: number; ma20_dev: number; rsi: number
+  tv: number; foreign_net: number; inst_net: number
+  foreign_streak: number; inst_streak: number; dual_streak: number
+  foreign_cum: number; inst_cum: number
+  accum_score: number; final_score: number
+}
+
+interface BottomPick {
+  date: string; ticker: string; name: string; close: number
+  ret_d0: number; fib_zone: string; drop_pct: number
+  vol_ratio: number; tv: number; rsi: number
+  foreign_turn: boolean; inst_turn: boolean
+  supply_score: number; final_score: number
+  nxt_tradable: boolean
+}
+
+interface EtfItem { ticker: string; name: string; desc?: string }
+
+interface EtfStrategy {
+  date: string; regime: string; shield: string; direction: string
+  vix: number; fear_index: number; contrarian: boolean
+  bull_etfs: EtfItem[] | null; bear_etfs: EtfItem[] | null; safe_etfs: EtfItem[] | null
+  message: string | null
+}
+
 /* ── Constants ── */
 const TABS = [
   { key: 'quant', label: '퀀트시스템' },
@@ -98,6 +126,9 @@ export default function SystemPage() {
   const [bluechip, setBluechip] = useState<BluechipCheckupData | null>(null)
   const [jarvis, setJarvis] = useState<JarvisData | null>(null)
   const [nuggets, setNuggets] = useState<NuggetItem[]>([])
+  const [nxtPicks, setNxtPicks] = useState<NxtPick[]>([])
+  const [bottomPicks, setBottomPicks] = useState<BottomPick[]>([])
+  const [etfStrategy, setEtfStrategy] = useState<EtfStrategy | null>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<TabKey>('quant')
   const [openAcc, setOpenAcc] = useState<string | null>(null)
@@ -116,6 +147,9 @@ export default function SystemPage() {
           fetch('/api/quant/bluechip-checkup', { signal: sig }),
           fetch('/api/quant-jarvis', { signal: sig }),
           fetch('/api/intelligence/value-hunter', { signal: sig }),
+          fetch('/api/quant/nxt-picks', { signal: sig }),
+          fetch('/api/quant/bottom-picks', { signal: sig }),
+          fetch('/api/quant/etf-strategy', { signal: sig }),
         ])
         if (r[0].status === 'fulfilled' && r[0].value.ok) {
           const j = await r[0].value.json(); setData(j.data ?? null)
@@ -131,6 +165,15 @@ export default function SystemPage() {
         }
         if (r[4].status === 'fulfilled' && r[4].value.ok) {
           const j = await r[4].value.json(); setNuggets(j.items ?? [])
+        }
+        if (r[5].status === 'fulfilled' && r[5].value.ok) {
+          const j = await r[5].value.json(); setNxtPicks(j.items ?? [])
+        }
+        if (r[6].status === 'fulfilled' && r[6].value.ok) {
+          const j = await r[6].value.json(); setBottomPicks(j.items ?? [])
+        }
+        if (r[7].status === 'fulfilled' && r[7].value.ok) {
+          const j = await r[7].value.json(); setEtfStrategy(j.data ?? null)
         }
       } catch { /* abort */ }
       setLoading(false)
@@ -287,62 +330,178 @@ export default function SystemPage() {
 
           {/* ══════ ZONE B: 30초 분석 ══════ */}
 
-          {/* 파워스코어 TOP 5 */}
-          {top5.length > 0 && (
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4">
-              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">파워스코어 TOP 5</h3>
-              <div className="space-y-2">
-                {top5.map((p, i) => {
-                  const entry = p.entry_info?.entry ?? p.entry_price ?? 0
-                  const stop = p.entry_info?.stop ?? p.stop_loss ?? 0
-                  const target = p.entry_info?.target ?? p.target_price ?? 0
-                  return (
+          {/* Box 1: NXT 주목 종목 */}
+          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+            style={{ borderLeft: '3px solid #FFD700' }}>
+            <div className="px-5 py-4">
+              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">NXT 주목 종목</h3>
+              <p className="text-[10px] text-[#6B7280] mb-3">수급 릴레이가 시작된 종목 — 야간+장중 통합 거래 가능</p>
+              {nxtPicks.length > 0 ? (
+                <div className="space-y-2">
+                  {nxtPicks.map((p, i) => (
                     <div key={p.ticker} className="border border-[#F0EDE8] rounded-lg p-3">
                       <div className="flex items-center gap-2 flex-wrap mb-1.5">
                         <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                           style={{ backgroundColor: RANK_COLOR[i] ?? '#6B7280' }}>{i + 1}</span>
                         <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
-                        <span className="text-[14px] font-bold tabular-nums" style={{ color: '#7C3AED' }}>{p.total_score}점</span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${GRADE_BADGE_CLASS[p.grade] ?? 'bg-gray-200 text-gray-600'}`}>{p.grade}</span>
+                        <span className="text-[14px] font-bold tabular-nums" style={{ color: '#B8860B' }}>{p.final_score.toFixed(0)}점</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ backgroundColor: 'rgba(74,144,217,0.15)', color: '#4A90D9' }}>통합</span>
+                        <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원</span>
                       </div>
-                      {i < 3 ? (
-                        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
-                          {entry > 0 && <div><span className="text-[#9CA3AF]">진입</span> <span className="font-bold text-[#1A1A2E] tabular-nums">{fmtP(entry)}</span></div>}
-                          {target > 0 && <div><span className="text-[#9CA3AF]">목표</span> <span className="font-bold text-[#16A34A] tabular-nums">{fmtP(target)}</span></div>}
-                          {stop > 0 && <div><span className="text-[#9CA3AF]">손절</span> <span className="font-bold text-[#DC2626] tabular-nums">{fmtP(stop)}</span></div>}
-                          <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
-                          <div><span className="text-[#9CA3AF]">외인5일</span> <span className={`font-bold tabular-nums ${(p.foreign_5d ?? 0) > 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>{(p.foreign_5d ?? 0) > 0 ? '+' : ''}{(p.foreign_5d ?? 0).toFixed(0)}</span></div>
-                          <div><span className="text-[#9CA3AF]">기관5일</span> <span className={`font-bold tabular-nums ${(p.inst_5d ?? 0) > 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>{(p.inst_5d ?? 0) > 0 ? '+' : ''}{(p.inst_5d ?? 0).toFixed(0)}</span></div>
-                        </div>
-                      ) : (
-                        <div className="text-[11px] text-[#6B7280]">{p.reasons.slice(0, 2).join(' + ')}</div>
-                      )}
+                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
+                        <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
+                        <div><span className="text-[#9CA3AF]">거래량</span> <span className="font-bold tabular-nums">{(p.vol_ratio ?? 0).toFixed(1)}x</span></div>
+                        <div><span className="text-[#9CA3AF]">MA20</span> <span className={`font-bold tabular-nums ${(p.ma20_dev ?? 0) >= 0 ? 'text-[#DC2626]' : 'text-[#2563EB]'}`}>{(p.ma20_dev ?? 0) >= 0 ? '+' : ''}{(p.ma20_dev ?? 0).toFixed(1)}%</span></div>
+                        <div><span className="text-[#9CA3AF]">외인</span> <span className={`font-bold tabular-nums ${(p.foreign_streak ?? 0) > 0 ? 'text-[#2563EB]' : 'text-[#9CA3AF]'}`}>{p.foreign_streak ?? 0}일</span></div>
+                        <div><span className="text-[#9CA3AF]">기관</span> <span className={`font-bold tabular-nums ${(p.inst_streak ?? 0) > 0 ? 'text-[#EA580C]' : 'text-[#9CA3AF]'}`}>{p.inst_streak ?? 0}일</span></div>
+                        {(p.dual_streak ?? 0) > 0 && <div><span className="text-[#9CA3AF]">쌍끌이</span> <span className="font-bold tabular-nums text-[#7C3AED]">{p.dual_streak}일</span></div>}
+                      </div>
                     </div>
-                  )
-                })}
-              </div>
-              {restPicks.length > 0 && (
-                <>
-                  <button onClick={() => setShowAllPicks(!showAllPicks)}
-                    className="w-full mt-3 py-2 text-[12px] font-bold text-[#7C3AED] hover:bg-[#F5F4F0] rounded-lg transition-colors">
-                    {showAllPicks ? '접기 ▲' : `전체 ${sorted.length}종목 보기 ▼`}
-                  </button>
-                  {showAllPicks && (
-                    <div className="space-y-1.5 mt-2">
-                      {restPicks.map((p, i) => (
-                        <div key={p.ticker} className="flex items-center gap-2 px-3 py-1.5 text-[12px] border-b border-[#F5F4F0]">
-                          <span className="text-[#9CA3AF] w-5 tabular-nums">{i + 6}</span>
-                          <span className="font-bold text-[#1A1A2E]">{p.name}</span>
-                          <span className="font-bold tabular-nums" style={{ color: '#7C3AED' }}>{p.total_score}</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${GRADE_BADGE_CLASS[p.grade] ?? 'bg-gray-200 text-gray-600'}`}>{p.grade}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[13px] text-[#9CA3AF] py-6 text-center">주목 종목 없음 — 쉬는 것도 전략입니다</p>
               )}
             </div>
-          )}
+          </div>
+
+          {/* Box 2: 바닥에서 고개 든 종목 */}
+          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+            style={{ borderLeft: '3px solid #4CAF50' }}>
+            <div className="px-5 py-4">
+              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">바닥에서 고개 든 종목</h3>
+              <p className="text-[10px] text-[#6B7280] mb-3">피보나치 바닥권 + 수급 양전환 종목</p>
+              {bottomPicks.length > 0 ? (
+                <div className="space-y-2">
+                  {bottomPicks.map((p, i) => {
+                    const zoneCfg: Record<string, { bg: string; text: string }> = {
+                      DEEP: { bg: '#DC2626', text: '#fff' },
+                      BOTTOM: { bg: '#EA580C', text: '#fff' },
+                      LOW: { bg: '#F59E0B', text: '#fff' },
+                      MID: { bg: '#3B82F6', text: '#fff' },
+                      HIGH: { bg: '#9CA3AF', text: '#fff' },
+                    }
+                    const zc = zoneCfg[p.fib_zone] ?? zoneCfg.MID
+                    return (
+                      <div key={p.ticker} className="border border-[#F0EDE8] rounded-lg p-3">
+                        <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                            style={{ backgroundColor: RANK_COLOR[i] ?? '#6B7280' }}>{i + 1}</span>
+                          <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
+                          <span className="text-[14px] font-bold tabular-nums" style={{ color: '#4CAF50' }}>{p.final_score.toFixed(0)}점</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ backgroundColor: zc.bg, color: zc.text }}>{p.fib_zone}</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded"
+                            style={{ backgroundColor: p.nxt_tradable ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: p.nxt_tradable ? '#4A90D9' : '#888' }}>
+                            {p.nxt_tradable ? '통합' : 'KRX'}
+                          </span>
+                          <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원</span>
+                        </div>
+                        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
+                          <div><span className="text-[#9CA3AF]">하락률</span> <span className="font-bold tabular-nums text-[#2563EB]">{(p.drop_pct ?? 0).toFixed(1)}%</span></div>
+                          <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
+                          <div><span className="text-[#9CA3AF]">거래량</span> <span className="font-bold tabular-nums">{(p.vol_ratio ?? 0).toFixed(1)}x</span></div>
+                          <div><span className="text-[#9CA3AF]">수급</span> <span className="font-bold tabular-nums" style={{ color: '#4CAF50' }}>{p.supply_score.toFixed(0)}</span></div>
+                          {p.foreign_turn && <div><span className="text-[10px] font-bold text-[#2563EB]">외인 양전환</span></div>}
+                          {p.inst_turn && <div><span className="text-[10px] font-bold text-[#EA580C]">기관 양전환</span></div>}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text-[13px] text-[#9CA3AF] py-6 text-center">바닥 반등 종목 없음</p>
+              )}
+            </div>
+          </div>
+
+          {/* Box 3: 내일의 ETF 전략 */}
+          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+            style={{ borderLeft: '3px solid #2196F3' }}>
+            <div className="px-5 py-4">
+              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">내일의 ETF 전략</h3>
+              <p className="text-[10px] text-[#6B7280] mb-3">Brain + Shield 기반 방향성 전략</p>
+              {etfStrategy ? (() => {
+                const dir = etfStrategy.direction ?? 'NEUTRAL'
+                const showBull = dir === 'BULL' || dir === 'NEUTRAL'
+                const showBear = dir === 'BEAR' || dir === 'NEUTRAL'
+                const shieldColor: Record<string, string> = { GREEN: '#16A34A', YELLOW: '#F59E0B', RED: '#DC2626' }
+                return (
+                  <>
+                    {/* 상태 배지 */}
+                    <div className="flex items-center gap-2 flex-wrap mb-3">
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded"
+                        style={{ backgroundColor: dir === 'BULL' ? 'rgba(22,163,74,0.15)' : dir === 'BEAR' ? 'rgba(220,38,38,0.15)' : 'rgba(107,114,128,0.15)',
+                          color: dir === 'BULL' ? '#16A34A' : dir === 'BEAR' ? '#DC2626' : '#6B7280' }}>
+                        {dir === 'BULL' ? '상승 방향' : dir === 'BEAR' ? '하락 방향' : '중립'}
+                      </span>
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded"
+                        style={{ backgroundColor: `${shieldColor[etfStrategy.shield] ?? '#6B7280'}22`, color: shieldColor[etfStrategy.shield] ?? '#6B7280' }}>
+                        Shield {etfStrategy.shield}
+                      </span>
+                      {etfStrategy.regime && (
+                        <span className="text-[11px] font-bold px-2.5 py-1 rounded bg-gray-100 text-[#6B7280]">{etfStrategy.regime}</span>
+                      )}
+                      {etfStrategy.contrarian && (
+                        <span className="text-[11px] font-bold px-2.5 py-1 rounded" style={{ backgroundColor: 'rgba(255,87,34,0.15)', color: '#FF5722' }}>역발상</span>
+                      )}
+                      {etfStrategy.vix > 0 && <span className="text-[11px] text-[#9CA3AF]">VIX {etfStrategy.vix.toFixed(1)}</span>}
+                    </div>
+
+                    {/* ETF 리스트 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {showBull && (etfStrategy.bull_etfs ?? []).length > 0 && (
+                        <div>
+                          <p className="text-[11px] font-bold text-[#16A34A] mb-1.5">오를 때 ETF</p>
+                          <div className="space-y-1">
+                            {(etfStrategy.bull_etfs ?? []).map((e) => (
+                              <div key={e.ticker} className={`flex items-center gap-2 text-[12px] px-2 py-1.5 rounded ${dir === 'BULL' ? 'bg-green-50' : ''}`}>
+                                <span className="font-bold text-[#1A1A2E] truncate">{e.name}</span>
+                                {e.desc && <span className="text-[10px] text-[#9CA3AF] shrink-0">{e.desc}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {showBear && (etfStrategy.bear_etfs ?? []).length > 0 && (
+                        <div>
+                          <p className="text-[11px] font-bold text-[#DC2626] mb-1.5">내릴 때 ETF</p>
+                          <div className="space-y-1">
+                            {(etfStrategy.bear_etfs ?? []).map((e) => (
+                              <div key={e.ticker} className={`flex items-center gap-2 text-[12px] px-2 py-1.5 rounded ${dir === 'BEAR' ? 'bg-red-50' : ''}`}>
+                                <span className="font-bold text-[#1A1A2E] truncate">{e.name}</span>
+                                {e.desc && <span className="text-[10px] text-[#9CA3AF] shrink-0">{e.desc}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 안전자산 (중립일 때) */}
+                    {dir === 'NEUTRAL' && (etfStrategy.safe_etfs ?? []).length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-[11px] font-bold text-[#F59E0B] mb-1.5">안전자산 ETF</p>
+                        <div className="flex flex-wrap gap-2">
+                          {(etfStrategy.safe_etfs ?? []).map((e) => (
+                            <span key={e.ticker} className="text-[11px] font-bold px-2.5 py-1 rounded bg-amber-50 text-[#92400E]">{e.name}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 메시지 */}
+                    {etfStrategy.message && (
+                      <div className="mt-4 pt-3 border-t border-[#F5F4F0]">
+                        <p className="text-[14px] font-bold text-[#1A1A2E] leading-relaxed">{etfStrategy.message}</p>
+                      </div>
+                    )}
+                  </>
+                )
+              })() : (
+                <p className="text-[13px] text-[#9CA3AF] py-6 text-center">ETF 전략 데이터 준비 중</p>
+              )}
+            </div>
+          </div>
 
           {/* 왜 사야 하나? — 근거 모음 (2x2) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -481,9 +640,6 @@ export default function SystemPage() {
               {ranking ? <MarketRankingPanel data={ranking} /> : <p className="text-[13px] text-[#9CA3AF] p-4">시장 순위 데이터 없음</p>}
             </Accordion>
 
-            <Accordion id="crashbounce" title="바닥잡이 레이더 — 52주 신저가 근접" open={openAcc === 'crashbounce'} onToggle={toggleAcc}>
-              <div className="text-center py-8 text-[#9CA3AF] text-[12px]">COMING SOON</div>
-            </Accordion>
           </div>
         </div>
       )}
