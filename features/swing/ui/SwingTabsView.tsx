@@ -8,10 +8,9 @@ import CycleScanView from "./CycleScanView"
 import StealthScannerView from "./StealthScannerView"
 
 const TABS = [
-  { key: "dashboard", label: "대시보드" },
-  { key: "cycle", label: "사이클 감지기" },
-  { key: "daytrading", label: "단타 TOP픽" },
-  { key: "stealth", label: "선매집 탐지" },
+  { key: "dashboard", label: "시장 판단 & 전략" },
+  { key: "daytrading", label: "매매 포인트" },
+  { key: "cycle", label: "수급 추적" },
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
@@ -42,14 +41,27 @@ export function SwingTabsView() {
 
       {/* 탭 콘텐츠 */}
       {tab === "dashboard" && <SwingDashboardView />}
-      {tab === "cycle" && <CycleScanView />}
       {tab === "daytrading" && (
         <>
           <DaytradingPicksPanel />
           <DaytradingPerformancePanel />
         </>
       )}
-      {tab === "stealth" && <StealthScannerView />}
+      {tab === "cycle" && (
+        <>
+          <CycleScanView />
+          <div className="max-w-[1400px] mx-auto px-3 md:px-6 mt-10 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] whitespace-nowrap">
+                선매집 포착 — 아직 터지지 않은 조용한 매집
+              </h2>
+              <div className="h-px flex-1 bg-[#E8E6E0]" />
+            </div>
+          </div>
+          <StealthScannerView />
+        </>
+      )}
     </div>
   )
 }
