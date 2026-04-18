@@ -9,7 +9,7 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('intelligence_swing_system')
-      .select('date,action_guide,regime,brain_raw_pct,brain_capped_pct,regime_cap_reason')
+      .select('date,action_guide,regime')
       .order('date', { ascending: false })
       .limit(1)
       .maybeSingle()

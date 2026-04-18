@@ -84,6 +84,10 @@ interface SwingData {
   smart_money_score: number; smart_money_signal: string
   stress_index: number; stress_level: string
   rotation_signal: string; liquidity_score: number; market_comment: string
+  /* BRAIN 게이지 (dashboard_swing 컬럼) */
+  brain_raw_pct?: number | null
+  brain_capped_pct?: number | null
+  regime_cap_reason?: string | null
 }
 
 /* ── BRAIN 히어로 색상 (스펙 §1) ── */
@@ -170,9 +174,6 @@ interface SwingSystemData {
   date: string
   action_guide: ActionGuideItem[] | null
   regime: string | null
-  brain_raw_pct: number | null
-  brain_capped_pct: number | null
-  regime_cap_reason: string | null
 }
 
 /* ── 매매 타임라인 태그→색상 ── */
@@ -471,31 +472,31 @@ export default function SwingDashboardView() {
           </div>
         </div>
         {/* BRAIN 원점수 vs 매크로캡 게이지 */}
-        {swingSystem && swingSystem.brain_raw_pct != null && swingSystem.brain_capped_pct != null && swingSystem.brain_raw_pct !== swingSystem.brain_capped_pct && (
+        {data.brain_raw_pct != null && data.brain_capped_pct != null && data.brain_raw_pct !== data.brain_capped_pct && (
           <div className="flex items-center gap-3 mt-3 mb-1">
             <div className="flex-1">
               <div className="flex items-center justify-between text-[11px] mb-1">
                 <span className="text-[#6B7280]">BRAIN 원점수</span>
-                <span className="font-bold text-[#1A1A2E]">{swingSystem.brain_raw_pct}%</span>
+                <span className="font-bold text-[#1A1A2E]">{data.brain_raw_pct}%</span>
               </div>
               <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
-                <div className="h-full rounded-full" style={{ width: `${swingSystem.brain_raw_pct}%`, backgroundColor: '#3B82F6' }} />
+                <div className="h-full rounded-full" style={{ width: `${data.brain_raw_pct}%`, backgroundColor: '#3B82F6' }} />
               </div>
             </div>
             <span className="text-[16px] text-[#9CA3AF]">→</span>
             <div className="flex-1">
               <div className="flex items-center justify-between text-[11px] mb-1">
                 <span className="text-[#6B7280]">매크로 캡 적용</span>
-                <span className="font-bold" style={{ color: hero.text }}>{swingSystem.brain_capped_pct}%</span>
+                <span className="font-bold" style={{ color: hero.text }}>{data.brain_capped_pct}%</span>
               </div>
               <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
-                <div className="h-full rounded-full" style={{ width: `${swingSystem.brain_capped_pct}%`, backgroundColor: hero.text }} />
+                <div className="h-full rounded-full" style={{ width: `${data.brain_capped_pct}%`, backgroundColor: hero.text }} />
               </div>
             </div>
           </div>
         )}
-        {swingSystem?.regime_cap_reason && (
-          <p className="text-[12px] text-[#9CA3AF] mt-1">{swingSystem.regime_cap_reason}</p>
+        {data.regime_cap_reason && (
+          <p className="text-[12px] text-[#9CA3AF] mt-1">{data.regime_cap_reason}</p>
         )}
         {data.brain_reason && (
           <p className="text-[15px] font-medium mt-2" style={{ color: hero.text }}>{data.brain_reason}</p>
