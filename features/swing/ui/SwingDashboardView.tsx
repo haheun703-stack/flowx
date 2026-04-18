@@ -120,39 +120,6 @@ function gradeBadgeStyle(grade: string) {
   return { bg: '#F3F4F6', text: '#6B7280' }
 }
 
-/* ── 분석 키 포맷 ── */
-function formatAnalysisKey(key: string): string {
-  const map: Record<string, string> = {
-    macro_summary: '매크로 요약', commodity_summary: '원자재 요약',
-    sector_summary: '섹터 요약', flow_summary: '수급 요약',
-    risk_summary: '리스크 요약', 시장상태: '시장 상태', 시장요약: '시장 요약',
-    경고: '경고', 전략요약: '전략 요약', 나이트워치: '나이트워치', 매매안내: '매매 안내',
-  }
-  return map[key] ?? key
-}
-
-/* ── 분석 카드 분류 (4칸 + 나이트워치) ── */
-function toStr(v: unknown): string {
-  if (typeof v === 'string') return v
-  if (v == null) return ''
-  return JSON.stringify(v)
-}
-
-function classifyAnalysis(analysis: Record<string, unknown>) {
-  const warning = toStr(analysis['경고'] ?? analysis['risk_summary'])
-  const strategy = toStr(analysis['전략요약'] ?? analysis['매매안내'])
-  const sector = toStr(analysis['sector_summary'] ?? analysis['섹터 요약'])
-  const commodity = toStr(analysis['commodity_summary'] ?? analysis['원자재 요약'])
-  const nightwatch = toStr(analysis['나이트워치'])
-  const rest: Record<string, string> = {}
-  for (const [k, v] of Object.entries(analysis)) {
-    if (!['경고', 'risk_summary', '전략요약', '매매안내', 'sector_summary', '섹터 요약', 'commodity_summary', '원자재 요약', '나이트워치'].includes(k)) {
-      rest[k] = toStr(v)
-    }
-  }
-  return { warning, strategy, sector, commodity, nightwatch, rest }
-}
-
 /* ── 수급 강도 타입 ── */
 interface FlowStock {
   rank: number; code: string; name: string; market_type: string
@@ -340,7 +307,7 @@ export default function SwingDashboardView() {
   const [data, setData] = useState<SwingData | null>(null)
   const [loading, setLoading] = useState(true)
   const [expandedStock, setExpandedStock] = useState<string | null>(null)
-  const [brainExpanded, setBrainExpanded] = useState(false)
+  const [flowExpanded, setFlowExpanded] = useState(false)
   const [nxtPickData, setNxtPickData] = useState<NxtPickData | null>(null)
   const [flowData, setFlowData] = useState<FlowIntensityData | null>(null)
   const [swingSystem, setSwingSystem] = useState<SwingSystemData | null>(null)
@@ -399,57 +366,10 @@ export default function SwingDashboardView() {
   const hero = getVerdictHero(data.brain_verdict)
   const hasCategory = data.picks?.some(p => p.category)
   const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
-  const analysisCards = data.analysis ? classifyAnalysis(data.analysis) : null
-
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4 md:space-y-8">
 
-      {/* ═══ 0행: 달러-환율 모니터 (최상단) ═══ */}
-      {data.fx_monitor && data.fx_monitor.dxy && (
-        <FxMonitorSection fx={data.fx_monitor} />
-      )}
-
-      {/* ═══ 0.5행: 수급 인텔리전스 ═══ */}
-      {flowData && flowData.top_stocks?.length > 0 && (
-        <section className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
-          style={{ borderLeft: '3px solid #7C3AED' }}>
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">수급 인텔리전스</h2>
-                <p className="text-[10px] text-[#6B7280]">시총 대비 외인+기관 유입 강도 랭킹</p>
-              </div>
-              <div className="flex items-center gap-3 text-[11px]">
-                <span className="text-[#6B7280]">전체 <span className="font-bold text-[#1A1A2E]">{flowData.top_stocks.length}</span>종목</span>
-                <span className="text-[#2563EB]">쌍매수 <span className="font-bold">{flowData.dual_buy_count ?? 0}</span>건</span>
-                {(flowData.overheat_count ?? 0) > 0 && (
-                  <span className="text-[#DC2626]">과열 <span className="font-bold">{flowData.overheat_count}</span>건</span>
-                )}
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              {flowData.top_stocks.map((s) => (
-                <div key={s.code} className="flex items-center gap-2 py-2 px-3 rounded-lg border border-[#F0EDE8] text-[12px]">
-                  <span className="w-6 text-[11px] font-bold text-[#9CA3AF] tabular-nums shrink-0">{s.rank}</span>
-                  <span className="font-bold text-[#1A1A2E] truncate min-w-0 flex-1">{s.name}</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
-                    style={{ backgroundColor: s.market_type === 'NXT' ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: s.market_type === 'NXT' ? '#4A90D9' : '#888' }}>
-                    {s.market_type === 'NXT' ? 'NXT' : 'KRX전용'}
-                  </span>
-                  <span className="font-bold tabular-nums shrink-0" style={{ color: '#7C3AED' }}>{s.intensity_pct.toFixed(1)}%</span>
-                  <span className={`tabular-nums shrink-0 ${s.foreign_3d_억 >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>외{s.foreign_3d_억 >= 0 ? '+' : ''}{s.foreign_3d_억.toFixed(0)}억</span>
-                  <span className={`tabular-nums shrink-0 ${s.inst_3d_억 >= 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>기{s.inst_3d_억 >= 0 ? '+' : ''}{s.inst_3d_억.toFixed(0)}억</span>
-                  <span className="text-[#9CA3AF] tabular-nums shrink-0">시총{s.cap_억.toLocaleString()}억</span>
-                  {s.dual_buy && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] shrink-0">쌍매수</span>}
-                  {s.is_overheated && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#DC2626] shrink-0">과열주의</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ═══ 1행: BRAIN AI 오늘의 결론 — 히어로 ═══ */}
+      {/* ═══ 1. BRAIN AI 오늘의 결론 ═══ */}
       <section
         className="rounded-xl p-5"
         style={{ backgroundColor: hero.bg, border: `1px solid ${hero.border}` }}
@@ -506,7 +426,341 @@ export default function SwingDashboardView() {
         )}
       </section>
 
-      {/* ═══ 2행: 주목 종목 카드 (접힌/펼침) ═══ */}
+      {/* ═══ 2. 수급 인텔리전스 ═══ */}
+      {flowData && flowData.top_stocks?.length > 0 && (
+        <section className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+          style={{ borderLeft: '3px solid #7C3AED' }}>
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">수급 인텔리전스</h2>
+                <p className="text-[10px] text-[#6B7280]">시총 대비 외인+기관 유입 강도 랭킹</p>
+              </div>
+              <div className="flex items-center gap-3 text-[11px]">
+                <span className="text-[#6B7280]">전체 <span className="font-bold text-[#1A1A2E]">{flowData.top_stocks.length}</span>종목</span>
+                <span className="text-[#2563EB]">쌍매수 <span className="font-bold">{flowData.dual_buy_count ?? 0}</span>건</span>
+                {(flowData.overheat_count ?? 0) > 0 && (
+                  <span className="text-[#DC2626]">과열 <span className="font-bold">{flowData.overheat_count}</span>건</span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              {(flowExpanded ? flowData.top_stocks : flowData.top_stocks.slice(0, 5)).map((s) => (
+                <div key={s.code} className="flex items-center gap-2 py-2 px-3 rounded-lg border border-[#F0EDE8] text-[12px]">
+                  <span className="w-6 text-[11px] font-bold text-[#9CA3AF] tabular-nums shrink-0">{s.rank}</span>
+                  <span className="font-bold text-[#1A1A2E] truncate min-w-0 flex-1">{s.name}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
+                    style={{ backgroundColor: s.market_type === 'NXT' ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: s.market_type === 'NXT' ? '#4A90D9' : '#888' }}>
+                    {s.market_type === 'NXT' ? 'NXT' : 'KRX전용'}
+                  </span>
+                  <span className="font-bold tabular-nums shrink-0" style={{ color: '#7C3AED' }}>{s.intensity_pct.toFixed(1)}%</span>
+                  <span className={`tabular-nums shrink-0 ${s.foreign_3d_억 >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>외{s.foreign_3d_억 >= 0 ? '+' : ''}{s.foreign_3d_억.toFixed(0)}억</span>
+                  <span className={`tabular-nums shrink-0 ${s.inst_3d_억 >= 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>기{s.inst_3d_억 >= 0 ? '+' : ''}{s.inst_3d_억.toFixed(0)}억</span>
+                  <span className="text-[#9CA3AF] tabular-nums shrink-0">시총{s.cap_억.toLocaleString()}억</span>
+                  {s.dual_buy && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] shrink-0">쌍매수</span>}
+                  {s.is_overheated && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#DC2626] shrink-0">과열주의</span>}
+                </div>
+              ))}
+              {flowData.top_stocks.length > 5 && (
+                <button
+                  onClick={() => setFlowExpanded(!flowExpanded)}
+                  className="w-full text-center py-2 text-[12px] font-bold text-[#7C3AED] hover:bg-[#F5F4F0] rounded-lg transition-colors"
+                >
+                  {flowExpanded ? '접기 ▲' : `더 보기 (${flowData.top_stocks.length - 5}종목) ▼`}
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ 3. NXT 야간매수 ═══ */}
+      {nxtPickData && (() => {
+        const nxtScore = nxtPickData.nxt_score ?? 0
+        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
+        const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
+        const picks = nxtPickData.picks ?? []
+        const sectors = nxtPickData.sectors ?? []
+        return (
+          <section className="bg-white rounded-2xl border border-[#E8E6E0] p-4 md:p-5 space-y-3 md:space-y-4">
+            {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">🌙 NXT 야간매수 TOP 5</h2>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
+                {nxtPickData.signal ?? scLabel}
+              </span>
+              <span className="text-sm text-[#6B7280]">{nxtPickData.date}</span>
+            </div>
+
+            {/* NXT Score 바 */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold text-[#1A1A2E]">NXT 점수</span>
+              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden relative">
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 z-10" />
+                <div
+                  className="h-full rounded-full absolute top-0"
+                  style={{
+                    backgroundColor: nxtScore >= 0 ? '#16A34A' : '#DC2626',
+                    left: nxtScore >= 0 ? '50%' : `${50 + (nxtScore / 10) * 50}%`,
+                    width: `${Math.abs(nxtScore / 10) * 50}%`,
+                  }}
+                />
+              </div>
+              <span className={`text-lg font-bold tabular-nums ${nxtScore >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {nxtScore > 0 ? '+' : ''}{nxtScore.toFixed(1)}
+              </span>
+            </div>
+
+            {/* 추천 섹터 */}
+            {sectors.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-[#6B7280]">추천 섹터</span>
+                {sectors.map((s, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F0F0FF] text-[#4C1D95]">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* TOP 5 카드 */}
+            {picks.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                {picks.map((p) => {
+                  const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
+                  const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
+                  return (
+                    <div key={p.code} className="rounded-lg p-3 text-center bg-[#FAFAF8] border border-[var(--border)]">
+                      <span className="text-xl">{medal}</span>
+                      <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
+                      <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
+                      <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
+                        수급 {p.supply_score}점
+                      </span>
+                      <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
+                      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+        )
+      })()}
+
+      {/* ═══ 4. 매매 타임라인 ═══ */}
+      <section>
+        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">오늘의 매매 타임라인</h2>
+        <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+          <div className="relative pl-7">
+            {/* 세로 선 */}
+            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E8E6E0]" />
+            <div className="space-y-4">
+              {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
+                ? swingSystem.action_guide.map((g) => ({
+                    time: g.time, action: g.action, desc: g.desc,
+                    badge: g.tag, color: TAG_COLOR[g.tag] ?? '#6B7280',
+                  }))
+                : TIMELINE_FALLBACK
+              ).map((t, i) => (
+                <div key={i} className="relative">
+                  {/* 컬러 점 */}
+                  <div
+                    className="absolute -left-[22px] top-[2px] w-[14px] h-[14px] rounded-full border-2 border-white"
+                    style={{ backgroundColor: t.color }}
+                  />
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[15px] font-bold" style={{ color: t.color }}>{t.time}</span>
+                      <p className="text-[13px] font-bold text-[#1A1A2E]">{t.action}</p>
+                      <p className="text-[12px] text-[#6B7280]">{t.desc}</p>
+                    </div>
+                    {t.badge && (
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
+                        {t.badge}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 5. 시장 지표 & 자산 배분 ═══ */}
+      <section>
+        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">시장 지표 & 자산 배분</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 좌: 시장 지표 */}
+          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <MetricCard label="VIX" value={(data.vix ?? 0).toFixed(1)} bg={(data.vix ?? 0) >= 25 ? '#FEF2F2' : (data.vix ?? 0) >= 18 ? '#FFFBEB' : '#DBEAFE'} color={(data.vix ?? 0) >= 25 ? '#DC2626' : (data.vix ?? 0) >= 18 ? '#D97706' : '#2563EB'} />
+              <MetricCard label="NASDAQ" value={`${(data.nasdaq_pct ?? 0) >= 0 ? '+' : ''}${(data.nasdaq_pct ?? 0).toFixed(2)}%`} color={(data.nasdaq_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="USD/KRW" value={(data.usdkrw ?? 0).toFixed(0)} color="#1A1A2E" />
+              <MetricCard label="유가" value={`${(data.oil_pct ?? 0) >= 0 ? '+' : ''}${(data.oil_pct ?? 0).toFixed(2)}%`} color={(data.oil_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="금" value={`${(data.gold_pct ?? 0) >= 0 ? '+' : ''}${(data.gold_pct ?? 0).toFixed(2)}%`} color={(data.gold_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
+              <MetricCard label="스트레스" value={(data.stress_index ?? 0).toFixed(1)} bg={data.stress_level === 'HIGH' ? '#FEF2F2' : '#F5F4F0'} color={data.stress_level === 'HIGH' ? '#DC2626' : data.stress_level === 'ELEVATED' ? '#D97706' : '#059669'} />
+            </div>
+            {/* 위험 경고 */}
+            {data.stress_level === 'HIGH' && (
+              <div className="mt-3 rounded-r-md text-[12px] px-3 py-2" style={{ backgroundColor: '#FEF2F2', borderLeft: '3px solid #EF4444', color: '#DC2626' }}>
+                위험 신호: 스트레스 {data.stress_level} ({(data.stress_index ?? 0).toFixed(1)})
+              </div>
+            )}
+          </div>
+
+          {/* 우: 자산 배분 */}
+          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">자산 배분</h3>
+            {data.alloc_cash >= 100 ? (
+              <div className="bg-[#DBEAFE] rounded-xl p-6 text-center">
+                <p className="text-[16px] font-bold text-[#1D4ED8] mb-1">현금 100%</p>
+                <p className="text-[13px] text-[#3B82F6]">지금은 쉬세요. 시장이 안전해지면 자동 배분 변경</p>
+              </div>
+            ) : (
+              <>
+                {/* 가로 바 */}
+                <div className="flex h-5 rounded-full overflow-hidden mb-3">
+                  {[
+                    { label: '스윙', pct: data.alloc_swing, color: '#DC2626' },
+                    { label: '금ETF', pct: data.alloc_gold_etf, color: '#D97706' },
+                    { label: '인버스', pct: data.alloc_inverse, color: '#3B82F6' },
+                    { label: '그룹', pct: data.alloc_group_etf, color: '#059669' },
+                    { label: '소형', pct: data.alloc_small_cap, color: '#7C3AED' },
+                    { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
+                  ].filter(a => a.pct > 0).map((a) => (
+                    <div
+                      key={a.label}
+                      className="flex items-center justify-center text-[10px] font-bold text-white"
+                      style={{ width: `${a.pct}%`, backgroundColor: a.color, minWidth: a.pct > 5 ? undefined : '2px' }}
+                      title={`${a.label} ${a.pct}%`}
+                    >
+                      {a.pct >= 10 ? `${a.label} ${a.pct}%` : ''}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
+                  {[
+                    { label: 'BH 스윙', pct: data.alloc_swing, color: '#DC2626' },
+                    { label: '금 ETF', pct: data.alloc_gold_etf, color: '#D97706' },
+                    { label: '인버스', pct: data.alloc_inverse, color: '#3B82F6' },
+                    { label: '그룹 ETF', pct: data.alloc_group_etf, color: '#059669' },
+                    { label: '소형주', pct: data.alloc_small_cap, color: '#7C3AED' },
+                    { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
+                  ].map((a) => (
+                    <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2.5">
+                      <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{a.label}</p>
+                      <p className="text-[15px] md:text-[17px] font-black tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 6. 채권자경단 v2 ═══ */}
+      {(() => {
+        const rat = data.nxt_rationale
+        const indicators = rat?.indicators
+        const hasData = indicators && indicators.length > 0 && rat?.verdict && rat.verdict !== '수집실패'
+
+        const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
+          '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
+          [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
+          '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
+          '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
+          [GRADE_CAUTION]: { backgroundColor: '#eab308', color: '#FFF' },
+          '회피': { backgroundColor: '#ef4444', color: '#FFF' },
+        }
+        const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
+          GREEN: { bg: '#F0FDF4', text: '#16A34A', dot: '#22c55e' },
+          YELLOW: { bg: '#FFFBEB', text: '#A16207', dot: '#eab308' },
+          RED: { bg: '#FEF2F2', text: '#DC2626', dot: '#ef4444' },
+        }
+
+        return (
+          <section>
+            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
+            <div
+              className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5"
+              style={{ borderLeft: '3px solid #7C3AED' }}
+            >
+              {!hasData ? (
+                <p className="text-[13px] text-[#6B7280] text-center py-4">
+                  데이터 수집 중입니다. 16:35 이후 갱신됩니다.
+                </p>
+              ) : (
+                <>
+                  {/* 종합 판정 헤더 */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span
+                        className="text-[15px] font-black px-3.5 py-1.5 rounded-lg"
+                        style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
+                      >
+                        종합: {rat.verdict}
+                      </span>
+                      <div className="flex items-center gap-2.5 text-[14px] font-bold tabular-nums flex-wrap">
+                        <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
+                        <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
+                        <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
+                        <span className="text-[#9CA3AF]">/ {rat.total ?? 7}개</span>
+                      </div>
+                    </div>
+                    {rat.timestamp && (
+                      <span className="text-[13px] text-[#9CA3AF]">
+                        기준: {rat.timestamp.slice(0, 16)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 7개 지표 테이블 */}
+                  <div className="space-y-1.5">
+                    {indicators!.map((ind) => {
+                      const ss = SIGNAL_STYLE[ind.signal] ?? SIGNAL_STYLE.GREEN
+                      return (
+                        <div
+                          key={ind.key}
+                          className="flex items-center gap-3 rounded-lg px-3 md:px-4 py-2.5 flex-wrap"
+                          style={{ backgroundColor: ss.bg }}
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: ss.dot }}
+                          />
+                          <span className="text-[14px] font-bold text-[#1A1A2E] min-w-[140px] shrink-0">
+                            {ind.name}
+                          </span>
+                          <span
+                            className="text-[13px] font-black min-w-[48px] shrink-0 text-center"
+                            style={{ color: ss.text }}
+                          >
+                            {ind.signal_label}
+                          </span>
+                          <span className="text-[13px] text-[#6B7280] tabular-nums flex-1 truncate">
+                            {ind.detail}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )
+      })()}
+
+      {/* ═══ 7. 달러-환율 모니터 ═══ */}
+      {data.fx_monitor && data.fx_monitor.dxy && (
+        <FxMonitorSection fx={data.fx_monitor} />
+      )}
+
+      {/* ═══ 8. 주목 종목 ═══ */}
       {krxPicks?.length > 0 && (
         <section>
           <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">
@@ -690,214 +944,7 @@ export default function SwingDashboardView() {
         </section>
       )}
 
-      {/* ═══ 채권자경단 v2 — 야간 매매 판단 근거 ═══ */}
-      {(() => {
-        const rat = data.nxt_rationale
-        const indicators = rat?.indicators
-        const hasData = indicators && indicators.length > 0 && rat?.verdict && rat.verdict !== '수집실패'
-
-        const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
-          '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
-          [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
-          '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
-          '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
-          [GRADE_CAUTION]: { backgroundColor: '#eab308', color: '#FFF' },
-          '회피': { backgroundColor: '#ef4444', color: '#FFF' },
-        }
-        const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
-          GREEN: { bg: '#F0FDF4', text: '#16A34A', dot: '#22c55e' },
-          YELLOW: { bg: '#FFFBEB', text: '#A16207', dot: '#eab308' },
-          RED: { bg: '#FEF2F2', text: '#DC2626', dot: '#ef4444' },
-        }
-
-        return (
-          <section>
-            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
-            <div
-              className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5"
-              style={{ borderLeft: '3px solid #7C3AED' }}
-            >
-              {!hasData ? (
-                <p className="text-[13px] text-[#6B7280] text-center py-4">
-                  데이터 수집 중입니다. 16:35 이후 갱신됩니다.
-                </p>
-              ) : (
-                <>
-                  {/* 종합 판정 헤더 */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span
-                        className="text-[15px] font-black px-3.5 py-1.5 rounded-lg"
-                        style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
-                      >
-                        종합: {rat.verdict}
-                      </span>
-                      <div className="flex items-center gap-2.5 text-[14px] font-bold tabular-nums flex-wrap">
-                        <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
-                        <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
-                        <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
-                        <span className="text-[#9CA3AF]">/ {rat.total ?? 7}개</span>
-                      </div>
-                    </div>
-                    {rat.timestamp && (
-                      <span className="text-[13px] text-[#9CA3AF]">
-                        기준: {rat.timestamp.slice(0, 16)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* 7개 지표 테이블 */}
-                  <div className="space-y-1.5">
-                    {indicators!.map((ind) => {
-                      const ss = SIGNAL_STYLE[ind.signal] ?? SIGNAL_STYLE.GREEN
-                      return (
-                        <div
-                          key={ind.key}
-                          className="flex items-center gap-3 rounded-lg px-3 md:px-4 py-2.5 flex-wrap"
-                          style={{ backgroundColor: ss.bg }}
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: ss.dot }}
-                          />
-                          <span className="text-[14px] font-bold text-[#1A1A2E] min-w-[140px] shrink-0">
-                            {ind.name}
-                          </span>
-                          <span
-                            className="text-[13px] font-black min-w-[48px] shrink-0 text-center"
-                            style={{ color: ss.text }}
-                          >
-                            {ind.signal_label}
-                          </span>
-                          <span className="text-[13px] text-[#6B7280] tabular-nums flex-1 truncate">
-                            {ind.detail}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-        )
-      })()}
-
-      {/* NXT 야간매수 — intelligence_nxt_picks TOP 5 */}
-      {nxtPickData && (() => {
-        const nxtScore = nxtPickData.nxt_score ?? 0
-        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
-        const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
-        const picks = nxtPickData.picks ?? []
-        const sectors = nxtPickData.sectors ?? []
-        return (
-          <section className="bg-white rounded-2xl border border-[#E8E6E0] p-4 md:p-5 space-y-3 md:space-y-4">
-            {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
-            <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">🌙 NXT 야간매수 TOP 5</h2>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
-                {nxtPickData.signal ?? scLabel}
-              </span>
-              <span className="text-sm text-[#6B7280]">{nxtPickData.date}</span>
-            </div>
-
-            {/* NXT Score 바 */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-bold text-[#1A1A2E]">NXT 점수</span>
-              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden relative">
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 z-10" />
-                <div
-                  className="h-full rounded-full absolute top-0"
-                  style={{
-                    backgroundColor: nxtScore >= 0 ? '#16A34A' : '#DC2626',
-                    left: nxtScore >= 0 ? '50%' : `${50 + (nxtScore / 10) * 50}%`,
-                    width: `${Math.abs(nxtScore / 10) * 50}%`,
-                  }}
-                />
-              </div>
-              <span className={`text-lg font-bold tabular-nums ${nxtScore >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {nxtScore > 0 ? '+' : ''}{nxtScore.toFixed(1)}
-              </span>
-            </div>
-
-            {/* 추천 섹터 */}
-            {sectors.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-[#6B7280]">추천 섹터</span>
-                {sectors.map((s, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F0F0FF] text-[#4C1D95]">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* TOP 5 카드 */}
-            {picks.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                {picks.map((p) => {
-                  const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
-                  const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
-                  return (
-                    <div key={p.code} className="rounded-lg p-3 text-center bg-[#FAFAF8] border border-[var(--border)]">
-                      <span className="text-xl">{medal}</span>
-                      <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
-                      <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
-                      <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
-                        수급 {p.supply_score}점
-                      </span>
-                      <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
-                      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </section>
-        )
-      })()}
-
-      {/* ═══ 3행: 매매 타임라인 ═══ */}
-      <section>
-        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">오늘의 매매 타임라인</h2>
-        <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-          <div className="relative pl-7">
-            {/* 세로 선 */}
-            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E8E6E0]" />
-            <div className="space-y-4">
-              {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
-                ? swingSystem.action_guide.map((g) => ({
-                    time: g.time, action: g.action, desc: g.desc,
-                    badge: g.tag, color: TAG_COLOR[g.tag] ?? '#6B7280',
-                  }))
-                : TIMELINE_FALLBACK
-              ).map((t, i) => (
-                <div key={i} className="relative">
-                  {/* 컬러 점 */}
-                  <div
-                    className="absolute -left-[22px] top-[2px] w-[14px] h-[14px] rounded-full border-2 border-white"
-                    style={{ backgroundColor: t.color }}
-                  />
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[15px] font-bold" style={{ color: t.color }}>{t.time}</span>
-                      <p className="text-[13px] font-bold text-[#1A1A2E]">{t.action}</p>
-                      <p className="text-[12px] text-[#6B7280]">{t.desc}</p>
-                    </div>
-                    {t.badge && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
-                        {t.badge}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 4행: ETF 인사이트 ═══ */}
+      {/* ═══ 9. ETF 인사이트 ═══ */}
       {data.etf_picks?.length > 0 && (
         <section>
           <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">ETF 인사이트</h2>
@@ -936,139 +983,6 @@ export default function SwingDashboardView() {
               </tbody>
             </table>
           </div>
-        </section>
-      )}
-
-      {/* ═══ 5행: 시장 지표 + 자산 배분 (2열) ═══ */}
-      <section>
-        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">시장 지표 & 자산 배분</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* 좌: 시장 지표 */}
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              <MetricCard label="VIX" value={(data.vix ?? 0).toFixed(1)} bg={(data.vix ?? 0) >= 25 ? '#FEF2F2' : (data.vix ?? 0) >= 18 ? '#FFFBEB' : '#DBEAFE'} color={(data.vix ?? 0) >= 25 ? '#DC2626' : (data.vix ?? 0) >= 18 ? '#D97706' : '#2563EB'} />
-              <MetricCard label="NASDAQ" value={`${(data.nasdaq_pct ?? 0) >= 0 ? '+' : ''}${(data.nasdaq_pct ?? 0).toFixed(2)}%`} color={(data.nasdaq_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="USD/KRW" value={(data.usdkrw ?? 0).toFixed(0)} color="#1A1A2E" />
-              <MetricCard label="유가" value={`${(data.oil_pct ?? 0) >= 0 ? '+' : ''}${(data.oil_pct ?? 0).toFixed(2)}%`} color={(data.oil_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="금" value={`${(data.gold_pct ?? 0) >= 0 ? '+' : ''}${(data.gold_pct ?? 0).toFixed(2)}%`} color={(data.gold_pct ?? 0) >= 0 ? '#059669' : '#DC2626'} />
-              <MetricCard label="스트레스" value={(data.stress_index ?? 0).toFixed(1)} bg={data.stress_level === 'HIGH' ? '#FEF2F2' : '#F5F4F0'} color={data.stress_level === 'HIGH' ? '#DC2626' : data.stress_level === 'ELEVATED' ? '#D97706' : '#059669'} />
-            </div>
-            {/* 위험 경고 */}
-            {data.stress_level === 'HIGH' && (
-              <div className="mt-3 rounded-r-md text-[12px] px-3 py-2" style={{ backgroundColor: '#FEF2F2', borderLeft: '3px solid #EF4444', color: '#DC2626' }}>
-                위험 신호: 스트레스 {data.stress_level} ({(data.stress_index ?? 0).toFixed(1)})
-              </div>
-            )}
-          </div>
-
-          {/* 우: 자산 배분 */}
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-            <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">자산 배분</h3>
-            {data.alloc_cash >= 100 ? (
-              <div className="bg-[#DBEAFE] rounded-xl p-6 text-center">
-                <p className="text-[16px] font-bold text-[#1D4ED8] mb-1">현금 100%</p>
-                <p className="text-[13px] text-[#3B82F6]">지금은 쉬세요. 시장이 안전해지면 자동 배분 변경</p>
-              </div>
-            ) : (
-              <>
-                {/* 가로 바 */}
-                <div className="flex h-5 rounded-full overflow-hidden mb-3">
-                  {[
-                    { label: '스윙', pct: data.alloc_swing, color: '#DC2626' },
-                    { label: '금ETF', pct: data.alloc_gold_etf, color: '#D97706' },
-                    { label: '인버스', pct: data.alloc_inverse, color: '#3B82F6' },
-                    { label: '그룹', pct: data.alloc_group_etf, color: '#059669' },
-                    { label: '소형', pct: data.alloc_small_cap, color: '#7C3AED' },
-                    { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
-                  ].filter(a => a.pct > 0).map((a) => (
-                    <div
-                      key={a.label}
-                      className="flex items-center justify-center text-[10px] font-bold text-white"
-                      style={{ width: `${a.pct}%`, backgroundColor: a.color, minWidth: a.pct > 5 ? undefined : '2px' }}
-                      title={`${a.label} ${a.pct}%`}
-                    >
-                      {a.pct >= 10 ? `${a.label} ${a.pct}%` : ''}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
-                  {[
-                    { label: 'BH 스윙', pct: data.alloc_swing, color: '#DC2626' },
-                    { label: '금 ETF', pct: data.alloc_gold_etf, color: '#D97706' },
-                    { label: '인버스', pct: data.alloc_inverse, color: '#3B82F6' },
-                    { label: '그룹 ETF', pct: data.alloc_group_etf, color: '#059669' },
-                    { label: '소형주', pct: data.alloc_small_cap, color: '#7C3AED' },
-                    { label: '현금', pct: data.alloc_cash, color: '#9CA3AF' },
-                  ].map((a) => (
-                    <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2.5">
-                      <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{a.label}</p>
-                      <p className="text-[15px] md:text-[17px] font-black tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 6행: BRAIN 분석 보고서 (4칸 + 나이트워치) ═══ */}
-      {analysisCards && (
-        <section>
-          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">BRAIN 분석 보고서</h2>
-
-          {/* 4칸 카드 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-            {analysisCards.warning && (
-              <ReportCard title="경고" content={analysisCards.warning} bg="#FEF2F2" lineColor="#EF4444" />
-            )}
-            {analysisCards.strategy && (
-              <ReportCard title="전략 요약" content={analysisCards.strategy} bg="#FFFBEB" lineColor="#F59E0B" />
-            )}
-            {analysisCards.sector && (
-              <ReportCard title="섹터 요약" content={analysisCards.sector} bg="#F5F4F0" />
-            )}
-            {analysisCards.commodity && (
-              <ReportCard title="원자재 요약" content={analysisCards.commodity} bg="#F5F4F0" />
-            )}
-          </div>
-
-          {/* 나이트워치 */}
-          {analysisCards.nightwatch && (
-            <ReportCard title="나이트워치" content={analysisCards.nightwatch} bg="#F0F0FF" lineColor="#7C3AED" />
-          )}
-
-          {/* BRAIN 상세 (아코디언) */}
-          {Object.keys(analysisCards.rest).length > 0 && (
-            <div className="mt-3">
-              <button
-                className="text-[14px] font-bold cursor-pointer mb-2"
-                style={{ color: brainExpanded ? '#00CC6A' : '#9CA3AF' }}
-                onClick={() => setBrainExpanded(!brainExpanded)}
-              >
-                BRAIN 상세 {brainExpanded ? '▼' : '▸'}
-              </button>
-              {brainExpanded && (
-                <div className="space-y-2">
-                  {Object.entries(analysisCards.rest).map(([key, value]) => (
-                    <div key={key} className="bg-white rounded-lg border border-[var(--border)] p-3">
-                      <p className="text-[13px] font-black text-[#6B7280] mb-1">{formatAnalysisKey(key)}</p>
-                      <p className="text-[14px] font-medium text-[#1A1A2E] whitespace-pre-wrap">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 마켓 코멘트 */}
-          {data.market_comment && (
-            <div className="mt-3 bg-white rounded-lg border border-[var(--border)] p-4">
-              <p className="text-[13px] font-black text-[#6B7280] mb-1">마켓 코멘트</p>
-              <p className="text-[14px] font-medium text-[#1A1A2E] whitespace-pre-wrap">{data.market_comment}</p>
-            </div>
-          )}
         </section>
       )}
 
@@ -1132,19 +1046,3 @@ function MetricCard({ label, value, color, bg }: { label: string; value: string;
   )
 }
 
-/* ── 보고서 카드 ── */
-function ReportCard({ title, content, bg, lineColor }: { title: string; content: string; bg: string; lineColor?: string }) {
-  return (
-    <div
-      className="rounded-lg p-4"
-      style={{
-        backgroundColor: bg,
-        borderLeft: lineColor ? `3px solid ${lineColor}` : undefined,
-        borderRadius: lineColor ? '0 8px 8px 0' : '8px',
-      }}
-    >
-      <p className="text-[15px] font-black text-[#1A1A2E] mb-1.5">{title}</p>
-      <p className="text-[14px] font-medium text-[#374151] whitespace-pre-wrap leading-relaxed">{content}</p>
-    </div>
-  )
-}
