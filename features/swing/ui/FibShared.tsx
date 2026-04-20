@@ -7,6 +7,8 @@ export interface FibStock {
   fib_382: number; fib_500: number; fib_618: number
   fib_status: string; target: number; upside: number
   per: number; pbr: number; frgn: number
+  rsi?: number; foreign_net?: number; inst_net?: number
+  vol_ratio?: number; entry_grade?: string
 }
 
 export const ZONE_ORDER = ['DEEP', 'MID', 'MILD', 'SHALLOW'] as const

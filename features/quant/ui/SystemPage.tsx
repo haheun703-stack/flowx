@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import CrashBounceView from './CrashBounceView'
 import AlphaSmartMoney from './AlphaSmartMoney'
 import { type MarketRankingData } from '@/features/market-summary/ui/MarketRankingPanel'
@@ -12,8 +13,16 @@ import SmallcapThemeTab from './SmallcapThemeTab'
 import { GRADE_STRONG_PICK, GRADE_PICK } from '@/shared/constants/grades'
 
 /* ── Jarvis Types ── */
+interface FibEntryPick {
+  code: string; name: string; price: number; drop: number
+  rsi: number; foreign_net: number; inst_net: number
+  fib_zone: string; target: number; upside: number
+  sector?: string; cap?: number
+}
+
 interface JarvisData {
   date?: string | null
+  fib_entry_picks?: FibEntryPick[]
 }
 
 
@@ -68,6 +77,7 @@ const TEMP_CFG: Record<string, { bg: string; text: string }> = {
 }
 
 const fmtP = (v: number) => v.toLocaleString('ko-KR')
+const fmtBaseDate = (d: string) => { const m = d.match(/(\d+)-(\d+)$/); return m ? `${+m[1]}/${+m[2]}` : d }
 
 /* ── Accordion ── */
 function Accordion({ id, title, open, onToggle, children }: {
@@ -273,7 +283,7 @@ export default function SystemPage() {
                             style={{ backgroundColor: p.nxt_tradable ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: p.nxt_tradable ? '#4A90D9' : '#888' }}>
                             {p.nxt_tradable ? '통합' : 'KRX'}
                           </span>
-                          <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원</span>
+                          <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원 <span className="text-[10px] text-[#9CA3AF] font-normal">({fmtBaseDate(p.date)} 기준)</span></span>
                         </div>
                         <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
                           <div><span className="text-[#9CA3AF]">하락률</span> <span className="font-bold tabular-nums text-[#2563EB]">{(p.drop_pct ?? 0).toFixed(1)}%</span></div>
@@ -298,6 +308,43 @@ export default function SystemPage() {
               )}
             </div>
           </div>
+
+          {/* Box 2.5: 피보나치 매수 적기 */}
+          {(() => {
+            const fibPicks = jarvis?.fib_entry_picks ?? []
+            if (fibPicks.length === 0) return null
+            const shown = fibPicks.slice(0, 5)
+            const rest = fibPicks.length - 5
+            return (
+              <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+                style={{ borderLeft: '3px solid #FFD700' }}>
+                <div className="px-5 py-4">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <h3 className="text-[15px] font-bold text-[#1A1A2E]">📐 피보나치 매수 적기</h3>
+                    <span className="text-[12px] font-bold tabular-nums" style={{ color: '#B8860B' }}>{fibPicks.length}종목</span>
+                  </div>
+                  <p className="text-[10px] text-[#6B7280] mb-3">RSI 과매도 + 수급 유입 동시 충족 | D+5 +2.97%, 승률 61.9%</p>
+                  <div className="space-y-2">
+                    {shown.map((p) => (
+                      <div key={p.code} className="flex items-center gap-2 flex-wrap text-[12px] px-3 py-2 rounded-lg" style={{ backgroundColor: '#FFFBEB' }}>
+                        <span className="font-bold" style={{ color: '#B8860B' }}>★</span>
+                        <Link href={`/stock/${p.code}`} className="font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">{p.name}</Link>
+                        <span className="font-bold text-[#1A1A2E] tabular-nums">{fmtP(p.price)}원</span>
+                        {displayDate && <span className="text-[9px] text-[#9CA3AF]">({fmtBaseDate(displayDate)} 기준)</span>}
+                        <span className="text-[11px] text-[#6B7280]">RSI <strong className="text-[#DC2626]">{(p.rsi ?? 0).toFixed(0)}</strong></span>
+                        {(p.foreign_net ?? 0) !== 0 && <span className="text-[11px] text-[#6B7280]">외인 <strong className="text-[#2563EB]">{p.foreign_net > 0 ? '+' : ''}{p.foreign_net.toFixed(0)}억</strong></span>}
+                        {(p.inst_net ?? 0) !== 0 && <span className="text-[11px] text-[#6B7280]">기관 <strong className="text-[#EA580C]">{p.inst_net > 0 ? '+' : ''}{p.inst_net.toFixed(0)}억</strong></span>}
+                      </div>
+                    ))}
+                    {rest > 0 && <p className="text-[11px] text-[#9CA3AF] text-center">외 {rest}종목</p>}
+                  </div>
+                  <button onClick={() => setTab('bluechip')} className="mt-3 text-[11px] font-bold text-[#B8860B] hover:underline">
+                    피보나치 페이지에서 상세 보기 →
+                  </button>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Box 3: 내일의 ETF 전략 */}
           <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"

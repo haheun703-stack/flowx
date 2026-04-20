@@ -8,6 +8,14 @@ import { FibStock, ZONE_ORDER, ZONE_CONFIG, FibMiniGauge, FibLegend } from '@/fe
 
 type FibFilter = 'all' | 'DEEP' | 'MID' | 'MILD'
 
+const ENTRY_GRADE_CFG: Record<string, { text: string; bg: string; color: string; border: string }> = {
+  '적기': { text: '★ 적기', bg: '#FFD700', color: '#1A1A2E', border: '#FFD700' },
+  '관심': { text: '관심', bg: 'transparent', color: '#3B82F6', border: '#3B82F6' },
+  '수급 유입': { text: '수급↑', bg: 'transparent', color: '#10B981', border: '#10B981' },
+}
+
+const fmtBaseDate = (d: string) => { const m = d.match(/(\d+)-(\d+)$/); return m ? `${+m[1]}/${+m[2]}` : d }
+
 export default function SmallcapThemeTab({ bluechip: _bluechip }: { bluechip: BluechipCheckupData | null }) {
   const [fibStocks, setFibStocks] = useState<FibStock[]>([])
   const [fibDate, setFibDate] = useState('')
@@ -105,7 +113,7 @@ export default function SmallcapThemeTab({ bluechip: _bluechip }: { bluechip: Bl
 
             {/* 테이블 */}
             <div className="table-scroll rounded-xl border border-[#E8E6E0]">
-              <table className="w-full text-[13px] min-w-[700px]">
+              <table className="w-full text-[13px] min-w-[900px]">
                 <thead>
                   <tr style={{ backgroundColor: '#F5F4F0' }}>
                     <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280] w-8">#</th>
@@ -115,6 +123,9 @@ export default function SmallcapThemeTab({ bluechip: _bluechip }: { bluechip: Bl
                     <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">현재가</th>
                     <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">하락률</th>
                     <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280]">구간</th>
+                    <th className="text-center py-2 px-2 text-[11px] font-bold text-[#6B7280]">RSI</th>
+                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">외인(억)</th>
+                    <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">기관(억)</th>
                     <th className="text-center py-2 px-2 text-[12px] font-extrabold text-[#1A1A2E] min-w-[140px]">피보나치 위치</th>
                     <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">상승여력</th>
                     <th className="text-right py-2 px-2 text-[11px] font-bold text-[#6B7280]">PER</th>
@@ -123,23 +134,55 @@ export default function SmallcapThemeTab({ bluechip: _bluechip }: { bluechip: Bl
                 <tbody>
                   {filteredFib.map((s, i) => {
                     const cfg = ZONE_CONFIG[s.fib_zone] ?? ZONE_CONFIG.MILD
+                    const eg = s.entry_grade && s.entry_grade !== '대기' ? ENTRY_GRADE_CFG[s.entry_grade] : null
                     return (
-                      <tr key={s.code} className="border-t border-[#E8E6E0]/50 hover:bg-[#F9F8F6]">
+                      <tr key={s.code} className="border-t border-[#E8E6E0]/50 hover:bg-[#F9F8F6]"
+                        style={s.entry_grade === '적기' ? { backgroundColor: '#FFFBEB' } : undefined}>
                         <td className="text-center py-2.5 px-2 text-[12px] text-[#9CA3AF] tabular-nums">{i + 1}</td>
                         <td className="py-2.5 px-3">
-                          <Link href={`/stock/${s.code}`} className="font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
-                            {s.name}
-                          </Link>
+                          <div className="flex items-center gap-1.5">
+                            <Link href={`/stock/${s.code}`} className="font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
+                              {s.name}
+                            </Link>
+                            {eg && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0"
+                                style={{ backgroundColor: eg.bg, color: eg.color, border: `1px solid ${eg.border}` }}>
+                                {eg.text}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="text-center py-2.5 px-2 text-[#6B7280] text-[12px]">{s.sector}</td>
                         <td className="text-right py-2.5 px-2 text-[#6B7280] tabular-nums text-[12px]">{fmtCap(s.cap ?? 0)}</td>
-                        <td className="text-right py-2.5 px-2 font-bold text-[#1A1A2E] tabular-nums text-[12px]">{(s.price ?? 0).toLocaleString()}</td>
+                        <td className="text-right py-2.5 px-2 tabular-nums text-[12px]">
+                          <span className="font-bold text-[#1A1A2E]">{(s.price ?? 0).toLocaleString()}</span>
+                          {fibDate && <span className="text-[9px] text-[#9CA3AF] ml-0.5">({fmtBaseDate(fibDate)})</span>}
+                        </td>
                         <td className="text-right py-2.5 px-2 font-bold tabular-nums text-[12px]" style={{ color: '#DC2626' }}>{(s.drop ?? 0).toFixed(1)}%</td>
                         <td className="text-center py-2.5 px-2">
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                             style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
                             {cfg.icon} {s.fib_zone ?? '-'}
                           </span>
+                        </td>
+                        <td className="text-center py-2.5 px-2 tabular-nums text-[12px]">
+                          {s.rsi != null ? (
+                            <span className="font-bold" style={{ color: s.rsi < 40 ? '#DC2626' : '#6B7280' }}>{s.rsi.toFixed(0)}</span>
+                          ) : <span className="text-[#D1D5DB]">-</span>}
+                        </td>
+                        <td className="text-right py-2.5 px-2 tabular-nums text-[12px]">
+                          {s.foreign_net != null ? (
+                            <span className="font-bold" style={{ color: s.foreign_net > 0 ? '#2563EB' : s.foreign_net < 0 ? '#DC2626' : '#6B7280' }}>
+                              {s.foreign_net > 0 ? '+' : ''}{s.foreign_net.toFixed(0)}
+                            </span>
+                          ) : <span className="text-[#D1D5DB]">-</span>}
+                        </td>
+                        <td className="text-right py-2.5 px-2 tabular-nums text-[12px]">
+                          {s.inst_net != null ? (
+                            <span className="font-bold" style={{ color: s.inst_net > 0 ? '#EA580C' : s.inst_net < 0 ? '#DC2626' : '#6B7280' }}>
+                              {s.inst_net > 0 ? '+' : ''}{s.inst_net.toFixed(0)}
+                            </span>
+                          ) : <span className="text-[#D1D5DB]">-</span>}
                         </td>
                         <td className="py-2.5 px-2">
                           <FibMiniGauge stock={s} />

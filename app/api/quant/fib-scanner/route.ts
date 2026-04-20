@@ -32,6 +32,7 @@ export async function GET() {
         fib_stocks: payload.fib_stocks ?? [],
         fib_leaders: payload.fib_leaders ?? [],
         sector_rotation: payload.sector_rotation ?? [],
+        entry_picks: payload.entry_picks ?? [],
         summary: payload.summary ?? null,
       },
     })
