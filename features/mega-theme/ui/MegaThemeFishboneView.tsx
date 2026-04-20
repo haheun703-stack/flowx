@@ -9,7 +9,7 @@ interface ApiSector {
   sector_name: string
   role_in_theme: string
   story: string
-  stocks: { ticker: string; name: string; reason: string; key_metric: string }[]
+  stocks: { ticker: string; name: string; reason: string; key_metric: string; category?: string }[]
 }
 interface ApiTheme {
   theme_id: string
@@ -220,13 +220,13 @@ export default function MegaThemeFishboneView() {
         id: s.sector_id,
         name: s.sector_name,
         desc: s.story || s.role_in_theme,
-        stocks: s.stocks.map(st => ({ ticker: st.ticker, name: st.name, role: st.reason || st.key_metric })),
+        stocks: s.stocks.map(st => ({ ticker: st.ticker, name: st.name, role: st.reason || st.key_metric, category: st.category ?? '대표주' })),
       }))
     : (FB[selected] ?? []).map(s => ({
         id: s.id,
         name: s.name,
         desc: s.keyword,
-        stocks: s.stocks,
+        stocks: s.stocks.map(st => ({ ...st, category: '대표주' as const })),
       }))
 
   /* 투자 흐름 단계 분리 */
@@ -392,6 +392,11 @@ export default function MegaThemeFishboneView() {
                               {stock.name}
                             </span>
                             <span className="text-[11px] text-[#9CA3AF] shrink-0">{stock.ticker}</span>
+                            {stock.category === '소부장' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#FFF7ED] text-[#EA580C] border border-[#FDBA74] shrink-0">
+                                소부장
+                              </span>
+                            )}
                           </div>
                           <span className="text-xs text-[#6B7280] text-right ml-2 shrink-0 max-w-[180px] truncate">
                             {stock.role}
