@@ -100,6 +100,7 @@ export default function SystemPage() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<TabKey>('quant')
   const [openAcc, setOpenAcc] = useState<string | null>(null)
+  const [showAllBottom, setShowAllBottom] = useState(false)
 
 
   const toggleAcc = (id: string) => setOpenAcc(openAcc === id ? null : id)
@@ -245,7 +246,7 @@ export default function SystemPage() {
               <p className="text-[10px] text-[#6B7280] mb-3">피보나치 바닥권 + 수급 양전환 종목</p>
               {bottomPicks.length > 0 ? (
                 <div className="space-y-2">
-                  {bottomPicks.map((p, i) => {
+                  {(showAllBottom ? bottomPicks : bottomPicks.slice(0, 3)).map((p, i) => {
                     const zoneCfg: Record<string, { bg: string; text: string }> = {
                       DEEP: { bg: '#DC2626', text: '#fff' },
                       BOTTOM: { bg: '#EA580C', text: '#fff' },
@@ -285,6 +286,12 @@ export default function SystemPage() {
                       </div>
                     )
                   })}
+                  {bottomPicks.length > 3 && (
+                    <button onClick={() => setShowAllBottom(!showAllBottom)}
+                      className="w-full py-2 rounded-lg border border-[#E8E6E0] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
+                      {showAllBottom ? '접기' : `${bottomPicks.length - 3}개 더보기`}
+                    </button>
+                  )}
                 </div>
               ) : (
                 <p className="text-[13px] text-[#9CA3AF] py-6 text-center">바닥 반등 종목 없음</p>
