@@ -132,6 +132,16 @@ interface FlowIntensityData {
   date: string; top_stocks: FlowStock[]; dual_buy_count: number; overheat_count: number
 }
 
+/* ── 매집 레이더 타입 ── */
+interface AccumStock {
+  code: string; name: string; frgn_days: number; accel_b: number
+  chg5: number; tag: string; last_dual: boolean; supply_score: number
+  combined_supply?: number
+}
+interface AccumRadarData {
+  date: string; stocks: AccumStock[]
+}
+
 /* ── 스윙시스템 타입 ── */
 interface ActionGuideItem {
   time: string; action: string; desc: string; tag: string
@@ -311,6 +321,7 @@ export default function SwingDashboardView() {
   const [nxtPickData, setNxtPickData] = useState<NxtPickData | null>(null)
   const [flowData, setFlowData] = useState<FlowIntensityData | null>(null)
   const [swingSystem, setSwingSystem] = useState<SwingSystemData | null>(null)
+  const [accumRadar, setAccumRadar] = useState<AccumRadarData | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -322,6 +333,7 @@ export default function SwingDashboardView() {
           fetch('/api/intelligence/nxt-picks', { signal: sig }),
           fetch('/api/intelligence/flow-intensity', { signal: sig }),
           fetch('/api/intelligence/swing-system', { signal: sig }),
+          fetch('/api/intelligence/accumulation-radar', { signal: sig }),
         ])
         if (r[0].status === 'fulfilled' && r[0].value.ok) {
           const j = await r[0].value.json(); setData(j.data ?? null)
@@ -334,6 +346,9 @@ export default function SwingDashboardView() {
         }
         if (r[3].status === 'fulfilled' && r[3].value.ok) {
           const j = await r[3].value.json(); setSwingSystem(j.data ?? null)
+        }
+        if (r[4].status === 'fulfilled' && r[4].value.ok) {
+          const j = await r[4].value.json(); setAccumRadar(j.data ?? null)
         }
       } catch { /* abort */ }
       setLoading(false)
@@ -544,6 +559,64 @@ export default function SwingDashboardView() {
                 })}
               </div>
             )}
+          </section>
+        )
+      })()}
+
+      {/* ═══ 3.5 매집 레이더 ═══ */}
+      {(() => {
+        const stocks = accumRadar?.stocks
+        if (!stocks || !Array.isArray(stocks) || stocks.length === 0) {
+          return (
+            <section className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-2">📡 매집 레이더</h2>
+              <p className="text-[13px] text-[#9CA3AF]">오늘은 감지된 종목이 없습니다</p>
+            </section>
+          )
+        }
+        const sorted = [...stocks].sort((a, b) => (b.supply_score ?? b.combined_supply ?? 0) - (a.supply_score ?? a.combined_supply ?? 0))
+        const TAG_STYLE: Record<string, { bg: string; text: string }> = {
+          '쌍매수': { bg: '#FFF1F2', text: '#E11D48' },
+          '가속전환': { bg: '#FFF7ED', text: '#EA580C' },
+          '바닥매집': { bg: '#EFF6FF', text: '#2563EB' },
+          '외인매집': { bg: '#F0F9FF', text: '#0284C7' },
+        }
+        return (
+          <section>
+            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">📡 매집 레이더</h2>
+            <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm divide-y divide-[var(--border)]">
+              {sorted.map((s) => {
+                const tagStyle = TAG_STYLE[s.tag] ?? { bg: '#F3F4F6', text: '#6B7280' }
+                const score = s.supply_score ?? s.combined_supply ?? 0
+                const isUnfired = s.chg5 < 0
+                return (
+                  <div key={s.code} className="flex items-center justify-between px-5 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[14px] font-bold text-[#1A1A2E] truncate">{s.name}</span>
+                          {s.last_dual && <span title="최근 쌍매수">🔥</span>}
+                          {isUnfired && (
+                            <span className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-[#F0FDF4] text-[#16A34A]">미발화</span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-[#9CA3AF]">{s.code} · 외인 {s.frgn_days}일 연속 · 가속 {s.accel_b.toFixed(1)}x</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: tagStyle.bg, color: tagStyle.text }}
+                      >
+                        {s.tag}
+                      </span>
+                      <span className="text-[13px] font-bold tabular-nums text-[#1A1A2E] w-[36px] text-right">{score}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <p className="text-[11px] text-[#9CA3AF] mt-1.5 text-right">{accumRadar.date} 기준 · {sorted.length}종목</p>
           </section>
         )
       })()}
