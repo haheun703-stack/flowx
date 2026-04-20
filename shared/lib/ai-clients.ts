@@ -24,7 +24,7 @@ export async function callClaude(
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }] satisfies ClaudeMessage[],
@@ -61,14 +61,14 @@ export async function callClaudeWithAdvisor(
         'anthropic-beta': 'advisor-tool-2026-03-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: maxTokens,
         system: `${systemPrompt}\n\n${advisorInstruction}`,
         messages: [{ role: 'user', content: userMessage }] satisfies ClaudeMessage[],
         tools: [{
           type: 'advisor_20260301',
           name: 'advisor',
-          model: 'claude-opus-4-7-20250506',
+          model: 'claude-opus-4-7',
           max_uses: 1,
         }],
       }),
