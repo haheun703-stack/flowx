@@ -200,7 +200,7 @@ export default function MegaThemeFishboneView() {
   useEffect(() => {
     const ac = new AbortController()
     fetch('/api/intelligence/mega-theme', { signal: ac.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(res => {
         const map: Record<string, ApiTheme> = {}
         for (const item of res.data ?? []) map[item.theme_id] = item

@@ -99,7 +99,7 @@ export function DeepBriefingPanel() {
   useEffect(() => {
     const ac = new AbortController()
     fetch('/api/information/deep-briefing', { signal: ac.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(d => setData(d.data ?? null))
       .catch(() => {})
       .finally(() => setLoading(false))

@@ -64,7 +64,7 @@ export default function MarketCalendarPanel() {
     const ac = new AbortController()
     setLoading(true)
     fetch(`/api/market/calendar?month=${yearMonth}&market=KR`, { signal: ac.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(j => {
         setEvents(j.events ?? [])
         setLoading(false)

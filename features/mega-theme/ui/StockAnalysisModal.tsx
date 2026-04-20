@@ -121,7 +121,7 @@ export default function StockAnalysisModal({ ticker, stockName, onClose }: Props
   useEffect(() => {
     const controller = new AbortController()
     fetch(`/api/stock/analysis?ticker=${ticker}`, { signal: controller.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(j => setData(j.data ?? null))
       .catch(() => {})
       .finally(() => setLoading(false))

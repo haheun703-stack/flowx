@@ -65,7 +65,7 @@ export function MarketSummaryView() {
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/market-overview', { signal: controller.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(json => setOverview(json))
       .catch(() => {})
     return () => controller.abort()

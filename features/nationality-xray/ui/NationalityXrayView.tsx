@@ -36,7 +36,7 @@ export function NationalityXrayView() {
   useEffect(() => {
     const ac = new AbortController()
     fetch('/api/intelligence/nationality-charts', { signal: ac.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(d => {
         setItems(d.items ?? [])
         setDate(d.date ?? '')

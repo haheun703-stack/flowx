@@ -44,7 +44,7 @@ export function MarketOverviewPanel() {
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/market-overview', { signal: controller.signal })
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then(json => setData(json))
       .catch(err => {
         if (err instanceof DOMException && err.name === 'AbortError') return
