@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic'
  *   이벤트: BILLING_STATUS_CHANGED, PAYMENT_STATUS_CHANGED
  */
 export async function POST(request: NextRequest) {
+  try {
   // Toss 웹훅 서명 검증
   const secret = process.env.TOSS_WEBHOOK_SECRET
   let body: { eventType: string; data: Record<string, string> }
@@ -78,4 +79,8 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('webhook error:', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

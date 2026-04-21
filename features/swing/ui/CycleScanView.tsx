@@ -179,7 +179,7 @@ export default function CycleScanView() {
   useEffect(() => {
     const ctrl = new AbortController()
     fetch('/api/swing/cycle-scan', { signal: ctrl.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((j) => setData(j.data ?? null))
       .catch((err) => { if (err?.name !== 'AbortError') setData(null) })
       .finally(() => setLoading(false))

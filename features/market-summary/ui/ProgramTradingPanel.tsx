@@ -31,7 +31,7 @@ export default function ProgramTradingPanel() {
     const controller = new AbortController()
     setLoading(true)
     fetch(`/api/market/program-trading?market=${market}`, { signal: controller.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((json) => {
         setTrading(json.trading ?? [])
         setInvestors(json.investors ?? [])

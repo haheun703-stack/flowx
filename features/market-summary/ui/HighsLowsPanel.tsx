@@ -36,7 +36,7 @@ export default function HighsLowsPanel() {
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/market/52w-highs-lows', { signal: controller.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((json) => setData(json.data))
       .catch(() => {})
       .finally(() => setLoading(false))

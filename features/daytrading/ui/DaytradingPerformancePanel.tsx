@@ -52,7 +52,7 @@ export default function DaytradingPerformancePanel() {
   useEffect(() => {
     const ac = new AbortController()
     fetch("/api/intelligence/daytrading-performance", { signal: ac.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((j) => {
         setLatest(j.latest)
         setChart(j.chart ?? [])

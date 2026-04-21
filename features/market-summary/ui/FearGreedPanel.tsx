@@ -132,7 +132,7 @@ export default function FearGreedPanel() {
   useEffect(() => {
     const controller = new AbortController()
     fetch('/api/market/fear-greed', { signal: controller.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((json) => {
         setLatest(json.latest)
         setHistory(json.history ?? [])

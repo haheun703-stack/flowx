@@ -74,7 +74,7 @@ export default function DaytradingPicksPanel() {
   useEffect(() => {
     const ac = new AbortController()
     fetch("/api/intelligence/daytrading-picks", { signal: ac.signal })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error('fetch failed'); return r.json() })
       .then((j) => { setData(j.data); setLoading(false) })
       .catch((e) => { if (e.name !== "AbortError") setLoading(false) })
     return () => ac.abort()
