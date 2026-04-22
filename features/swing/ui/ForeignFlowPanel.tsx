@@ -99,7 +99,7 @@ export default function ForeignFlowPanel() {
     )
   }
 
-  if (!data || data.stocks.length === 0) {
+  if (!data || !Array.isArray(data.stocks) || data.stocks.length === 0) {
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-10 text-center">
         <div className="text-[var(--text-muted,#6B7280)] text-sm font-mono">

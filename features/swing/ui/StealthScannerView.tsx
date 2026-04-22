@@ -62,10 +62,10 @@ function StealthCard({ stock }: { stock: StealthStock }) {
       {/* 중간: 수급 */}
       <div className="flex items-center gap-3 mb-2">
         <span className="text-[11px] font-mono text-[#DC2626] font-semibold">
-          기관 +{fmtBillion(stock.inst_buy)}
+          기관 {stock.inst_buy >= 0 ? '+' : ''}{fmtBillion(stock.inst_buy)}
         </span>
         <span className="text-[11px] font-mono text-[#2563EB] font-semibold">
-          외인 +{fmtBillion(stock.frgn_buy)}
+          외인 {stock.frgn_buy >= 0 ? '+' : ''}{fmtBillion(stock.frgn_buy)}
         </span>
         <span className="text-[11px] font-mono text-[#7C3AED] font-bold">
           합계 {fmtBillion(stock.dual_total)}
