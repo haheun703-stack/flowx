@@ -1,71 +1,40 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { fmtCap } from '@/shared/lib/formatters'
 
-/* ── 타입 ── */
+/* ── 타입 (intelligence_oneshot_stealth) ── */
 interface StealthStock {
-  code: string
   name: string
-  sector: string
-  score: number
-  pattern: string
-  dual_buy: boolean
-  inst_avg: number
-  frgn_avg: number
-  chg_5d: number
-  close: number
-  cap: number
-  category: '잠복' | '움직임'
+  ticker: string
+  chg_pct: number
+  frgn_buy: number
+  inst_buy: number
+  dual_total: number
+  signal_date: string
+  latest_close: number
+  signal_close: number
 }
 
-interface StealthSummary {
-  total_detected: number
+interface StealthResponse {
+  date: string
+  lookback_days: number
   stealth_count: number
-  moving_count: number
-  surged_count: number
-  top_stealth: string[]
-}
-
-interface StealthData {
-  timestamp: string
-  stealth: StealthStock[]
-  moving: StealthStock[]
-  summary: StealthSummary
+  gone_count: number
+  failed_count: number
+  stocks: StealthStock[]
 }
 
 /* ── 금액 포맷 ── */
-function fmtMoney(val: number): string {
-  const eok = val / 100
-  if (eok >= 10000) return `${(eok / 10000).toFixed(1)}조`
-  if (eok >= 1000) return `${(eok / 1000).toFixed(1)}천억`
-  return `${Math.round(eok)}억`
-}
-
-function fmtPrice(val: number): string {
-  return val.toLocaleString('ko-KR')
-}
-
-/* ── 점수 색상 ── */
-function scoreStyle(score: number) {
-  if (score >= 100) return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626', label: '최강' }
-  if (score >= 70) return { bg: '#FFF7ED', border: '#FED7AA', text: '#EA580C', label: '강함' }
-  return { bg: '#FEFCE8', border: '#FDE68A', text: '#CA8A04', label: '보통' }
-}
-
-/* ── 패턴 뱃지 ── */
-function patternStyle(pattern: string) {
-  if (pattern.includes('쌍매수')) return { bg: '#F5F3FF', border: '#DDD6FE', text: '#7C3AED' }
-  if (pattern.includes('기관')) return { bg: '#FEF2F2', border: '#FECACA', text: '#DC2626' }
-  if (pattern.includes('외인')) return { bg: '#EFF6FF', border: '#BFDBFE', text: '#2563EB' }
-  return { bg: '#F3F4F6', border: '#E5E7EB', text: '#6B7280' }
+function fmtBillion(val: number): string {
+  if (Math.abs(val) >= 10000) return `${(val / 10000).toFixed(1)}조`
+  if (Math.abs(val) >= 1000) return `${(val / 1000).toFixed(1)}천억`
+  return `${Math.round(val)}억`
 }
 
 /* ── 종목 카드 ── */
 function StealthCard({ stock }: { stock: StealthStock }) {
-  const sc = scoreStyle(stock.score)
-  const pt = patternStyle(stock.pattern)
-  const isDual = stock.dual_buy
+  const isDual = stock.frgn_buy > 0 && stock.inst_buy > 0
+  const pctColor = stock.chg_pct >= 0 ? '#16A34A' : '#DC2626'
 
   return (
     <div
@@ -74,7 +43,7 @@ function StealthCard({ stock }: { stock: StealthStock }) {
         border: isDual ? '2px solid #EAB308' : '1px solid var(--border, #E8E6E0)',
       }}
     >
-      {/* 상단: 종목명 + 섹터 + 점수 */}
+      {/* 상단: 종목명 + 티커 */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2 min-w-0">
           {isDual && <span className="text-[14px]" title="쌍매수 (기관+외인 동시)">&#9889;</span>}
@@ -82,48 +51,31 @@ function StealthCard({ stock }: { stock: StealthStock }) {
             {stock.name}
           </span>
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#F5F4F0] text-[var(--text-muted,#6B7280)] shrink-0">
-            {stock.sector}
+            {stock.ticker}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span
-            className="text-[10px] font-bold px-1.5 py-0.5 rounded"
-            style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.border}` }}
-          >
-            {sc.label}
-          </span>
-          <span className="text-[15px] font-mono font-bold" style={{ color: sc.text }}>
-            {stock.score}
-          </span>
-        </div>
+        <span className="text-[13px] font-mono font-bold tabular-nums" style={{ color: pctColor }}>
+          {stock.chg_pct >= 0 ? '+' : ''}{stock.chg_pct.toFixed(1)}%
+        </span>
       </div>
 
-      {/* 중간: 패턴 + 기관/외인 매수 */}
-      <div className="flex items-center gap-2 mb-2">
-        <span
-          className="text-[11px] font-bold px-2 py-0.5 rounded"
-          style={{ background: pt.bg, color: pt.text, border: `1px solid ${pt.border}` }}
-        >
-          {stock.pattern}
-        </span>
+      {/* 중간: 수급 */}
+      <div className="flex items-center gap-3 mb-2">
         <span className="text-[11px] font-mono text-[#DC2626] font-semibold">
-          I+{fmtMoney(stock.inst_avg)}
+          기관 +{fmtBillion(stock.inst_buy)}
         </span>
         <span className="text-[11px] font-mono text-[#2563EB] font-semibold">
-          F+{fmtMoney(stock.frgn_avg)}
+          외인 +{fmtBillion(stock.frgn_buy)}
+        </span>
+        <span className="text-[11px] font-mono text-[#7C3AED] font-bold">
+          합계 {fmtBillion(stock.dual_total)}
         </span>
       </div>
 
-      {/* 하단: 현재가 + 5일 등락 + 시총 */}
+      {/* 하단: 포착가 → 현재가 + 포착일 */}
       <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted,#6B7280)]">
-        <span>{fmtPrice(stock.close)}원</span>
-        <span
-          className="font-semibold"
-          style={{ color: stock.chg_5d >= 0 ? '#16A34A' : '#DC2626' }}
-        >
-          5일 {stock.chg_5d >= 0 ? '+' : ''}{stock.chg_5d.toFixed(1)}%
-        </span>
-        <span>시총 {fmtCap(stock.cap)}</span>
+        <span>포착 {stock.signal_close.toLocaleString()}원 → 현재 {stock.latest_close.toLocaleString()}원</span>
+        <span className="text-[10px]">포착일 {stock.signal_date}</span>
       </div>
     </div>
   )
@@ -131,21 +83,17 @@ function StealthCard({ stock }: { stock: StealthStock }) {
 
 /* ── 메인 뷰 ── */
 export default function StealthScannerView() {
-  const [data, setData] = useState<StealthData | null>(null)
+  const [data, setData] = useState<StealthResponse | null>(null)
   const [loading, setLoading] = useState(true)
-  const [subTab, setSubTab] = useState<'stealth' | 'moving'>('stealth')
 
   useEffect(() => {
     const controller = new AbortController()
     ;(async () => {
       try {
-        const res = await fetch('/api/swing-dashboard', { signal: controller.signal })
+        const res = await fetch('/api/intelligence/stealth', { signal: controller.signal })
         if (!res.ok) throw new Error(`${res.status}`)
         const json = await res.json()
-        const raw = json.data?.stealth_stocks
-        if (raw && typeof raw === 'object' && raw.stealth) {
-          setData(raw as StealthData)
-        }
+        if (json.data) setData(json.data)
       } catch (e) {
         if ((e as Error).name !== 'AbortError') console.error('[StealthScanner]', e)
       } finally {
@@ -156,15 +104,10 @@ export default function StealthScannerView() {
   }, [])
 
   const stocks = useMemo(() => {
-    if (!data) return []
-    const list = subTab === 'stealth' ? data.stealth : data.moving
-    return [...list].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score
-      return (b.inst_avg + b.frgn_avg) - (a.inst_avg + a.frgn_avg)
-    })
-  }, [data, subTab])
+    if (!data?.stocks || !Array.isArray(data.stocks)) return []
+    return [...data.stocks].sort((a, b) => b.dual_total - a.dual_total)
+  }, [data])
 
-  /* 로딩 */
   if (loading) {
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6">
@@ -177,7 +120,6 @@ export default function StealthScannerView() {
     )
   }
 
-  /* 데이터 없음 */
   if (!data) {
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-10 text-center">
@@ -188,8 +130,6 @@ export default function StealthScannerView() {
     )
   }
 
-  const { summary, timestamp } = data
-
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-3 md:space-y-4">
       {/* 헤더 */}
@@ -197,77 +137,48 @@ export default function StealthScannerView() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h2 className="text-[14px] md:text-[16px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono tracking-wide">
-              기관 선매집 탐지
+              선매집 탐지 — 외국인·기관 쌍매수 {data.lookback_days}일 추적
             </h2>
             <p className="text-[11px] text-[var(--text-dim,#9CA3AF)] font-mono mt-0.5">
-              기관과 외국인이 조용히 매수하고 있지만, 주가는 아직 움직이지 않은 &quot;장전된 스프링&quot; 종목
+              조용히 매수 중이지만 아직 주가가 크게 움직이지 않은 종목
             </p>
           </div>
           <div className="flex items-center gap-4 text-right">
             <div>
               <div className="text-[10px] text-[var(--text-dim)] font-mono">잠복</div>
-              <div className="text-[15px] font-mono font-bold text-[#7C3AED]">{summary.stealth_count}</div>
+              <div className="text-[15px] font-mono font-bold text-[#7C3AED]">{data.stealth_count}</div>
             </div>
             <div>
-              <div className="text-[10px] text-[var(--text-dim)] font-mono">움직임</div>
-              <div className="text-[15px] font-mono font-bold text-[#2563EB]">{summary.moving_count}</div>
+              <div className="text-[10px] text-[var(--text-dim)] font-mono">이탈(상승)</div>
+              <div className="text-[15px] font-mono font-bold text-[#16A34A]">{data.gone_count}</div>
             </div>
             <div>
-              <div className="text-[10px] text-[var(--text-dim)] font-mono">전체 탐지</div>
-              <div className="text-[15px] font-mono font-bold text-[var(--text-primary)]">{summary.total_detected}</div>
+              <div className="text-[10px] text-[var(--text-dim)] font-mono">실패</div>
+              <div className="text-[15px] font-mono font-bold text-[#DC2626]">{data.failed_count}</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 서브 탭: 잠복 / 움직임 */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-        <nav className="flex gap-1 bg-[#F5F4F0] rounded-lg p-1 border border-[#E8E6E0]">
-          <button
-            onClick={() => setSubTab('stealth')}
-            className={`py-2 px-4 rounded-md text-[13px] font-bold transition-colors ${
-              subTab === 'stealth'
-                ? 'bg-[#7C3AED] text-white'
-                : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
-            }`}
-          >
-            잠복 ({summary.stealth_count})
-          </button>
-          <button
-            onClick={() => setSubTab('moving')}
-            className={`py-2 px-4 rounded-md text-[13px] font-bold transition-colors ${
-              subTab === 'moving'
-                ? 'bg-[#2563EB] text-white'
-                : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-white'
-            }`}
-          >
-            움직임 ({summary.moving_count})
-          </button>
-        </nav>
-        <span className="text-[11px] text-[var(--text-dim,#9CA3AF)] font-mono">
-          마지막 스캔: {timestamp}
-        </span>
-      </div>
-
       {/* 카드 리스트 */}
       {stocks.length === 0 ? (
         <div className="text-center text-[var(--text-muted)] text-sm font-mono py-8">
-          {subTab === 'stealth' ? '잠복 종목 없음' : '움직임 종목 없음'}
+          잠복 종목 없음
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {stocks.map((stock) => (
-            <StealthCard key={stock.code} stock={stock} />
+            <StealthCard key={stock.ticker} stock={stock} />
           ))}
         </div>
       )}
 
-      {/* 쌍매수 범례 */}
+      {/* 범례 */}
       <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E8E6E0)]">
         <span>&#9889; 금테 = 쌍매수(기관+외인 동시)</span>
-        <span className="text-[#DC2626]">I = 기관 순매수</span>
-        <span className="text-[#2563EB]">F = 외인 순매수</span>
-        <span>점수순 정렬 (100+최강 / 70+강함 / 50+보통)</span>
+        <span className="text-[#DC2626]">기관 순매수</span>
+        <span className="text-[#2563EB]">외인 순매수</span>
+        <span>기준: {data.date} | 합계 순매수 기준 정렬</span>
       </div>
     </div>
   )

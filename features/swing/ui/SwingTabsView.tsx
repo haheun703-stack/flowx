@@ -6,6 +6,7 @@ import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerfo
 import SwingDashboardView from "./SwingDashboardView"
 import CycleScanView from "./CycleScanView"
 import StealthScannerView from "./StealthScannerView"
+import ForeignFlowPanel from "./ForeignFlowPanel"
 
 const TABS = [
   { key: "dashboard", label: "시장 판단 & 전략" },
@@ -50,6 +51,16 @@ export function SwingTabsView() {
       {tab === "cycle" && (
         <>
           <CycleScanView />
+          <div className="max-w-[1400px] mx-auto px-3 md:px-6 mt-10 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] whitespace-nowrap">
+                외국인·기관 수급 X-Ray
+              </h2>
+              <div className="h-px flex-1 bg-[#E8E6E0]" />
+            </div>
+          </div>
+          <ForeignFlowPanel />
           <div className="max-w-[1400px] mx-auto px-3 md:px-6 mt-10 mb-4">
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-[#E8E6E0]" />

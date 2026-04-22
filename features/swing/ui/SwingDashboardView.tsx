@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import NxtPerformancePanel from './NxtPerformancePanel'
 import type { FibStock } from './FibShared'
 import {
   GRADE_STRONG_PICK,
@@ -563,7 +564,10 @@ export default function SwingDashboardView() {
         )
       })()}
 
-      {/* ═══ 3.5 매집 레이더 ═══ */}
+      {/* ═══ 3.5 NXT 성적표 ═══ */}
+      <NxtPerformancePanel />
+
+      {/* ═══ 3.6 매집 레이더 ═══ */}
       {(() => {
         const stocks = accumRadar?.stocks
         if (!stocks || !Array.isArray(stocks) || stocks.length === 0) {
