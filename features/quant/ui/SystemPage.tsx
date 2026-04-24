@@ -123,6 +123,7 @@ export default function SystemPage() {
   const [tab, setTab] = useState<TabKey>('quant')
   const [openAcc, setOpenAcc] = useState<string | null>(null)
   const [showAllBottom, setShowAllBottom] = useState(false)
+  const [showAllSurge, setShowAllSurge] = useState(false)
 
 
   const toggleAcc = (id: string) => setOpenAcc(openAcc === id ? null : id)
@@ -235,7 +236,7 @@ export default function SystemPage() {
               <p className="text-[10px] text-[#6B7280] mb-3">외인·기관·연기금 스마트머니 급변 감지</p>
               {surgeBuys.length > 0 ? (
                 <div className="space-y-2">
-                  {surgeBuys.map((p, i) => {
+                  {(showAllSurge ? surgeBuys : surgeBuys.slice(0, 10)).map((p, i) => {
                     const badge = SURGE_BADGE[p.supply_type] ?? { label: p.supply_type, bg: '#607D8B', text: '#fff' }
                     return (
                       <div key={p.ticker} className="border border-[#F0EDE8] rounded-lg p-3">
@@ -258,6 +259,12 @@ export default function SystemPage() {
                       </div>
                     )
                   })}
+                  {surgeBuys.length > 10 && (
+                    <button onClick={() => setShowAllSurge(!showAllSurge)}
+                      className="w-full py-2 rounded-lg border border-[#E8E6E0] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
+                      {showAllSurge ? '접기' : `${surgeBuys.length - 10}개 더보기`}
+                    </button>
+                  )}
                 </div>
               ) : (
                 <p className="text-[13px] text-[#9CA3AF] py-6 text-center">스마트 수급 포착 종목 없음 — 쉬는 것도 전략입니다</p>
