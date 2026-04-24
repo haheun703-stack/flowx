@@ -26,14 +26,16 @@ interface JarvisData {
 }
 
 
-/* ── NXT / Bottom / ETF Types ── */
-interface NxtPick {
+/* ── SupplySurge / Bottom / ETF Types ── */
+interface SupplySurgePick {
   date: string; ticker: string; name: string; close: number
-  ret_d0: number; vol_ratio: number; ma20_dev: number; rsi: number
-  tv: number; foreign_net: number; inst_net: number
-  foreign_streak: number; inst_streak: number; dual_streak: number
-  foreign_cum: number; inst_cum: number
-  accum_score: number; final_score: number
+  ret_d0: number; supply_type: string; base_score: number
+  tech_score: number; streak_bonus: number; final_score: number
+  fgn: number; inst: number; pension: number
+  finance: number; corp: number; retail: number
+  cum_fgn_5d: number; cum_inst_5d: number; cum_pension_5d: number
+  ma20_dev: number; rsi: number; vol_ratio: number
+  tech_flags: string; signal: string
 }
 
 interface BottomPick {
@@ -68,6 +70,15 @@ type TabKey = (typeof TABS)[number]['key']
 
 
 const RANK_COLOR = ['#DC2626', '#EF4444', '#F59E0B', '#6B7280', '#6B7280']
+
+const SURGE_BADGE: Record<string, { label: string; bg: string; text: string }> = {
+  'A_쌍끌이':    { label: '쌍끌이',   bg: '#FF4444', text: '#fff' },
+  'B_기관연기금': { label: '스마트머니', bg: '#FF8C00', text: '#fff' },
+  'C_3주체합류':  { label: '3주체',    bg: '#9C27B0', text: '#fff' },
+  'D_외인폭발':   { label: '외인폭발',  bg: '#2196F3', text: '#fff' },
+  'E_연기금매집':  { label: '연기금',   bg: '#4CAF50', text: '#fff' },
+  'F_금투기타':   { label: '금투',     bg: '#607D8B', text: '#fff' },
+}
 
 const TEMP_CFG: Record<string, { bg: string; text: string }> = {
   HOT: { bg: '#DC2626', text: '#fff' },
@@ -104,7 +115,8 @@ export default function SystemPage() {
   const [ranking, setRanking] = useState<MarketRankingData | null>(null)
   const [bluechip, setBluechip] = useState<BluechipCheckupData | null>(null)
   const [jarvis, setJarvis] = useState<JarvisData | null>(null)
-  const [nxtPicks, setNxtPicks] = useState<NxtPick[]>([])
+  const [surgeBuys, setSurgeBuys] = useState<SupplySurgePick[]>([])
+  const [surgeSells, setSurgeSells] = useState<SupplySurgePick[]>([])
   const [bottomPicks, setBottomPicks] = useState<BottomPick[]>([])
   const [etfStrategy, setEtfStrategy] = useState<EtfStrategy | null>(null)
   const [loading, setLoading] = useState(true)
@@ -125,7 +137,7 @@ export default function SystemPage() {
           fetch('/api/quant/market-ranking', { signal: sig }),
           fetch('/api/quant/bluechip-checkup', { signal: sig }),
           fetch('/api/quant-jarvis', { signal: sig }),
-          fetch('/api/quant/nxt-picks', { signal: sig }),
+          fetch('/api/supply-surge', { signal: sig }),
           fetch('/api/quant/bottom-picks', { signal: sig }),
           fetch('/api/quant/etf-strategy', { signal: sig }),
         ])
@@ -142,7 +154,9 @@ export default function SystemPage() {
           const j = await r[3].value.json(); setJarvis(j ?? null)
         }
         if (r[4].status === 'fulfilled' && r[4].value.ok) {
-          const j = await r[4].value.json(); setNxtPicks(j.items ?? [])
+          const j = await r[4].value.json()
+          setSurgeBuys(j.buys ?? [])
+          setSurgeSells(j.sells ?? [])
         }
         if (r[5].status === 'fulfilled' && r[5].value.ok) {
           const j = await r[5].value.json(); setBottomPicks(j.items ?? [])
@@ -213,40 +227,63 @@ export default function SystemPage() {
 
           {/* ══════ ZONE B: 30초 분석 ══════ */}
 
-          {/* Box 1: NXT 주목 종목 */}
+          {/* Box 1: 스마트 수급 포착 */}
           <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
-            style={{ borderLeft: '3px solid #FFD700' }}>
+            style={{ borderLeft: '3px solid #FF6B35' }}>
             <div className="px-5 py-4">
-              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">NXT 주목 종목</h3>
-              <p className="text-[10px] text-[#6B7280] mb-3">수급 릴레이가 시작된 종목 — 야간+장중 통합 거래 가능</p>
-              {nxtPicks.length > 0 ? (
+              <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">스마트 수급 포착</h3>
+              <p className="text-[10px] text-[#6B7280] mb-3">외인·기관·연기금 스마트머니 급변 감지</p>
+              {surgeBuys.length > 0 ? (
                 <div className="space-y-2">
-                  {nxtPicks.map((p, i) => (
-                    <div key={p.ticker} className="border border-[#F0EDE8] rounded-lg p-3">
-                      <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                        <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
-                          style={{ backgroundColor: RANK_COLOR[i] ?? '#6B7280' }}>{i + 1}</span>
-                        <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
-                        <span className="text-[14px] font-bold tabular-nums" style={{ color: '#B8860B' }}>{p.final_score.toFixed(0)}점</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ backgroundColor: 'rgba(74,144,217,0.15)', color: '#4A90D9' }}>통합</span>
-                        <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원</span>
+                  {surgeBuys.map((p, i) => {
+                    const badge = SURGE_BADGE[p.supply_type] ?? { label: p.supply_type, bg: '#607D8B', text: '#fff' }
+                    return (
+                      <div key={p.ticker} className="border border-[#F0EDE8] rounded-lg p-3">
+                        <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                            style={{ backgroundColor: RANK_COLOR[i] ?? '#6B7280' }}>{i + 1}</span>
+                          <span className="text-[14px] font-bold text-[#1A1A2E]">{p.name}</span>
+                          <span className="text-[14px] font-bold tabular-nums" style={{ color: '#FF6B35' }}>{(p.final_score ?? 0).toFixed(0)}점</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ backgroundColor: badge.bg, color: badge.text }}>{badge.label}</span>
+                          <span className="text-[12px] font-bold text-[#1A1A2E] ml-auto tabular-nums">{fmtP(p.close)}원</span>
+                        </div>
+                        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
+                          <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
+                          <div><span className="text-[#9CA3AF]">거래량</span> <span className="font-bold tabular-nums">{(p.vol_ratio ?? 0).toFixed(1)}x</span></div>
+                          <div><span className="text-[#9CA3AF]">MA20</span> <span className={`font-bold tabular-nums ${(p.ma20_dev ?? 0) >= 0 ? 'text-[#DC2626]' : 'text-[#2563EB]'}`}>{(p.ma20_dev ?? 0) >= 0 ? '+' : ''}{(p.ma20_dev ?? 0).toFixed(1)}%</span></div>
+                          <div><span className="text-[#9CA3AF]">외인</span> <span className={`font-bold tabular-nums ${(p.fgn ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>{(p.fgn ?? 0) >= 0 ? '+' : ''}{(p.fgn ?? 0).toFixed(0)}억</span></div>
+                          <div><span className="text-[#9CA3AF]">기관</span> <span className={`font-bold tabular-nums ${(p.inst ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>{(p.inst ?? 0) >= 0 ? '+' : ''}{(p.inst ?? 0).toFixed(0)}억</span></div>
+                          <div><span className="text-[#9CA3AF]">연기금</span> <span className={`font-bold tabular-nums ${(p.pension ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>{(p.pension ?? 0) >= 0 ? '+' : ''}{(p.pension ?? 0).toFixed(0)}억</span></div>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
-                        <div><span className="text-[#9CA3AF]">RSI</span> <span className="font-bold tabular-nums">{(p.rsi ?? 0).toFixed(0)}</span></div>
-                        <div><span className="text-[#9CA3AF]">거래량</span> <span className="font-bold tabular-nums">{(p.vol_ratio ?? 0).toFixed(1)}x</span></div>
-                        <div><span className="text-[#9CA3AF]">MA20</span> <span className={`font-bold tabular-nums ${(p.ma20_dev ?? 0) >= 0 ? 'text-[#DC2626]' : 'text-[#2563EB]'}`}>{(p.ma20_dev ?? 0) >= 0 ? '+' : ''}{(p.ma20_dev ?? 0).toFixed(1)}%</span></div>
-                        <div><span className="text-[#9CA3AF]">외인</span> <span className={`font-bold tabular-nums ${(p.foreign_streak ?? 0) > 0 ? 'text-[#2563EB]' : 'text-[#9CA3AF]'}`}>{p.foreign_streak ?? 0}일</span></div>
-                        <div><span className="text-[#9CA3AF]">기관</span> <span className={`font-bold tabular-nums ${(p.inst_streak ?? 0) > 0 ? 'text-[#EA580C]' : 'text-[#9CA3AF]'}`}>{p.inst_streak ?? 0}일</span></div>
-                        {(p.dual_streak ?? 0) > 0 && <div><span className="text-[#9CA3AF]">쌍끌이</span> <span className="font-bold tabular-nums text-[#7C3AED]">{p.dual_streak}일</span></div>}
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               ) : (
-                <p className="text-[13px] text-[#9CA3AF] py-6 text-center">주목 종목 없음 — 쉬는 것도 전략입니다</p>
+                <p className="text-[13px] text-[#9CA3AF] py-6 text-center">스마트 수급 포착 종목 없음 — 쉬는 것도 전략입니다</p>
               )}
             </div>
           </div>
+
+          {/* 매도 경고: 개인추격 매도 시그널 */}
+          {surgeSells.length > 0 && (
+            <div className="rounded-xl border border-[#FDE68A] overflow-hidden" style={{ backgroundColor: '#FFF3E0' }}>
+              <div className="px-5 py-3">
+                <h3 className="text-[13px] font-bold text-[#D97706] mb-2">개인추격 매도 시그널 (보유 시 매도 검토)</h3>
+                <div className="space-y-1">
+                  {surgeSells.map((p) => (
+                    <div key={p.ticker} className="flex items-center gap-3 text-[12px] flex-wrap">
+                      <span className="font-bold text-[#1A1A2E]">{p.name}</span>
+                      <span className="font-bold tabular-nums text-[#1A1A2E]">{fmtP(p.close)}원</span>
+                      <span className={`tabular-nums ${(p.retail ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>개인 {(p.retail ?? 0) >= 0 ? '+' : ''}{(p.retail ?? 0).toFixed(0)}억</span>
+                      <span className={`tabular-nums ${(p.fgn ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>외인 {(p.fgn ?? 0) >= 0 ? '+' : ''}{(p.fgn ?? 0).toFixed(0)}억</span>
+                      <span className={`tabular-nums ${(p.inst ?? 0) >= 0 ? 'text-[#FF4444]' : 'text-[#2196F3]'}`}>기관 {(p.inst ?? 0) >= 0 ? '+' : ''}{(p.inst ?? 0).toFixed(0)}억</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Box 2: 바닥에서 고개 든 종목 */}
           <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"

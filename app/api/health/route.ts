@@ -32,6 +32,7 @@ const TABLE_CONFIG = [
   { table: 'dashboard_swing', bot: '단타봇', schedule: '16:40', dateCol: 'date', orderCol: 'date' },
   { table: 'dashboard_smart_money', bot: '정보봇', schedule: '16:25', dateCol: 'date', orderCol: 'date' },
   { table: 'short_signals', bot: '퀀트봇', schedule: '17:15', dateCol: 'date', orderCol: 'date' },
+  { table: 'quant_supply_surge', bot: '퀀트봇', schedule: '17:10', dateCol: 'date', orderCol: 'date' },
   // 단타봇
   { table: 'intelligence_daytrading_picks', bot: '단타봇', schedule: '07:35/16:45', dateCol: 'date', orderCol: 'date' },
   { table: 'intelligence_cycle_scan', bot: '단타봇', schedule: '16:40', dateCol: 'date', orderCol: 'date' },
