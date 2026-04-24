@@ -22,6 +22,7 @@ const TABLE_CONFIG = [
   { table: 'market_52w_highs_lows', bot: '정보봇', schedule: '17:06', dateCol: 'date', orderCol: 'date' },
   { table: 'program_trading', bot: '정보봇', schedule: '16:23', dateCol: 'date', orderCol: 'date' },
   { table: 'deep_briefing', bot: '정보봇', schedule: '16:08', dateCol: 'date', orderCol: 'date' },
+  { table: 'blog_stock_analysis', bot: '정보봇', schedule: '장후', dateCol: 'date', orderCol: 'date' },
   { table: 'nationality_charts', bot: '정보봇', schedule: '16:57', dateCol: 'date', orderCol: 'date' },
   // 퀀트봇
   { table: 'quant_jarvis', bot: '퀀트봇', schedule: '17:15', dateCol: 'date', orderCol: 'date' },
