@@ -95,15 +95,15 @@ function retClr(v: number): string {
 function FireBar({ label, value, max }: { label: string; value: number; max: number }) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100))
   return (
-    <div className="flex items-center gap-1.5 text-[11px]">
-      <span className="w-[42px] text-[#6B7280] font-medium">{label}</span>
-      <div className="flex-1 h-[6px] bg-[#f0f0f0] rounded-full overflow-hidden">
+    <div className="flex items-center gap-1.5 text-[13px]">
+      <span className="w-[50px] text-[#6B7280] font-medium">{label}</span>
+      <div className="flex-1 h-[7px] bg-[#f0f0f0] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct}%`, background: gaugeColor((value / max) * 100) }}
         />
       </div>
-      <span className="w-[28px] text-right tabular-nums text-[#1A1A2E] font-bold">{Math.round(value)}</span>
+      <span className="w-[30px] text-right tabular-nums text-[#1A1A2E] font-bold">{Math.round(value)}</span>
     </div>
   )
 }
@@ -122,8 +122,8 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[14px] font-bold text-[#1A1A2E]">{s.sector}</span>
-        <span className="text-[20px] font-black tabular-nums" style={{ color: gc.color }}>
+        <span className="text-[16px] font-bold text-[#1A1A2E]">{s.sector}</span>
+        <span className="text-[24px] font-black tabular-nums" style={{ color: gc.color }}>
           {Math.round(s.fire_score)}
         </span>
       </div>
@@ -137,7 +137,7 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
           />
         </div>
         <span
-          className="text-[10px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap"
+          className="text-[12px] font-bold px-2 py-0.5 rounded-md whitespace-nowrap"
           style={{ color: gc.color, background: gc.bg }}
         >
           {gc.label}
@@ -153,35 +153,35 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
       </div>
 
       {s.overheat_penalty < 0 && (
-        <div className="text-[10px] text-[#FF4444] font-bold mb-2">
+        <div className="text-[12px] text-[#FF4444] font-bold mb-2">
           과열 감산 {s.overheat_penalty.toFixed(0)}
         </div>
       )}
 
       {/* 수급 */}
-      <div className="grid grid-cols-3 gap-1 text-[11px] mb-2">
+      <div className="grid grid-cols-3 gap-1 text-[13px] mb-2">
         <div>
           <span className="text-[#9ca3b8]">외인</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.fgn_5d) >= 100 ? 'text-[13px]' : ''}`} style={{ color: flowClr(s.fgn_5d) }}>
+          <div className={`font-bold tabular-nums ${Math.abs(s.fgn_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.fgn_5d) }}>
             {flowFmt(s.fgn_5d)}
           </div>
         </div>
         <div>
           <span className="text-[#9ca3b8]">기관</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.inst_5d) >= 100 ? 'text-[13px]' : ''}`} style={{ color: flowClr(s.inst_5d) }}>
+          <div className={`font-bold tabular-nums ${Math.abs(s.inst_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.inst_5d) }}>
             {flowFmt(s.inst_5d)}
           </div>
         </div>
         <div>
           <span className="text-[#9ca3b8]">연기금</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.pension_5d) >= 100 ? 'text-[13px]' : ''}`} style={{ color: flowClr(s.pension_5d) }}>
+          <div className={`font-bold tabular-nums ${Math.abs(s.pension_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.pension_5d) }}>
             {flowFmt(s.pension_5d)}
           </div>
         </div>
       </div>
 
       {/* 기술 지표 */}
-      <div className="flex items-center gap-3 text-[11px] text-[#6B7280] mb-2">
+      <div className="flex items-center gap-3 text-[13px] text-[#6B7280] mb-2">
         <span>MA20 <b className="text-[#1A1A2E]">{s.ma20_avg_dev >= 0 ? '+' : ''}{s.ma20_avg_dev.toFixed(1)}%</b></span>
         <span>RSI <b className="text-[#1A1A2E]">{Math.round(s.rsi_avg)}</b></span>
       </div>
@@ -193,7 +193,7 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
             href={`https://finance.naver.com/item/main.naver?code=${s.etf_code}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[11px] text-[#2563EB] hover:underline"
+            className="text-[13px] text-[#2563EB] hover:underline"
             onClick={e => e.stopPropagation()}
           >
             📈 {s.etf_name}
@@ -203,14 +203,14 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
               href={`https://finance.naver.com/item/main.naver?code=${s.leverage_etf_code}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] text-[#FF4444] hover:underline ml-2"
+              className="text-[13px] text-[#FF4444] hover:underline ml-2"
               onClick={e => e.stopPropagation()}
             >
               🔥 {s.leverage_etf_name}
             </a>
           )}
           {s.etf_recommend && (
-            <div className="text-[10px] text-[#6B7280] mt-0.5">{s.etf_recommend}</div>
+            <div className="text-[12px] text-[#6B7280] mt-0.5">{s.etf_recommend}</div>
           )}
         </div>
       )}
