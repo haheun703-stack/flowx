@@ -183,24 +183,24 @@ export default function ThemeSignalView() {
                 <div className="px-5 pb-5 space-y-4 border-t border-[#F0EDE8]">
                   {/* 미국 종목 상세 — 그리드 카드 */}
                   <div className="mt-4">
-                    <p className="text-[11px] font-bold text-[#6B7280] mb-2">미국 종목 상세</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <p className="text-[13px] font-bold text-[#6B7280] mb-2">미국 종목 상세</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {usStocks.map((u) => {
                         const isUp = u.change_pct >= 0
                         const volHigh = (u.volume_ratio ?? 0) >= 2.0
                         return (
-                          <div key={u.ticker} className="rounded-lg p-3 border"
+                          <div key={u.ticker} className="rounded-lg p-4 border"
                             style={{
                               backgroundColor: isUp ? '#FEF2F2' : '#EFF6FF',
                               borderColor: isUp ? '#FECACA' : '#BFDBFE',
                             }}>
-                            <p className="text-[13px] font-black text-[#1A1A2E] mb-1">{u.ticker}</p>
-                            <p className="text-[14px] font-bold text-[#1A1A2E] tabular-nums mb-1">{fmtUsd(u.close)}</p>
-                            <p className="text-[13px] font-bold tabular-nums" style={{ color: isUp ? '#EF4444' : '#3B82F6' }}>
+                            <p className="text-[16px] font-black text-[#1A1A2E] mb-1">{u.ticker}</p>
+                            <p className="text-[17px] font-bold text-[#1A1A2E] tabular-nums mb-1">{fmtUsd(u.close)}</p>
+                            <p className="text-[16px] font-bold tabular-nums" style={{ color: isUp ? '#EF4444' : '#3B82F6' }}>
                               {isUp ? '+' : ''}{u.change_pct.toFixed(2)}%
                             </p>
                             {u.volume_ratio != null && (
-                              <p className={`text-[11px] tabular-nums mt-1 ${volHigh ? 'font-bold text-[#EA580C]' : 'text-[#9CA3AF]'}`}>
+                              <p className={`text-[13px] tabular-nums mt-1 ${volHigh ? 'font-bold text-[#EA580C]' : 'text-[#9CA3AF]'}`}>
                                 거래량 {u.volume_ratio.toFixed(1)}x{volHigh ? ' !' : ''}
                               </p>
                             )}
@@ -208,7 +208,7 @@ export default function ThemeSignalView() {
                         )
                       })}
                     </div>
-                    <p className="text-[11px] text-[#6B7280] mt-2">
+                    <p className="text-[13px] text-[#6B7280] mt-2">
                       그룹 평균: <strong className={`${(s.us_avg_change ?? 0) >= 0 ? 'text-[#EF4444]' : 'text-[#3B82F6]'}`}>
                         {(s.us_avg_change ?? 0) >= 0 ? '+' : ''}{(s.us_avg_change ?? 0).toFixed(2)}%
                       </strong>
@@ -218,35 +218,35 @@ export default function ThemeSignalView() {
 
                   {/* 한국 관련주 — 상세 카드 */}
                   <div>
-                    <p className="text-[11px] font-bold text-[#6B7280] mb-2">한국 관련주 ({krStocks.length}종목)</p>
+                    <p className="text-[13px] font-bold text-[#6B7280] mb-2">한국 관련주 ({krStocks.length}종목)</p>
                     <div className="space-y-0 divide-y divide-[#F0EDE8] rounded-lg border border-[#E8E6E0] overflow-hidden">
                       {krStocks.map((k) => {
                         const actual = krActual?.find((a) => a.ticker === k.ticker)
                         const isUp = (k.prev_change ?? 0) >= 0
                         const fgnBig = Math.abs(k.foreign_net ?? 0) > 50000
                         return (
-                          <div key={k.ticker} className="px-4 py-3 bg-white hover:bg-[#FAFAF8] transition-colors">
+                          <div key={k.ticker} className="px-4 py-3.5 bg-white hover:bg-[#FAFAF8] transition-colors">
                             {/* 첫 줄: 종목명 + 가격 */}
-                            <div className="flex items-center gap-2 flex-wrap mb-1">
-                              <Link href={`/stock/${k.ticker}`} className="text-[13px] font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
+                            <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                              <Link href={`/stock/${k.ticker}`} className="text-[15px] font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
                                 {k.name}
                               </Link>
-                              <span className="text-[10px] text-[#9CA3AF]">({k.ticker})</span>
+                              <span className="text-[12px] text-[#9CA3AF]">({k.ticker})</span>
                               {k.price != null && (
-                                <span className="text-[13px] font-bold text-[#1A1A2E] tabular-nums ml-auto">
+                                <span className="text-[15px] font-bold text-[#1A1A2E] tabular-nums ml-auto">
                                   {fmtP(k.price)}원
                                 </span>
                               )}
                               {k.prev_change != null && (
-                                <span className={`text-[12px] font-bold tabular-nums ${isUp ? 'text-[#EF4444]' : 'text-[#3B82F6]'}`}>
+                                <span className={`text-[14px] font-bold tabular-nums ${isUp ? 'text-[#EF4444]' : 'text-[#3B82F6]'}`}>
                                   {isUp ? '▲' : '▼'}{isUp ? '+' : ''}{k.prev_change.toFixed(2)}%
                                 </span>
                               )}
                             </div>
                             {/* 둘째 줄: 관계 설명 */}
-                            <p className="text-[11px] text-[#6B7280] mb-1.5">{k.relation}</p>
+                            <p className="text-[13px] text-[#6B7280] mb-2">{k.relation}</p>
                             {/* 셋째 줄: 외인 + 기관 수급 */}
-                            <div className="flex items-center gap-3 flex-wrap text-[11px]">
+                            <div className="flex items-center gap-3 flex-wrap text-[13px]">
                               {k.foreign_net != null && k.foreign_net !== 0 && (
                                 <span className={`font-bold tabular-nums ${(k.foreign_net ?? 0) >= 0 ? 'text-[#3B82F6]' : 'text-[#EF4444]'}`}>
                                   외인 {(k.foreign_net ?? 0) >= 0 ? '+' : ''}{fmtP(k.foreign_net ?? 0)}주
