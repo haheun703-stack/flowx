@@ -63,6 +63,41 @@ function SummaryPanel({ items }: { items: NatItem[] }) {
 
   return (
     <div className="space-y-6">
+      {/* TOP 10 / WORST 10 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
+          <h3 className="text-[15px] font-bold text-green-700 mb-3">TOP 10 — 외국인 수급 최상위</h3>
+          <div className="space-y-1.5">
+            {top10.map((it, i) => (
+              <div key={it.code} className="flex items-center gap-2 py-1.5 border-b border-[#f0f0f0] last:border-0">
+                <span className="w-6 text-[12px] font-bold text-[#9ca3b8]">{i + 1}</span>
+                <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{it.name}</span>
+                <span className="text-[11px] text-[#9ca3b8]">{it.code}</span>
+                <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${scoreBg(it.nat_score)}`}>
+                  {it.nat_score?.toFixed(1) ?? '-'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
+          <h3 className="text-[15px] font-bold text-red-600 mb-3">WORST 10 — 외국인 이탈 경고</h3>
+          <div className="space-y-1.5">
+            {worst10.map((it, i) => (
+              <div key={it.code} className="flex items-center gap-2 py-1.5 border-b border-[#f0f0f0] last:border-0">
+                <span className="w-6 text-[12px] font-bold text-[#9ca3b8]">{i + 1}</span>
+                <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{it.name}</span>
+                <span className="text-[11px] text-[#9ca3b8]">{it.code}</span>
+                <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${scoreBg(it.nat_score)}`}>
+                  {it.nat_score?.toFixed(1) ?? '-'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* 점수 분포 바 */}
       <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
         <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">수급 점수 분포</h3>
@@ -111,40 +146,6 @@ function SummaryPanel({ items }: { items: NatItem[] }) {
         </div>
       </div>
 
-      {/* TOP 10 / WORST 10 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
-          <h3 className="text-[15px] font-bold text-green-700 mb-3">TOP 10 — 외국인 수급 최상위</h3>
-          <div className="space-y-1.5">
-            {top10.map((it, i) => (
-              <div key={it.code} className="flex items-center gap-2 py-1.5 border-b border-[#f0f0f0] last:border-0">
-                <span className="w-6 text-[12px] font-bold text-[#9ca3b8]">{i + 1}</span>
-                <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{it.name}</span>
-                <span className="text-[11px] text-[#9ca3b8]">{it.code}</span>
-                <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${scoreBg(it.nat_score)}`}>
-                  {it.nat_score?.toFixed(1) ?? '-'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white border border-[#e5e7ef] rounded-xl p-5">
-          <h3 className="text-[15px] font-bold text-red-600 mb-3">WORST 10 — 외국인 이탈 경고</h3>
-          <div className="space-y-1.5">
-            {worst10.map((it, i) => (
-              <div key={it.code} className="flex items-center gap-2 py-1.5 border-b border-[#f0f0f0] last:border-0">
-                <span className="w-6 text-[12px] font-bold text-[#9ca3b8]">{i + 1}</span>
-                <span className="text-[13px] font-bold text-[#1A1A2E] flex-1">{it.name}</span>
-                <span className="text-[11px] text-[#9ca3b8]">{it.code}</span>
-                <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${scoreBg(it.nat_score)}`}>
-                  {it.nat_score?.toFixed(1) ?? '-'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
