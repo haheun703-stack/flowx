@@ -93,17 +93,19 @@ function retClr(v: number): string {
 
 /* ── FIRE 미니바 ── */
 function FireBar({ label, value, max }: { label: string; value: number; max: number }) {
-  const pct = Math.max(0, Math.min(100, (value / max) * 100))
+  const ratio = max > 0 ? (value / max) * 100 : 0
+  const pct = Math.max(0, Math.min(100, ratio))
+  const isNegative = value < 0
   return (
     <div className="flex items-center gap-1.5 text-[13px]">
       <span className="w-[50px] text-[#6B7280] font-medium">{label}</span>
       <div className="flex-1 h-[7px] bg-[#f0f0f0] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: gaugeColor((value / max) * 100) }}
+          style={{ width: `${pct}%`, background: isNegative ? '#94a3b8' : gaugeColor(ratio) }}
         />
       </div>
-      <span className="w-[30px] text-right tabular-nums text-[#1A1A2E] font-bold">{Math.round(value)}</span>
+      <span className={`w-[30px] text-right tabular-nums font-bold ${isNegative ? 'text-[#DC2626]' : 'text-[#1A1A2E]'}`}>{Math.round(value)}</span>
     </div>
   )
 }

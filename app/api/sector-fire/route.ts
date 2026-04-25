@@ -27,7 +27,8 @@ export async function GET() {
       .order('fire_score', { ascending: false })
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error('[API /sector-fire] Supabase error:', error.message)
+      return NextResponse.json({ error: '섹터 발화 데이터 조회 오류' }, { status: 500 })
     }
 
     return NextResponse.json({ data: data ?? [], date })

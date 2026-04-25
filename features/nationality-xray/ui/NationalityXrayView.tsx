@@ -257,7 +257,7 @@ export function NationalityXrayView() {
     const d = new Date(date)
     const now = new Date()
     const diff = (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24)
-    return diff > 3
+    return diff > 30
   })()
 
   const handleCloseModal = useCallback(() => setModalItem(null), [])
@@ -283,7 +283,7 @@ export function NationalityXrayView() {
             <span className="text-[12px] text-[#9ca3b8]">{date} 기준</span>
             {isStale && (
               <span className="text-[11px] px-2 py-0.5 rounded bg-amber-50 text-amber-600 font-medium">
-                3일 이상 미갱신
+                30일 이상 미갱신
               </span>
             )}
           </div>

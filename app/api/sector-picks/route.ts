@@ -35,7 +35,8 @@ export async function GET(req: Request) {
     const { data, error } = await query
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      console.error('[API /sector-picks] Supabase error:', error.message)
+      return NextResponse.json({ error: '섹터 종목 데이터 조회 오류' }, { status: 500 })
     }
 
     return NextResponse.json({ data: data ?? [], date })
