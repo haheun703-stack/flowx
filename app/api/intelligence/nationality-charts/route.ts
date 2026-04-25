@@ -9,8 +9,19 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const dateParam = searchParams.get('date')
 
-    // 날짜 파라미터가 없으면 오늘(KST) 기준
-    const date = dateParam || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' })
+    // 날짜 파라미터가 없으면 오늘(KST) 기준, 주말/공휴일은 최신 날짜로 폴백
+    const today = dateParam || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' })
+
+    // 요청 날짜 이하에서 가장 최근 데이터 날짜 조회
+    const { data: latestRow } = await supabase
+      .from('nationality_charts')
+      .select('date')
+      .lte('date', today)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single()
+
+    const date = latestRow?.date ?? today
 
     const { data: items, error } = await supabase
       .from('nationality_charts')
