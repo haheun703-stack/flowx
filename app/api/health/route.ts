@@ -31,6 +31,8 @@ const TABLE_CONFIG = [
   { table: 'quant_market_ranking', bot: '퀀트봇', schedule: '17:10', dateCol: 'date', orderCol: 'date' },
   { table: 'quant_bluechip_checkup', bot: '퀀트봇', schedule: '17:10', dateCol: 'date', orderCol: 'date' },
   { table: 'quant_scenario_dashboard', bot: '퀀트봇', schedule: '17:30', dateCol: 'date', orderCol: 'date' },
+  { table: 'quant_sector_fire', bot: '퀀트봇', schedule: '16:30', dateCol: 'date', orderCol: 'date' },
+  { table: 'quant_sector_picks', bot: '퀀트봇', schedule: '16:30', dateCol: 'date', orderCol: 'date' },
   { table: 'dashboard_swing', bot: '단타봇', schedule: '16:40', dateCol: 'date', orderCol: 'date' },
   { table: 'dashboard_smart_money', bot: '정보봇', schedule: '16:25', dateCol: 'date', orderCol: 'date' },
   { table: 'short_signals', bot: '퀀트봇', schedule: '17:15', dateCol: 'date', orderCol: 'date' },

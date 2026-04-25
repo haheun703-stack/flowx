@@ -6,7 +6,7 @@ import CrashBounceView from './CrashBounceView'
 import AlphaSmartMoney from './AlphaSmartMoney'
 import { type MarketRankingData } from '@/features/market-summary/ui/MarketRankingPanel'
 import { type BluechipCheckupData } from './BluechipCheckupPanel'
-import SectorRotationView from '@/features/swing/ui/SectorRotationView'
+import SectorFireView from './SectorFireView'
 import type { AlphaScannerData } from './alpha-types'
 import BluechipInspectionTab from './BluechipInspectionTab'
 import SmallcapThemeTab from './SmallcapThemeTab'
@@ -63,7 +63,7 @@ const TABS = [
   { key: 'crash', label: '급락반등' },
   { key: 'bluechip', label: '대형주 피보나치' },
   { key: 'smallcap', label: '소형주 피보나치' },
-  { key: 'sector', label: '섹터 로테이션' },
+  { key: 'sector', label: '섹터 발화(FIRE)' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -594,7 +594,7 @@ export default function SystemPage() {
       {tab === 'crash' && <CrashBounceView />}
       {tab === 'bluechip' && <BluechipInspectionTab bluechip={bluechip} />}
       {tab === 'smallcap' && <SmallcapThemeTab bluechip={bluechip} />}
-      {tab === 'sector' && <SectorRotationView />}
+      {tab === 'sector' && <SectorFireView />}
     </div>
   )
 }
