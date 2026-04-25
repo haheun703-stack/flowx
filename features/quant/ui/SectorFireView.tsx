@@ -159,41 +159,41 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
       )}
 
       {/* 수급 */}
-      <div className="grid grid-cols-3 gap-1 text-[13px] mb-2">
+      <div className="grid grid-cols-3 gap-1 text-[15px] mb-3">
         <div>
-          <span className="text-[#9ca3b8]">외인</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.fgn_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.fgn_5d) }}>
+          <span className="text-[13px] text-[#9ca3b8]">외인</span>
+          <div className={`font-bold tabular-nums ${Math.abs(s.fgn_5d) >= 100 ? 'text-[17px]' : ''}`} style={{ color: flowClr(s.fgn_5d) }}>
             {flowFmt(s.fgn_5d)}
           </div>
         </div>
         <div>
-          <span className="text-[#9ca3b8]">기관</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.inst_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.inst_5d) }}>
+          <span className="text-[13px] text-[#9ca3b8]">기관</span>
+          <div className={`font-bold tabular-nums ${Math.abs(s.inst_5d) >= 100 ? 'text-[17px]' : ''}`} style={{ color: flowClr(s.inst_5d) }}>
             {flowFmt(s.inst_5d)}
           </div>
         </div>
         <div>
-          <span className="text-[#9ca3b8]">연기금</span>
-          <div className={`font-bold tabular-nums ${Math.abs(s.pension_5d) >= 100 ? 'text-[15px]' : ''}`} style={{ color: flowClr(s.pension_5d) }}>
+          <span className="text-[13px] text-[#9ca3b8]">연기금</span>
+          <div className={`font-bold tabular-nums ${Math.abs(s.pension_5d) >= 100 ? 'text-[17px]' : ''}`} style={{ color: flowClr(s.pension_5d) }}>
             {flowFmt(s.pension_5d)}
           </div>
         </div>
       </div>
 
       {/* 기술 지표 */}
-      <div className="flex items-center gap-3 text-[13px] text-[#6B7280] mb-2">
+      <div className="flex items-center gap-3 text-[15px] text-[#6B7280] mb-3">
         <span>MA20 <b className="text-[#1A1A2E]">{s.ma20_avg_dev >= 0 ? '+' : ''}{s.ma20_avg_dev.toFixed(1)}%</b></span>
         <span>RSI <b className="text-[#1A1A2E]">{Math.round(s.rsi_avg)}</b></span>
       </div>
 
       {/* ETF 추천 */}
       {s.etf_code && s.etf_name && (
-        <div className="border-t border-[#f0f0f0] pt-2 mt-1">
+        <div className="border-t border-[#f0f0f0] pt-3 mt-1">
           <a
             href={`https://finance.naver.com/item/main.naver?code=${s.etf_code}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[13px] text-[#2563EB] hover:underline"
+            className="text-[15px] text-[#2563EB] hover:underline"
             onClick={e => e.stopPropagation()}
           >
             📈 {s.etf_name}
@@ -203,14 +203,14 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
               href={`https://finance.naver.com/item/main.naver?code=${s.leverage_etf_code}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] text-[#FF4444] hover:underline ml-2"
+              className="text-[15px] text-[#FF4444] hover:underline ml-2"
               onClick={e => e.stopPropagation()}
             >
               🔥 {s.leverage_etf_name}
             </a>
           )}
           {s.etf_recommend && (
-            <div className="text-[12px] text-[#6B7280] mt-0.5">{s.etf_recommend}</div>
+            <div className="text-[14px] text-[#6B7280] mt-1">{s.etf_recommend}</div>
           )}
         </div>
       )}
