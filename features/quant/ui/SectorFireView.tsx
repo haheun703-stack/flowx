@@ -76,8 +76,8 @@ function flowFmt(v: number): string {
 }
 
 function flowClr(v: number): string {
-  if (v > 0) return '#00ff88'
-  if (v < 0) return '#ff3b5c'
+  if (v > 0) return '#DC2626'
+  if (v < 0) return '#2563EB'
   return '#6B7280'
 }
 
