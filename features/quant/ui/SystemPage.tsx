@@ -60,10 +60,10 @@ interface EtfStrategy {
 /* ── Constants ── */
 const TABS = [
   { key: 'quant', label: '퀀트시스템' },
+  { key: 'sector', label: '섹터 발화(FIRE)' },
   { key: 'crash', label: '급락반등' },
   { key: 'bluechip', label: '대형주 피보나치' },
   { key: 'smallcap', label: '소형주 피보나치' },
-  { key: 'sector', label: '섹터 발화(FIRE)' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
