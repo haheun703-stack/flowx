@@ -385,7 +385,17 @@ export default function SwingDashboardView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-5">
 
-      {/* ═══ 1. BRAIN AI 오늘의 결론 ═══ */}
+      {/* ═══ A. 달러-환율 모니터 ═══ */}
+      {data.fx_monitor && data.fx_monitor.dxy ? (
+        <FxMonitorSection fx={data.fx_monitor} />
+      ) : (
+        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+          <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-2">💲 달러-환율 모니터</h2>
+          <p className="text-[13px] text-[#9CA3AF]">데이터 수집 중입니다. 16:45 이후 갱신됩니다.</p>
+        </section>
+      )}
+
+      {/* ═══ B. BRAIN AI 오늘의 결론 ═══ */}
       <section
         className="rounded-xl p-5"
         style={{ backgroundColor: hero.bg, border: `1px solid ${hero.border}` }}
@@ -441,6 +451,73 @@ export default function SwingDashboardView() {
           <p className="text-[13px] text-[#6B7280] mt-2">{data.regime_desc}</p>
         )}
       </section>
+
+      {/* ═══ B-2. 포트폴리오 + 센서 ═══ */}
+      {(() => {
+        const p = data.portfolio as { current_picks?: number; brain_cash_ratio?: number; total_trades?: number; win_rate?: number } | undefined
+        const hasSensor = (data.smart_money_score ?? 0) !== 0 || (data.stress_index ?? 0) !== 0 || (data.liquidity_score ?? 0) !== 0 || (data.rotation_signal && data.rotation_signal !== '')
+        if (!p?.total_trades && !hasSensor) return null
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* 포트폴리오 */}
+            {p?.total_trades != null && p.total_trades > 0 && (
+              <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+                <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-2">모델 포트폴리오</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-[#F9FAFB] rounded-lg p-3 text-center">
+                    <p className="text-[11px] text-[#6B7280]">추천 종목</p>
+                    <p className="text-[22px] font-bold text-[#1A1A2E] tabular-nums">{p.current_picks ?? 0}</p>
+                  </div>
+                  <div className="bg-[#F9FAFB] rounded-lg p-3 text-center">
+                    <p className="text-[11px] text-[#6B7280]">현금 비율</p>
+                    <p className="text-[22px] font-bold text-[#1A1A2E] tabular-nums">{p.brain_cash_ratio ?? 0}%</p>
+                  </div>
+                  <div className="bg-[#F9FAFB] rounded-lg p-3 text-center col-span-2">
+                    <p className="text-[11px] text-[#6B7280]">승률</p>
+                    <p className="text-[22px] font-bold tabular-nums" style={{ color: (p.win_rate ?? 0) >= 60 ? '#16A34A' : '#D97706' }}>
+                      {p.win_rate ?? 0}% <span className="text-[13px] text-[#6B7280]">({p.total_trades}건)</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* 센서 (값이 0이 아닐 때만) */}
+            {hasSensor && (
+              <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+                <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-2">시장 센서</h3>
+                <div className="space-y-2">
+                  {(data.smart_money_score ?? 0) !== 0 && (
+                    <div className="flex items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-2.5">
+                      <span className="text-[13px] text-[#6B7280]">스마트머니</span>
+                      <span className="text-[15px] font-bold text-[#1A1A2E]">{data.smart_money_score} <span className="text-[12px] text-[#6B7280]">{data.smart_money_signal}</span></span>
+                    </div>
+                  )}
+                  {(data.stress_index ?? 0) !== 0 && (
+                    <div className="flex items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-2.5">
+                      <span className="text-[13px] text-[#6B7280]">스트레스</span>
+                      <span className="text-[15px] font-bold tabular-nums" style={{ color: data.stress_level === 'HIGH' ? '#DC2626' : data.stress_level === 'ELEVATED' ? '#D97706' : '#16A34A' }}>
+                        {data.stress_index.toFixed(1)} <span className="text-[12px]">{data.stress_level}</span>
+                      </span>
+                    </div>
+                  )}
+                  {data.rotation_signal && data.rotation_signal !== '' && (
+                    <div className="flex items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-2.5">
+                      <span className="text-[13px] text-[#6B7280]">로테이션</span>
+                      <span className="text-[15px] font-bold text-[#1A1A2E]">{data.rotation_signal}</span>
+                    </div>
+                  )}
+                  {(data.liquidity_score ?? 0) !== 0 && (
+                    <div className="flex items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-2.5">
+                      <span className="text-[13px] text-[#6B7280]">유동성</span>
+                      <span className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{data.liquidity_score}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
       {/* ═══ 2. 수급 인텔리전스 ═══ */}
       {flowData && flowData.top_stocks?.length > 0 && (
@@ -832,12 +909,35 @@ export default function SwingDashboardView() {
         )
       })()}
 
-      {/* ═══ 7. 달러-환율 모니터 ═══ */}
-      {data.fx_monitor && data.fx_monitor.dxy && (
-        <FxMonitorSection fx={data.fx_monitor} />
+      {/* ═══ C-2. 5대 분석 ═══ */}
+      {data.analysis && typeof data.analysis === 'object' && Object.values(data.analysis).some(v => v) && (
+        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+          <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">5대 분석</h2>
+          <div className="space-y-2">
+            {([
+              { key: 'flow_summary', label: '수급', icon: '📊' },
+              { key: 'risk_summary', label: '리스크', icon: '⚠️' },
+              { key: 'macro_summary', label: '매크로', icon: '🌐' },
+              { key: 'sector_summary', label: '섹터', icon: '🏭' },
+              { key: 'commodity_summary', label: '원자재', icon: '🛢️' },
+            ] as const).map(({ key, label, icon }) => {
+              const val = (data.analysis as Record<string, string>)[key]
+              if (!val) return null
+              return (
+                <div key={key} className="flex items-start gap-2.5 bg-[#F9FAFB] rounded-lg px-4 py-3">
+                  <span className="text-[16px] shrink-0 mt-0.5">{icon}</span>
+                  <div>
+                    <span className="text-[13px] font-bold text-[#1A1A2E]">{label}</span>
+                    <p className="text-[13px] text-[#6B7280] mt-0.5">{val}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
       )}
 
-      {/* ═══ 8. 주목 종목 ═══ */}
+      {/* ═══ D. 주목 종목 ═══ */}
       {krxPicks?.length > 0 && (
         <section>
           <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">
