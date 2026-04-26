@@ -40,11 +40,11 @@ function loadEnv() {
 loadEnv()
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
 const FRED_API_KEY = process.env.FRED_API_KEY // 선택: https://fred.stlouisfed.org/docs/api/api_key.html
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error('❌ SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY 환경변수 필요')
+  console.error('❌ SUPABASE_URL / SUPABASE_SERVICE_KEY 환경변수 필요')
   process.exit(1)
 }
 
