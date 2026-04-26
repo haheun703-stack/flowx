@@ -323,6 +323,7 @@ export default function SwingDashboardView() {
   const [flowData, setFlowData] = useState<FlowIntensityData | null>(null)
   const [swingSystem, setSwingSystem] = useState<SwingSystemData | null>(null)
   const [accumRadar, setAccumRadar] = useState<AccumRadarData | null>(null)
+  const [history, setHistory] = useState<{ date: string; brain_pct: number; brain_capped_pct?: number | null; brain_verdict: string; alloc_swing: number; alloc_gold_etf: number; alloc_inverse: number; alloc_group_etf: number; alloc_small_cap: number; alloc_cash: number }[]>([])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -335,6 +336,7 @@ export default function SwingDashboardView() {
           fetch('/api/intelligence/flow-intensity', { signal: sig }),
           fetch('/api/intelligence/swing-system', { signal: sig }),
           fetch('/api/intelligence/accumulation-radar', { signal: sig }),
+          fetch('/api/swing-dashboard/history', { signal: sig }),
         ])
         if (r[0].status === 'fulfilled' && r[0].value.ok) {
           const j = await r[0].value.json(); setData(j.data ?? null)
@@ -350,6 +352,9 @@ export default function SwingDashboardView() {
         }
         if (r[4].status === 'fulfilled' && r[4].value.ok) {
           const j = await r[4].value.json(); setAccumRadar(j.data ?? null)
+        }
+        if (r[5].status === 'fulfilled' && r[5].value.ok) {
+          const j = await r[5].value.json(); setHistory(j.data ?? [])
         }
       } catch { /* abort */ }
       setLoading(false)
@@ -452,6 +457,70 @@ export default function SwingDashboardView() {
         )}
       </section>
 
+      {/* ═══ B-1. BRAIN 7일 히스토리 ═══ */}
+      {history.length > 1 && (
+        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+          <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">BRAIN 7일 추이</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* BRAIN % 추이 */}
+            <div>
+              <p className="text-[11px] text-[#6B7280] mb-2">BRAIN 점수 변화</p>
+              <div className="flex items-end gap-1 h-20">
+                {history.map((h) => {
+                  const pct = h.brain_capped_pct ?? h.brain_pct
+                  const barH = Math.max(pct, 5)
+                  const hv = getVerdictHero(h.brain_verdict)
+                  return (
+                    <div key={h.date} className="flex-1 flex flex-col items-center gap-0.5 group relative">
+                      <div
+                        className="w-full rounded-t-sm transition-all"
+                        style={{ height: `${barH}%`, backgroundColor: hv.text, opacity: 0.7 }}
+                      />
+                      <span className="text-[9px] text-[#9CA3AF] tabular-nums">{h.date.slice(5)}</span>
+                      <div className="absolute -top-6 opacity-0 group-hover:opacity-100 text-[9px] bg-white shadow rounded px-1 py-0.5 whitespace-nowrap z-10">
+                        {pct}%
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+            {/* 자산배분 변화 */}
+            <div>
+              <p className="text-[11px] text-[#6B7280] mb-2">자산배분 변화</p>
+              <div className="space-y-1">
+                {history.map((h) => (
+                  <div key={h.date} className="flex items-center gap-1">
+                    <span className="text-[9px] text-[#9CA3AF] w-10 shrink-0 tabular-nums">{h.date.slice(5)}</span>
+                    <div className="flex h-3 flex-1 rounded-full overflow-hidden">
+                      {[
+                        { pct: h.alloc_swing, color: '#DC2626' },
+                        { pct: h.alloc_gold_etf, color: '#D97706' },
+                        { pct: h.alloc_inverse, color: '#3B82F6' },
+                        { pct: h.alloc_group_etf, color: '#059669' },
+                        { pct: h.alloc_small_cap, color: '#7C3AED' },
+                        { pct: h.alloc_cash, color: '#D1D5DB' },
+                      ].filter(a => a.pct > 0).map((a, i) => (
+                        <div key={i} style={{ width: `${a.pct}%`, backgroundColor: a.color }} />
+                      ))}
+                    </div>
+                    <span className="text-[9px] text-[#9CA3AF] w-8 text-right tabular-nums">{h.alloc_cash}%</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2 mt-1.5 text-[9px] text-[#9CA3AF] flex-wrap">
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#DC2626]" /> 스윙</span>
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#D97706]" /> 금</span>
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#3B82F6]" /> 인버스</span>
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#059669]" /> 그룹</span>
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#7C3AED]" /> 소형</span>
+                <span><span className="inline-block w-2 h-2 rounded-sm bg-[#D1D5DB]" /> 현금</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ═══ B-2. 포트폴리오 + 센서 ═══ */}
       {(() => {
         const p = data.portfolio as { current_picks?: number; brain_cash_ratio?: number; total_trades?: number; win_rate?: number } | undefined
@@ -519,230 +588,7 @@ export default function SwingDashboardView() {
         )
       })()}
 
-      {/* ═══ 2. 수급 인텔리전스 ═══ */}
-      {flowData && flowData.top_stocks?.length > 0 && (
-        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
-          style={{ borderLeft: '3px solid #7C3AED' }}>
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">수급 인텔리전스</h2>
-                <p className="text-[10px] text-[#6B7280]">시총 대비 외인+기관 유입 강도 랭킹</p>
-              </div>
-              <div className="flex items-center gap-3 text-[11px]">
-                <span className="text-[#6B7280]">전체 <span className="font-bold text-[#1A1A2E]">{flowData.top_stocks.length}</span>종목</span>
-                <span className="text-[#2563EB]">쌍매수 <span className="font-bold">{flowData.dual_buy_count ?? 0}</span>건</span>
-                {(flowData.overheat_count ?? 0) > 0 && (
-                  <span className="text-[#DC2626]">과열 <span className="font-bold">{flowData.overheat_count}</span>건</span>
-                )}
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              {(flowExpanded ? flowData.top_stocks : flowData.top_stocks.slice(0, 5)).map((s) => (
-                <div key={s.code} className="flex items-center gap-2 py-2 px-3 rounded-lg border border-[#F0EDE8] text-[12px]">
-                  <span className="w-6 text-[11px] font-bold text-[#9CA3AF] tabular-nums shrink-0">{s.rank}</span>
-                  <span className="font-bold text-[#1A1A2E] truncate min-w-0 flex-1">{s.name}</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
-                    style={{ backgroundColor: s.market_type === 'NXT' ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: s.market_type === 'NXT' ? '#4A90D9' : '#888' }}>
-                    {s.market_type === 'NXT' ? 'NXT' : 'KRX전용'}
-                  </span>
-                  <span className="font-bold tabular-nums shrink-0" style={{ color: '#7C3AED' }}>{s.intensity_pct.toFixed(1)}%</span>
-                  <span className={`tabular-nums shrink-0 ${s.foreign_3d_억 >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>외{s.foreign_3d_억 >= 0 ? '+' : ''}{s.foreign_3d_억.toFixed(0)}억</span>
-                  <span className={`tabular-nums shrink-0 ${s.inst_3d_억 >= 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>기{s.inst_3d_억 >= 0 ? '+' : ''}{s.inst_3d_억.toFixed(0)}억</span>
-                  <span className="text-[#9CA3AF] tabular-nums shrink-0">시총{s.cap_억.toLocaleString()}억</span>
-                  {s.dual_buy && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] shrink-0">쌍매수</span>}
-                  {s.is_overheated && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#DC2626] shrink-0">과열주의</span>}
-                </div>
-              ))}
-              {flowData.top_stocks.length > 5 && (
-                <button
-                  onClick={() => setFlowExpanded(!flowExpanded)}
-                  className="w-full text-center py-2 text-[12px] font-bold text-[#7C3AED] hover:bg-[#F5F4F0] rounded-lg transition-colors"
-                >
-                  {flowExpanded ? '접기 ▲' : `더 보기 (${flowData.top_stocks.length - 5}종목) ▼`}
-                </button>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ═══ 3. NXT 야간매수 ═══ */}
-      {nxtPickData && (() => {
-        const nxtScore = nxtPickData.nxt_score ?? 0
-        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
-        const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
-        const picks = Array.isArray(nxtPickData.picks) ? nxtPickData.picks : []
-        const sectors = Array.isArray(nxtPickData.sectors) ? nxtPickData.sectors : []
-        return (
-          <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5 space-y-4">
-            {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
-            <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px]">🌙 NXT 야간매수 TOP 5</h2>
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
-                {nxtPickData.signal ?? scLabel}
-              </span>
-              <span className="text-sm text-[#6B7280]">{nxtPickData.date}</span>
-            </div>
-
-            {/* NXT Score 바 */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-bold text-[#1A1A2E]">NXT 점수</span>
-              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden relative">
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 z-10" />
-                <div
-                  className="h-full rounded-full absolute top-0"
-                  style={{
-                    backgroundColor: nxtScore >= 0 ? '#16A34A' : '#DC2626',
-                    left: nxtScore >= 0 ? '50%' : `${50 + (nxtScore / 10) * 50}%`,
-                    width: `${Math.abs(nxtScore / 10) * 50}%`,
-                  }}
-                />
-              </div>
-              <span className={`text-lg font-bold tabular-nums ${nxtScore >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                {nxtScore > 0 ? '+' : ''}{nxtScore.toFixed(1)}
-              </span>
-            </div>
-
-            {/* 추천 섹터 */}
-            {sectors.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-[#6B7280]">추천 섹터</span>
-                {sectors.map((s, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F0F0FF] text-[#4C1D95]">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* TOP 5 카드 */}
-            {picks.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                {picks.map((p) => {
-                  const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
-                  const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
-                  return (
-                    <div key={p.code} className="rounded-lg p-3 text-center bg-[#FAFAF8] border border-[var(--border)]">
-                      <span className="text-xl">{medal}</span>
-                      <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
-                      <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
-                      <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
-                        수급 {p.supply_score}점
-                      </span>
-                      <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
-                      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </section>
-        )
-      })()}
-
-      {/* ═══ 3.5 NXT 성적표 ═══ */}
-      <NxtPerformancePanel />
-
-      {/* ═══ 3.6 매집 레이더 ═══ */}
-      {(() => {
-        const stocks = accumRadar?.stocks
-        if (!stocks || !Array.isArray(stocks) || stocks.length === 0) {
-          return (
-            <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
-              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-2">📡 매집 레이더</h2>
-              <p className="text-[13px] text-[#9CA3AF]">오늘은 감지된 종목이 없습니다</p>
-            </section>
-          )
-        }
-        const sorted = [...stocks].sort((a, b) => (b.supply_score ?? b.combined_supply ?? 0) - (a.supply_score ?? a.combined_supply ?? 0))
-        const TAG_STYLE: Record<string, { bg: string; text: string }> = {
-          '쌍매수': { bg: '#FFF1F2', text: '#E11D48' },
-          '가속전환': { bg: '#FFF7ED', text: '#EA580C' },
-          '바닥매집': { bg: '#EFF6FF', text: '#2563EB' },
-          '외인매집': { bg: '#F0F9FF', text: '#0284C7' },
-        }
-        return (
-          <section>
-            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">📡 매집 레이더</h2>
-            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow divide-y divide-[var(--border)]">
-              {sorted.map((s) => {
-                const tagStyle = TAG_STYLE[s.tag] ?? { bg: '#F3F4F6', text: '#6B7280' }
-                const score = s.supply_score ?? s.combined_supply ?? 0
-                const isUnfired = s.chg5 < 0
-                return (
-                  <div key={s.code} className="flex items-center justify-between px-5 py-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[14px] font-bold text-[#1A1A2E] truncate">{s.name}</span>
-                          {s.last_dual && <span title="최근 쌍매수">🔥</span>}
-                          {isUnfired && (
-                            <span className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-[#F0FDF4] text-[#16A34A]">미발화</span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-[#9CA3AF]">{s.code} · 외인 {s.frgn_days}일 연속 · 가속 {s.accel_b.toFixed(1)}x</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span
-                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                        style={{ backgroundColor: tagStyle.bg, color: tagStyle.text }}
-                      >
-                        {s.tag}
-                      </span>
-                      <span className="text-[13px] font-bold tabular-nums text-[#1A1A2E] w-[36px] text-right">{score}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-[11px] text-[#9CA3AF] mt-1.5 text-right">{accumRadar.date} 기준 · {sorted.length}종목</p>
-          </section>
-        )
-      })()}
-
-      {/* ═══ 4. 매매 타임라인 ═══ */}
-      <section>
-        <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">오늘의 매매 타임라인</h2>
-        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
-          <div className="relative pl-7">
-            {/* 세로 선 */}
-            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E2E5EA]" />
-            <div className="space-y-4">
-              {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
-                ? swingSystem.action_guide.map((g) => ({
-                    time: g.time, action: g.action, desc: g.desc,
-                    badge: g.tag, color: TAG_COLOR[g.tag] ?? '#6B7280',
-                  }))
-                : TIMELINE_FALLBACK
-              ).map((t, i) => (
-                <div key={i} className="relative">
-                  {/* 컬러 점 */}
-                  <div
-                    className="absolute -left-[22px] top-[2px] w-[14px] h-[14px] rounded-full border-2 border-white"
-                    style={{ backgroundColor: t.color }}
-                  />
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[15px] font-bold" style={{ color: t.color }}>{t.time}</span>
-                      <p className="text-[13px] font-bold text-[#1A1A2E]">{t.action}</p>
-                      <p className="text-[12px] text-[#6B7280]">{t.desc}</p>
-                    </div>
-                    {t.badge && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
-                        {t.badge}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 5. 시장 지표 & 자산 배분 ═══ */}
+      {/* ═══ C. 시장 지표 & 자산 배분 ═══ */}
       <section>
         <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">시장 지표 & 자산 배분</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -815,99 +661,6 @@ export default function SwingDashboardView() {
           </div>
         </div>
       </section>
-
-      {/* ═══ 6. 채권자경단 v2 ═══ */}
-      {(() => {
-        const rat = data.nxt_rationale
-        const indicators = rat?.indicators
-        const hasData = indicators && indicators.length > 0 && rat?.verdict && rat.verdict !== '수집실패'
-
-        const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
-          '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
-          [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
-          '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
-          '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
-          [GRADE_CAUTION]: { backgroundColor: '#eab308', color: '#FFF' },
-          '회피': { backgroundColor: '#ef4444', color: '#FFF' },
-        }
-        const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
-          GREEN: { bg: '#F0FDF4', text: '#16A34A', dot: '#22c55e' },
-          YELLOW: { bg: '#FFFBEB', text: '#A16207', dot: '#eab308' },
-          RED: { bg: '#FEF2F2', text: '#DC2626', dot: '#ef4444' },
-        }
-
-        return (
-          <section>
-            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
-            <div
-              className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5"
-              style={{ borderLeft: '3px solid #7C3AED' }}
-            >
-              {!hasData ? (
-                <p className="text-[13px] text-[#6B7280] text-center py-4">
-                  데이터 수집 중입니다. 16:35 이후 갱신됩니다.
-                </p>
-              ) : (
-                <>
-                  {/* 종합 판정 헤더 */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span
-                        className="text-[15px] font-bold px-3.5 py-1.5 rounded-lg"
-                        style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
-                      >
-                        종합: {rat.verdict}
-                      </span>
-                      <div className="flex items-center gap-2.5 text-[14px] font-bold tabular-nums flex-wrap">
-                        <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
-                        <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
-                        <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
-                        <span className="text-[#9CA3AF]">/ {rat.total ?? 7}개</span>
-                      </div>
-                    </div>
-                    {rat.timestamp && (
-                      <span className="text-[13px] text-[#9CA3AF]">
-                        기준: {rat.timestamp.slice(0, 16)}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* 7개 지표 테이블 */}
-                  <div className="space-y-1.5">
-                    {indicators!.map((ind) => {
-                      const ss = SIGNAL_STYLE[ind.signal] ?? SIGNAL_STYLE.GREEN
-                      return (
-                        <div
-                          key={ind.key}
-                          className="flex items-center gap-3 rounded-lg px-3 md:px-4 py-2.5 flex-wrap"
-                          style={{ backgroundColor: ss.bg }}
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: ss.dot }}
-                          />
-                          <span className="text-[14px] font-bold text-[#1A1A2E] min-w-[140px] shrink-0">
-                            {ind.name}
-                          </span>
-                          <span
-                            className="text-[13px] font-bold min-w-[48px] shrink-0 text-center"
-                            style={{ color: ss.text }}
-                          >
-                            {ind.signal_label}
-                          </span>
-                          <span className="text-[13px] text-[#6B7280] tabular-nums flex-1 truncate">
-                            {ind.detail}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-        )
-      })()}
 
       {/* ═══ C-2. 5대 분석 ═══ */}
       {data.analysis && typeof data.analysis === 'object' && Object.values(data.analysis).some(v => v) && (
@@ -1121,7 +874,7 @@ export default function SwingDashboardView() {
         </section>
       )}
 
-      {/* ═══ 9. ETF 인사이트 ═══ */}
+      {/* ═══ D-2. ETF 인사이트 ═══ */}
       {data.etf_picks?.length > 0 && (
         <section>
           <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">ETF 인사이트</h2>
@@ -1190,6 +943,323 @@ export default function SwingDashboardView() {
           </div>
         </section>
       )}
+
+      {/* ═══ E. 채권자경단 v2 ═══ */}
+      {(() => {
+        const rat = data.nxt_rationale
+        const indicators = rat?.indicators
+        const hasData = indicators && indicators.length > 0 && rat?.verdict && rat.verdict !== '수집실패'
+
+        const VERDICT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
+          '적극 매수': { backgroundColor: '#22c55e', color: '#FFF' },
+          [GRADE_STRONG_PICK]: { backgroundColor: '#22c55e', color: '#FFF' },
+          '조건부 매수': { backgroundColor: '#3b82f6', color: '#FFF' },
+          '조건부 포착': { backgroundColor: '#3b82f6', color: '#FFF' },
+          [GRADE_CAUTION]: { backgroundColor: '#eab308', color: '#FFF' },
+          '회피': { backgroundColor: '#ef4444', color: '#FFF' },
+        }
+        const SIGNAL_STYLE: Record<string, { bg: string; text: string; dot: string }> = {
+          GREEN: { bg: '#F0FDF4', text: '#16A34A', dot: '#22c55e' },
+          YELLOW: { bg: '#FFFBEB', text: '#A16207', dot: '#eab308' },
+          RED: { bg: '#FEF2F2', text: '#DC2626', dot: '#ef4444' },
+        }
+
+        return (
+          <section>
+            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
+            <div
+              className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5"
+              style={{ borderLeft: '3px solid #7C3AED' }}
+            >
+              {!hasData ? (
+                <p className="text-[13px] text-[#6B7280] text-center py-4">
+                  데이터 수집 중입니다. 16:35 이후 갱신됩니다.
+                </p>
+              ) : (
+                <>
+                  {/* 종합 판정 헤더 */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span
+                        className="text-[15px] font-bold px-3.5 py-1.5 rounded-lg"
+                        style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
+                      >
+                        종합: {rat.verdict}
+                      </span>
+                      <div className="flex items-center gap-2.5 text-[14px] font-bold tabular-nums flex-wrap">
+                        <span style={{ color: '#22c55e' }}>안전 {rat.green ?? 0}</span>
+                        <span style={{ color: '#eab308' }}>경계 {rat.yellow ?? 0}</span>
+                        <span style={{ color: '#ef4444' }}>위험 {rat.red ?? 0}</span>
+                        <span className="text-[#9CA3AF]">/ {rat.total ?? 7}개</span>
+                      </div>
+                    </div>
+                    {rat.timestamp && (
+                      <span className="text-[13px] text-[#9CA3AF]">
+                        기준: {rat.timestamp.slice(0, 16)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 7개 지표 테이블 */}
+                  <div className="space-y-1.5">
+                    {indicators!.map((ind) => {
+                      const ss = SIGNAL_STYLE[ind.signal] ?? SIGNAL_STYLE.GREEN
+                      return (
+                        <div
+                          key={ind.key}
+                          className="flex items-center gap-3 rounded-lg px-3 md:px-4 py-2.5 flex-wrap"
+                          style={{ backgroundColor: ss.bg }}
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: ss.dot }}
+                          />
+                          <span className="text-[14px] font-bold text-[#1A1A2E] min-w-[140px] shrink-0">
+                            {ind.name}
+                          </span>
+                          <span
+                            className="text-[13px] font-bold min-w-[48px] shrink-0 text-center"
+                            style={{ color: ss.text }}
+                          >
+                            {ind.signal_label}
+                          </span>
+                          <span className="text-[13px] text-[#6B7280] tabular-nums flex-1 truncate">
+                            {ind.detail}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )
+      })()}
+
+      {/* ═══ F. NXT 야간매수 ═══ */}
+      {nxtPickData && (() => {
+        const nxtScore = nxtPickData.nxt_score ?? 0
+        const scLabel = nxtScore >= 5 ? '강력 매수' : nxtScore >= 2 ? '매수 고려' : nxtScore >= 0 ? '중립' : nxtScore >= -3 ? GRADE_CAUTION : '회피'
+        const scBg = nxtScore >= 5 ? 'bg-emerald-100 text-emerald-700' : nxtScore >= 2 ? 'bg-green-50 text-green-600' : nxtScore >= 0 ? 'bg-gray-100 text-gray-600' : nxtScore >= -3 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'
+        const picks = Array.isArray(nxtPickData.picks) ? nxtPickData.picks : []
+        const sectors = Array.isArray(nxtPickData.sectors) ? nxtPickData.sectors : []
+        return (
+          <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5 space-y-4">
+            {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px]">🌙 NXT 야간매수 TOP 5</h2>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
+                {nxtPickData.signal ?? scLabel}
+              </span>
+              <span className="text-sm text-[#6B7280]">{nxtPickData.date}</span>
+            </div>
+
+            {/* NXT Score 바 */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold text-[#1A1A2E]">NXT 점수</span>
+              <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden relative">
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 z-10" />
+                <div
+                  className="h-full rounded-full absolute top-0"
+                  style={{
+                    backgroundColor: nxtScore >= 0 ? '#16A34A' : '#DC2626',
+                    left: nxtScore >= 0 ? '50%' : `${50 + (nxtScore / 10) * 50}%`,
+                    width: `${Math.abs(nxtScore / 10) * 50}%`,
+                  }}
+                />
+              </div>
+              <span className={`text-lg font-bold tabular-nums ${nxtScore >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                {nxtScore > 0 ? '+' : ''}{nxtScore.toFixed(1)}
+              </span>
+            </div>
+
+            {/* 추천 섹터 */}
+            {sectors.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-[#6B7280]">추천 섹터</span>
+                {sectors.map((s, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F0F0FF] text-[#4C1D95]">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* TOP 5 카드 */}
+            {picks.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                {picks.map((p) => {
+                  const medal = p.rank === 1 ? '🥇' : p.rank === 2 ? '🥈' : p.rank === 3 ? '🥉' : `${p.rank}`
+                  const scoreBg = p.supply_score >= 70 ? 'bg-emerald-100 text-emerald-700' : p.supply_score >= 50 ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-gray-600'
+                  return (
+                    <div key={p.code} className="rounded-lg p-3 text-center bg-[#FAFAF8] border border-[var(--border)]">
+                      <span className="text-xl">{medal}</span>
+                      <p className="text-[14px] font-bold text-[#1A1A2E] mt-1">{p.name}</p>
+                      <p className="text-[11px] text-[#9CA3AF]">{p.code} · {p.sector}</p>
+                      <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-full text-[12px] font-bold ${scoreBg}`}>
+                        수급 {p.supply_score}점
+                      </span>
+                      <p className="text-[11px] text-[#6B7280] mt-1.5">진입가</p>
+                      <p className="text-[15px] font-bold text-[#1A1A2E] tabular-nums">{p.entry_price.toLocaleString()}원</p>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </section>
+        )
+      })()}
+
+      {/* ═══ F-2. NXT 성적표 ═══ */}
+      <NxtPerformancePanel />
+
+      {/* ═══ G. 수급 인텔리전스 ═══ */}
+      {flowData && flowData.top_stocks?.length > 0 && (
+        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
+          style={{ borderLeft: '3px solid #7C3AED' }}>
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h2 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">수급 인텔리전스</h2>
+                <p className="text-[10px] text-[#6B7280]">시총 대비 외인+기관 유입 강도 랭킹</p>
+              </div>
+              <div className="flex items-center gap-3 text-[11px]">
+                <span className="text-[#6B7280]">전체 <span className="font-bold text-[#1A1A2E]">{flowData.top_stocks.length}</span>종목</span>
+                <span className="text-[#2563EB]">쌍매수 <span className="font-bold">{flowData.dual_buy_count ?? 0}</span>건</span>
+                {(flowData.overheat_count ?? 0) > 0 && (
+                  <span className="text-[#DC2626]">과열 <span className="font-bold">{flowData.overheat_count}</span>건</span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              {(flowExpanded ? flowData.top_stocks : flowData.top_stocks.slice(0, 5)).map((s) => (
+                <div key={s.code} className="flex items-center gap-2 py-2 px-3 rounded-lg border border-[#F0EDE8] text-[12px]">
+                  <span className="w-6 text-[11px] font-bold text-[#9CA3AF] tabular-nums shrink-0">{s.rank}</span>
+                  <span className="font-bold text-[#1A1A2E] truncate min-w-0 flex-1">{s.name}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded shrink-0"
+                    style={{ backgroundColor: s.market_type === 'NXT' ? 'rgba(74,144,217,0.15)' : 'rgba(136,136,136,0.15)', color: s.market_type === 'NXT' ? '#4A90D9' : '#888' }}>
+                    {s.market_type === 'NXT' ? 'NXT' : 'KRX전용'}
+                  </span>
+                  <span className="font-bold tabular-nums shrink-0" style={{ color: '#7C3AED' }}>{s.intensity_pct.toFixed(1)}%</span>
+                  <span className={`tabular-nums shrink-0 ${s.foreign_3d_억 >= 0 ? 'text-[#2563EB]' : 'text-[#DC2626]'}`}>외{s.foreign_3d_억 >= 0 ? '+' : ''}{s.foreign_3d_억.toFixed(0)}억</span>
+                  <span className={`tabular-nums shrink-0 ${s.inst_3d_억 >= 0 ? 'text-[#EA580C]' : 'text-[#DC2626]'}`}>기{s.inst_3d_억 >= 0 ? '+' : ''}{s.inst_3d_억.toFixed(0)}억</span>
+                  <span className="text-[#9CA3AF] tabular-nums shrink-0">시총{s.cap_억.toLocaleString()}억</span>
+                  {s.dual_buy && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] shrink-0">쌍매수</span>}
+                  {s.is_overheated && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-[#DC2626] shrink-0">과열주의</span>}
+                </div>
+              ))}
+              {flowData.top_stocks.length > 5 && (
+                <button
+                  onClick={() => setFlowExpanded(!flowExpanded)}
+                  className="w-full text-center py-2 text-[12px] font-bold text-[#7C3AED] hover:bg-[#F5F4F0] rounded-lg transition-colors"
+                >
+                  {flowExpanded ? '접기 ▲' : `더 보기 (${flowData.top_stocks.length - 5}종목) ▼`}
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ H. 매매 타임라인 ═══ */}
+      <section>
+        <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">오늘의 매매 타임라인</h2>
+        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+          <div className="relative pl-7">
+            {/* 세로 선 */}
+            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E2E5EA]" />
+            <div className="space-y-4">
+              {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
+                ? swingSystem.action_guide.map((g) => ({
+                    time: g.time, action: g.action, desc: g.desc,
+                    badge: g.tag, color: TAG_COLOR[g.tag] ?? '#6B7280',
+                  }))
+                : TIMELINE_FALLBACK
+              ).map((t, i) => (
+                <div key={i} className="relative">
+                  {/* 컬러 점 */}
+                  <div
+                    className="absolute -left-[22px] top-[2px] w-[14px] h-[14px] rounded-full border-2 border-white"
+                    style={{ backgroundColor: t.color }}
+                  />
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[15px] font-bold" style={{ color: t.color }}>{t.time}</span>
+                      <p className="text-[13px] font-bold text-[#1A1A2E]">{t.action}</p>
+                      <p className="text-[12px] text-[#6B7280]">{t.desc}</p>
+                    </div>
+                    {t.badge && (
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2" style={{ backgroundColor: `${t.color}15`, color: t.color }}>
+                        {t.badge}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ K. 매집 레이더 ═══ */}
+      {(() => {
+        const stocks = accumRadar?.stocks
+        if (!stocks || !Array.isArray(stocks) || stocks.length === 0) {
+          return (
+            <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-2">📡 매집 레이더</h2>
+              <p className="text-[13px] text-[#9CA3AF]">오늘은 감지된 종목이 없습니다</p>
+            </section>
+          )
+        }
+        const sorted = [...stocks].sort((a, b) => (b.supply_score ?? b.combined_supply ?? 0) - (a.supply_score ?? a.combined_supply ?? 0))
+        const TAG_STYLE: Record<string, { bg: string; text: string }> = {
+          '쌍매수': { bg: '#FFF1F2', text: '#E11D48' },
+          '가속전환': { bg: '#FFF7ED', text: '#EA580C' },
+          '바닥매집': { bg: '#EFF6FF', text: '#2563EB' },
+          '외인매집': { bg: '#F0F9FF', text: '#0284C7' },
+        }
+        return (
+          <section>
+            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">📡 매집 레이더</h2>
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow divide-y divide-[var(--border)]">
+              {sorted.map((s) => {
+                const tagStyle = TAG_STYLE[s.tag] ?? { bg: '#F3F4F6', text: '#6B7280' }
+                const score = s.supply_score ?? s.combined_supply ?? 0
+                const isUnfired = s.chg5 < 0
+                return (
+                  <div key={s.code} className="flex items-center justify-between px-5 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[14px] font-bold text-[#1A1A2E] truncate">{s.name}</span>
+                          {s.last_dual && <span title="최근 쌍매수">🔥</span>}
+                          {isUnfired && (
+                            <span className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-[#F0FDF4] text-[#16A34A]">미발화</span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-[#9CA3AF]">{s.code} · 외인 {s.frgn_days}일 연속 · 가속 {s.accel_b.toFixed(1)}x</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: tagStyle.bg, color: tagStyle.text }}
+                      >
+                        {s.tag}
+                      </span>
+                      <span className="text-[13px] font-bold tabular-nums text-[#1A1A2E] w-[36px] text-right">{score}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <p className="text-[11px] text-[#9CA3AF] mt-1.5 text-right">{accumRadar.date} 기준 · {sorted.length}종목</p>
+          </section>
+        )
+      })()}
+
     </div>
   )
 }

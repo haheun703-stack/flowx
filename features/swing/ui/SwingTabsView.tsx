@@ -10,6 +10,7 @@ import ForeignFlowPanel from "./ForeignFlowPanel"
 import SmallcapThemeTab from "@/features/quant/ui/SmallcapThemeTab"
 import BluechipInspectionTab from "@/features/quant/ui/BluechipInspectionTab"
 import SectorFireView from "@/features/quant/ui/SectorFireView"
+import TodayVsNxtPanel from "./TodayVsNxtPanel"
 
 /* ── H. 퀀트 3탭 패널 ── */
 const QUANT_TABS = [
@@ -71,6 +72,9 @@ export function SwingTabsView() {
       <SectionDivider title="단타 TOP픽 + 성적표" />
       <DaytradingPicksPanel />
       <DaytradingPerformancePanel />
+
+      {/* G-3. TODAY vs NXT 비교 */}
+      <TodayVsNxtPanel />
 
       {/* H. 3탭 퀀트 패널 */}
       <SectionDivider title="피보나치 분석 + 섹터 로테이션" />
