@@ -115,7 +115,7 @@ export default function ForeignFlowPanel() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-3 md:space-y-4">
       {/* 헤더 */}
-      <div className="bg-white rounded-xl border-2 border-[#2563EB] px-5 py-4 shadow-sm">
+      <div className="bg-white rounded-xl border-2 border-[#2563EB] px-5 py-4 shadow">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h2 className="text-[14px] md:text-[16px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono tracking-wide">
@@ -191,7 +191,7 @@ export default function ForeignFlowPanel() {
 
       {/* 종목별 테이블 */}
       {view === 'stocks' && (
-        <div className="bg-white rounded-xl border border-[#E8E6E0] overflow-x-auto shadow-sm">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] overflow-x-auto shadow">
           <table className="w-full text-[12px] font-mono">
             <thead>
               <tr className="bg-[#F5F4F0] text-[#6B7280] text-left">
@@ -263,7 +263,7 @@ export default function ForeignFlowPanel() {
       {view === 'sectors' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {data.sectors.map((sec) => (
-            <div key={sec.sector} className="bg-white rounded-xl border border-[#E8E6E0] px-4 py-3.5 shadow-sm">
+            <div key={sec.sector} className="bg-white rounded-xl border border-[#E2E5EA] px-5 py-4 shadow hover:shadow-md transition-shadow duration-150">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-mono font-bold text-white bg-[#2563EB] rounded px-1.5 py-0.5">

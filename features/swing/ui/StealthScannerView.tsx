@@ -38,9 +38,9 @@ function StealthCard({ stock }: { stock: StealthStock }) {
 
   return (
     <div
-      className="bg-white rounded-xl px-4 py-3.5 shadow-sm transition-all hover:shadow-md"
+      className="bg-white rounded-xl px-5 py-4 shadow hover:shadow-md transition-shadow duration-150"
       style={{
-        border: isDual ? '2px solid #EAB308' : '1px solid var(--border, #E8E6E0)',
+        border: isDual ? '2px solid #EAB308' : '1px solid #E2E5EA',
       }}
     >
       {/* 상단: 종목명 + 티커 */}
@@ -133,7 +133,7 @@ export default function StealthScannerView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-3 md:space-y-4">
       {/* 헤더 */}
-      <div className="bg-white rounded-xl border-2 border-[#00FF88] px-5 py-4 shadow-sm">
+      <div className="bg-white rounded-xl border-2 border-[#00FF88] px-5 py-4 shadow">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h2 className="text-[14px] md:text-[16px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono tracking-wide">

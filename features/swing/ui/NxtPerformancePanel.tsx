@@ -65,9 +65,9 @@ export default function NxtPerformancePanel() {
   const monthlyWinRate = data.monthly_days > 0 ? ((data.monthly_wins / data.monthly_days) * 100).toFixed(0) : '0'
 
   return (
-    <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden">
       {/* 헤더 */}
-      <div className="px-5 py-3 bg-[#F5F4F0] border-b border-[#E8E6E0]">
+      <div className="px-5 py-3 bg-[#F5F4F0] border-b border-[#E2E5EA]">
         <div className="flex items-center justify-between">
           <h3 className="text-[13px] font-bold text-[var(--text-primary,#1A1A2E)] font-mono">
             NXT 추천 성적표
@@ -84,14 +84,14 @@ export default function NxtPerformancePanel() {
           {/* 전일 수익 */}
           <div className="text-center">
             <div className="text-[10px] font-mono text-[var(--text-dim,#9CA3AF)]">전일 평균</div>
-            <div className="text-[18px] font-mono font-black tabular-nums" style={{ color: pctColor(data.avg_return) }}>
+            <div className="text-[22px] font-mono font-bold tabular-nums" style={{ color: pctColor(data.avg_return) }}>
               {pctStr(data.avg_return)}
             </div>
           </div>
           {/* 주간 */}
           <div className="text-center">
             <div className="text-[10px] font-mono text-[var(--text-dim,#9CA3AF)]">주간 ({data.weekly_days}일)</div>
-            <div className="text-[18px] font-mono font-black tabular-nums" style={{ color: pctColor(data.weekly_return) }}>
+            <div className="text-[22px] font-mono font-bold tabular-nums" style={{ color: pctColor(data.weekly_return) }}>
               {pctStr(data.weekly_return)}
             </div>
             <div className="text-[10px] font-mono text-[#6B7280]">승률 {weeklyWinRate}%</div>
@@ -99,7 +99,7 @@ export default function NxtPerformancePanel() {
           {/* 월간 */}
           <div className="text-center">
             <div className="text-[10px] font-mono text-[var(--text-dim,#9CA3AF)]">월간 ({data.monthly_days}일)</div>
-            <div className="text-[18px] font-mono font-black tabular-nums" style={{ color: pctColor(data.monthly_return) }}>
+            <div className="text-[22px] font-mono font-bold tabular-nums" style={{ color: pctColor(data.monthly_return) }}>
               {pctStr(data.monthly_return)}
             </div>
             <div className="text-[10px] font-mono text-[#6B7280]">승률 {monthlyWinRate}%</div>

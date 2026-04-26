@@ -77,7 +77,7 @@ export default function DaytradingPerformancePanel() {
   if (!latest)
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4">
-        <div className="bg-white rounded-2xl border border-[#E8E6E0] p-6 text-center">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-6 text-center">
           <p className="text-[#6B7280] text-sm">📊 성적표 데이터가 아직 없습니다. 첫 발행은 다음 거래일 16:30입니다.</p>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function DaytradingPerformancePanel() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-4 space-y-4 md:space-y-5">
       {/* ── 오늘의 성적표 ── */}
-      <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
+      <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <h3 className="text-lg font-bold text-[#1A1A2E]">📊 단타 TOP 5 성적표</h3>
           <span className="text-sm text-[#6B7280]">{latest.date}</span>
@@ -152,7 +152,7 @@ export default function DaytradingPerformancePanel() {
 
       {/* ── 수익률 바 차트 (최근 20거래일) ── */}
       {chart.length > 1 && (
-        <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
           <h3 className="font-bold text-[#1A1A2E] mb-3">
             📈 일별 수익률 <span className="text-xs font-normal text-[#9CA3AF]">최근 {chart.length}거래일</span>
           </h3>

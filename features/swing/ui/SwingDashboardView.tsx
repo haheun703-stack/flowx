@@ -195,7 +195,7 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl">💲</span>
-          <h2 className="text-[18px] md:text-[20px] font-black text-[#1A1A2E]">달러-환율 모니터</h2>
+          <h2 className="text-[18px] md:text-[20px] font-bold text-[#1A1A2E] tracking-[-0.2px]">달러-환율 모니터</h2>
           <span className="text-[13px] md:text-[14px] text-[#6B7280]">외국인 자금 흐름 신호</span>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -216,9 +216,9 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
       {/* 4개 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         {/* DXY */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] p-5 shadow hover:shadow-md transition-shadow duration-150">
           <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">DXY 달러인덱스</p>
-          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.dxy.value.toFixed(2)}</p>
+          <p className="text-[28px] font-bold text-[#1A1A2E] tabular-nums">{fx.dxy.value.toFixed(2)}</p>
           <div className="flex items-center gap-2 mt-1.5">
             <span className="text-[15px] font-bold" style={{ color: dxyT.color }}>
               {dxyT.arrow}{fx.dxy.trend}
@@ -234,9 +234,9 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
         </div>
 
         {/* USD/KRW */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] p-5 shadow hover:shadow-md transition-shadow duration-150">
           <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">USD/KRW 환율</p>
-          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.usdkrw.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원</p>
+          <p className="text-[28px] font-bold text-[#1A1A2E] tabular-nums">{fx.usdkrw.value.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}원</p>
           <div className="flex items-center gap-2 mt-1.5">
             <span className="text-[15px] font-bold" style={{ color: krwT.color }}>
               {krwT.arrow}{fx.usdkrw.trend}
@@ -252,9 +252,9 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
         </div>
 
         {/* VIX 구조 */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] p-5 shadow hover:shadow-md transition-shadow duration-150">
           <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">VIX 구조</p>
-          <p className="text-[28px] font-black text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix.toFixed(2)}</p>
+          <p className="text-[28px] font-bold text-[#1A1A2E] tabular-nums">{fx.vix_structure.vix.toFixed(2)}</p>
           <div className="mt-1.5">
             <span
               className="text-[13px] font-bold px-2.5 py-1 rounded"
@@ -273,7 +273,7 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
         </div>
 
         {/* 외국인 흐름 */}
-        <div className="bg-white rounded-xl border border-[var(--border)] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] p-5 shadow hover:shadow-md transition-shadow duration-150">
           <p className="text-[13px] font-bold text-[#6B7280] mb-1.5">외국인 흐름 <span className="text-[#9CA3AF]">({fx.foreign_flow.proxy} 기준)</span></p>
           <div className="mt-0.5">
             <span
@@ -283,7 +283,7 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
               {fx.foreign_flow.signal}
             </span>
           </div>
-          <p className="text-[24px] font-black tabular-nums mt-1.5" style={{ color: fx.foreign_flow.today_억 >= 0 ? '#22c55e' : '#ef4444' }}>
+          <p className="text-[24px] font-bold tabular-nums mt-1.5" style={{ color: fx.foreign_flow.today_억 >= 0 ? '#22c55e' : '#ef4444' }}>
             {fx.foreign_flow.today_억 >= 0 ? '+' : ''}{fx.foreign_flow.today_억.toLocaleString()}억
           </p>
           <div className="flex gap-3 mt-1.5 text-[12px] text-[#6B7280]">
@@ -300,7 +300,7 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
         <div className="flex items-center gap-2.5 mb-2.5">
           <span className="text-[16px]">📊</span>
           <span className="text-[15px] font-bold text-[#1A1A2E]">환율↔KOSPI 상관</span>
-          <span className="text-[17px] font-black tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
+          <span className="text-[17px] font-bold tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
           <span className="text-[13px] text-[#6B7280] ml-1">{fx.correlation.label}</span>
         </div>
         <div className="h-3 bg-[#E8E6E0] rounded-full overflow-hidden">
@@ -383,7 +383,7 @@ export default function SwingDashboardView() {
   const hasCategory = data.picks?.some(p => p.category)
   const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
   return (
-    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-4 md:space-y-8">
+    <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-5">
 
       {/* ═══ 1. BRAIN AI 오늘의 결론 ═══ */}
       <section
@@ -392,7 +392,7 @@ export default function SwingDashboardView() {
       >
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 mb-2">
           <div>
-            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-1">BRAIN AI 오늘의 결론</h2>
+            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-1">BRAIN AI 오늘의 결론</h2>
             <p className="text-[24px] font-bold" style={{ color: hero.text }}>
               {data.brain_verdict} ({data.brain_pct}%)
             </p>
@@ -444,7 +444,7 @@ export default function SwingDashboardView() {
 
       {/* ═══ 2. 수급 인텔리전스 ═══ */}
       {flowData && flowData.top_stocks?.length > 0 && (
-        <section className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+        <section className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
           style={{ borderLeft: '3px solid #7C3AED' }}>
           <div className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
@@ -498,10 +498,10 @@ export default function SwingDashboardView() {
         const picks = Array.isArray(nxtPickData.picks) ? nxtPickData.picks : []
         const sectors = Array.isArray(nxtPickData.sectors) ? nxtPickData.sectors : []
         return (
-          <section className="bg-white rounded-2xl border border-[#E8E6E0] p-4 md:p-5 space-y-3 md:space-y-4">
+          <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5 space-y-4">
             {/* 헤더: 타이틀 + 신호 뱃지 + 날짜 */}
             <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">🌙 NXT 야간매수 TOP 5</h2>
+              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px]">🌙 NXT 야간매수 TOP 5</h2>
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${scBg}`}>
                 {nxtPickData.signal ?? scLabel}
               </span>
@@ -572,8 +572,8 @@ export default function SwingDashboardView() {
         const stocks = accumRadar?.stocks
         if (!stocks || !Array.isArray(stocks) || stocks.length === 0) {
           return (
-            <section className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
-              <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-2">📡 매집 레이더</h2>
+            <section className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
+              <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-2">📡 매집 레이더</h2>
               <p className="text-[13px] text-[#9CA3AF]">오늘은 감지된 종목이 없습니다</p>
             </section>
           )
@@ -587,8 +587,8 @@ export default function SwingDashboardView() {
         }
         return (
           <section>
-            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">📡 매집 레이더</h2>
-            <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm divide-y divide-[var(--border)]">
+            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">📡 매집 레이더</h2>
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow divide-y divide-[var(--border)]">
               {sorted.map((s) => {
                 const tagStyle = TAG_STYLE[s.tag] ?? { bg: '#F3F4F6', text: '#6B7280' }
                 const score = s.supply_score ?? s.combined_supply ?? 0
@@ -627,8 +627,8 @@ export default function SwingDashboardView() {
 
       {/* ═══ 4. 매매 타임라인 ═══ */}
       <section>
-        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">오늘의 매매 타임라인</h2>
-        <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+        <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">오늘의 매매 타임라인</h2>
+        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
           <div className="relative pl-7">
             {/* 세로 선 */}
             <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E8E6E0]" />
@@ -667,10 +667,10 @@ export default function SwingDashboardView() {
 
       {/* ═══ 5. 시장 지표 & 자산 배분 ═══ */}
       <section>
-        <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">시장 지표 & 자산 배분</h2>
+        <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">시장 지표 & 자산 배분</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 좌: 시장 지표 */}
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
             <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">시장 지표</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               <MetricCard label="VIX" value={(data.vix ?? 0).toFixed(1)} bg={(data.vix ?? 0) >= 25 ? '#FEF2F2' : (data.vix ?? 0) >= 18 ? '#FFFBEB' : '#DBEAFE'} color={(data.vix ?? 0) >= 25 ? '#DC2626' : (data.vix ?? 0) >= 18 ? '#D97706' : '#2563EB'} />
@@ -689,7 +689,7 @@ export default function SwingDashboardView() {
           </div>
 
           {/* 우: 자산 배분 */}
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5">
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
             <h3 className="text-[14px] font-bold text-[#1A1A2E] mb-3">자산 배분</h3>
             {data.alloc_cash >= 100 ? (
               <div className="bg-[#DBEAFE] rounded-xl p-6 text-center">
@@ -729,7 +729,7 @@ export default function SwingDashboardView() {
                   ].map((a) => (
                     <div key={a.label} className="text-center bg-[#F5F4F0] rounded-lg p-2.5">
                       <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{a.label}</p>
-                      <p className="text-[15px] md:text-[17px] font-black tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
+                      <p className="text-[18px] font-bold tabular-nums" style={{ color: a.color }}>{a.pct}%</p>
                     </div>
                   ))}
                 </div>
@@ -761,9 +761,9 @@ export default function SwingDashboardView() {
 
         return (
           <section>
-            <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
+            <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">야간 매매 판단 근거 (채권자경단 v2)</h2>
             <div
-              className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-5"
+              className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5"
               style={{ borderLeft: '3px solid #7C3AED' }}
             >
               {!hasData ? (
@@ -776,7 +776,7 @@ export default function SwingDashboardView() {
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
                     <div className="flex items-center gap-3 flex-wrap">
                       <span
-                        className="text-[15px] font-black px-3.5 py-1.5 rounded-lg"
+                        className="text-[15px] font-bold px-3.5 py-1.5 rounded-lg"
                         style={VERDICT_STYLE[rat.verdict!] ?? { backgroundColor: '#9CA3AF', color: '#FFF' }}
                       >
                         종합: {rat.verdict}
@@ -813,7 +813,7 @@ export default function SwingDashboardView() {
                             {ind.name}
                           </span>
                           <span
-                            className="text-[13px] font-black min-w-[48px] shrink-0 text-center"
+                            className="text-[13px] font-bold min-w-[48px] shrink-0 text-center"
                             style={{ color: ss.text }}
                           >
                             {ind.signal_label}
@@ -840,7 +840,7 @@ export default function SwingDashboardView() {
       {/* ═══ 8. 주목 종목 ═══ */}
       {krxPicks?.length > 0 && (
         <section>
-          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">
+          <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">
             주목 종목 — 클릭하면 AI 분석 근거가 펼쳐져요
           </h2>
           <div
@@ -866,7 +866,7 @@ export default function SwingDashboardView() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 mb-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         {p.star && <span className="text-[#D97706] text-sm">★</span>}
-                        <span className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E]">{p.name}</span>
+                        <span className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px]">{p.name}</span>
                         <span className="text-[12px] text-[#6B7280]">{p.code}</span>
                         {p.action && (
                           <span
@@ -1024,8 +1024,8 @@ export default function SwingDashboardView() {
       {/* ═══ 9. ETF 인사이트 ═══ */}
       {data.etf_picks?.length > 0 && (
         <section>
-          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">ETF 인사이트</h2>
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-x-auto table-scroll">
+          <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">ETF 인사이트</h2>
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-x-auto table-scroll">
             <table className="w-full text-[13px] min-w-[600px]">
               <thead>
                 <tr className="text-[#6B7280] border-b border-[var(--border)]">
@@ -1066,7 +1066,7 @@ export default function SwingDashboardView() {
       {/* ── 워치리스트 ── */}
       {data.watchlist?.length > 0 && (
         <section className="pb-8">
-          <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] mb-3">워치리스트</h2>
+          <h2 className="text-[16px] font-bold text-[#1A1A2E] tracking-[-0.2px] mb-3">워치리스트</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {data.watchlist.map((w) => {
               const gradeS = gradeBadgeStyle(w.grade)
@@ -1107,7 +1107,7 @@ function PriceCell({ label, value, bg, sub, subColor, isRatio, isDays }: {
   return (
     <div className="rounded-md p-2.5 text-center" style={{ backgroundColor: bg ?? '#F9FAFB' }}>
       <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{label}</p>
-      <p className="text-[15px] md:text-[17px] font-black text-[#1A1A2E] tabular-nums">{display}</p>
+      <p className="text-[18px] font-bold text-[#1A1A2E] tabular-nums">{display}</p>
       {sub && <p className="text-[12px] font-bold tabular-nums mt-0.5" style={{ color: subColor ?? '#6B7280' }}>{sub}</p>}
     </div>
   )
@@ -1118,7 +1118,7 @@ function MetricCard({ label, value, color, bg }: { label: string; value: string;
   return (
     <div className="rounded-lg p-2.5 text-center" style={{ backgroundColor: bg ?? '#F5F4F0' }}>
       <p className="text-[11px] font-bold text-[#6B7280] mb-0.5">{label}</p>
-      <p className="text-[15px] md:text-[17px] font-black font-mono tabular-nums" style={{ color }}>{value}</p>
+      <p className="text-[18px] font-bold font-mono tabular-nums" style={{ color }}>{value}</p>
     </div>
   )
 }

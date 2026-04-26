@@ -68,12 +68,12 @@ const SIGNAL_BG: Record<string, string> = {
 
 /* ── 점수 스타일 ── */
 function scoreStyle(score: number) {
-  if (score >= 80) return 'text-amber-600 font-black'
+  if (score >= 80) return 'text-amber-600 font-bold'
   if (score >= 50) return 'text-orange-500 font-bold'
   if (score >= 20) return 'text-yellow-600 font-bold'
   if (score > -20) return 'text-gray-500 font-semibold'
   if (score > -50) return 'text-purple-500 font-bold'
-  return 'text-red-600 font-black'
+  return 'text-red-600 font-bold'
 }
 
 function scoreBorder(score: number) {
@@ -89,12 +89,12 @@ function CycleCard({ item, theme }: { item: CycleItem; theme: 'surge' | 'accumul
   const phaseIcon = theme === 'surge' ? '\uD83D\uDD25' : theme === 'accumulate' ? '\uD83D\uDCE6' : '\u26A0\uFE0F'
 
   return (
-    <div className={`bg-white rounded-xl border p-4 ${scoreBorder(item.score)}`}>
+    <div className={`bg-white rounded-xl border p-4 shadow hover:shadow-md transition-shadow duration-150 ${scoreBorder(item.score)}`}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-lg">{phaseIcon}</span>
-          <span className="text-[15px] font-black text-[var(--text-primary)] truncate">{item.name}</span>
+          <span className="text-[15px] font-bold text-[var(--text-primary)] truncate">{item.name}</span>
           <span className="text-[12px] text-gray-400">{item.code}</span>
           <span className="text-[11px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 font-bold">{item.market}</span>
         </div>
@@ -148,13 +148,13 @@ function CycleSection({
   const themeColor = theme === 'surge' ? 'text-red-600' : theme === 'accumulate' ? 'text-orange-500' : 'text-gray-800'
 
   return (
-    <div className="mb-6">
+    <div className="mb-5">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 w-full text-left mb-3"
       >
         <span className="text-xl">{icon}</span>
-        <span className={`text-[16px] font-black ${themeColor}`}>{title}</span>
+        <span className={`text-[16px] font-bold ${themeColor}`}>{title}</span>
         <span className="text-[13px] text-gray-400 font-bold">{items.length}건</span>
         <span className="ml-auto text-gray-400 text-[12px]">{open ? '\u25B2' : '\u25BC'}</span>
       </button>
@@ -215,10 +215,10 @@ export default function CycleScanView() {
   return (
     <div className={`max-w-[1400px] mx-auto px-3 md:px-6 py-6 ${isStale ? 'opacity-50' : ''}`}>
       {/* 헤더 배너 */}
-      <div className="bg-white rounded-xl border border-[var(--border)] p-4 md:p-5 mb-6">
+      <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5 mb-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h2 className="text-[17px] font-black text-[var(--text-primary)] flex items-center gap-2">
+            <h2 className="text-[17px] font-bold text-[var(--text-primary)] flex items-center gap-2">
               <span className="text-xl">{'\uD83D\uDD0D'}</span> 수급 사이클 감지기
               <span className="text-[14px] text-gray-400 font-bold ml-2">총 {data.total_scanned}종목 스캔</span>
             </h2>
@@ -270,7 +270,7 @@ export default function CycleScanView() {
       </div>
 
       {/* 컨셉 설명 */}
-      <div className="bg-gray-50 rounded-xl border border-[var(--border)] p-4 mb-6 text-[13px] text-gray-500 leading-relaxed">
+      <div className="bg-gray-50 rounded-xl border border-[#E2E5EA] shadow-sm p-4 mb-5 text-[13px] text-gray-500 leading-relaxed">
         <p className="font-bold text-gray-600 mb-1">외인·기관·개인·기타법인 4세력 수급 흐름 분석</p>
         <p>{'\uD83D\uDD25'} <b>급등임박</b> = 세력이 모았고, 개인이 바쳤고, 터질 준비 완료 &nbsp;|&nbsp;
            {'\uD83D\uDCE6'} <b>매집</b> = 조용히 모으는 중 &nbsp;|&nbsp;

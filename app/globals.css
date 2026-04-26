@@ -154,9 +154,12 @@ a[href*="tradingview.com"] img,
   --fx-status-neutral-text: #6B7280;
 
   --fx-page-padding: 16px;
-  --fx-gap-row: 14px;
-  --fx-gap-col: 12px;
-  --fx-card-padding: 14px;
+  --fx-gap-row: 20px;
+  --fx-gap-col: 20px;
+  --fx-gap-inner: 8px;
+  --fx-card-padding: 16px 20px;
+  --fx-card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --fx-card-shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 /* Dashboard/Market 테마 스코프 — 기본 변수 오버라이드 */
@@ -177,6 +180,14 @@ a[href*="tradingview.com"] img,
   border: 1px solid var(--fx-border-default);
   border-radius: 12px;
   padding: var(--fx-card-padding);
+  box-shadow: var(--fx-card-shadow);
+  transition: box-shadow 150ms ease;
+}
+
+@utility fx-card-hover {
+  &:hover {
+    box-shadow: var(--fx-card-shadow-hover);
+  }
 }
 
 @utility fx-card-green {
@@ -188,11 +199,26 @@ a[href*="tradingview.com"] img,
 }
 
 @utility fx-card-title {
-  font-size: 18px;
+  font-size: 16px;
   color: #1A1A2E;
-  font-weight: 800;
-  letter-spacing: 0.3px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
   margin-bottom: 12px;
+}
+
+@utility fx-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9CA3AF;
+  letter-spacing: -0.1px;
+}
+
+@utility fx-kpi {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A1A2E;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
 }
 
 @utility fx-card-tip {

@@ -147,7 +147,7 @@ export default function DaytradingPicksPanel() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-4 md:space-y-5">
       {/* ── Header ── */}
-      <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
+      <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
         <div className="flex flex-wrap items-center gap-3 mb-3">
           <h2 className="text-xl font-bold text-[#1A1A2E]">🎯 단타 TOP픽</h2>
           <span
@@ -211,7 +211,7 @@ export default function DaytradingPicksPanel() {
           return (
             <div
               key={p.code}
-              className={`bg-white rounded-xl border border-[#E8E6E0] p-4 border-l-4 ${
+              className={`bg-white rounded-xl border border-[#E2E5EA] shadow-sm hover:shadow-md transition-shadow duration-150 p-4 border-l-4 ${
                 isA ? "border-l-blue-500" : "border-l-emerald-500"
               }`}
             >
@@ -286,7 +286,7 @@ export default function DaytradingPicksPanel() {
 
       {/* ── ETF TOP 3 집계 ── */}
       {etfTop3.length > 0 && (
-        <div className="bg-white rounded-2xl border border-[#E8E6E0] p-5">
+        <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
           <h3 className="font-bold text-[#1A1A2E] mb-3">🔗 오늘의 섹터 ETF TOP 3 <span className="text-xs font-normal text-[#9CA3AF]">(개별 종목 대신 분산진입)</span></h3>
           <div className="space-y-2">
             {etfTop3.map((e, i) => (
