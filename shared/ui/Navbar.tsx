@@ -68,7 +68,7 @@ export function Navbar() {
       <TickerBanner />
       <nav
         aria-label="메인 내비게이션"
-        className="flex items-center h-14 px-4 bg-[var(--bg-base,#FAFAF8)] border-b border-[#E8E6E0]"
+        className="flex items-center h-14 px-4 bg-[var(--bg-base,#FAFAF8)] border-b border-[#E2E5EA]"
       >
         {/* 로고 */}
         <Link href="/" className="flex items-center gap-2 mr-6 shrink-0" aria-label="FLOWX 홈">
@@ -97,7 +97,7 @@ export function Navbar() {
                 </Link>
                 {tab.sub && (
                   <div className="absolute top-full left-0 hidden group-hover:block pt-1 z-50">
-                    <div className="bg-white border border-[#E8E6E0] rounded-lg shadow-lg py-1.5 min-w-[160px]">
+                    <div className="bg-white border border-[#E2E5EA] rounded-lg shadow-lg py-1.5 min-w-[160px]">
                       {tab.sub.map((s) => (
                         <Link
                           key={s.href}
@@ -147,7 +147,7 @@ export function Navbar() {
 
       {/* 모바일: 드롭다운 메뉴 */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-b border-[#E8E6E0] shadow-lg z-50 relative max-h-[calc(100dvh-3.5rem)] overflow-y-auto pb-20">
+        <div className="md:hidden bg-white border-b border-[#E2E5EA] shadow-lg z-50 relative max-h-[calc(100dvh-3.5rem)] overflow-y-auto pb-20">
           {NAV_TABS.map((tab) => {
             const active = tab.match(pathname)
             return (

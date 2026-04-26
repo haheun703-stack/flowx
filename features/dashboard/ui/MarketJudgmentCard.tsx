@@ -47,9 +47,9 @@ export function MarketJudgmentCard() {
   if (isLoading) {
     return (
       <div className="h-full rounded-xl p-[14px] border bg-[#F9FAFB] border-[#E5E7EB] animate-pulse">
-        <div className="h-3 w-24 bg-[#E8E6E0] rounded mb-4" />
-        <div className="h-6 w-32 bg-[#E8E6E0] rounded mb-2" />
-        <div className="h-3 w-48 bg-[#E8E6E0] rounded" />
+        <div className="h-3 w-24 bg-[#E2E5EA] rounded mb-4" />
+        <div className="h-6 w-32 bg-[#E2E5EA] rounded mb-2" />
+        <div className="h-3 w-48 bg-[#E2E5EA] rounded" />
       </div>
     )
   }

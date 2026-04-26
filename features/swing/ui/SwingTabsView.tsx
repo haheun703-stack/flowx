@@ -53,21 +53,21 @@ export function SwingTabsView() {
           <CycleScanView />
           <div className="max-w-[1400px] mx-auto px-3 md:px-6 mt-10 mb-4">
             <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <div className="h-px flex-1 bg-[#E2E5EA]" />
               <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] whitespace-nowrap">
                 외국인·기관 수급 X-Ray
               </h2>
-              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <div className="h-px flex-1 bg-[#E2E5EA]" />
             </div>
           </div>
           <ForeignFlowPanel />
           <div className="max-w-[1400px] mx-auto px-3 md:px-6 mt-10 mb-4">
             <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <div className="h-px flex-1 bg-[#E2E5EA]" />
               <h2 className="text-[15px] md:text-[17px] font-bold text-[#1A1A2E] whitespace-nowrap">
                 선매집 포착 — 아직 터지지 않은 조용한 매집
               </h2>
-              <div className="h-px flex-1 bg-[#E8E6E0]" />
+              <div className="h-px flex-1 bg-[#E2E5EA]" />
             </div>
           </div>
           <StealthScannerView />

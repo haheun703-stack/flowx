@@ -37,7 +37,7 @@ function PhaseBar({ chain, currentPhase }: { chain: ScenarioPhase[]; currentPhas
             <div
               className="h-[8px] rounded-full mb-1"
               style={{
-                backgroundColor: isDone ? '#DC2626' : isCurrent ? '#F59E0B' : '#E8E6E0',
+                backgroundColor: isDone ? '#DC2626' : isCurrent ? '#F59E0B' : '#E2E5EA',
               }}
             />
             <p
@@ -143,7 +143,7 @@ export default function HeroCard({ scenario, analysis }: HeroCardProps) {
             className="shrink-0 rounded-xl px-4 py-3 text-center"
             style={{
               background: '#FFF',
-              border: '1px solid #E8E6E0',
+              border: '1px solid #E2E5EA',
               minWidth: 100,
             }}
           >

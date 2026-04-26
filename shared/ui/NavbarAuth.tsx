@@ -32,7 +32,7 @@ export function NavbarAuth() {
       </span>
       <button
         onClick={() => signOut()}
-        className="w-[26px] h-[26px] rounded-full bg-[#E8E6E0] flex items-center justify-center
+        className="w-[26px] h-[26px] rounded-full bg-[#E2E5EA] flex items-center justify-center
                    text-[10px] font-bold text-[#1A1A2E] hover:bg-[#D1D5DB] transition-colors"
         title="로그아웃"
       >

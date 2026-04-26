@@ -12,14 +12,14 @@ export function TickerBanner() {
         <div className="h-10 flex items-center px-4">
           <div className="flex gap-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-2.5 w-16 bg-[#E8E6E0] rounded animate-pulse" />
+              <div key={i} className="h-2.5 w-16 bg-[#E2E5EA] rounded animate-pulse" />
             ))}
           </div>
         </div>
         <div className="h-10 border-t border-[#ECEAE4] flex items-center px-4">
           <div className="flex gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-2.5 w-16 bg-[#E8E6E0] rounded animate-pulse" />
+              <div key={i} className="h-2.5 w-16 bg-[#E2E5EA] rounded animate-pulse" />
             ))}
           </div>
         </div>

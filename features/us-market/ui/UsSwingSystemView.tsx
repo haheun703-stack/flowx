@@ -71,7 +71,7 @@ const chgStr = (v: number | null, d = 2) =>
   v == null ? '—': `${v >= 0 ? '+': ''}${v.toFixed(d)}%`
 
 function Sk({ h = 'h-4'}: { h?: string }) {
-  return <div className={`animate-pulse rounded bg-[#E8E6E0] ${h} w-full`} />
+  return <div className={`animate-pulse rounded bg-[#E2E5EA] ${h} w-full`} />
 }
 
 // ── 진입 모드 카드 ──────────────────────────────────────────
@@ -93,7 +93,7 @@ function ModeCard({ dt }: { dt: DaytradingData }) {
           <div className="flex gap-1 justify-end mt-1">
             {[1, 2, 3, 4, 5].map(i => (
               <div key={i} className="w-2.5 h-2.5 rounded-full"
-                   style={{ background: i <= dt.risk_level ? color : '#E8E6E0'}} />
+                   style={{ background: i <= dt.risk_level ? color : '#E2E5EA'}} />
             ))}
           </div>
         </div>

@@ -38,7 +38,7 @@ function MiniBarChart({
             {/* 바 */}
             <div className="w-full flex flex-col items-center" style={{ height: '80%', position: 'relative' }}>
               {/* 0 기준선 */}
-              <div className="absolute left-0 right-0 top-1/2 h-px bg-[#E8E6E0]" />
+              <div className="absolute left-0 right-0 top-1/2 h-px bg-[#E2E5EA]" />
               {isPos ? (
                 <div className="absolute left-0 right-0 bottom-1/2 flex justify-center">
                   <div

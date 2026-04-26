@@ -174,7 +174,7 @@ export default function StealthScannerView() {
       )}
 
       {/* 범례 */}
-      <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E8E6E0)]">
+      <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E2E5EA)]">
         <span>&#9889; 금테 = 쌍매수(기관+외인 동시)</span>
         <span className="text-[#DC2626]">기관 순매수</span>
         <span className="text-[#2563EB]">외인 순매수</span>

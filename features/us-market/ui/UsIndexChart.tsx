@@ -142,7 +142,7 @@ function MultiLineChart({ data }: { data: HistoryRow[] }) {
             return (
               <g key={v}>
                 <line x1={pad.left} y1={y} x2={dims.w - pad.right} y2={y}
-                  stroke={v === 0 ? '#1A1A2E' : '#E8E6E0'} strokeWidth={v === 0 ? 1 : 0.5}
+                  stroke={v === 0 ? '#1A1A2E' : '#E2E5EA'} strokeWidth={v === 0 ? 1 : 0.5}
                   strokeDasharray={v === 0 ? '' : '4 2'} />
                 <text x={pad.left - 6} y={y + 3} textAnchor="end" fontSize="11" fontWeight="600"
                   fill={v === 0 ? '#1A1A2E' : '#9CA3AF'}>
@@ -272,7 +272,7 @@ function VixFearGreedPanel({ data }: { data: HistoryRow[] }) {
               {/* 20 line */}
               <line x1={0} y1={sparkH - ((20 - vixMin) / vixRange) * sparkH}
                 x2={sparkW} y2={sparkH - ((20 - vixMin) / vixRange) * sparkH}
-                stroke="#E8E6E0" strokeWidth="0.5" strokeDasharray="3 2" />
+                stroke="#E2E5EA" strokeWidth="0.5" strokeDasharray="3 2" />
             </svg>
           )}
         </div>

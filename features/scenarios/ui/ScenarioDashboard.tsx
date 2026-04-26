@@ -50,7 +50,7 @@ function Accordion({
           className="rounded-xl mt-1 p-4 overflow-hidden"
           style={{
             background: '#FFF',
-            border: '1px solid #E8E6E0',
+            border: '1px solid #E2E5EA',
           }}
         >
           {children}

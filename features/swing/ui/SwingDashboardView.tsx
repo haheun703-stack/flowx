@@ -303,7 +303,7 @@ function FxMonitorSection({ fx }: { fx: FxMonitor }) {
           <span className="text-[17px] font-bold tabular-nums" style={{ color: corrColor }}>{fx.correlation.pct}%</span>
           <span className="text-[13px] text-[#6B7280] ml-1">{fx.correlation.label}</span>
         </div>
-        <div className="h-3 bg-[#E8E6E0] rounded-full overflow-hidden">
+        <div className="h-3 bg-[#E2E5EA] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all"
             style={{ width: `${fx.correlation.pct}%`, backgroundColor: corrColor }}
@@ -415,7 +415,7 @@ export default function SwingDashboardView() {
                 <span className="text-[#6B7280]">BRAIN 원점수</span>
                 <span className="font-bold text-[#1A1A2E]">{data.brain_raw_pct}%</span>
               </div>
-              <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+              <div className="h-2 bg-[#E2E5EA] rounded-full overflow-hidden">
                 <div className="h-full rounded-full" style={{ width: `${data.brain_raw_pct}%`, backgroundColor: '#3B82F6' }} />
               </div>
             </div>
@@ -425,7 +425,7 @@ export default function SwingDashboardView() {
                 <span className="text-[#6B7280]">매크로 캡 적용</span>
                 <span className="font-bold" style={{ color: hero.text }}>{data.brain_capped_pct}%</span>
               </div>
-              <div className="h-2 bg-[#E8E6E0] rounded-full overflow-hidden">
+              <div className="h-2 bg-[#E2E5EA] rounded-full overflow-hidden">
                 <div className="h-full rounded-full" style={{ width: `${data.brain_capped_pct}%`, backgroundColor: hero.text }} />
               </div>
             </div>
@@ -631,7 +631,7 @@ export default function SwingDashboardView() {
         <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
           <div className="relative pl-7">
             {/* 세로 선 */}
-            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E8E6E0]" />
+            <div className="absolute left-[10px] top-0 bottom-0 w-[2px] bg-[#E2E5EA]" />
             <div className="space-y-4">
               {(swingSystem?.action_guide && swingSystem.action_guide.length > 0
                 ? swingSystem.action_guide.map((g) => ({
@@ -916,7 +916,7 @@ export default function SwingDashboardView() {
                   {isExpanded && (
                     <div
                       className="rounded-xl p-4 -mt-1 mb-2"
-                      style={{ backgroundColor: '#FFF', border: '1px solid #E8E6E0' }}
+                      style={{ backgroundColor: '#FFF', border: '1px solid #E2E5EA' }}
                     >
                       {/* 근거 요약 (Phase 1 — 기본 정보) */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
@@ -960,7 +960,7 @@ export default function SwingDashboardView() {
                             <span className="text-[11px] text-[#6B7280] ml-auto">{p.fib_position}</span>
                           </div>
                           {/* 게이지 바: 하방 ← 현재 → 상방 */}
-                          <div className="relative h-4 bg-[#E8E6E0] rounded-full overflow-hidden mb-1.5">
+                          <div className="relative h-4 bg-[#E2E5EA] rounded-full overflow-hidden mb-1.5">
                             {/* 하방 영역 */}
                             <div
                               className="absolute left-0 top-0 h-full bg-[#DC2626]/25 rounded-l-full"

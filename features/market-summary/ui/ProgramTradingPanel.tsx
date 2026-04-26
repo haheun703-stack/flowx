@@ -115,7 +115,7 @@ export default function ProgramTradingPanel() {
                 {r.date.slice(5)}
               </span>
               <div className="flex-1 flex items-center h-full relative">
-                <div className="absolute left-1/2 w-[1px] h-full bg-[#E8E6E0]" />
+                <div className="absolute left-1/2 w-[1px] h-full bg-[#E2E5EA]" />
                 {positive ? (
                   <div
                     className="h-3 bg-[#3B82F6] rounded-r absolute left-1/2"

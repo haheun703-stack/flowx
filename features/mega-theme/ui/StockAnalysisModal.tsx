@@ -198,7 +198,7 @@ export default function StockAnalysisModal({ ticker, stockName, onClose }: Props
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-[14px] font-bold text-[#4C1D95]">✨ AI 종합 코멘터리</span>
                     {data.ai_commentary_source && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E8E6E0] text-[#6B7280]">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E2E5EA] text-[#6B7280]">
                         {data.ai_commentary_source}
                       </span>
                     )}

@@ -67,20 +67,20 @@ export function HeroChart({ data, changePercent, mode = 'empty', investorFlow }:
         horzLines: { color: '#F0EDE8' },
       },
       crosshair: {
-        vertLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
-        horzLine: { color: '#E8E6E0', labelBackgroundColor: '#FAFAF8' },
+        vertLine: { color: '#E2E5EA', labelBackgroundColor: '#FAFAF8' },
+        horzLine: { color: '#E2E5EA', labelBackgroundColor: '#FAFAF8' },
       },
       rightPriceScale: {
-        borderColor: '#E8E6E0',
+        borderColor: '#E2E5EA',
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
       leftPriceScale: {
         visible: true,
-        borderColor: '#E8E6E0',
+        borderColor: '#E2E5EA',
         scaleMargins: { top: 0.1, bottom: 0.1 },
       },
       timeScale: {
-        borderColor: '#E8E6E0',
+        borderColor: '#E2E5EA',
         timeVisible: true,
         secondsVisible: false,
         fixLeftEdge: true,

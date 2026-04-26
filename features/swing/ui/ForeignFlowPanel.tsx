@@ -298,7 +298,7 @@ export default function ForeignFlowPanel() {
       )}
 
       {/* 범례 */}
-      <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E8E6E0)]">
+      <div className="flex items-center gap-4 flex-wrap text-[10px] font-mono text-[var(--text-dim,#9CA3AF)] pt-2 border-t border-[var(--border,#E2E5EA)]">
         <span>&#9889; 쌍매수 = 외국인+기관 동시 순매수</span>
         <span className="text-[#7C3AED]">조용한 매집 = 수급↑ 가격↓</span>
         <span>F = 외국인 연속매수일 / I = 기관 연속매수일</span>

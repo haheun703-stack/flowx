@@ -103,7 +103,7 @@ const changeStr = (v: number | null) =>
 
 // ── 스켈레톤 ─────────────────────────────────────────────────
 function Sk({ h = 'h-4', w = 'w-full', className = ''}: { h?: string; w?: string; className?: string }) {
-  return <div className={`animate-pulse rounded bg-[#E8E6E0] ${h} ${w} ${className}`} />
+  return <div className={`animate-pulse rounded bg-[#E2E5EA] ${h} ${w} ${className}`} />
 }
 
 // ══════════════════════════════════════════════════════════════

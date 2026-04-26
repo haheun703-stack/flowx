@@ -74,7 +74,7 @@ const chgStr = (v: number | null, d = 2) =>
   v == null ? '—': `${v >= 0 ? '+': ''}${v.toFixed(d)}%`
 
 function Sk({ h = 'h-4'}: { h?: string }) {
-  return <div className={`animate-pulse rounded bg-[#E8E6E0] ${h} w-full`} />
+  return <div className={`animate-pulse rounded bg-[#E2E5EA] ${h} w-full`} />
 }
 
 // ── 매크로 환경 카드 ────────────────────────────────────────
