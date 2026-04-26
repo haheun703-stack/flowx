@@ -193,7 +193,7 @@ export default function MarketCalendarPanel() {
           </div>
 
           {/* 선택일 디테일 */}
-          <div className="mt-3 border-t border-[#E8E6E0] pt-3">
+          <div className="mt-3 border-t border-[#E2E5EA] pt-3">
             <p className="text-[13px] font-bold text-[#6B7280] mb-2">
               {selectedDate.slice(5).replace('-', '/')} ({WEEKDAYS[new Date(selectedDate).getDay()]})
             </p>
@@ -230,7 +230,7 @@ export default function MarketCalendarPanel() {
         </div>
 
         {/* ── 오른쪽: 타입별 아코디언 ── */}
-        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E8E6E0] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
+        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E2E5EA] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
           <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">{month}월 이벤트</p>
           {groupedEvents.length === 0 ? (
             <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>

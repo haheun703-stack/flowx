@@ -137,7 +137,7 @@ function SummaryPanel({ items }: { items: NatItem[] }) {
             .map(([grade, grpItems]) => (
               <div key={grade} className="border border-[#e5e7ef] rounded-lg p-3">
                 <div className="text-[13px] font-bold text-[#1A1A2E] mb-1">{grade}</div>
-                <div className="text-[20px] font-black text-[#1A1A2E]">{grpItems.length}<span className="text-[12px] text-[#9ca3b8] ml-1">종목</span></div>
+                <div className="text-[20px] font-bold text-[#1A1A2E]">{grpItems.length}<span className="text-[12px] text-[#9ca3b8] ml-1">종목</span></div>
                 <div className="text-[11px] text-[#5b6178] mt-1">
                   평균 {(grpItems.reduce((s, i) => s + (i.nat_score ?? 0), 0) / (grpItems.length || 1)).toFixed(1)}점
                 </div>
@@ -274,7 +274,7 @@ export function NationalityXrayView() {
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-8">
       {/* 헤더 */}
       <div className="mb-5">
-        <h2 className="text-[20px] font-black text-[#1A1A2E]">국적별 수급 X-ray</h2>
+        <h2 className="text-[20px] font-bold text-[#1A1A2E]">국적별 수급 X-ray</h2>
         <p className="text-[13px] text-[#5b6178] mt-1">
           TOP 200 종목의 외국인 국적별 수급 흐름을 픽토그램 차트로 확인합니다
         </p>
@@ -332,7 +332,7 @@ export function NationalityXrayView() {
           {filtered.map(it => (
             <div
               key={it.code}
-              className="bg-white border border-[#e5e7ef] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white border border-[#e5e7ef] rounded-xl overflow-hidden shadow hover:shadow-md transition-shadow cursor-pointer"
               onClick={() => setModalItem(it)}
             >
               {/* 차트 이미지 */}

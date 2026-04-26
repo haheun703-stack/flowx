@@ -56,7 +56,7 @@ export default function LogicChainPanel({ scenario, analysis }: LogicChainProps)
                 border: `${node.borderWidth}px solid ${node.border}`,
               }}
             >
-              <p className="text-[11px] font-black text-[#6B7280] mb-1 uppercase tracking-wider">
+              <p className="text-[11px] font-bold text-[#6B7280] mb-1 uppercase tracking-wider">
                 {node.label}
               </p>
               <p className="text-[13px] font-bold text-[#1A1A2E] leading-snug break-words">

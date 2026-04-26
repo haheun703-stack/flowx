@@ -125,7 +125,7 @@ a[href*="tradingview.com"] img,
   --fx-text-dim: #B0ADA6;
   --fx-text-faint: #C4C1BA;
 
-  --fx-border-default: #E8E6E0;
+  --fx-border-default: #E2E5EA;
   --fx-border-subtle: #F0EDE8;
   --fx-border-ticker: #ECEAE4;
   --fx-border-separator: #D1D5DB;
@@ -166,7 +166,7 @@ a[href*="tradingview.com"] img,
 .fx-theme {
   --bg-base: #FAFAF8;
   --bg-panel: #FFFFFF;
-  --border: #E8E6E0;
+  --border: #E2E5EA;
   --border-bright: #D1D5DB;
   --text-primary: #1A1A2E;
   --text-dim: #B0ADA6;

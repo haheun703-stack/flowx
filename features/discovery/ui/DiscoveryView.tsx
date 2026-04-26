@@ -112,7 +112,7 @@ function FilterScoreGrid({ item }: { item: DiscoveryItem }) {
             <div className="h-[6px] bg-[#F0EDE8] rounded-full mt-1.5 mb-1 overflow-hidden">
               <div className="h-full rounded-full" style={{ width: `${Math.min(v, 100)}%`, backgroundColor: scoreColor(v) }} />
             </div>
-            <span className="text-[15px] font-black tabular-nums" style={{ color: scoreColor(v) }}>{v}</span>
+            <span className="text-[15px] font-bold tabular-nums" style={{ color: scoreColor(v) }}>{v}</span>
           </div>
         )
       })}
@@ -132,8 +132,8 @@ function DetailAccordion({ item }: { item: DiscoveryItem }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13px] mt-3">
       {/* 수급 */}
       {sd && (sd.foreign_net != null || sd.institution_net != null) && (
-        <div className="bg-white rounded-xl p-4 border border-[#E8E6E0]">
-          <div className="font-black text-[#1A1A2E] text-[14px] mb-2">수급 상세</div>
+        <div className="bg-white rounded-xl p-4 border border-[#E2E5EA]">
+          <div className="font-bold text-[#1A1A2E] text-[14px] mb-2">수급 상세</div>
           <div className="text-[#555] space-y-1">
             {sd.foreign_net != null && <div>외인 {sd.foreign_net >= 0 ? '+' : ''}{sd.foreign_net.toLocaleString()}백만</div>}
             {sd.institution_net != null && <div>기관 {sd.institution_net >= 0 ? '+' : ''}{sd.institution_net.toLocaleString()}백만</div>}
@@ -143,8 +143,8 @@ function DetailAccordion({ item }: { item: DiscoveryItem }) {
       )}
       {/* 기술적 */}
       {td && (
-        <div className="bg-white rounded-xl p-4 border border-[#E8E6E0]">
-          <div className="font-black text-[#1A1A2E] text-[14px] mb-2">기술적 분석</div>
+        <div className="bg-white rounded-xl p-4 border border-[#E2E5EA]">
+          <div className="font-bold text-[#1A1A2E] text-[14px] mb-2">기술적 분석</div>
           <div className="text-[#555] space-y-1">
             {td.alignment && <div className="font-bold">{td.alignment}</div>}
             <div className="flex flex-wrap gap-1.5 text-[12px]">
@@ -164,8 +164,8 @@ function DetailAccordion({ item }: { item: DiscoveryItem }) {
       )}
       {/* 실적 */}
       {ed && (
-        <div className="bg-white rounded-xl p-4 border border-[#E8E6E0]">
-          <div className="font-black text-[#1A1A2E] text-[14px] mb-2">실적 상세</div>
+        <div className="bg-white rounded-xl p-4 border border-[#E2E5EA]">
+          <div className="font-bold text-[#1A1A2E] text-[14px] mb-2">실적 상세</div>
           <div className="text-[#555] space-y-1">
             {ed.op_yoy != null && (
               <div>영업이익 YoY <span className="font-bold" style={{ color: ed.op_yoy >= 0 ? '#DC2626' : '#2563EB' }}>
@@ -178,8 +178,8 @@ function DetailAccordion({ item }: { item: DiscoveryItem }) {
       )}
       {/* 수주 */}
       {od && od.count != null && od.count > 0 && (
-        <div className="bg-white rounded-xl p-4 border border-[#E8E6E0]">
-          <div className="font-black text-[#1A1A2E] text-[14px] mb-2">수주</div>
+        <div className="bg-white rounded-xl p-4 border border-[#E2E5EA]">
+          <div className="font-bold text-[#1A1A2E] text-[14px] mb-2">수주</div>
           <div className="text-[#555] space-y-1">
             <div>수주 {od.count}건{od.total_amount ? `, 총 ${fmtCap(Math.round(od.total_amount / 100000000))}` : ''}</div>
             {od.items?.slice(0, 2).map((it, i) => (
@@ -190,8 +190,8 @@ function DetailAccordion({ item }: { item: DiscoveryItem }) {
       )}
       {/* 글로벌 */}
       {gd && (
-        <div className="bg-white rounded-xl p-4 border border-[#E8E6E0]">
-          <div className="font-black text-[#1A1A2E] text-[14px] mb-2">글로벌</div>
+        <div className="bg-white rounded-xl p-4 border border-[#E2E5EA]">
+          <div className="font-bold text-[#1A1A2E] text-[14px] mb-2">글로벌</div>
           <div className="text-[#555] space-y-1">
             {gd.relevant_symbols && gd.relevant_symbols.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
@@ -227,7 +227,7 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
       className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all whitespace-nowrap border ${
         active
           ? 'bg-[#7C3AED] text-white border-[#7C3AED]'
-          : 'bg-white text-[#6B7280] border-[#E8E6E0] hover:border-[#7C3AED] hover:text-[#7C3AED]'
+          : 'bg-white text-[#6B7280] border-[#E2E5EA] hover:border-[#7C3AED] hover:text-[#7C3AED]'
       }`}>
       {label}
     </button>
@@ -326,7 +326,7 @@ export default function DiscoveryView() {
       {/* 헤더 */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-[22px] md:text-[26px] font-black text-[#1A1A2E]">종목 발굴</h1>
+          <h1 className="text-[22px] md:text-[26px] font-bold text-[#1A1A2E]">종목 발굴</h1>
           <p className="text-[13px] md:text-[14px] text-[#888]">6중 필터 AI 종목 스크리닝 — 테마·수주·실적·수급·기술적·글로벌</p>
         </div>
         {date && (
@@ -346,7 +346,7 @@ export default function DiscoveryView() {
             }`}
             style={{ background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', borderColor: '#FFD700' }}>
             <div className="text-[11px] font-bold text-[#D97706]">S등급 최고 확신</div>
-            <div className="text-[26px] font-black text-[#92400E] tabular-nums leading-tight">{summary.S}</div>
+            <div className="text-[26px] font-bold text-[#92400E] tabular-nums leading-tight">{summary.S}</div>
             {gradeNames.S.length > 0 && (
               <div className="text-[11px] font-semibold text-[#D97706] truncate">{gradeNames.S.join(' · ')}</div>
             )}
@@ -358,7 +358,7 @@ export default function DiscoveryView() {
             }`}
             style={{ background: '#F0FDF4', borderColor: '#BBF7D0' }}>
             <div className="text-[11px] font-bold text-[#16A34A]">A등급 우선 관심</div>
-            <div className="text-[26px] font-black text-[#1A1A2E] tabular-nums leading-tight">{summary.A}</div>
+            <div className="text-[26px] font-bold text-[#1A1A2E] tabular-nums leading-tight">{summary.A}</div>
             {gradeNames.A.length > 0 && (
               <div className="text-[11px] font-semibold text-[#16A34A] truncate">{gradeNames.A.slice(0, 3).join(' · ')}</div>
             )}
@@ -370,7 +370,7 @@ export default function DiscoveryView() {
             }`}
             style={{ background: '#EFF6FF', borderColor: '#BFDBFE' }}>
             <div className="text-[11px] font-bold text-[#2563EB]">B등급 관심 후보</div>
-            <div className="text-[26px] font-black text-[#1A1A2E] tabular-nums leading-tight">{summary.B}</div>
+            <div className="text-[26px] font-bold text-[#1A1A2E] tabular-nums leading-tight">{summary.B}</div>
             {gradeNames.B.length > 0 && (
               <div className="text-[11px] font-semibold text-[#2563EB] truncate">{gradeNames.B.slice(0, 3).join(' · ')}</div>
             )}
@@ -379,7 +379,7 @@ export default function DiscoveryView() {
       )}
 
       {/* ═══ 2행: 필터 바 ═══ */}
-      <div className="bg-white rounded-xl border border-[#E8E6E0] p-3 space-y-2">
+      <div className="bg-white rounded-xl border border-[#E2E5EA] p-3 space-y-2">
         <div className="flex flex-wrap gap-1.5 items-center">
           <span className="text-[12px] font-bold text-[#6B7280] w-[36px] shrink-0">등급</span>
           {['all', 'S', 'A', 'B', 'C'].map(g => (
@@ -422,7 +422,7 @@ export default function DiscoveryView() {
         <>
           {/* ═══ 3행: S등급 히어로 카드 ═══ */}
           {sGrade.length > 0 && (fGrade === 'all' || fGrade === 'S') && (
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
               style={{ borderLeft: '4px solid #00FF88' }}>
               <div className="px-5 pt-5 pb-3">
                 <h2 className="text-[17px] font-bold text-[#1A1A2E]">S등급 — 6중 필터 대부분 양호, 최고 확신</h2>
@@ -437,9 +437,9 @@ export default function DiscoveryView() {
                       <div className="p-5" style={{ background: 'linear-gradient(135deg, #FFFBEB 0%, #FFF8E1 100%)' }}>
                         {/* 헤더 행 */}
                         <div className="flex items-center gap-2.5 flex-wrap mb-3">
-                          <span className="bg-[#FFD700] text-[#1A1A2E] text-[14px] font-black px-2.5 py-1 rounded-lg">S</span>
+                          <span className="bg-[#FFD700] text-[#1A1A2E] text-[14px] font-bold px-2.5 py-1 rounded-lg">S</span>
                           <Link href={`/stock/${item.ticker}`}
-                            className="text-[18px] font-black text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
+                            className="text-[18px] font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors">
                             {item.name}
                           </Link>
                           <span className="text-[13px] text-[#9CA3AF]">{item.ticker}</span>
@@ -448,7 +448,7 @@ export default function DiscoveryView() {
                           {item.supply_details?.dual_buy && (
                             <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-[#FEE2E2] text-[#DC2626]">쌍끌이</span>
                           )}
-                          <span className="ml-auto text-[22px] font-black tabular-nums" style={{ color: scoreColor(item.total_score) }}>
+                          <span className="ml-auto text-[22px] font-bold tabular-nums" style={{ color: scoreColor(item.total_score) }}>
                             {item.total_score.toFixed(1)}점
                           </span>
                         </div>
@@ -509,7 +509,7 @@ export default function DiscoveryView() {
 
           {/* ═══ 4행: A등급 컴팩트 행 ═══ */}
           {aGrade.length > 0 && (fGrade === 'all' || fGrade === 'A') && (
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden">
               <div className="px-5 pt-5 pb-3">
                 <h2 className="text-[17px] font-bold text-[#1A1A2E]">A등급 — 핵심 지표 다수 충족 ({aGrade.length}종목)</h2>
               </div>
@@ -524,7 +524,7 @@ export default function DiscoveryView() {
                         className={`w-full text-left px-5 py-3.5 hover:bg-[#FAFAF8] transition-colors ${isOpen ? 'bg-[#F5F4F0]' : ''}`}>
                         {/* 데스크톱 */}
                         <div className="hidden md:flex items-center gap-2.5">
-                          <span className="bg-[#3B82F6] text-white text-[12px] font-black px-2 py-0.5 rounded-md shrink-0">A</span>
+                          <span className="bg-[#3B82F6] text-white text-[12px] font-bold px-2 py-0.5 rounded-md shrink-0">A</span>
                           <Link href={`/stock/${item.ticker}`} onClick={e => e.stopPropagation()}
                             className="text-[15px] font-bold text-[#1A1A2E] hover:text-[#00FF88] transition-colors truncate min-w-[90px]">
                             {item.name}
@@ -538,7 +538,7 @@ export default function DiscoveryView() {
                           <div className="flex gap-1 ml-auto shrink-0">
                             {LAYER_KEYS.map(k => <MiniScore key={k} value={item[k] as number} />)}
                           </div>
-                          <span className="text-[16px] font-black tabular-nums w-[56px] text-right shrink-0" style={{ color: scoreColor(item.total_score) }}>
+                          <span className="text-[16px] font-bold tabular-nums w-[56px] text-right shrink-0" style={{ color: scoreColor(item.total_score) }}>
                             {item.total_score.toFixed(1)}
                           </span>
                           <span className="text-[13px] text-[#9CA3AF] shrink-0">{isOpen ? '▲' : '▸'}</span>
@@ -546,11 +546,11 @@ export default function DiscoveryView() {
                         {/* 모바일 */}
                         <div className="md:hidden">
                           <div className="flex items-center gap-2 mb-1.5">
-                            <span className="bg-[#3B82F6] text-white text-[12px] font-black px-2 py-0.5 rounded-md">A</span>
+                            <span className="bg-[#3B82F6] text-white text-[12px] font-bold px-2 py-0.5 rounded-md">A</span>
                             <Link href={`/stock/${item.ticker}`} onClick={e => e.stopPropagation()}
                               className="text-[15px] font-bold text-[#1A1A2E] hover:text-[#00FF88]">{item.name}</Link>
                             <span className="text-[13px] text-[#9CA3AF]">{item.sector}</span>
-                            <span className="ml-auto text-[16px] font-black tabular-nums" style={{ color: scoreColor(item.total_score) }}>
+                            <span className="ml-auto text-[16px] font-bold tabular-nums" style={{ color: scoreColor(item.total_score) }}>
                               {item.total_score.toFixed(1)}
                             </span>
                           </div>
@@ -594,13 +594,13 @@ export default function DiscoveryView() {
 
           {/* ═══ 5행: B등급 테이블 ═══ */}
           {bGrade.length > 0 && (fGrade === 'all' || fGrade === 'B' || fGrade === 'C') && (
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden">
               <div className="px-5 pt-5 pb-3 flex items-center justify-between">
                 <h2 className="text-[17px] font-bold text-[#1A1A2E]">B등급 — 관심 후보 ({bGrade.length}종목)</h2>
               </div>
 
               {/* 데스크톱 테이블 헤더 */}
-              <div className="hidden md:grid grid-cols-[40px_1fr_80px_56px_56px_56px_56px_56px_56px_64px] gap-1.5 px-5 py-2.5 bg-[#F5F4F0] text-[12px] font-bold text-[#888] border-y border-[#E8E6E0]">
+              <div className="hidden md:grid grid-cols-[40px_1fr_80px_56px_56px_56px_56px_56px_56px_64px] gap-1.5 px-5 py-2.5 bg-[#F5F4F0] text-[12px] font-bold text-[#888] border-y border-[#E2E5EA]">
                 <span>등급</span><span>종목명</span><span>테마</span>
                 {LAYER_NAMES.map(n => <span key={n} className="text-center">{n}</span>)}
                 <span className="text-right">총점</span>
@@ -615,7 +615,7 @@ export default function DiscoveryView() {
                       className={`w-full text-left hover:bg-[#FAFAF8] transition-colors ${isOpen ? 'bg-[#F5F4F0]' : ''}`}>
                       {/* 데스크톱 */}
                       <div className="hidden md:grid grid-cols-[40px_1fr_80px_56px_56px_56px_56px_56px_56px_64px] gap-1.5 px-5 py-3 items-center border-b border-[#F0EDE8] text-[14px]">
-                        <span className={`text-[12px] font-black px-2 py-0.5 rounded-md text-center ${
+                        <span className={`text-[12px] font-bold px-2 py-0.5 rounded-md text-center ${
                           item.grade === 'B' ? 'bg-[#10B981] text-white' : 'bg-gray-300 text-gray-600'
                         }`}>{item.grade}</span>
                         <div className="min-w-0">
@@ -627,20 +627,20 @@ export default function DiscoveryView() {
                         </div>
                         <span className="text-[12px] text-[#6B7280] truncate">{item.theme_keywords?.[0]?.replace(/_/g, ' ') ?? ''}</span>
                         {LAYER_KEYS.map(k => <MiniScore key={k} value={item[k] as number} />)}
-                        <span className="text-right text-[15px] font-black tabular-nums" style={{ color: scoreColor(item.total_score) }}>
+                        <span className="text-right text-[15px] font-bold tabular-nums" style={{ color: scoreColor(item.total_score) }}>
                           {item.total_score.toFixed(1)}
                         </span>
                       </div>
                       {/* 모바일 */}
                       <div className="md:hidden px-5 py-3 border-b border-[#F0EDE8]">
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className={`text-[12px] font-black px-2 py-0.5 rounded-md ${
+                          <span className={`text-[12px] font-bold px-2 py-0.5 rounded-md ${
                             item.grade === 'B' ? 'bg-[#10B981] text-white' : 'bg-gray-300 text-gray-600'
                           }`}>{item.grade}</span>
                           <Link href={`/stock/${item.ticker}`} onClick={e => e.stopPropagation()}
                             className="text-[14px] font-bold text-[#1A1A2E] hover:text-[#00FF88]">{item.name}</Link>
                           <span className="text-[12px] text-[#9CA3AF]">{item.sector}</span>
-                          <span className="ml-auto text-[15px] font-black tabular-nums" style={{ color: scoreColor(item.total_score) }}>
+                          <span className="ml-auto text-[15px] font-bold tabular-nums" style={{ color: scoreColor(item.total_score) }}>
                             {item.total_score.toFixed(1)}
                           </span>
                         </div>

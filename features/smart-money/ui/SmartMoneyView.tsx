@@ -159,7 +159,7 @@ export default function SmartMoneyView() {
 
 function SummaryCard({ label, count, color, bg }: { label: string; count: number; color: string; bg: string }) {
   return (
-    <div className={`${bg} rounded-xl p-4 border border-[var(--border)] shadow-sm`}>
+    <div className={`${bg} rounded-xl p-4 border border-[var(--border)] shadow`}>
       <p className="text-[var(--text-muted)] text-xs">{label}</p>
       <p className={`${color} text-2xl font-bold mt-1`}>{count}</p>
       <p className="text-[var(--text-muted)] text-xs mt-0.5">종목</p>

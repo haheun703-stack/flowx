@@ -73,11 +73,11 @@ function groupBySector(rows: LeaderRow[]): SectorGroup[] {
 function LeaderCard({ leader }: { leader: SectorGroup['leaders'][number] }) {
   const sign = leader.changePct >= 0 ? '+' : ''
   return (
-    <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-[var(--border)] shadow overflow-hidden">
       {/* Leader header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-gray-50/50">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-black text-[var(--text-primary)]">{leader.name}</span>
+          <span className="text-sm font-bold text-[var(--text-primary)]">{leader.name}</span>
           <span className="text-xs text-[var(--text-muted)]">{leader.ticker}</span>
           <span className="text-[10px] text-[var(--text-muted)] border border-[var(--border)] px-1 rounded">
             {leader.exchange}
@@ -140,7 +140,7 @@ export function SectorLeadersView() {
         <div className="flex items-center justify-between py-5 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-[var(--blue)]" />
-            <span className="text-xl font-black tracking-widest uppercase text-[var(--text-primary)]">
+            <span className="text-xl font-bold tracking-widest uppercase text-[var(--text-primary)]">
               글로벌 대장주
             </span>
             <span className="text-sm text-[var(--text-dim)]">
@@ -200,7 +200,7 @@ export function SectorLeadersView() {
               <div key={group.sector}>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-1.5 h-4 rounded bg-[var(--blue)]" />
-                  <h2 className="text-base font-black text-[var(--text-primary)]">{group.sector}</h2>
+                  <h2 className="text-base font-bold text-[var(--text-primary)]">{group.sector}</h2>
                   <span className="text-xs text-[var(--text-muted)]">
                     {group.leaders.length}개 대장주 · {group.leaders.reduce((s, l) => s + l.connections.length, 0)}개 연결
                   </span>

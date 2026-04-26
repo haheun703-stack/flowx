@@ -30,7 +30,7 @@ export default function AiUniverseView() {
 
       {/* 헤더 */}
       <div className="text-center mb-2">
-        <h2 className="text-[20px] font-black text-[#1A1A2E]">AI 데이터센터 공급망 유니버스</h2>
+        <h2 className="text-[20px] font-bold text-[#1A1A2E]">AI 데이터센터 공급망 유니버스</h2>
         <p className="text-[12px] text-[#6B7280] mt-1">빅테크 발주 → 데이터센터 구축 → 6개 공급망 흐름을 한눈에</p>
       </div>
 

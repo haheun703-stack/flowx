@@ -43,8 +43,8 @@ function pctColor(n: unknown): string {
 /* ── 섹션 렌더러 ── */
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
-    <div className="border border-[#E8E6E0] rounded-xl overflow-hidden">
-      <div className="bg-[#F5F4F0] px-4 py-2.5 border-b border-[#E8E6E0]">
+    <div className="border border-[#E2E5EA] rounded-xl overflow-hidden">
+      <div className="bg-[#F5F4F0] px-4 py-2.5 border-b border-[#E2E5EA]">
         <h3 className="text-[14px] font-bold text-[#1A1A2E]">{icon} {title}</h3>
       </div>
       <div className="p-4">{children}</div>
@@ -153,7 +153,7 @@ export default function StockAnalysisModal({ ticker, stockName, onClose }: Props
       {/* 모달 */}
       <div className="relative w-full max-w-[800px] max-h-[90vh] mt-[5vh] bg-white rounded-2xl shadow-2xl overflow-y-auto mx-4">
         {/* 헤더 */}
-        <div className="sticky top-0 z-10 bg-white border-b border-[#E8E6E0] px-5 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-10 bg-white border-b border-[#E2E5EA] px-5 py-4 flex items-center justify-between">
           <div>
             <h2 className="text-[17px] font-bold text-[#1A1A2E]">{stockName}</h2>
             <p className="text-[13px] text-[#6B7280]">
@@ -173,7 +173,7 @@ export default function StockAnalysisModal({ ticker, stockName, onClose }: Props
         <div className="p-5 space-y-4">
           {loading ? (
             <div className="text-center py-16">
-              <div className="animate-spin w-8 h-8 border-2 border-[#E8E6E0] border-t-[#1A1A2E] rounded-full mx-auto" />
+              <div className="animate-spin w-8 h-8 border-2 border-[#E2E5EA] border-t-[#1A1A2E] rounded-full mx-auto" />
               <p className="text-[13px] text-[#6B7280] mt-3">분석 데이터 로딩 중...</p>
             </div>
           ) : !data ? (

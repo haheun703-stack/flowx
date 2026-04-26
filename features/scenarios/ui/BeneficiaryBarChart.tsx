@@ -83,7 +83,7 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
 
   return (
     <div>
-      <h3 className="text-[17px] font-black text-[#1A1A2E] mb-5">
+      <h3 className="text-[17px] font-bold text-[#1A1A2E] mb-5">
         수혜자별 이익 (단위: 10억 달러, $B)
       </h3>
 
@@ -106,7 +106,7 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
             return (
               <div
                 key={t}
-                className="absolute left-0 right-0 border-t border-[#E8E6E0]"
+                className="absolute left-0 right-0 border-t border-[#E2E5EA]"
                 style={{ bottom: `${bottomPct}%` }}
               />
             )
@@ -126,7 +126,7 @@ export default function BeneficiaryVerticalBarChart({ beneficiaries }: { benefic
                 >
                   {/* 금액 (막대 위) */}
                   <span
-                    className="text-[13px] font-black tabular-nums mb-1"
+                    className="text-[13px] font-bold tabular-nums mb-1"
                     style={{ color }}
                   >
                     {fmtBil(b.earned_bil)}

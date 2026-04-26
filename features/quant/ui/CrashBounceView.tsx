@@ -134,7 +134,7 @@ export default function CrashBounceView() {
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-5">
 
       {/* ① 상단 배너 — 백테스트 신뢰도 */}
-      <div className="rounded-xl p-5 border border-[#E8E6E0] bg-white">
+      <div className="rounded-xl p-5 border border-[#E2E5EA] bg-white">
         <div className="flex items-start gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
@@ -148,15 +148,15 @@ export default function CrashBounceView() {
             </p>
             <div className="flex gap-4">
               <div className="text-center">
-                <p className="text-[17px] font-black text-[#DC2626] tabular-nums">+3.38%</p>
+                <p className="text-[17px] font-bold text-[#DC2626] tabular-nums">+3.38%</p>
                 <p className="text-[12px] text-[#6B7280]">평균 수익 (5일)</p>
               </div>
               <div className="text-center">
-                <p className="text-[17px] font-black text-[#16A34A] tabular-nums">60.2%</p>
+                <p className="text-[17px] font-bold text-[#16A34A] tabular-nums">60.2%</p>
                 <p className="text-[12px] text-[#6B7280]">승률</p>
               </div>
               <div className="text-center">
-                <p className="text-[17px] font-black text-[#0EA5E9] tabular-nums">2.64</p>
+                <p className="text-[17px] font-bold text-[#0EA5E9] tabular-nums">2.64</p>
                 <p className="text-[12px] text-[#6B7280]">손익비</p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function CrashBounceView() {
       </div>
 
       {/* ② 등급별 필터 탭 */}
-      <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
+      <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E2E5EA] w-fit">
         {GRADE_TABS.map(g => {
           const count = g === '전체' ? items.length : items.filter(i => i.grade === g).length
           return (
@@ -181,7 +181,7 @@ export default function CrashBounceView() {
               onClick={() => setGradeFilter(g)}
               className={`px-3 py-1.5 rounded-lg text-[14px] font-bold transition-colors ${
                 gradeFilter === g
-                  ? 'bg-white text-[#1A1A2E] shadow-sm'
+                  ? 'bg-white text-[#1A1A2E] shadow'
                   : 'text-[#6B7280] hover:text-[#1A1A2E]'
               }`}
             >
@@ -228,7 +228,7 @@ export default function CrashBounceView() {
                       {item.signal_type}
                     </span>
                     {sc.badge && (
-                      <span className="text-[11px] font-black px-1.5 py-0.5 rounded bg-[#FF0000] text-white">
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-[#FF0000] text-white">
                         {sc.badge}
                       </span>
                     )}
@@ -292,7 +292,7 @@ export default function CrashBounceView() {
       {cardItems.length > 5 && !showAll && (
         <button
           onClick={() => setShowAll(true)}
-          className="w-full py-2.5 rounded-xl border border-[#E8E6E0] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
+          className="w-full py-2.5 rounded-xl border border-[#E2E5EA] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
         >
           {cardItems.length - 5}개 더보기
         </button>
@@ -300,7 +300,7 @@ export default function CrashBounceView() {
       {showAll && cardItems.length > 5 && (
         <button
           onClick={() => setShowAll(false)}
-          className="w-full py-2.5 rounded-xl border border-[#E8E6E0] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
+          className="w-full py-2.5 rounded-xl border border-[#E2E5EA] bg-[#F9F8F6] text-[14px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors"
         >
           접기
         </button>
@@ -310,7 +310,7 @@ export default function CrashBounceView() {
       {watchItems.length > 0 && (
         <div>
           <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-2">○ 관심 — {watchItems.length}종목</h3>
-          <div className="rounded-xl overflow-hidden border border-[#E8E6E0]">
+          <div className="rounded-xl overflow-hidden border border-[#E2E5EA]">
             <table className="w-full text-[14px]">
               <thead>
                 <tr style={{ backgroundColor: '#F5F4F0' }}>
@@ -324,7 +324,7 @@ export default function CrashBounceView() {
               </thead>
               <tbody>
                 {watchItems.map(item => (
-                  <tr key={`${item.date}-${item.ticker}`} className="border-t border-[#E8E6E0]/50 hover:bg-[#F9F8F6]">
+                  <tr key={`${item.date}-${item.ticker}`} className="border-t border-[#E2E5EA]/50 hover:bg-[#F9F8F6]">
                     <td className="py-2.5 px-3">
                       <span className="font-bold text-[#1A1A2E]">{item.name}</span>
                       <span className="text-[13px] text-[#9CA3AF] ml-1">{item.ticker}</span>
@@ -347,7 +347,7 @@ export default function CrashBounceView() {
       )}
 
       {/* ⑤ 백테스트 상세 (접이식) */}
-      <div className="rounded-xl border border-[#E8E6E0] overflow-hidden">
+      <div className="rounded-xl border border-[#E2E5EA] overflow-hidden">
         <button
           onClick={() => setBacktestOpen(!backtestOpen)}
           className="w-full flex items-center justify-between px-4 py-3 bg-[#F9F8F6] hover:bg-[#F5F4F0] transition-colors"
@@ -360,7 +360,7 @@ export default function CrashBounceView() {
             {/* 백테스트 테이블 */}
             <table className="w-full text-[14px]">
               <thead>
-                <tr className="border-b border-[#E8E6E0]">
+                <tr className="border-b border-[#E2E5EA]">
                   <th className="text-left py-2 text-[13px] font-bold text-[#1A1A2E]">시그널</th>
                   <th className="text-center py-2 text-[13px] font-bold text-[#1A1A2E]">기간</th>
                   <th className="text-center py-2 text-[13px] font-bold text-[#1A1A2E]">표본수</th>
@@ -370,7 +370,7 @@ export default function CrashBounceView() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-[#E8E6E0]/50">
+                <tr className="border-b border-[#E2E5EA]/50">
                   <td className="py-2 font-bold" style={{ color: '#FF6600' }}>볼린저급락 반등</td>
                   <td className="text-center py-2 text-[#6B7280]">2019~2026</td>
                   <td className="text-center py-2 tabular-nums">1,034건</td>

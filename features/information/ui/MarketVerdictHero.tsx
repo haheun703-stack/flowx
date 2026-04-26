@@ -87,7 +87,7 @@ export function MarketVerdictHero() {
           </span>
         </div>
         <div className="flex items-baseline gap-4">
-          <div className="text-3xl sm:text-4xl lg:text-5xl font-black leading-none tracking-tight" style={{ color: style.textColor }}>
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-none tracking-tight" style={{ color: style.textColor }}>
             {label}
           </div>
         </div>

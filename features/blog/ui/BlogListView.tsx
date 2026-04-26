@@ -60,7 +60,7 @@ export default function BlogListView() {
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-12 space-y-6">
       {/* 헤더 */}
       <div>
-        <h1 className="text-[22px] font-black text-[#1A1A2E]">종목 분석 블로그</h1>
+        <h1 className="text-[22px] font-bold text-[#1A1A2E]">종목 분석 블로그</h1>
         <p className="text-[13px] text-[#6B7280] mt-1">매일 장후 핫 테마 관련주를 쉽게 풀어드립니다</p>
       </div>
 
@@ -80,7 +80,7 @@ export default function BlogListView() {
                   <Link
                     key={`${item.date}-${item.ticker}`}
                     href={`/blog/${item.ticker}?date=${item.date}`}
-                    className="block bg-white rounded-xl border border-[#E8E6E0] shadow-sm hover:shadow-md transition-shadow p-5"
+                    className="block bg-white rounded-xl border border-[#E2E5EA] shadow hover:shadow-md transition-shadow p-5"
                   >
                     {/* 상단: 종목명 + 판정 배지 */}
                     <div className="flex items-center gap-2 mb-2">

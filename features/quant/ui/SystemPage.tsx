@@ -209,7 +209,7 @@ export default function SystemPage() {
 
       {/* 탭 바 */}
       <div className="tab-scroll">
-        <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
+        <div className="flex items-center gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E2E5EA] w-fit">
           {TABS.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`px-3 md:px-5 py-2 md:py-2.5 rounded-lg text-[13px] md:text-[15px] font-bold transition-colors whitespace-nowrap ${
@@ -229,7 +229,7 @@ export default function SystemPage() {
           {/* ══════ ZONE B: 30초 분석 ══════ */}
 
           {/* Box 1: 스마트 수급 포착 */}
-          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
             style={{ borderLeft: '3px solid #FF6B35' }}>
             <div className="px-5 py-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">스마트 수급 포착</h3>
@@ -261,7 +261,7 @@ export default function SystemPage() {
                   })}
                   {surgeBuys.length > 10 && (
                     <button onClick={() => setShowAllSurge(!showAllSurge)}
-                      className="w-full py-2 rounded-lg border border-[#E8E6E0] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
+                      className="w-full py-2 rounded-lg border border-[#E2E5EA] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
                       {showAllSurge ? '접기' : `${surgeBuys.length - 10}개 더보기`}
                     </button>
                   )}
@@ -293,7 +293,7 @@ export default function SystemPage() {
           )}
 
           {/* Box 2: 바닥에서 고개 든 종목 */}
-          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
             style={{ borderLeft: '3px solid #4CAF50' }}>
             <div className="px-5 py-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">바닥에서 고개 든 종목</h3>
@@ -342,7 +342,7 @@ export default function SystemPage() {
                   })}
                   {bottomPicks.length > 3 && (
                     <button onClick={() => setShowAllBottom(!showAllBottom)}
-                      className="w-full py-2 rounded-lg border border-[#E8E6E0] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
+                      className="w-full py-2 rounded-lg border border-[#E2E5EA] bg-[#F9F8F6] text-[13px] font-bold text-[#6B7280] hover:bg-[#F0EFEB] transition-colors">
                       {showAllBottom ? '접기' : `${bottomPicks.length - 3}개 더보기`}
                     </button>
                   )}
@@ -360,7 +360,7 @@ export default function SystemPage() {
             const shown = fibPicks.slice(0, 5)
             const rest = fibPicks.length - 5
             return (
-              <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+              <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
                 style={{ borderLeft: '3px solid #FFD700' }}>
                 <div className="px-5 py-4">
                   <div className="flex items-center gap-2 mb-0.5">
@@ -391,7 +391,7 @@ export default function SystemPage() {
           })()}
 
           {/* Box 3: 내일의 ETF 전략 */}
-          <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+          <div className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
             style={{ borderLeft: '3px solid #2196F3' }}>
             <div className="px-5 py-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-0.5">내일의 ETF 전략</h3>
@@ -486,7 +486,7 @@ export default function SystemPage() {
           {/* 왜 사야 하나? — 근거 모음 (2x2) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 섹터 온도 */}
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">섹터 온도</h3>
               {sectorHeat.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
@@ -504,7 +504,7 @@ export default function SystemPage() {
             </div>
 
             {/* 스마트 머니 쌍끌이 TOP 3 */}
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">스마트 머니 쌍끌이 TOP 3</h3>
               {dualTop3.length > 0 ? (
                 <div className="space-y-2">
@@ -520,7 +520,7 @@ export default function SystemPage() {
             </div>
 
             {/* 오늘 폭발 TOP 3 */}
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">오늘 폭발 TOP 3</h3>
               {volTop3.length > 0 ? (
                 <div className="space-y-2">
@@ -553,14 +553,14 @@ export default function SystemPage() {
             </div>
 
             {/* 대형주 건강 체크 */}
-            <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-4">
+            <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-4">
               <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-3">대형주 건강 체크</h3>
               {bluechip ? (
                 <>
                   <div className="flex items-center gap-3 mb-2">
                     {['A', 'B', 'C', 'D'].map((g) => (
                       <div key={g} className="text-center">
-                        <span className="text-[18px] font-black tabular-nums text-[#1A1A2E]">{gc[g] ?? 0}</span>
+                        <span className="text-[18px] font-bold tabular-nums text-[#1A1A2E]">{gc[g] ?? 0}</span>
                         <span className="text-[10px] font-bold block" style={{
                           color: g === 'A' ? '#16A34A' : g === 'B' ? '#2563EB' : g === 'C' ? '#EA580C' : '#9CA3AF'
                         }}>{g}등급</span>

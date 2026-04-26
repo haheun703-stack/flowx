@@ -117,7 +117,7 @@ function BluechipRow({ item }: { item: BluechipItem }) {
         {/* 종목 */}
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-black ${gc.bg} ${gc.text}`}>{item.grade}</span>
+            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold ${gc.bg} ${gc.text}`}>{item.grade}</span>
             <Link
               href={`/stock/${item.code}`}
               onClick={e => e.stopPropagation()}
@@ -129,7 +129,7 @@ function BluechipRow({ item }: { item: BluechipItem }) {
           <div className="text-[10px] text-[#9CA3AF] mt-0.5">{item.sector} · {fmtCap(item.cap)}</div>
         </div>
         {/* 총점 */}
-        <span className="text-[14px] font-black tabular-nums text-[#1A1A2E] text-center">{item.total_score}</span>
+        <span className="text-[14px] font-bold tabular-nums text-[#1A1A2E] text-center">{item.total_score}</span>
         {/* 피보 존 */}
         <span className="text-[11px] font-bold px-1 py-0.5 rounded text-center" style={{ backgroundColor: `${zoneColor}15`, color: zoneColor }}>
           {item.fib_zone}
@@ -228,7 +228,7 @@ export default function BluechipCheckupPanel({ data }: { data: BluechipCheckupDa
         </div>
 
         {/* 테이블 헤더 */}
-        <div className="hidden md:grid grid-cols-[1fr_40px_50px_80px_70px_70px_70px_60px] gap-1.5 text-[10px] font-bold text-[#9CA3AF] border-b border-[#E8E6E0] pb-1 mb-1 px-1">
+        <div className="hidden md:grid grid-cols-[1fr_40px_50px_80px_70px_70px_70px_60px] gap-1.5 text-[10px] font-bold text-[#9CA3AF] border-b border-[#E2E5EA] pb-1 mb-1 px-1">
           <span>종목</span>
           <span className="text-center">점수</span>
           <span className="text-center">피보</span>
@@ -268,7 +268,7 @@ export default function BluechipCheckupPanel({ data }: { data: BluechipCheckupDa
             <div className="mt-3 space-y-4">
               {Array.from(themeGroups.entries()).map(([theme, items]) => (
                 <div key={theme}>
-                  <div className="text-[13px] font-black text-[#1A1A2E] mb-1.5 flex items-center gap-1.5">
+                  <div className="text-[13px] font-bold text-[#1A1A2E] mb-1.5 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
                     {theme} ({items.length})
                   </div>

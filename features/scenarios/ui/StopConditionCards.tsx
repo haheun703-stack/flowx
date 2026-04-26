@@ -42,10 +42,10 @@ function DangerGauge({ total, noStopCount }: { total: number; noStopCount: numbe
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-[20px]">🛑</span>
-          <span className="text-[15px] font-black text-[#1A1A2E]">시나리오 장기화 위험도</span>
+          <span className="text-[15px] font-bold text-[#1A1A2E]">시나리오 장기화 위험도</span>
         </div>
         <span
-          className="text-[13px] font-black px-3 py-1 rounded-full"
+          className="text-[13px] font-bold px-3 py-1 rounded-full"
           style={{ backgroundColor: barColor, color: '#FFF' }}
         >
           {level}
@@ -59,7 +59,7 @@ function DangerGauge({ total, noStopCount }: { total: number; noStopCount: numbe
           style={{ width: `${Math.max(pct, 8)}%`, backgroundColor: barColor }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[11px] font-black text-white drop-shadow-sm">
+          <span className="text-[11px] font-bold text-white drop-shadow">
             {noStopCount}/{total} 수혜자에 멈출 조건 없음
           </span>
         </div>
@@ -91,7 +91,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
         <div className="rounded-xl p-4" style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA' }}>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-[16px]">🔴</span>
-            <span className="text-[14px] font-black" style={{ color: '#DC2626' }}>
+            <span className="text-[14px] font-bold" style={{ color: '#DC2626' }}>
               브레이크 없는 수혜자
             </span>
             <span className="text-[12px] font-bold px-2 py-0.5 rounded-full ml-auto"
@@ -103,7 +103,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
           {noStop.length > 0 ? (
             <div className="space-y-2">
               {noStop.map((c, i) => (
-                <div key={i} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2.5 shadow-sm">
+                <div key={i} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2.5 shadow">
                   <span className="text-[14px]">⚠️</span>
                   <span className="text-[13px] font-bold text-[#1A1A2E]">{c.beneficiary}</span>
                   <span className="text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto"
@@ -128,7 +128,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
         <div className="rounded-xl p-4" style={{ backgroundColor: '#FFFBEB', border: '1px solid #FDE68A' }}>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-[16px]">🟡</span>
-            <span className="text-[14px] font-black" style={{ color: '#92400E' }}>
+            <span className="text-[14px] font-bold" style={{ color: '#92400E' }}>
               아직 미충족인 멈출 조건
             </span>
             <span className="text-[12px] font-bold px-2 py-0.5 rounded-full ml-auto"
@@ -140,7 +140,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
           {withStop.length > 0 ? (
             <div className="space-y-2">
               {withStop.map((c, i) => (
-                <div key={i} className="bg-white rounded-lg px-3 py-2.5 shadow-sm">
+                <div key={i} className="bg-white rounded-lg px-3 py-2.5 shadow">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-[13px] font-bold text-[#1A1A2E] leading-snug">{c.name}</p>
@@ -171,7 +171,7 @@ export default function StopConditionCards({ beneficiaries }: StopConditionCards
         <div className="flex items-start gap-3">
           <span className="text-[18px] shrink-0">💡</span>
           <div>
-            <p className="text-[13px] font-black text-white mb-1">투자 인사이트</p>
+            <p className="text-[13px] font-bold text-white mb-1">투자 인사이트</p>
             <p className="text-[12px] text-[#A5B4C3] leading-relaxed">
               {noStop.length > 0 && withStop.length > 0
                 ? `${noStop.length}명의 수혜자에게는 멈출 조건이 아예 없고, ${withStop.length}개의 멈출 조건도 모두 미충족 상태입니다. 시나리오가 끝날 외부 트리거가 부족하므로 관련 종목의 모멘텀이 당분간 유지될 가능성이 높습니다.`

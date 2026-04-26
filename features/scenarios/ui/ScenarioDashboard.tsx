@@ -39,7 +39,7 @@ function Accordion({
           cursor: 'pointer',
         }}
       >
-        <span className="text-[15px] font-black text-[#1A1A2E]">{title}</span>
+        <span className="text-[15px] font-bold text-[#1A1A2E]">{title}</span>
         <span className="text-[12px] font-bold text-[#00CC6A]">
           {isOpen ? '접기 ▲' : '펼치기 ▼'}
         </span>

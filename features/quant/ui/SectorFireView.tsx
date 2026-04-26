@@ -125,7 +125,7 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-[16px] font-bold text-[#1A1A2E]">{s.sector}</span>
-        <span className="text-[24px] font-black tabular-nums" style={{ color: gc.color }}>
+        <span className="text-[24px] font-bold tabular-nums" style={{ color: gc.color }}>
           {Math.round(s.fire_score)}
         </span>
       </div>
@@ -281,7 +281,7 @@ export default function SectorFireView() {
       {/* 헤더 */}
       <div>
         <div className="flex items-center gap-3">
-          <h2 className="text-[17px] font-black text-[#1A1A2E]">SECTOR FIRE</h2>
+          <h2 className="text-[17px] font-bold text-[#1A1A2E]">SECTOR FIRE</h2>
           {date && <span className="text-[12px] text-[#9ca3b8]">{date}</span>}
         </div>
         <p className="text-[12px] text-[#6B7280] mt-0.5">돈의 흐름으로 읽는 다음 발화 섹터</p>
@@ -300,7 +300,7 @@ export default function SectorFireView() {
       </div>
 
       {/* 섹션 2: 종목 매수 후보 테이블 */}
-      <div className="rounded-xl border border-[#e5e7ef] bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-[#e5e7ef] bg-white shadow overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-[#e5e7ef]">
           <div className="flex items-center gap-2">
             <h3 className="text-[15px] font-bold text-[#1A1A2E]">🔥 발화 섹터 종목 — 매수 후보</h3>

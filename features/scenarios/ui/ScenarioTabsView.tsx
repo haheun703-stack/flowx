@@ -20,7 +20,7 @@ export default function ScenarioTabsView() {
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* 탭 바 */}
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6">
-        <nav className="tab-scroll flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit max-w-full">
+        <nav className="tab-scroll flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E2E5EA] w-fit max-w-full">
           {TABS.map(t => (
             <button
               key={t.key}

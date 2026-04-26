@@ -119,19 +119,19 @@ export function AiSignalScorecard() {
       {/* ① 핵심 지표 3개 */}
       <div className="grid grid-cols-3 gap-3">
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(accuracy) }}>
+          <p className="text-[22px] font-bold tabular-nums" style={{ color: accuracyColor(accuracy) }}>
             {accuracy.toFixed(1)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">AI 적중률</p>
         </div>
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: returnColor(paperReturn) }}>
+          <p className="text-[22px] font-bold tabular-nums" style={{ color: returnColor(paperReturn) }}>
             {paperReturn >= 0 ? '+' : ''}{paperReturn.toFixed(2)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">페이퍼 수익률</p>
         </div>
         <div className="text-center">
-          <p className="text-[22px] font-black tabular-nums" style={{ color: accuracyColor(winRate) }}>
+          <p className="text-[22px] font-bold tabular-nums" style={{ color: accuracyColor(winRate) }}>
             {winRate.toFixed(1)}%
           </p>
           <p className="text-[12px] font-bold text-[#6B7280]">승률</p>

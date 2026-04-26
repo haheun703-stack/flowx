@@ -56,7 +56,7 @@ interface CardProps {
 export function MacroCard({ num, title, desc, source, insight, full, style, className, children }: CardProps) {
   return (
     <div
-      className={`bg-white rounded-xl border border-[#e0ddd8] shadow-sm overflow-hidden relative ${full ? 'col-span-full' : ''} ${className ?? ''}`}
+      className={`bg-white rounded-xl border border-[#e0ddd8] shadow overflow-hidden relative ${full ? 'col-span-full' : ''} ${className ?? ''}`}
       style={{ padding: '28px', ...style }}
     >
       {num && (
@@ -65,7 +65,7 @@ export function MacroCard({ num, title, desc, source, insight, full, style, clas
         </div>
       )}
       {title && (
-        <h2 className="text-[clamp(20px,2.8vw,28px)] font-black text-black leading-tight mb-1">
+        <h2 className="text-[clamp(20px,2.8vw,28px)] font-bold text-black leading-tight mb-1">
           {title}
         </h2>
       )}

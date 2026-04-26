@@ -308,7 +308,7 @@ export function ScenarioFlowPanel() {
     <div className="fx-card-green">
       {/* 타이틀 */}
       <div className="mb-1">
-        <div className="text-[15px] font-black text-[#1A1A2E]">지금 시장은 어디에 있을까?</div>
+        <div className="text-[15px] font-bold text-[#1A1A2E]">지금 시장은 어디에 있을까?</div>
         <div className="text-[12px] text-[#6B7280] mt-0.5">AI가 매일 시장 흐름을 분석하고, 앞으로 뭐가 일어날지 예측해요</div>
       </div>
 

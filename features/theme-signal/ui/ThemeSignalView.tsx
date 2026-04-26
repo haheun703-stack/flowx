@@ -87,7 +87,7 @@ export default function ThemeSignalView() {
 
       {/* 헤더 */}
       <div>
-        <h1 className="text-[20px] font-black text-[#1A1A2E] mb-1">US &rarr; KR 테마 전파 시그널</h1>
+        <h1 className="text-[20px] font-bold text-[#1A1A2E] mb-1">US &rarr; KR 테마 전파 시그널</h1>
         <p className="text-[12px] text-[#9CA3AF]">
           미국장 테마주 등락 &rarr; 한국 관련주 전파 감지 &middot; 매일 08:03 자동 스캔
           {date && <span className="ml-2 font-bold text-[#1A1A2E]">{date}</span>}
@@ -102,7 +102,7 @@ export default function ThemeSignalView() {
           return (
             <div key={g} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold"
               style={{ backgroundColor: gs.bg, color: gs.color }}>
-              {gs.label} <span className="text-[16px] font-black tabular-nums">{cnt}</span>
+              {gs.label} <span className="text-[16px] font-bold tabular-nums">{cnt}</span>
             </div>
           )
         })}
@@ -130,7 +130,7 @@ export default function ThemeSignalView() {
             : null
 
           return (
-            <div key={s.theme_id} className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm overflow-hidden"
+            <div key={s.theme_id} className="bg-white rounded-xl border border-[#E2E5EA] shadow overflow-hidden"
               style={{ borderLeft: `3px solid ${gs.color}` }}>
               {/* 카드 헤더 */}
               <button onClick={() => toggle(s.theme_id)}
@@ -139,7 +139,7 @@ export default function ThemeSignalView() {
                   <span className="text-[11px] font-bold px-2.5 py-1 rounded"
                     style={{ backgroundColor: gs.bg, color: gs.color }}>{gs.label}</span>
                   <span className="text-[15px] font-bold text-[#1A1A2E]">{s.theme_name}</span>
-                  <span className="text-[14px] font-black tabular-nums" style={{ color: strengthColor(s.signal_strength) }}>
+                  <span className="text-[14px] font-bold tabular-nums" style={{ color: strengthColor(s.signal_strength) }}>
                     {s.signal_strength}점
                   </span>
                   <span className={`text-[12px] font-bold tabular-nums ${(s.us_avg_change ?? 0) >= 0 ? 'text-[#EF4444]' : 'text-[#3B82F6]'}`}>
@@ -194,7 +194,7 @@ export default function ThemeSignalView() {
                               backgroundColor: isUp ? '#FEF2F2' : '#EFF6FF',
                               borderColor: isUp ? '#FECACA' : '#BFDBFE',
                             }}>
-                            <p className="text-[16px] font-black text-[#1A1A2E] mb-1">{u.ticker}</p>
+                            <p className="text-[16px] font-bold text-[#1A1A2E] mb-1">{u.ticker}</p>
                             <p className="text-[17px] font-bold text-[#1A1A2E] tabular-nums mb-1">{fmtUsd(u.close)}</p>
                             <p className="text-[16px] font-bold tabular-nums" style={{ color: isUp ? '#EF4444' : '#3B82F6' }}>
                               {isUp ? '+' : ''}{u.change_pct.toFixed(2)}%
@@ -219,7 +219,7 @@ export default function ThemeSignalView() {
                   {/* 한국 관련주 — 상세 카드 */}
                   <div>
                     <p className="text-[13px] font-bold text-[#6B7280] mb-2">한국 관련주 ({krStocks.length}종목)</p>
-                    <div className="space-y-0 divide-y divide-[#F0EDE8] rounded-lg border border-[#E8E6E0] overflow-hidden">
+                    <div className="space-y-0 divide-y divide-[#F0EDE8] rounded-lg border border-[#E2E5EA] overflow-hidden">
                       {krStocks.map((k) => {
                         const actual = krActual?.find((a) => a.ticker === k.ticker)
                         const isUp = (k.prev_change ?? 0) >= 0

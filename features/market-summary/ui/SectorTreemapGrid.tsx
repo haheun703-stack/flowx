@@ -144,7 +144,7 @@ function StockDrilldownGrid({ stocks, sizeBy }: { stocks: TreemapStock[]; sizeBy
           >
             <div className="flex flex-col items-center justify-center h-full px-1" style={{ color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
               {h > 30 && <div className="font-bold truncate w-full text-center" style={{ fontSize: Math.min(ts.name, w / 5) }}>{r.name}</div>}
-              {h > 20 && <div className="font-black tabular-nums" style={{ fontSize: Math.min(ts.pct, w / 4) }}>{sign}{r.changePercent.toFixed(2)}%</div>}
+              {h > 20 && <div className="font-bold tabular-nums" style={{ fontSize: Math.min(ts.pct, w / 4) }}>{sign}{r.changePercent.toFixed(2)}%</div>}
               {h > 45 && w > 50 && <div className="opacity-70" style={{ fontSize: 7 }}>{r.ticker}</div>}
             </div>
           </button>
@@ -168,8 +168,8 @@ function SectorDrillDown({ sector, sizeBy, onClose }: { sector: TreemapSector; s
       {/* 헤더 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-black text-[#1A1A2E]">{sector.name}</span>
-          <span className="text-sm font-black tabular-nums" style={{ color: changeColor }}>
+          <span className="text-sm font-bold text-[#1A1A2E]">{sector.name}</span>
+          <span className="text-sm font-bold tabular-nums" style={{ color: changeColor }}>
             {sign}{sector.avgChange.toFixed(2)}%
           </span>
         </div>
@@ -281,7 +281,7 @@ export function SectorTreemapGrid({ sectors, sizeBy }: SectorTreemapGridProps) {
             >
               <div className="flex flex-col items-center justify-center h-full px-1" style={{ color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                 {h > 30 && <div className="font-bold truncate w-full text-center" style={{ fontSize: Math.min(ts.name, w / 5) }}>{r.name}</div>}
-                <div className="font-black tabular-nums" style={{ fontSize: Math.min(ts.pct, w / 4) }}>{sign}{r.avgChange.toFixed(2)}%</div>
+                <div className="font-bold tabular-nums" style={{ fontSize: Math.min(ts.pct, w / 4) }}>{sign}{r.avgChange.toFixed(2)}%</div>
                 {h > 50 && w > 60 && <div className="opacity-60" style={{ fontSize: ts.cap }}>시총 {fmtCap(r.marketCap)}</div>}
               </div>
             </button>

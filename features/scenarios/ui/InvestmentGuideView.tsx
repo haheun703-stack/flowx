@@ -19,8 +19,8 @@ export default function InvestmentGuideView() {
       {/* ═══════════════════════════════════════════════════════════
           PART 1 — 투자 타이밍 로드맵
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] pt-6 text-center">
-        <h3 className="text-[16px] font-black text-[#1A1A2E]">PART 1 — 투자 타이밍 로드맵</h3>
+      <div className="border-t border-[#E2E5EA] pt-6 text-center">
+        <h3 className="text-[16px] font-bold text-[#1A1A2E]">PART 1 — 투자 타이밍 로드맵</h3>
         <p className="text-[11px] text-[#9CA3AF] mt-1 mb-4">GPU 병목이 풀리면 → 다음 병목이 투자 기회. 돈은 병목을 따라 이동한다.</p>
       </div>
 
@@ -148,8 +148,8 @@ export default function InvestmentGuideView() {
       {/* ═══════════════════════════════════════════════════════════
           PART 2 — 리스크 시나리오
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-10 pt-6 text-center">
-        <h3 className="text-[16px] font-black text-[#1A1A2E]">PART 2 — 리스크 시나리오</h3>
+      <div className="border-t border-[#E2E5EA] mt-10 pt-6 text-center">
+        <h3 className="text-[16px] font-bold text-[#1A1A2E]">PART 2 — 리스크 시나리오</h3>
         <p className="text-[11px] text-[#9CA3AF] mt-1 mb-2">주린이는 오를 때만 보지만, 프로는 빠질 때를 먼저 본다</p>
       </div>
 
@@ -322,8 +322,8 @@ export default function InvestmentGuideView() {
       {/* ═══════════════════════════════════════════════════════════
           PART 3 — 섹터 간 연쇄반응
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-10 pt-6 text-center">
-        <h3 className="text-[16px] font-black text-[#1A1A2E]">PART 3 — 섹터 간 연쇄반응</h3>
+      <div className="border-t border-[#E2E5EA] mt-10 pt-6 text-center">
+        <h3 className="text-[16px] font-bold text-[#1A1A2E]">PART 3 — 섹터 간 연쇄반응</h3>
         <p className="text-[11px] text-[#9CA3AF] mt-1 mb-4">하나의 뉴스가 어떻게 종목까지 전파되는지, 인과관계 체인을 따라가세요<br />※ PART 1(산업 파급)은 년 단위, PART 3(주가 반응)은 일 단위 — 측정 척도가 다릅니다</p>
       </div>
 

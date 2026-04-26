@@ -144,7 +144,7 @@ export default function ForeignFlowPanel() {
 
       {/* 뷰 전환 + 필터 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-        <nav className="flex gap-1 bg-[#F5F4F0] rounded-lg p-1 border border-[#E8E6E0]">
+        <nav className="flex gap-1 bg-[#F5F4F0] rounded-lg p-1 border border-[#E2E5EA]">
           <button
             onClick={() => setView('stocks')}
             className={`py-2 px-4 rounded-md text-[13px] font-bold transition-colors ${
@@ -170,7 +170,7 @@ export default function ForeignFlowPanel() {
               className={`text-[11px] font-bold px-3 py-1.5 rounded-lg border transition-colors ${
                 filterDual
                   ? 'bg-[#FEF9C3] border-[#EAB308] text-[#92400E]'
-                  : 'bg-white border-[#E8E6E0] text-[#6B7280]'
+                  : 'bg-white border-[#E2E5EA] text-[#6B7280]'
               }`}
             >
               &#9889; 쌍매수만
@@ -178,7 +178,7 @@ export default function ForeignFlowPanel() {
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="text-[11px] font-mono px-2 py-1.5 rounded-lg border border-[#E8E6E0] bg-white text-[#6B7280]"
+              className="text-[11px] font-mono px-2 py-1.5 rounded-lg border border-[#E2E5EA] bg-white text-[#6B7280]"
             >
               <option value="rank_cumul">누적 순위</option>
               <option value="foreign_5d_억">외국인 순매수</option>

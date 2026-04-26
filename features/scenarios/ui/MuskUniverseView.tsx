@@ -39,7 +39,7 @@ export default function MuskUniverseView() {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(26,95,180,0.2)] bg-[rgba(26,95,180,0.06)] text-[14px] text-[#1a5fb4] font-semibold mb-3">
           🚀 2026 SpaceX IPO D-Day 접근 중
         </div>
-        <h2 className="text-[24px] font-black text-[#1A1A2E]">
+        <h2 className="text-[24px] font-bold text-[#1A1A2E]">
           <span style={{ background: 'linear-gradient(135deg,#d92028,#7c3aed,#1a5fb4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>일론 머스크</span>{' '}
           생태계 유니버스
         </h2>
@@ -49,20 +49,20 @@ export default function MuskUniverseView() {
         </p>
 
         <div className="flex gap-3 justify-center flex-wrap mt-4">
-          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow-sm text-center">
-            <div className="text-[20px] font-black text-[#1a5fb4]">$1.75T</div>
+          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow text-center">
+            <div className="text-[20px] font-bold text-[#1a5fb4]">$1.75T</div>
             <div className="text-[11px] text-[#9ca3b8]">SpaceX IPO 목표 밸류</div>
           </div>
-          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow-sm text-center">
-            <div className="text-[20px] font-black text-[#1a5fb4]">6</div>
+          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow text-center">
+            <div className="text-[20px] font-bold text-[#1a5fb4]">6</div>
             <div className="text-[11px] text-[#9ca3b8]">머스크 기업 수</div>
           </div>
-          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow-sm text-center">
-            <div className="text-[20px] font-black text-[#1a5fb4]">$75B</div>
+          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow text-center">
+            <div className="text-[20px] font-bold text-[#1a5fb4]">$75B</div>
             <div className="text-[11px] text-[#9ca3b8]">IPO 조달 목표</div>
           </div>
-          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow-sm text-center">
-            <div className="text-[20px] font-black text-[#1a5fb4]">26종+</div>
+          <div className="bg-white border border-[#e5e7ef] rounded-xl px-5 py-3 shadow text-center">
+            <div className="text-[20px] font-bold text-[#1a5fb4]">26종+</div>
             <div className="text-[11px] text-[#9ca3b8]">미국·한국 수혜주</div>
           </div>
         </div>
@@ -71,9 +71,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 1 — 머스크 생태계 유니버스 맵
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#ecfeff] text-[#0891b2] mb-2">SECTION 01</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">머스크 생태계 유니버스 맵</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">머스크 생태계 유니버스 맵</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">일론 머스크를 중심으로 6개 기업이 하나의 초연결 생태계를 형성합니다. 각 기업은 독립적이면서도 기술·데이터·자원을 공유하며 시너지를 만들어냅니다.</p>
       </div>
 
@@ -185,9 +185,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 2 — 기업 간 시너지 흐름
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#f3effe] text-[#7c3aed] mb-2">SECTION 02</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">기업 간 시너지 흐름</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">기업 간 시너지 흐름</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">머스크 제국의 진짜 경쟁력은 6개 기업이 따로 노는 게 아니라, 서로의 기술과 데이터를 돌려쓴다는 것입니다.</p>
       </div>
 
@@ -250,9 +250,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 3 — SpaceX IPO 타이밍 로드맵
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#fefce8] text-[#b8860b] mb-2">SECTION 03</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">SpaceX IPO 타이밍 로드맵</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">SpaceX IPO 타이밍 로드맵</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">역사상 최대 IPO가 될 SpaceX 상장, 핵심 이벤트의 타임라인입니다.</p>
       </div>
 
@@ -281,9 +281,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 4 — 종목 유니버스
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#ecfeff] text-[#0891b2] mb-2">SECTION 04</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">종목 유니버스</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">종목 유니버스</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">머스크 생태계에 직간접적으로 연결된 미국·한국 종목들입니다.</p>
       </div>
 
@@ -356,9 +356,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 5 — 리스크 시나리오 4선
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#fef2f2] text-[#d92028] mb-2">SECTION 05</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">리스크 시나리오 4선</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">리스크 시나리오 4선</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">{'"'}어떤 일이 터지면 내 종목이 어떻게 되는가{'"'}를 미리 시뮬레이션 해두세요.</p>
       </div>
 
@@ -403,16 +403,16 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 6 — 기업 간 연쇄반응 법칙 4선
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#fefce8] text-[#b8860b] mb-2">SECTION 06</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">기업 간 연쇄반응 법칙 4선</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">기업 간 연쇄반응 법칙 4선</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">머스크 생태계는 하나가 움직이면 전체가 반응합니다. {'"'}A가 오르면 B도 오른다{'"'}의 연쇄 구조를 이해하세요.</p>
       </div>
 
       <div className="flex flex-col gap-3">
         {/* Chain 1 */}
         <div className="bg-white border border-[#e5e7ef] rounded-xl p-5 flex gap-4 items-start">
-          <div className="text-[32px] font-black text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>01</div>
+          <div className="text-[32px] font-bold text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>01</div>
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-bold text-[#1A1A2E] mb-1.5">🔗 SpaceX IPO 성공 → 머스크 프리미엄 전체 확산</div>
             <div className="flex items-center gap-1 flex-wrap mb-2">
@@ -430,7 +430,7 @@ export default function MuskUniverseView() {
 
         {/* Chain 2 */}
         <div className="bg-white border border-[#e5e7ef] rounded-xl p-5 flex gap-4 items-start">
-          <div className="text-[32px] font-black text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>02</div>
+          <div className="text-[32px] font-bold text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>02</div>
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-bold text-[#1A1A2E] mb-1.5">🔗 Starlink 매출 급증 → AI 인프라 투자 가속</div>
             <div className="flex items-center gap-1 flex-wrap mb-2">
@@ -448,7 +448,7 @@ export default function MuskUniverseView() {
 
         {/* Chain 3 */}
         <div className="bg-white border border-[#e5e7ef] rounded-xl p-5 flex gap-4 items-start">
-          <div className="text-[32px] font-black text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>03</div>
+          <div className="text-[32px] font-bold text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>03</div>
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-bold text-[#1A1A2E] mb-1.5">🔗 테슬라 옵티머스 양산 → 로봇주 전면 부상</div>
             <div className="flex items-center gap-1 flex-wrap mb-2">
@@ -466,7 +466,7 @@ export default function MuskUniverseView() {
 
         {/* Chain 4 */}
         <div className="bg-white border border-[#e5e7ef] rounded-xl p-5 flex gap-4 items-start">
-          <div className="text-[32px] font-black text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>04</div>
+          <div className="text-[32px] font-bold text-[#f0f2f8] shrink-0 leading-none" style={{ WebkitTextStroke: '1px #e5e7ef' }}>04</div>
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-bold text-[#1A1A2E] mb-1.5">🔗 머스크 리스크 발생 → 전체 동반 하락 (역연쇄)</div>
             <div className="flex items-center gap-1 flex-wrap mb-2">
@@ -486,9 +486,9 @@ export default function MuskUniverseView() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 7 — "일론 Inc." 합병 시나리오
           ═══════════════════════════════════════════════════════════ */}
-      <div className="border-t border-[#E8E6E0] mt-8 pt-5 mb-4">
+      <div className="border-t border-[#E2E5EA] mt-8 pt-5 mb-4">
         <div className="inline-block text-[11px] font-bold tracking-widest px-3 py-1 rounded-md bg-[#fef2f2] text-[#d92028] mb-2">🔥 보너스 SECTION 07</div>
-        <h3 className="text-[18px] font-black text-[#1A1A2E] mb-1">{'"'}일론 Inc.{'"'} — 테슬라 × 스페이스X 합병 시나리오</h3>
+        <h3 className="text-[18px] font-bold text-[#1A1A2E] mb-1">{'"'}일론 Inc.{'"'} — 테슬라 × 스페이스X 합병 시나리오</h3>
         <p className="text-[13px] text-[#5b6178] max-w-[700px] mb-3">월가가 가장 뜨겁게 논의 중인 {'"'}역사상 최대 합병{'"'} — 성사 시 시총 3,200조원 초대형 기업 탄생</p>
       </div>
 
@@ -504,7 +504,7 @@ export default function MuskUniverseView() {
 
       {/* 합병 구조도 */}
       <div className="mb-5">
-        <div className="text-[16px] font-black text-[#1A1A2E] mb-4 text-center">📐 합병 구조도 — 이미 진행 중인 것과 남은 한 발</div>
+        <div className="text-[16px] font-bold text-[#1A1A2E] mb-4 text-center">📐 합병 구조도 — 이미 진행 중인 것과 남은 한 발</div>
         <div className="flex flex-col md:flex-row items-center justify-center gap-3">
           <div className="bg-white border-2 border-[#7c3aed] rounded-xl px-6 py-4 text-center min-w-[200px]">
             <div className="text-[14px] font-bold text-[#7c3aed]">① xAI + 스페이스X</div>
@@ -517,7 +517,7 @@ export default function MuskUniverseView() {
           </div>
           <span className="text-[24px] text-[#b8860b] font-bold">→</span>
           <div className="bg-white border-2 border-dashed border-[#d92028] rounded-xl px-6 py-4 text-center min-w-[280px] animate-pulse">
-            <div className="text-[14px] font-black text-[#d92028]">③ 테슬라 + 스페이스X = {'"'}일론 Inc.{'"'}</div>
+            <div className="text-[14px] font-bold text-[#d92028]">③ 테슬라 + 스페이스X = {'"'}일론 Inc.{'"'}</div>
             <div className="text-[12px] text-[#b8860b] mt-0.5">⏳ 2027년 이후 가능성 — 웨드부시 댄 아이브스</div>
           </div>
         </div>
@@ -529,7 +529,7 @@ export default function MuskUniverseView() {
         <div className="bg-white border border-[#22c55e] rounded-xl overflow-hidden">
           <div className="h-1 bg-[#22c55e]/60" />
           <div className="p-5">
-            <div className="text-[16px] font-black text-[#22c55e] mb-3">✅ 합병 시 장점 (왜 기대하나?)</div>
+            <div className="text-[16px] font-bold text-[#22c55e] mb-3">✅ 합병 시 장점 (왜 기대하나?)</div>
             <div className="flex flex-col gap-3">
               <div>
                 <div className="text-[14px] font-bold text-[#1A1A2E]">1. 시총 3,200조원+ 세계 최대 기업 탄생</div>
@@ -559,7 +559,7 @@ export default function MuskUniverseView() {
         <div className="bg-white border border-[#d92028] rounded-xl overflow-hidden">
           <div className="h-1 bg-[#d92028]/60" />
           <div className="p-5">
-            <div className="text-[16px] font-black text-[#d92028] mb-3">⚠️ 합병 시 단점 (왜 걱정하나?)</div>
+            <div className="text-[16px] font-bold text-[#d92028] mb-3">⚠️ 합병 시 단점 (왜 걱정하나?)</div>
             <div className="flex flex-col gap-3">
               <div>
                 <div className="text-[14px] font-bold text-[#1A1A2E]">1. {'"'}최저 배수 법칙{'"'} — 테슬라 주주 25% 손실 가능</div>
@@ -587,7 +587,7 @@ export default function MuskUniverseView() {
       </div>
 
       {/* 합병 시나리오 수혜주 */}
-      <div className="text-[16px] font-black text-[#b8860b] mb-3 text-center">🏆 합병 시나리오 수혜주 — {'"'}일론 Inc.{'"'}가 현실이 되면 누가 오를까?</div>
+      <div className="text-[16px] font-bold text-[#b8860b] mb-3 text-center">🏆 합병 시나리오 수혜주 — {'"'}일론 Inc.{'"'}가 현실이 되면 누가 오를까?</div>
 
       <div className="flex flex-col gap-3 mb-5">
         {/* 1순위 */}
@@ -648,7 +648,7 @@ export default function MuskUniverseView() {
 function Chip({ flag, ticker, name }: { flag: 'US' | 'KR'; ticker: string; name: string }) {
   const isUS = flag === 'US'
   return (
-    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-[#e5e7ef] text-[13px] shadow-sm">
+    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-[#e5e7ef] text-[13px] shadow">
       <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${isUS ? 'bg-[#eef4ff] text-[#1a5fb4]' : 'bg-[#fef2f2] text-[#d92028]'}`}>{flag}</span>
       <span className="font-bold text-[#1A1A2E]">{ticker}</span>
       <span className="text-[#9ca3b8] text-[11px]">{name}</span>
@@ -670,7 +670,7 @@ function ChainNode({ color, children }: { color?: string; children: React.ReactN
 function MergerChip({ color, bold, children }: { color: string; bold?: boolean; children: React.ReactNode }) {
   return (
     <span
-      className="inline-flex items-center px-4 py-2 rounded-lg bg-white border-[1.5px] text-[13px] shadow-sm"
+      className="inline-flex items-center px-4 py-2 rounded-lg bg-white border-[1.5px] text-[13px] shadow"
       style={{ borderColor: color, color, fontWeight: bold ? 700 : 600 }}
     >
       {children}

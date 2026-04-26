@@ -136,7 +136,7 @@ export function DeepBriefingPanel() {
       {/* ── 3-1. 상단: 요약 + 센티먼트 ── */}
       <div>
         <div className="flex items-center gap-3 flex-wrap mb-2">
-          <h3 className="text-[17px] font-black text-[#1A1A2E]">
+          <h3 className="text-[17px] font-bold text-[#1A1A2E]">
             심층 브리핑
           </h3>
           <span className="text-[12px] text-[#9ca3b8]">
@@ -165,7 +165,7 @@ export function DeepBriefingPanel() {
                   className="min-w-[140px] bg-[#fafafa] border border-[#e5e7ef] rounded-xl p-3.5 flex-shrink-0"
                 >
                   <div className="text-[11px] text-[#9ca3b8] font-medium mb-1">{kn.label}</div>
-                  <div className="text-[18px] font-black text-[#1A1A2E]">{kn.value}</div>
+                  <div className="text-[18px] font-bold text-[#1A1A2E]">{kn.value}</div>
                   <div
                     className={`text-[12px] font-bold mt-0.5 ${
                       pos === true ? 'text-red-500' : pos === false ? 'text-blue-500' : 'text-[#9ca3b8]'

@@ -253,7 +253,7 @@ export default function MegaThemeFishboneView() {
               className={`shrink-0 px-4 py-3 rounded-lg border-2 transition-all text-left ${
                 isActive
                   ? 'bg-white shadow-md'
-                  : 'bg-[#FAFAF8] border-transparent hover:border-[#E8E6E0]'
+                  : 'bg-[#FAFAF8] border-transparent hover:border-[#E2E5EA]'
               }`}
               style={{ borderColor: isActive ? t.color : undefined }}
             >
@@ -315,7 +315,7 @@ export default function MegaThemeFishboneView() {
 
             {/* AI 분석 내러티브 */}
             {api?.narrative && (
-              <div className="bg-white border border-[#E8E6E0] rounded-lg p-5 mb-6">
+              <div className="bg-white border border-[#E2E5EA] rounded-lg p-5 mb-6">
                 <div className="flex items-center gap-2 mb-3">
                   <h3 className="text-sm font-bold text-[#1A1A2E]">AI 분석 코멘터리</h3>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#7C3AED] font-semibold">
@@ -366,7 +366,7 @@ export default function MegaThemeFishboneView() {
                 {sectors.map((sec, idx) => (
                   <div
                     key={sec.id}
-                    className={`bg-white border border-[#E8E6E0] rounded-lg overflow-hidden ${
+                    className={`bg-white border border-[#E2E5EA] rounded-lg overflow-hidden ${
                       idx % 2 === 0 ? 'md:pr-4' : 'md:pl-4'
                     }`}
                   >
@@ -419,7 +419,7 @@ export default function MegaThemeFishboneView() {
               {THEME_FLOWS.map(flow => (
                 <div
                   key={`${flow.from}-${flow.to}`}
-                  className="bg-white rounded-lg px-4 py-3 border border-[#E8E6E0] flex items-start gap-3"
+                  className="bg-white rounded-lg px-4 py-3 border border-[#E2E5EA] flex items-start gap-3"
                 >
                   <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
                     <span

@@ -71,7 +71,7 @@ export default function AlphaSmartMoney({ dualBuy, instTop, fgnTop }: Props) {
   const empty = dualBuy.length === 0 && instTop.length === 0 && fgnTop.length === 0
 
   return (
-    <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-5">
+    <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5">
       <h3 className="text-[15px] font-bold text-[#1A1A2E] mb-4">
         스마트 머니 흐름
       </h3>

@@ -121,7 +121,7 @@ function UsIndexPanel({ data }: { data: UsMarketData }) {
   return (
     <div className="fx-card-green">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[16px] md:text-[18px] font-black text-[#1A1A2E]">US Market Index</span>
+        <span className="text-[16px] md:text-[18px] font-bold text-[#1A1A2E]">US Market Index</span>
         <span className="text-[12px] md:text-[13px] font-semibold text-[#B0ADA6]">{data.date} 종가 기준</span>
       </div>
 
@@ -135,10 +135,10 @@ function UsIndexPanel({ data }: { data: UsMarketData }) {
             <div key={idx.name} className="text-center">
               <div className="flex items-center justify-center gap-1.5 mb-1">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: idx.color }} />
-                <span className="text-[14px] md:text-[16px] font-black text-[#1A1A2E]">{idx.name}</span>
+                <span className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E]">{idx.name}</span>
               </div>
               <div className="text-[11px] text-[#9CA3AF] mb-2">{idx.sub}</div>
-              <div className="text-[24px] md:text-[32px] font-black tabular-nums leading-none" style={{ color: idx.color }}>
+              <div className="text-[24px] md:text-[32px] font-bold tabular-nums leading-none" style={{ color: idx.color }}>
                 {changeStr(chg)}
               </div>
               <div className="text-[16px] md:text-[20px] font-bold text-[#1A1A2E] mt-1 tabular-nums">
@@ -172,7 +172,7 @@ function EtfBar({ sectorEtf }: { sectorEtf: Record<string, number> }) {
     '섹터': 'bg-[#FFF8F0] border-[#FFDDAA]',
     '채권': 'bg-[#F0FFF4] border-[#AADDBB]',
     '원자재': 'bg-[#FFFBF0] border-[#FFE4A0]',
-  }[cat] ?? 'bg-[#F8F7F3] border-[#E8E6E0]')
+  }[cat] ?? 'bg-[#F8F7F3] border-[#E2E5EA]')
 
   return (
     <div className="fx-card px-4 py-3">
@@ -186,9 +186,9 @@ function EtfBar({ sectorEtf }: { sectorEtf: Record<string, number> }) {
           return (
             <div key={ticker} className={`border rounded-lg px-2 py-2 text-center ${getCategoryBg(category)}`}>
               <div className="text-[11px] font-bold text-[#888] mb-0.5">{category}</div>
-              <div className="text-[14px] font-black text-[#1A1A2E]">{ticker}</div>
+              <div className="text-[14px] font-bold text-[#1A1A2E]">{ticker}</div>
               <div className="text-[12px] text-[#888] mb-1">{name}</div>
-              <div className="text-[16px] font-black" style={{ color: changeColor(chg) }}>
+              <div className="text-[16px] font-bold" style={{ color: changeColor(chg) }}>
                 {changeStr(chg)}
               </div>
             </div>
@@ -224,7 +224,7 @@ function IndexCards({ data }: { data: UsMarketData }) {
               <div className="text-[10px] text-[#888]">{card.sub}</div>
             </div>
             <div className="text-right">
-              <div className="text-[20px] font-black leading-none" style={{ color: changeColor(card.change) }}>
+              <div className="text-[20px] font-bold leading-none" style={{ color: changeColor(card.change) }}>
                 {changeStr(card.change)}
               </div>
               <div className="text-[14px] font-bold text-[#1A1A2E] mt-0.5 font-mono">{f2(card.close, 0)}</div>
@@ -247,7 +247,7 @@ function MarketVitals({ data }: { data: UsMarketData }) {
       <div className="fx-card px-4 py-4">
         <div className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E] mb-1">VIX 공포지수</div>
         <div className="text-[11px] md:text-[12px] text-[#888] mb-3">20 이하 = 안심 / 30 이상 = 공포</div>
-        <div className="text-[26px] md:text-[32px] font-black font-mono" style={{ color: vixColor }}>{f2(data.vix)}</div>
+        <div className="text-[26px] md:text-[32px] font-bold font-mono" style={{ color: vixColor }}>{f2(data.vix)}</div>
         <div className="h-2 bg-[#F0EEE8] rounded-full overflow-hidden mt-2 mb-1">
           <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((data.vix ?? 0) / 50 * 100, 100)}%`, background: vixColor }} />
         </div>
@@ -259,7 +259,7 @@ function MarketVitals({ data }: { data: UsMarketData }) {
       <div className="fx-card px-4 py-4">
         <div className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E] mb-1">공포 · 탐욕 지수</div>
         <div className="text-[11px] md:text-[12px] text-[#888] mb-3">0 극단공포 ↔ 100 극단탐욕</div>
-        <div className="text-[26px] md:text-[32px] font-black font-mono" style={{ color: fgColor }}>{data.fear_greed ?? '—'}</div>
+        <div className="text-[26px] md:text-[32px] font-bold font-mono" style={{ color: fgColor }}>{data.fear_greed ?? '—'}</div>
         <div className="text-[13px] font-bold mt-1" style={{ color: fgColor }}>{data.fear_greed_label ?? '—'}</div>
         <div className="text-[12px] text-[#888] mt-1">
           {data.fear_greed == null ? '': data.fear_greed <= 25 ? '저가매수 기회일 수도 있어요': data.fear_greed >= 75 ? '과열 — 차익실현 타이밍': '중립 구간 — 수급 보고 결정'}
@@ -269,7 +269,7 @@ function MarketVitals({ data }: { data: UsMarketData }) {
       <div className="fx-card px-4 py-4">
         <div className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E] mb-1">3년물 금리 ★핵심</div>
         <div className="text-[11px] md:text-[12px] text-[#888] mb-3">높을수록 성장주 · 기술주 부담</div>
-        <div className="text-[26px] md:text-[32px] font-black font-mono" style={{ color: yieldColor }}>
+        <div className="text-[26px] md:text-[32px] font-bold font-mono" style={{ color: yieldColor }}>
           {data.us_3y_yield != null ? `${data.us_3y_yield.toFixed(2)}%` : '—'}
         </div>
         <div className="text-[12px] font-bold mt-1" style={{ color: yieldColor }}>
@@ -283,7 +283,7 @@ function MarketVitals({ data }: { data: UsMarketData }) {
       <div className="fx-card px-4 py-4">
         <div className="text-[14px] md:text-[16px] font-bold text-[#1A1A2E] mb-1">달러 DXY</div>
         <div className="text-[11px] md:text-[12px] text-[#888] mb-3">높을수록 달러 강세 = 신흥국 약세</div>
-        <div className="text-[26px] md:text-[32px] font-black font-mono" style={{ color: data.dxy == null ? '#888': data.dxy >= 104 ? '#D62728': data.dxy <= 100 ? '#00843D': '#888'}}>
+        <div className="text-[26px] md:text-[32px] font-bold font-mono" style={{ color: data.dxy == null ? '#888': data.dxy >= 104 ? '#D62728': data.dxy <= 100 ? '#00843D': '#888'}}>
           {f2(data.dxy)}
         </div>
         <div className="mt-2 space-y-0.5">
@@ -308,7 +308,7 @@ function SectorHeatmap({ sectorEtf }: { sectorEtf: Record<string, number> }) {
   })).sort((a, b) => (b.change ?? -99) - (a.change ?? -99))
 
   const getBg = (chg: number | null) => {
-    if (chg == null) return 'bg-[#F8F7F3] border-[#E8E6E0]'
+    if (chg == null) return 'bg-[#F8F7F3] border-[#E2E5EA]'
     if (chg >= 2) return 'bg-[#FFDDDD] border-[#FF9999]'
     if (chg >= 0.5) return 'bg-[#FFEEEE] border-[#FFBBBB]'
     if (chg >= -0.5) return 'bg-[#F8F7F3] border-[#DDDBD3]'
@@ -330,8 +330,8 @@ function SectorHeatmap({ sectorEtf }: { sectorEtf: Record<string, number> }) {
               <span className="text-[14px]">{emoji}</span>
               <span className="text-[10px] font-bold text-[#888]">{ticker}</span>
             </div>
-            <div className="text-[12px] md:text-[13px] font-black text-[#1A1A2E]">{name}</div>
-            <div className="text-[17px] md:text-[19px] font-black font-mono my-0.5" style={{ color: changeColor(change) }}>
+            <div className="text-[12px] md:text-[13px] font-bold text-[#1A1A2E]">{name}</div>
+            <div className="text-[17px] md:text-[19px] font-bold font-mono my-0.5" style={{ color: changeColor(change) }}>
               {changeStr(change)}
             </div>
             <div className="text-[10px] text-[#888] leading-tight">{kr}</div>
@@ -365,9 +365,9 @@ function Mag7Panel({ mag7 }: { mag7: NonNullable<UsMarketData['mag7']> }) {
           return (
             <div key={t} className="border rounded-lg px-2 py-2 text-center"
               style={{ borderColor: chg >= 0 ? '#FFBBBB' : '#BBCCEE', backgroundColor: chg >= 0 ? '#FFF8F8' : '#F4F7FF' }}>
-              <div className="text-[13px] md:text-[14px] font-black text-[#1A1A2E]">{t}</div>
+              <div className="text-[13px] md:text-[14px] font-bold text-[#1A1A2E]">{t}</div>
               <div className="text-[11px] text-[#888]">{names[t]}</div>
-              <div className="text-[18px] md:text-[20px] font-black font-mono my-0.5" style={{ color: changeColor(chg) }}>
+              <div className="text-[18px] md:text-[20px] font-bold font-mono my-0.5" style={{ color: changeColor(chg) }}>
                 {changeStr(chg)}
               </div>
               <div className="text-[11px] font-bold text-[#1A1A2E] tabular-nums">${f2(d.close, 0)}</div>
@@ -414,12 +414,12 @@ function BreadthPanel({ breadth }: { breadth: NonNullable<UsMarketData['breadth'
           <div className="text-[12px] font-bold text-[#888] mb-1">52주 신고/신저가</div>
           <div className="flex items-center justify-center gap-4">
             <div>
-              <div className="text-[22px] md:text-[26px] font-black text-[#D62728]">{h52}</div>
+              <div className="text-[22px] md:text-[26px] font-bold text-[#D62728]">{h52}</div>
               <div className="text-[11px] text-[#888]">신고가</div>
             </div>
             <div className="text-[16px] text-[#ccc]">/</div>
             <div>
-              <div className="text-[22px] md:text-[26px] font-black text-[#1565C0]">{l52}</div>
+              <div className="text-[22px] md:text-[26px] font-bold text-[#1565C0]">{l52}</div>
               <div className="text-[11px] text-[#888]">신저가</div>
             </div>
           </div>
@@ -428,7 +428,7 @@ function BreadthPanel({ breadth }: { breadth: NonNullable<UsMarketData['breadth'
         {/* Put/Call Ratio */}
         <div className="text-center">
           <div className="text-[12px] font-bold text-[#888] mb-1">풋콜 비율</div>
-          <div className="text-[26px] md:text-[30px] font-black font-mono" style={{
+          <div className="text-[26px] md:text-[30px] font-bold font-mono" style={{
             color: pcr == null ? '#888' : pcr >= 1.0 ? '#D62728' : pcr <= 0.7 ? '#9333ea' : '#00843D',
           }}>
             {pcr != null ? pcr.toFixed(2) : '—'}
@@ -508,7 +508,7 @@ function ForexCryptoPanel({ forex, crypto }: { forex: UsMarketData['forex']; cry
                 <div key={pair} className="flex items-center justify-between">
                   <span className="text-[13px] font-bold text-[#1A1A2E]">{label[pair] ?? pair.replace('_', '/')}</span>
                   <div className="flex items-center gap-3">
-                    <span className="text-[15px] font-black font-mono text-[#1A1A2E]">
+                    <span className="text-[15px] font-bold font-mono text-[#1A1A2E]">
                       {d.rate.toLocaleString('en-US', { minimumFractionDigits: pair === 'EUR_USD' ? 4 : 2, maximumFractionDigits: pair === 'EUR_USD' ? 4 : 2 })}
                     </span>
                     <span className="text-[13px] font-bold" style={{ color: changeColor(d.change_pct) }}>
@@ -531,7 +531,7 @@ function ForexCryptoPanel({ forex, crypto }: { forex: UsMarketData['forex']; cry
               <div key={coin} className="flex items-center justify-between">
                 <span className="text-[13px] font-bold text-[#1A1A2E]">{coin}</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-[15px] font-black font-mono text-[#1A1A2E]">
+                  <span className="text-[15px] font-bold font-mono text-[#1A1A2E]">
                     ${d.price.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   </span>
                   <span className="text-[13px] font-bold" style={{ color: changeColor(d.change_24h_pct) }}>
@@ -694,7 +694,7 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
               )
             })}
           </div>
-          <div className="mt-3 border-t border-[#E8E6E0] pt-3">
+          <div className="mt-3 border-t border-[#E2E5EA] pt-3">
             <p className="text-[13px] font-bold text-[#6B7280] mb-2">{selectedDate.slice(5).replace('-', '/')} ({WEEKDAYS[new Date(selectedDate).getDay()]})</p>
             {selectedEvents.length === 0 ? (
               <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>
@@ -721,7 +721,7 @@ function UsCalendarPanel({ events }: { events: CalEvent[] }) {
           </div>
         </div>
         {/* 아코디언 */}
-        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E8E6E0] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
+        <div className="w-full md:w-[300px] md:shrink-0 border-t md:border-t-0 md:border-l border-[#E2E5EA] pt-3 md:pt-0 md:pl-4 overflow-y-auto">
           <p className="text-[14px] font-bold text-[#1A1A2E] mb-3">{month}월 이벤트</p>
           {groupedEvents.length === 0 ? (
             <p className="text-[13px] text-[#9CA3AF]">이벤트 없음</p>
@@ -803,7 +803,7 @@ function InvestorFlowPanel({ flows }: { flows: FlowRow[] }) {
             <div key={row.etf}>
               <div className="flex items-center justify-between text-[13px] mb-0.5">
                 <span className="font-bold text-[#1A1A2E]">{row.etf} <span className="font-normal text-[#888]">{label}</span></span>
-                <span className="font-black font-mono" style={{ color: isPos ? '#D62728' : '#1565C0' }}>
+                <span className="font-bold font-mono" style={{ color: isPos ? '#D62728' : '#1565C0' }}>
                   {isPos ? '+' : ''}{flowStr}
                 </span>
               </div>
@@ -896,7 +896,7 @@ export function UsMarketView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       {/* 히어로 배너 */}
-      <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] shadow-sm" style={{
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] shadow" style={{
         background: overallUp
           ? 'linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 40%, #F0FDFA 100%)'
           : overallDn
@@ -928,7 +928,7 @@ export function UsMarketView() {
               </div>
 
               {/* 메인 헤드라인 */}
-              <div className="text-[20px] md:text-[28px] font-black text-[#1A1A2E] leading-tight tracking-tight">
+              <div className="text-[20px] md:text-[28px] font-bold text-[#1A1A2E] leading-tight tracking-tight">
                 {overallUp
                   ? <>나스닥 <span style={{ color: '#16a34a' }}>{nqChg >= 0 ? '+' : ''}{nqChg.toFixed(1)}%</span> 상승{market.soxx_change && market.soxx_change > 0 ? ', 반도체 강세' : ''}</>
                   : overallDn
@@ -944,9 +944,9 @@ export function UsMarketView() {
                   { label: 'DOW', value: market.dow_change },
                   { label: 'SOXX', value: market.soxx_change },
                 ].map(idx => (
-                  <div key={idx.label} className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-lg px-2.5 py-1 border border-[#E8E6E0]">
+                  <div key={idx.label} className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-lg px-2.5 py-1 border border-[#E2E5EA]">
                     <span className="text-[11px] font-bold text-[#999]">{idx.label}</span>
-                    <span className="text-[13px] font-black tabular-nums" style={{
+                    <span className="text-[13px] font-bold tabular-nums" style={{
                       color: idx.value == null ? '#888' : idx.value > 0 ? '#16a34a' : idx.value < 0 ? '#dc2626' : '#3B82F6',
                     }}>
                       {changeStr(idx.value)}
@@ -966,7 +966,7 @@ export function UsMarketView() {
                   {overallUp ? '📈' : overallDn ? '📉' : '📊'}
                 </span>
                 <div>
-                  <div className="text-[16px] md:text-[18px] font-black" style={{
+                  <div className="text-[16px] md:text-[18px] font-bold" style={{
                     color: overallUp ? '#16a34a' : overallDn ? '#dc2626' : '#3B82F6',
                   }}>
                     {overallUp ? '긍정' : overallDn ? '주의' : '중립'}

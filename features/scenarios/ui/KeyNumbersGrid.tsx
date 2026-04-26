@@ -84,7 +84,7 @@ export default function KeyNumbersGrid({ keyNumbers }: { keyNumbers: Record<stri
 
   return (
     <div>
-      <h3 className="text-[17px] font-black text-[#1A1A2E] mb-5">
+      <h3 className="text-[17px] font-bold text-[#1A1A2E] mb-5">
         핵심 숫자 — 전쟁 전 vs 지금
       </h3>
 
@@ -102,7 +102,7 @@ export default function KeyNumbersGrid({ keyNumbers }: { keyNumbers: Record<stri
               {/* 그룹 헤더 */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-base">{group.icon}</span>
-                <span className="text-[14px] font-black" style={{ color: group.accentText }}>
+                <span className="text-[14px] font-bold" style={{ color: group.accentText }}>
                   {group.title}
                 </span>
               </div>
@@ -117,11 +117,11 @@ export default function KeyNumbersGrid({ keyNumbers }: { keyNumbers: Record<stri
                   return (
                     <div
                       key={item.key}
-                      className="bg-white rounded-lg p-3 text-center shadow-sm"
+                      className="bg-white rounded-lg p-3 text-center shadow"
                     >
                       <p className="text-[11px] font-bold text-[#6B7280] mb-1">{item.label}</p>
                       <p
-                        className={`${isLarge ? 'text-[20px]' : 'text-[17px]'} font-black tabular-nums`}
+                        className={`${isLarge ? 'text-[20px]' : 'text-[17px]'} font-bold tabular-nums`}
                         style={{ color: item.danger ? group.accentText : '#1A1A2E' }}
                       >
                         {formatted}

@@ -196,7 +196,7 @@ export default function DaytradingPicksPanel() {
             className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
               track === t.key
                 ? "bg-[#00FF88] text-[#1A1A2E]"
-                : "bg-[#F5F4F0] text-[#6B7280] hover:bg-white border border-[#E8E6E0]"
+                : "bg-[#F5F4F0] text-[#6B7280] hover:bg-white border border-[#E2E5EA]"
             }`}
           >
             {t.label}

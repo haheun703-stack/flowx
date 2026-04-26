@@ -88,7 +88,7 @@ export default function ScenarioStockCard({ stocks }: { stocks: ScenarioStock[] 
               </div>
 
               {isOpen && (
-                <div className="px-3 pb-3 space-y-2 border-t border-[#E8E6E0] pt-2">
+                <div className="px-3 pb-3 space-y-2 border-t border-[#E2E5EA] pt-2">
                   <div className="bg-white rounded-lg p-2">
                     <p className="text-[11px] font-bold text-[#6B7280] mb-1">수급 (5일)</p>
                     <div className="flex gap-3 text-[13px]">

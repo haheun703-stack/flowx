@@ -82,7 +82,7 @@ function VolumeTab({ items }: { items: RankItem[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[32px_1fr_80px_70px_80px_70px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E8E6E0] pb-1.5 mb-1">
+      <div className="grid grid-cols-[32px_1fr_80px_70px_80px_70px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E2E5EA] pb-1.5 mb-1">
         <span>#</span><span>종목</span><span className="text-right">현재가</span>
         <span className="text-right">등락률</span><span className="text-right">거래대금</span><span className="text-right">거래비</span>
       </div>
@@ -111,7 +111,7 @@ function FluctTab({ items }: { items: RankItem[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[32px_1fr_80px_70px_70px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E8E6E0] pb-1.5 mb-1">
+      <div className="grid grid-cols-[32px_1fr_80px_70px_70px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E2E5EA] pb-1.5 mb-1">
         <span>#</span><span>종목</span><span className="text-right">현재가</span>
         <span className="text-right">등락(원)</span><span className="text-right">등락률</span>
       </div>
@@ -141,7 +141,7 @@ function PowerTab({ items }: { items: RankItem[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[32px_1fr_80px_70px_80px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E8E6E0] pb-1.5 mb-1">
+      <div className="grid grid-cols-[32px_1fr_80px_70px_80px] gap-1 text-[11px] font-bold text-[#9CA3AF] border-b border-[#E2E5EA] pb-1.5 mb-1">
         <span>#</span><span>종목</span><span className="text-right">현재가</span>
         <span className="text-right">등락률</span><span className="text-right">체결강도</span>
       </div>
@@ -151,7 +151,7 @@ function PowerTab({ items }: { items: RankItem[] }) {
           <span className="truncate"><StockLink code={item.code} name={item.name} /></span>
           <span className="text-right tabular-nums font-semibold text-[#1A1A2E]">{fmtPrice(item.price)}</span>
           <span className="text-right tabular-nums font-bold" style={{ color: chgColor(item.change_pct) }}>{chgStr(item.change_pct)}</span>
-          <span className="text-right tabular-nums font-black text-[#1A1A2E]">{(item.strength ?? 0).toFixed(1)}</span>
+          <span className="text-right tabular-nums font-bold text-[#1A1A2E]">{(item.strength ?? 0).toFixed(1)}</span>
         </div>
       ))}
       {items.length > DEFAULT_SHOW && (
@@ -166,7 +166,7 @@ function PowerTab({ items }: { items: RankItem[] }) {
 function SupplyColumn({ title, items, color }: { title: string; items: RankItem[]; color: string }) {
   return (
     <div>
-      <div className="text-[13px] font-black mb-2" style={{ color }}>{title}</div>
+      <div className="text-[13px] font-bold mb-2" style={{ color }}>{title}</div>
       <div className="space-y-1">
         {items.slice(0, 10).map(item => (
           <div key={item.code} className="flex items-center justify-between text-[12px] py-1 border-b border-[#F0EDE8]">
@@ -209,7 +209,7 @@ function LimitTab({ lp }: { lp: MarketRankingData['limit_price'] }) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* 상한가 */}
       <div>
-        <div className="text-[13px] font-black text-[#dc2626] mb-2">
+        <div className="text-[13px] font-bold text-[#dc2626] mb-2">
           상한가 ({upper.length}종목)
         </div>
         {upper.length === 0 ? (
@@ -230,7 +230,7 @@ function LimitTab({ lp }: { lp: MarketRankingData['limit_price'] }) {
       </div>
       {/* 하한가 */}
       <div>
-        <div className="text-[13px] font-black text-[#2563eb] mb-2">
+        <div className="text-[13px] font-bold text-[#2563eb] mb-2">
           하한가 ({lower.length}종목)
         </div>
         {lower.length === 0 ? (

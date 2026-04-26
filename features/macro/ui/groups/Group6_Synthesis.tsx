@@ -143,7 +143,7 @@ function UltimateChart() {
 
       {/* 핵심 메시지 */}
       <div className="mt-5 p-4 rounded-xl" style={{ background: 'rgba(255,214,0,0.06)', border: '2px solid rgba(255,214,0,0.3)' }}>
-        <div className="text-lg font-black text-[#f57f17] mb-2">💎 이 차트가 말하는 것</div>
+        <div className="text-lg font-bold text-[#f57f17] mb-2">💎 이 차트가 말하는 것</div>
         <div className="text-sm leading-relaxed text-[#1a1a2e]">
           <b>6개의 선이 모두 2027~2029년에 교차합니다.</b> 이것은 우연이 아닙니다.<br /><br />
           <span style={{ color: '#ff1744' }}>■</span> <b>인구 붕괴 가속</b> — 2028년부터 연 30만+ 생산인구 감소<br />
@@ -203,7 +203,7 @@ function AnalysisCards() {
       {/* 좋아지고 있는 점 */}
       <MacroCard full style={{ borderLeft: '4px solid #00c853' }}>
         <div className="font-mono text-[10px] text-[#00c853] tracking-[3px] uppercase mb-1">✅ 좋아지고 있는 점</div>
-        <h2 className="text-xl font-black text-[#00c853] mb-3">시장이 건강해지고 있다는 5가지 신호</h2>
+        <h2 className="text-xl font-bold text-[#00c853] mb-3">시장이 건강해지고 있다는 5가지 신호</h2>
         <div className="text-sm leading-relaxed text-[#1b5e20] p-4 rounded-r-lg" style={{ background: 'rgba(0,200,83,0.06)', borderLeft: '4px solid #00c853' }}>
           <b>① [섹션 4+5] 이익성장의 민주화</b> — S&P 7 독주 끝나고 S&P 493이 67% 담당.<br /><br />
           <b>② [섹션 10+19b] 한국 반도체 = 세계의 심장</b> — 수출 $710B 역대최대. AI 설비투자의 최대 수혜가 한국 HBM.<br /><br />
@@ -216,7 +216,7 @@ function AnalysisCards() {
       {/* 위험해지고 있는 점 */}
       <MacroCard full style={{ borderLeft: '4px solid #ff1744' }}>
         <div className="font-mono text-[10px] text-[#ff1744] tracking-[3px] uppercase mb-1">🚨 위험해지고 있는 점</div>
-        <h2 className="text-xl font-black text-[#ff1744] mb-3">지금 가장 경계해야 할 5가지 리스크</h2>
+        <h2 className="text-xl font-bold text-[#ff1744] mb-3">지금 가장 경계해야 할 5가지 리스크</h2>
         <div className="text-sm leading-relaxed text-[#b71c1c] p-4 rounded-r-lg" style={{ background: 'rgba(255,23,68,0.04)', borderLeft: '4px solid #ff1744' }}>
           <b>① [섹션 11+12+18b] 인플레 재점화 — 이란전쟁 쇼크</b> — 유가 $72→$110(+53%). FOMC 전원 상방 리스크.<br /><br />
           <b>② [섹션 15+21] 인구절벽 × 가계부채</b> — 생산인구 -27% + 가계부채 ~92%(BIS) OECD 상위. 정점 대비 개선 추세지만 여전히 높은 수준.<br /><br />
@@ -229,7 +229,7 @@ function AnalysisCards() {
       {/* 유지되는 트렌드 */}
       <MacroCard full style={{ borderLeft: '4px solid #1565c0' }}>
         <div className="font-mono text-[10px] text-[#1565c0] tracking-[3px] uppercase mb-1">🔵 유지되고 있는 점 (구조적 트렌드)</div>
-        <h2 className="text-xl font-black text-[#1565c0] mb-3">변하지 않는 3가지 메가트렌드</h2>
+        <h2 className="text-xl font-bold text-[#1565c0] mb-3">변하지 않는 3가지 메가트렌드</h2>
         <div className="text-sm leading-relaxed text-[#0d47a1] p-4 rounded-r-lg" style={{ background: 'rgba(21,101,192,0.04)', borderLeft: '4px solid #1565c0' }}>
           <b>① [섹션 1+2+3] 자본의 대이동: 채권→주식→AI 인프라</b> — Big Tech 설비투자 $381B→$650B(2026E). 10년짜리 트렌드.<br /><br />
           <b>② [섹션 6+10] S&P 7의 경제적 해자는 건재</b> — 순이익률 25.8%(S&P 2배) 유지. 성장은 둔화돼도 수익성은 압도적.<br /><br />
@@ -240,7 +240,7 @@ function AnalysisCards() {
       {/* JACKPOT */}
       <MacroCard full style={{ border: '3px solid #ffd600', background: 'linear-gradient(135deg,rgba(255,214,0,0.03),rgba(57,255,20,0.03))', boxShadow: '0 6px 30px rgba(255,214,0,0.1)' }}>
         <div className="font-mono text-[13px] text-[#f57f17] tracking-[4px] uppercase mb-1">💎 잭팟 — 숨겨진 신호</div>
-        <h2 className="text-2xl font-black mb-3" style={{ background: 'linear-gradient(90deg,#f57f17,#00c853)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <h2 className="text-2xl font-bold mb-3" style={{ background: 'linear-gradient(90deg,#f57f17,#00c853)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           다른 사람들이 보지 못하는 3가지 교집합
         </h2>
         <div className="text-base leading-loose p-4 rounded-r-lg" style={{ background: 'rgba(255,214,0,0.08)', borderLeft: '3px solid #ffd600' }}>

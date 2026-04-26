@@ -66,7 +66,7 @@ export default function SectorInvestorPanel() {
                 onClick={() => setView(t)}
                 className={`px-3 py-1 rounded-md text-[12px] font-bold transition-colors ${
                   view === t
-                    ? 'bg-white shadow-sm text-[#1A1A2E]'
+                    ? 'bg-white shadow text-[#1A1A2E]'
                     : 'text-[#9CA3AF] hover:text-[#6B7280]'
                 }`}
               >

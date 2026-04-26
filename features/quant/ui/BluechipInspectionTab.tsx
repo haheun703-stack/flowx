@@ -136,7 +136,7 @@ export default function BluechipInspectionTab({ bluechip: _bluechip }: { bluechi
             </div>
 
             {/* 피보나치 테이블 */}
-            <div className="table-scroll rounded-xl border border-[#E8E6E0]">
+            <div className="table-scroll rounded-xl border border-[#E2E5EA]">
               <table className="w-full text-[13px] min-w-[950px]">
                 <thead>
                   <tr style={{ backgroundColor: '#F5F4F0' }}>
@@ -160,7 +160,7 @@ export default function BluechipInspectionTab({ bluechip: _bluechip }: { bluechi
                     const cfg = ZONE_CONFIG[s.fib_zone] ?? ZONE_CONFIG.MILD
                     const eg = s.entry_grade && s.entry_grade !== '대기' ? ENTRY_GRADE_CFG[s.entry_grade] : null
                     return (
-                      <tr key={s.code} className="border-t border-[#E8E6E0]/50 hover:bg-[#F9F8F6]"
+                      <tr key={s.code} className="border-t border-[#E2E5EA]/50 hover:bg-[#F9F8F6]"
                         style={s.entry_grade === '적기' ? { backgroundColor: '#FFFBEB' } : undefined}>
                         <td className="text-center py-2.5 px-2 text-[12px] text-[#9CA3AF] tabular-nums">{i + 1}</td>
                         <td className="py-2.5 px-3">

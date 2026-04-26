@@ -348,7 +348,7 @@ export function MarketSummaryView() {
 
       {/* 관심종목 사이드바 (접이식) */}
       {sidebarOpen && (
-        <aside className="w-1/4 border-l border-[#E8E6E0] bg-white p-4 overflow-y-auto">
+        <aside className="w-1/4 border-l border-[#E2E5EA] bg-white p-4 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[16px] font-bold text-[#1A1A2E]">관심 종목</span>
             <button onClick={() => setSidebarOpen(false)} className="text-[14px] font-semibold text-[#9CA3AF] hover:text-[#1A1A2E]">▶</button>
@@ -360,7 +360,7 @@ export function MarketSummaryView() {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-r-0 border-[#E8E6E0] rounded-l-lg px-1.5 py-4 text-[14px] font-semibold text-[#9CA3AF] hover:text-[#1A1A2E] hover:bg-[#F0EDE8] transition-colors shadow-sm"
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-white border border-r-0 border-[#E2E5EA] rounded-l-lg px-1.5 py-4 text-[14px] font-semibold text-[#9CA3AF] hover:text-[#1A1A2E] hover:bg-[#F0EDE8] transition-colors shadow"
           style={{ writingMode: 'vertical-rl' }}
         >
           ◀ 관심종목

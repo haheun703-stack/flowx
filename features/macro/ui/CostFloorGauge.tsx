@@ -74,7 +74,7 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
 
       {/* ── 가격 + % : SVG 아래 HTML ── */}
       <div className="text-center -mt-2">
-        <p className="text-[15px] font-black text-[#111827] tabular-nums">{item.current_price?.toLocaleString('ko-KR') ?? '—'}</p>
+        <p className="text-[15px] font-bold text-[#111827] tabular-nums">{item.current_price?.toLocaleString('ko-KR') ?? '—'}</p>
         <p className="text-[12px] font-bold" style={{ color }}>{pct.toFixed(0)}%</p>
       </div>
 
@@ -82,11 +82,11 @@ function GaugeCard({ item }: { item: CostFloorItem }) {
       <div className="flex justify-between w-full max-w-[200px] -mt-8 px-[5px]">
         <div className="text-left">
           <p className="text-[9px] font-bold text-[#22c55e] truncate max-w-[80px]">{item.floor_name ?? '바닥'}</p>
-          <p className="text-[11px] font-black text-[#22c55e] tabular-nums">{item.floor_price.toLocaleString('ko-KR')}</p>
+          <p className="text-[11px] font-bold text-[#22c55e] tabular-nums">{item.floor_price.toLocaleString('ko-KR')}</p>
         </div>
         <div className="text-right">
           <p className="text-[9px] font-bold text-[#ef4444] truncate max-w-[80px] ml-auto">{item.ceiling_name ?? '천장'}</p>
-          <p className="text-[11px] font-black text-[#ef4444] tabular-nums">{item.ceiling_price.toLocaleString('ko-KR')}</p>
+          <p className="text-[11px] font-bold text-[#ef4444] tabular-nums">{item.ceiling_price.toLocaleString('ko-KR')}</p>
         </div>
       </div>
 

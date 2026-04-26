@@ -51,11 +51,11 @@ function SectorCard({ sector }: { sector: SectorSummary }) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-black text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--text-primary)]">
           {meta?.name ?? sector.name}
         </h3>
         <span
-          className="text-lg font-mono font-black"
+          className="text-lg font-mono font-bold"
           style={{ color: changeColor }}
         >
           {changeSign}{sector.avgChange}%
@@ -144,10 +144,10 @@ export function SectorGrid() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
         <div className="flex items-center gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-[#534AB7]" />
-          <span className="text-2xl font-black tracking-widest uppercase text-[var(--text-primary)]">
+          <span className="text-2xl font-bold tracking-widest uppercase text-[var(--text-primary)]">
             섹터맵
           </span>
-          <span className="text-sm font-black text-[var(--text-dim)]">13개 섹터 · 공급망 분석</span>
+          <span className="text-sm font-bold text-[var(--text-dim)]">13개 섹터 · 공급망 분석</span>
         </div>
       </div>
 

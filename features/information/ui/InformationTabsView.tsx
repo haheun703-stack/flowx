@@ -47,7 +47,7 @@ export function InformationTabsView() {
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* 탭 바 */}
       <div className={`${CONTAINER} pt-6`}>
-        <nav className="flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E8E6E0] w-fit">
+        <nav className="flex gap-1 bg-[#F5F4F0] rounded-xl p-1 border border-[#E2E5EA] w-fit">
           {TABS.map(t => (
             <button
               key={t.key}

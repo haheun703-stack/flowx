@@ -21,7 +21,7 @@ export default function MacroDashboardView() {
     <div className="min-h-screen" style={{ background: '#f6f5f1' }}>
       {/* ── 헤더 ── */}
       <header className="pt-12 pb-8 text-center">
-        <h1 className="text-[clamp(28px,5vw,48px)] font-black text-[#1a1a2e] leading-tight tracking-tight">
+        <h1 className="text-[clamp(28px,5vw,48px)] font-bold text-[#1a1a2e] leading-tight tracking-tight">
           FLOWX 거시경제 대시보드
         </h1>
         <p className="mt-2 text-[15px] text-[#888] max-w-xl mx-auto">
@@ -51,7 +51,7 @@ export default function MacroDashboardView() {
               <div className="text-xs font-mono tracking-[3px] text-[#7c3aed] uppercase mb-1">
                 {label}
               </div>
-              <h2 className="text-[clamp(22px,3vw,32px)] font-black text-[#1a1a2e]">
+              <h2 className="text-[clamp(22px,3vw,32px)] font-bold text-[#1a1a2e]">
                 {title}
               </h2>
               <p className="text-sm text-[#888] mt-0.5">{sub}</p>

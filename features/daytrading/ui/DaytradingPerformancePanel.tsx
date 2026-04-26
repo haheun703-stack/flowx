@@ -158,7 +158,7 @@ export default function DaytradingPerformancePanel() {
           </h3>
           <div className="relative h-40">
             {/* 0선 */}
-            <div className="absolute left-0 right-0 top-1/2 border-t border-dashed border-[#E8E6E0]" />
+            <div className="absolute left-0 right-0 top-1/2 border-t border-dashed border-[#E2E5EA]" />
             <div className="flex items-end justify-between h-full gap-[2px]">
               {chart.map((c, i) => {
                 const maxAbs = Math.max(...chart.map((p) => Math.abs(p.avg_return)), 1)

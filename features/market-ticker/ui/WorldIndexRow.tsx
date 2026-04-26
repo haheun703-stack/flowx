@@ -79,7 +79,7 @@ export function WorldIndexRow({ indices }: { indices: WorldIndex[] }) {
       {/* LIVE + 글로벌 */}
       <div className="flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-full border-r border-[#ECEAE4] shrink-0">
         <span className="w-[6px] h-[6px] md:w-[8px] md:h-[8px] rounded-full bg-[#00FF88] animate-pulse shrink-0" />
-        <span className="text-[11px] md:text-[14px] font-black text-[#00CC6A] tracking-wide">LIVE</span>
+        <span className="text-[11px] md:text-[14px] font-bold text-[#00CC6A] tracking-wide">LIVE</span>
         <span className="hidden sm:inline text-[14px] font-bold text-[#4B5563]">글로벌</span>
       </div>
 

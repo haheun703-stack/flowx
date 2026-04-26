@@ -107,7 +107,7 @@ function GaugeCard({ subtitle, symbol, value, raw }: {
         <div className="text-[13px] font-bold mt-1" style={{ color: status.color }}>
           {status.text}
         </div>
-        <div className="text-[22px] font-black text-[#1A1A2E] leading-tight">{raw}</div>
+        <div className="text-[22px] font-bold text-[#1A1A2E] leading-tight">{raw}</div>
         <div className="text-[11px] text-gray-400 mt-0.5">{subtitle}</div>
       </div>
     </div>

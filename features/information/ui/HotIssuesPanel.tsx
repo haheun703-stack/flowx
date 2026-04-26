@@ -136,7 +136,7 @@ function HeroNews({ item, onClick }: { item: NewsItem; onClick: () => void }) {
   return (
     <button onClick={onClick} className="w-full text-left px-4 py-3 border-b border-[var(--border)] bg-gray-50/50 hover:bg-gray-50 transition-colors">
       <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-lg font-black text-[var(--yellow)]">1</span>
+        <span className="text-lg font-bold text-[var(--yellow)]">1</span>
         <span>{info.icon}</span>
         <span className="text-xs font-bold px-1.5 py-0.5 rounded" style={{
           backgroundColor: info.color + '10', color: info.color,

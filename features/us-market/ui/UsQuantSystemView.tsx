@@ -91,20 +91,20 @@ function MacroCard({ qt }: { qt: QuantData }) {
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div>
           <div className="text-[12px] text-[#888] font-bold mb-1">전략 모드</div>
-          <div className="text-[24px] font-black" style={{ color: cfg.color }}>{cfg.label}</div>
+          <div className="text-[24px] font-bold" style={{ color: cfg.color }}>{cfg.label}</div>
           <div className="text-[12px] text-[#888] mt-1 leading-relaxed">{cfg.desc}</div>
         </div>
         <div>
           <div className="text-[12px] text-[#888] font-bold mb-1">최대 동시 보유</div>
-          <div className="text-[30px] font-black text-[#1A1A2E]">{slots}종목</div>
+          <div className="text-[30px] font-bold text-[#1A1A2E]">{slots}종목</div>
           <div className="text-[13px] text-[#888] mt-1">{qt.hold_days_min ?? '—'}~{qt.hold_days_max ?? '—'}일 보유</div>
         </div>
         {qt.entry_conditions && (
           <div className="bg-[#F8F7F3] rounded-lg p-3">
-            <div className="text-[12px] font-black text-[#1A1A2E] mb-2">진입 조건</div>
+            <div className="text-[12px] font-bold text-[#1A1A2E] mb-2">진입 조건</div>
             <div className="text-[12px] text-[#555] leading-relaxed space-y-1">
-              <div>최소 등급: <span className="font-black text-[#1A1A2E]">{qt.entry_conditions.min_grade ?? '—'}</span></div>
-              <div>손절: <span className="font-black text-[#D62728]">{qt.entry_conditions.stop_loss_pct ?? '—'}%</span></div>
+              <div>최소 등급: <span className="font-bold text-[#1A1A2E]">{qt.entry_conditions.min_grade ?? '—'}</span></div>
+              <div>손절: <span className="font-bold text-[#D62728]">{qt.entry_conditions.stop_loss_pct ?? '—'}%</span></div>
             </div>
           </div>
         )}
@@ -150,8 +150,8 @@ function MacroCard({ qt }: { qt: QuantData }) {
             },
           ].map(({ label, value, signal, color, note }) => (
             <div key={label} className="bg-[#F8F7F3] rounded-lg p-3">
-              <div className="text-[12px] font-black text-[#1A1A2E] mb-1">{label}</div>
-              <div className="text-[24px] font-black font-mono" style={{ color }}>{value}</div>
+              <div className="text-[12px] font-bold text-[#1A1A2E] mb-1">{label}</div>
+              <div className="text-[24px] font-bold font-mono" style={{ color }}>{value}</div>
               <div className="text-[11px] font-bold mt-1" style={{ color }}>{signal}</div>
               <div className="text-[11px] text-[#888] mt-0.5">{note}</div>
             </div>
@@ -161,7 +161,7 @@ function MacroCard({ qt }: { qt: QuantData }) {
 
       {(qt.weekly_outlook ?? qt.summary) && (
         <div className="mt-4 bg-[#F0F7FF] rounded-xl p-3 border-l-4" style={{ borderColor: cfg.color }}>
-          <div className="text-[13px] font-black text-[#1A1A2E] mb-1">이번 주 전략</div>
+          <div className="text-[13px] font-bold text-[#1A1A2E] mb-1">이번 주 전략</div>
           <div className="text-[13px] text-[#444] leading-relaxed">{qt.weekly_outlook ?? qt.summary}</div>
         </div>
       )}
@@ -192,10 +192,10 @@ function SectorRotationCard({ qt }: { qt: QuantData }) {
               const mom = etf ? etfMomentum[etf] : null
               return (
                 <div key={s} className="flex items-center gap-1.5 bg-[#F0FFF4] border border-[#AADDBB] rounded-lg px-3 py-2">
-                  <span className="text-[15px] font-black text-[#1A1A2E]">{s}</span>
+                  <span className="text-[15px] font-bold text-[#1A1A2E]">{s}</span>
                   {etf && <span className="text-[12px] text-[#888]">({etf})</span>}
                   {mom != null && (
-                    <span className="text-[13px] font-black" style={{ color: chgColor(mom) }}>
+                    <span className="text-[13px] font-bold" style={{ color: chgColor(mom) }}>
                       {chgStr(mom, 1)} 5일
                     </span>
                   )}
@@ -212,7 +212,7 @@ function SectorRotationCard({ qt }: { qt: QuantData }) {
           <div className="flex flex-wrap gap-2">
             {underweight.map(s => (
               <div key={s} className="flex items-center gap-1.5 bg-[#FFEEEE] border border-[#FFBBBB] rounded-lg px-3 py-2">
-                <span className="text-[15px] font-black text-[#C0392B]">{s}</span>
+                <span className="text-[15px] font-bold text-[#C0392B]">{s}</span>
               </div>
             ))}
           </div>
@@ -221,19 +221,19 @@ function SectorRotationCard({ qt }: { qt: QuantData }) {
 
       {sorted.length > 0 && (
         <div className="pt-3 border-t border-[#F0EEE8]">
-          <div className="text-[13px] font-black text-[#1A1A2E] mb-2">섹터 ETF 5일 누적 등락률</div>
+          <div className="text-[13px] font-bold text-[#1A1A2E] mb-2">섹터 ETF 5일 누적 등락률</div>
           <div className="space-y-1.5">
             {sorted.map(([etf, mom]) => {
               const maxAbs = Math.max(...sorted.map(([, v]) => Math.abs(v)), 5)
               const barPct = Math.min(Math.abs(mom) / maxAbs * 100, 100)
               return (
                 <div key={etf} className="flex items-center gap-3">
-                  <div className="w-10 text-[12px] font-black text-[#888] text-right">{etf}</div>
+                  <div className="w-10 text-[12px] font-bold text-[#888] text-right">{etf}</div>
                   <div className="flex-1 h-4 bg-[#F0EEE8] rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all"
                          style={{ width: `${barPct}%`, background: mom >= 0 ? '#D62728': '#1565C0'}} />
                   </div>
-                  <div className="w-14 text-[13px] font-black text-right" style={{ color: chgColor(mom) }}>
+                  <div className="w-14 text-[13px] font-bold text-right" style={{ color: chgColor(mom) }}>
                     {chgStr(mom, 1)}
                   </div>
                 </div>
@@ -273,7 +273,7 @@ function QuantPicksPanel({ stocks, qt }: { stocks: StockSignal[]; qt: QuantData 
         <div className="text-[13px] text-[#888] mt-1">비중확대 섹터 + A+/A 등급 + 20일 모멘텀 양수 — {quantPicks.length}개</div>
       </div>
 
-      <div className="flex items-center gap-3 px-4 py-2 bg-[#F8F7F3] text-[11px] font-black text-[#888] tracking-wider uppercase border-b border-[#E8E6E0]">
+      <div className="flex items-center gap-3 px-4 py-2 bg-[#F8F7F3] text-[11px] font-bold text-[#888] tracking-wider uppercase border-b border-[#E2E5EA]">
         <div className="w-6">#</div>
         <div className="w-8">등급</div>
         <div className="flex-1">종목</div>
@@ -294,14 +294,14 @@ function QuantPicksPanel({ stocks, qt }: { stocks: StockSignal[]; qt: QuantData 
             <div key={s.ticker}
                  className="flex items-center gap-3 px-4 py-2.5 border-b border-[#F0EEE8] last:border-0 hover:bg-[#FAFAF8] transition-colors"
                  style={{ background: inOw ? '#FFFFF8': undefined }}>
-              <div className="w-6 text-[13px] font-black text-[#aaa]">{i + 1}</div>
-              <div className="w-8 flex items-center justify-center text-[13px] font-black rounded"
+              <div className="w-6 text-[13px] font-bold text-[#aaa]">{i + 1}</div>
+              <div className="w-8 flex items-center justify-center text-[13px] font-bold rounded"
                    style={{ background: gc?.bg, color: gc?.text, padding: '2px 5px', border: `1px solid ${gc?.border}` }}>
                 {s.grade}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[15px] font-black text-[#1A1A2E]">{s.name || s.ticker}</span>
+                  <span className="text-[15px] font-bold text-[#1A1A2E]">{s.name || s.ticker}</span>
                   <span className="text-[12px] text-[#888]">{s.name ? s.ticker : ''}</span>
                   <span className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                         style={{ background: inOw ? '#E6F9EE': '#F1F0EA', color: inOw ? '#00843D': '#555'}}>
@@ -315,7 +315,7 @@ function QuantPicksPanel({ stocks, qt }: { stocks: StockSignal[]; qt: QuantData 
                 </div>
               </div>
               <div className="w-20 text-right">
-                <div className="text-[14px] font-black text-[#1A1A2E]">
+                <div className="text-[14px] font-bold text-[#1A1A2E]">
                   ${s.close != null ? s.close.toFixed(2) : '—'}
                 </div>
                 <div className="text-[13px] font-bold" style={{ color: chgColor(s.chg_1d) }}>
@@ -332,7 +332,7 @@ function QuantPicksPanel({ stocks, qt }: { stocks: StockSignal[]; qt: QuantData 
               <div className="w-10 text-right text-[13px] font-bold text-[#1A1A2E]">
                 {s.rsi != null ? s.rsi.toFixed(0) : '—'}
               </div>
-              <div className="w-8 text-right text-[14px] font-black text-[#1A1A2E]">{s.score}</div>
+              <div className="w-8 text-right text-[14px] font-bold text-[#1A1A2E]">{s.score}</div>
             </div>
           )
         })}
@@ -394,7 +394,7 @@ export function UsQuantSystemView() {
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6 space-y-[14px]">
       <div className="flex items-center gap-2">
-        <div className="text-[22px] font-black text-[#1A1A2E]"> 미국 퀀트시스템</div>
+        <div className="text-[22px] font-bold text-[#1A1A2E]"> 미국 퀀트시스템</div>
         <div className="text-[13px] text-[#888] bg-[#F1F0EA] px-2 py-1 rounded font-bold">중기 5~10일</div>
       </div>
 

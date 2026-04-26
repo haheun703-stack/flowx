@@ -127,7 +127,7 @@ function MultiLineChart({ data }: { data: HistoryRow[] }) {
   return (
     <div className="fx-card-green">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-        <span className="text-[16px] md:text-[18px] font-black text-[#1A1A2E]">미국 시장 30일 추이</span>
+        <span className="text-[16px] md:text-[18px] font-bold text-[#1A1A2E]">미국 시장 30일 추이</span>
         <span className="text-[12px] md:text-[13px] font-semibold text-[#B0ADA6]">
           {latest.date} 종가 기준 · 등락률(%) 정규화
         </span>
@@ -186,7 +186,7 @@ function MultiLineChart({ data }: { data: HistoryRow[] }) {
           const d = data[tooltip.idx]
           const isRight = tooltip.x > dims.w / 2
           return (
-            <div className="absolute top-2 z-10 bg-white/95 border border-[#E8E6E0] rounded-lg px-3 py-2 shadow-sm text-[12px] pointer-events-none"
+            <div className="absolute top-2 z-10 bg-white/95 border border-[#E2E5EA] rounded-lg px-3 py-2 shadow text-[12px] pointer-events-none"
               style={{ left: isRight ? undefined : tooltip.x + 12, right: isRight ? dims.w - tooltip.x + 12 : undefined }}>
               <div className="font-bold text-[#1A1A2E] mb-1">{d.date}</div>
               {lines.map(line => {
@@ -216,7 +216,7 @@ function MultiLineChart({ data }: { data: HistoryRow[] }) {
               <span className="w-3 h-[3px] rounded-full" style={{ backgroundColor: line.color }} />
               <span className="text-[12px] font-bold text-[#6B7280]">{line.label}</span>
               {lastPt && (
-                <span className="text-[12px] font-black tabular-nums" style={{ color: line.color }}>
+                <span className="text-[12px] font-bold tabular-nums" style={{ color: line.color }}>
                   {lastPt.val >= 0 ? '+' : ''}{lastPt.val.toFixed(1)}%
                 </span>
               )}
@@ -255,7 +255,7 @@ function VixFearGreedPanel({ data }: { data: HistoryRow[] }) {
         <div className="text-[14px] font-bold text-[#1A1A2E] mb-1">VIX 공포지수 추이</div>
         <div className="flex items-end gap-4">
           <div>
-            <div className="text-[32px] font-black tabular-nums" style={{
+            <div className="text-[32px] font-bold tabular-nums" style={{
               color: vix == null ? '#888' : vix >= 30 ? '#DC2626' : vix >= 20 ? '#F97316' : '#16A34A'
             }}>
               {vix != null ? vix.toFixed(1) : '—'}
@@ -291,11 +291,11 @@ function VixFearGreedPanel({ data }: { data: HistoryRow[] }) {
       <div className="fx-card px-4 py-4">
         <div className="text-[14px] font-bold text-[#1A1A2E] mb-1">Fear & Greed Index</div>
         <div className="flex items-center gap-4">
-          <div className="text-[40px] font-black tabular-nums leading-none" style={{ color: fg != null ? FG_COLOR(fg) : '#888' }}>
+          <div className="text-[40px] font-bold tabular-nums leading-none" style={{ color: fg != null ? FG_COLOR(fg) : '#888' }}>
             {fg ?? '—'}
           </div>
           <div>
-            <div className="text-[16px] font-black" style={{ color: fg != null ? FG_COLOR(fg) : '#888' }}>
+            <div className="text-[16px] font-bold" style={{ color: fg != null ? FG_COLOR(fg) : '#888' }}>
               {fg != null ? FG_LABEL(fg) : '—'}
             </div>
             <div className="text-[11px] text-[#9CA3AF] mt-0.5">
@@ -361,7 +361,7 @@ function SummaryCards({ data }: { data: HistoryRow }) {
       {cards.map(card => (
         <div key={card.name} className="bg-[#F5F4F0] rounded-lg p-3 text-center">
           <div className="text-[12px] font-bold text-[#9CA3AF] mb-1">{card.name}</div>
-          <div className="text-[20px] md:text-[24px] font-black tabular-nums leading-none" style={{ color: card.color }}>
+          <div className="text-[20px] md:text-[24px] font-bold tabular-nums leading-none" style={{ color: card.color }}>
             {card.change != null ? changeStr(card.change) : card.value}
           </div>
           {card.change != null && (

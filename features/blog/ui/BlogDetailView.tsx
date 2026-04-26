@@ -77,9 +77,9 @@ export default function BlogDetailView() {
       </Link>
 
       {/* 헤더 카드 */}
-      <div className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-5 mb-6">
+      <div className="bg-white rounded-xl border border-[#E2E5EA] shadow p-5 mb-6">
         <div className="flex items-center gap-2 mb-1">
-          <h1 className="text-[20px] font-black text-[#1A1A2E]">{data.name}</h1>
+          <h1 className="text-[20px] font-bold text-[#1A1A2E]">{data.name}</h1>
           <span className="text-[11px] font-bold px-2.5 py-1 rounded" style={{ backgroundColor: vs.bg, color: vs.text }}>
             {data.verdict}
           </span>
@@ -90,15 +90,15 @@ export default function BlogDetailView() {
         <div className="grid grid-cols-3 gap-4 bg-[#F9F8F6] rounded-lg p-4">
           <div className="text-center">
             <p className="text-[10px] text-[#9CA3AF] mb-0.5">현재가</p>
-            <p className="text-[18px] font-black text-[#1A1A2E] tabular-nums">{fmtP(data.current_price)}</p>
+            <p className="text-[18px] font-bold text-[#1A1A2E] tabular-nums">{fmtP(data.current_price)}</p>
           </div>
           <div className="text-center">
             <p className="text-[10px] text-[#9CA3AF] mb-0.5">적정가</p>
-            <p className="text-[18px] font-black text-[#1A1A2E] tabular-nums">{fmtP(data.fair_price_avg)}</p>
+            <p className="text-[18px] font-bold text-[#1A1A2E] tabular-nums">{fmtP(data.fair_price_avg)}</p>
           </div>
           <div className="text-center">
             <p className="text-[10px] text-[#9CA3AF] mb-0.5">괴리율</p>
-            <p className="text-[18px] font-black tabular-nums" style={{ color: gapColor }}>
+            <p className="text-[18px] font-bold tabular-nums" style={{ color: gapColor }}>
               {(data.gap_pct ?? 0) > 0 ? '+' : ''}{(data.gap_pct ?? 0).toFixed(1)}%
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function BlogDetailView() {
       </div>
 
       {/* 블로그 본문 (마크다운) */}
-      <article className="bg-white rounded-xl border border-[#E8E6E0] shadow-sm p-6 md:p-8">
+      <article className="bg-white rounded-xl border border-[#E2E5EA] shadow p-6 md:p-8">
         <div className="prose prose-sm max-w-none
           prose-headings:text-[#1A1A2E] prose-headings:font-bold
           prose-h2:text-[17px] prose-h2:mt-6 prose-h2:mb-3 prose-h2:border-b prose-h2:border-[#F0EDE8] prose-h2:pb-2
@@ -118,7 +118,7 @@ export default function BlogDetailView() {
           prose-blockquote:border-l-[#00FF88] prose-blockquote:bg-[#F0FFF4] prose-blockquote:py-1 prose-blockquote:px-3 prose-blockquote:rounded-r-lg
           prose-table:text-[12px]
           prose-th:bg-[#F5F4F0] prose-th:text-[#1A1A2E] prose-th:font-bold prose-th:px-3 prose-th:py-2
-          prose-td:px-3 prose-td:py-2 prose-td:border-[#E8E6E0]
+          prose-td:px-3 prose-td:py-2 prose-td:border-[#E2E5EA]
         ">
           <Markdown>{data.blog_content}</Markdown>
         </div>

@@ -155,7 +155,7 @@ function FunnelColumn({ stages, title, year, opacity }: { stages: FunnelStage[];
     <div className="w-full" style={{ opacity: opacity ?? 1 }}>
       <div className="text-center mb-3">
         <div className="text-xs font-bold text-[var(--text-dim)] tracking-wider">{title}</div>
-        <div className="text-lg font-black text-[var(--text-primary)]">{year}</div>
+        <div className="text-lg font-bold text-[var(--text-primary)]">{year}</div>
       </div>
       {stages.map((s, i) => {
         const visPct = s.vis
@@ -179,7 +179,7 @@ function FunnelColumn({ stages, title, year, opacity }: { stages: FunnelStage[];
               >
                 <div className="text-center px-3">
                   <div className="text-[9px] opacity-80 font-bold">{s.label}</div>
-                  <div className="text-sm font-black leading-tight">{s.value}</div>
+                  <div className="text-sm font-bold leading-tight">{s.value}</div>
                 </div>
               </div>
             </div>
@@ -240,7 +240,7 @@ function PopulationFunnel() {
 
         {/* 화살표 */}
         <div className="flex items-center justify-center self-center">
-          <div className="text-2xl font-black text-red-400">→</div>
+          <div className="text-2xl font-bold text-red-400">→</div>
         </div>
 
         {/* 20년 후 깔때기 */}
@@ -352,12 +352,12 @@ function KoreaLaborMap() {
           <div className="rounded-lg overflow-hidden border border-gray-200">
             <div className="bg-red-50 p-4 border-b border-red-200">
               <div className="text-[10px] text-red-400 font-bold tracking-wider">수도권 (서울·경기·인천)</div>
-              <div className="text-3xl font-black text-red-600">{metroPct}%</div>
+              <div className="text-3xl font-bold text-red-600">{metroPct}%</div>
               <div className="text-xs text-red-500 font-mono">{metroPop.toLocaleString()}만명</div>
             </div>
             <div className="bg-blue-50 p-4">
               <div className="text-[10px] text-blue-400 font-bold tracking-wider">비수도권 (14개 시도)</div>
-              <div className="text-3xl font-black text-blue-600">{(100 - Number(metroPct)).toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-blue-600">{(100 - Number(metroPct)).toFixed(1)}%</div>
               <div className="text-xs text-blue-500 font-mono">{(totalPop - metroPop).toLocaleString()}만명</div>
             </div>
           </div>
