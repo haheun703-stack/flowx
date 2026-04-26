@@ -75,7 +75,7 @@ export default function TodayVsNxtPanel() {
                     <span className="font-bold text-[#1A1A2E] truncate flex-1">{p.name}</span>
                     <span className="text-[10px] text-[#6B7280] shrink-0">{p.sector}</span>
                     <span className="font-bold tabular-nums shrink-0" style={{ color: pctColor(p.upside_to_tp1_pct) }}>
-                      +{p.upside_to_tp1_pct.toFixed(1)}%
+                      {p.upside_to_tp1_pct >= 0 ? '+' : ''}{p.upside_to_tp1_pct.toFixed(1)}%
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0"
                       style={{ backgroundColor: p.track === 'A_대형주' ? '#EFF6FF' : '#F5F3FF', color: p.track === 'A_대형주' ? '#2563EB' : '#7C3AED' }}>

@@ -63,6 +63,9 @@ export default function NxtPerformancePanel() {
     return chart.map((c) => { sum += c.avg_return; return sum })
   }, [chart])
 
+  const chartMaxAbs = useMemo(() => Math.max(...chart.map((p) => Math.abs(p.avg_return)), 1), [chart])
+  const cumMaxAbs = useMemo(() => Math.max(...cumulative.map(Math.abs), 1), [cumulative])
+
   if (loading) {
     return (
       <div className="animate-pulse rounded-xl bg-gray-100 h-40" />
@@ -155,8 +158,7 @@ export default function NxtPerformancePanel() {
               <div className="absolute left-0 right-0 top-1/2 border-t border-dashed border-[#E2E5EA]" />
               <div className="flex items-end justify-between h-full gap-[2px]">
                 {chart.map((c, i) => {
-                  const maxAbs = Math.max(...chart.map((p) => Math.abs(p.avg_return)), 1)
-                  const h = (Math.abs(c.avg_return) / maxAbs) * 50
+                  const h = (Math.abs(c.avg_return) / chartMaxAbs) * 50
                   const isUp = c.avg_return >= 0
                   return (
                     <div key={c.pick_date} className="flex-1 flex flex-col items-center justify-center h-full relative group">
@@ -180,7 +182,7 @@ export default function NxtPerformancePanel() {
                         <div
                           className="absolute w-1.5 h-1.5 rounded-full bg-blue-500 z-10"
                           style={{
-                            bottom: `${50 + (cumulative[i] / (Math.max(...cumulative.map(Math.abs), 1)) * 45)}%`,
+                            bottom: `${50 + (cumulative[i] / cumMaxAbs * 45)}%`,
                           }}
                         />
                       )}
