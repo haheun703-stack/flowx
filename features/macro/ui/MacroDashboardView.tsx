@@ -1,5 +1,6 @@
 'use client'
 
+import LiveMarketHeader from './LiveMarketHeader'
 import { Group1_MarketStructure } from './groups/Group1_MarketStructure'
 import { Group2_InflationRates } from './groups/Group2_InflationRates'
 import { Group3_AiSemi } from './groups/Group3_AiSemi'
@@ -41,6 +42,9 @@ export default function MacroDashboardView() {
           ))}
         </nav>
       </header>
+
+      {/* ── 실시간 마켓 요약 ── */}
+      <LiveMarketHeader />
 
       {/* ── 섹션 렌더링 ── */}
       <main className="max-w-[1400px] mx-auto px-3 md:px-6 pb-20 space-y-16">
