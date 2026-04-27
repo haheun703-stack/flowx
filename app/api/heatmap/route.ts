@@ -29,6 +29,6 @@ export async function GET() {
     return NextResponse.json(data)
   } catch (e) {
     console.error('heatmap error:', e)
-    return NextResponse.json([])
+    return NextResponse.json([], { status: 500 })
   }
 }

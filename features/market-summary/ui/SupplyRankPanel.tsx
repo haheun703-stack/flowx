@@ -36,15 +36,15 @@ export function SupplyRankPanel({ stocks, type }: {
               style={{ gridTemplateColumns: '1fr 72px 56px 68px' }}
             >
             <span className="text-[14px] md:text-[16px] text-[#1A1A2E] font-bold truncate">{s.name}</span>
-            <span className="text-right text-[#1A1A2E] font-semibold tabular-nums">{s.price.toLocaleString()}</span>
+            <span className="text-right text-[#1A1A2E] font-semibold tabular-nums">{(s.price ?? 0).toLocaleString()}</span>
             <span className={`text-right font-bold tabular-nums ${
-              s.changePercent >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
+              (s.changePercent ?? 0) >= 0 ? 'text-[var(--up)]' : 'text-[var(--down)]'
             }`}>
-              {s.changePercent >= 0 ? '+' : ''}{s.changePercent.toFixed(1)}%
+              {(s.changePercent ?? 0) >= 0 ? '+' : ''}{(s.changePercent ?? 0).toFixed(1)}%
             </span>
             <span className="text-right font-bold tabular-nums text-[var(--up)] text-[15px]">
               {(() => {
-                const val = type === '외인' ? s.foreignNet : s.instNet
+                const val = (type === '외인' ? s.foreignNet : s.instNet) ?? 0
                 return `${val >= 0 ? '+' : ''}${val.toLocaleString()}억`
               })()}
             </span>

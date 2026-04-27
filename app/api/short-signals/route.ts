@@ -75,6 +75,6 @@ export async function GET(request: Request) {
     return NextResponse.json(rows)
   } catch (e) {
     console.error('short-signals error:', e)
-    return NextResponse.json([])
+    return NextResponse.json([], { status: 500 })
   }
 }

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   try {
   // Toss 웹훅 서명 검증
   const secret = process.env.TOSS_WEBHOOK_SECRET
-  let body: { eventType: string; data: Record<string, string> }
+  let body: { eventType: string; data: Record<string, unknown> }
 
   if (!secret) {
     console.error('TOSS_WEBHOOK_SECRET not configured — rejecting webhook')
@@ -37,9 +37,10 @@ export async function POST(request: NextRequest) {
 
   switch (eventType) {
     case 'BILLING_STATUS_CHANGED': {
-      const { customerKey, status } = data
+      const customerKey = typeof data.customerKey === 'string' ? data.customerKey : ''
+      const status = String(data.status ?? '')
       if (status === 'EXPIRED' || status === 'STOPPED') {
-        const userId = customerKey?.replace('flowx_', '')
+        const userId = customerKey.replace('flowx_', '')
         if (userId) {
           await supabase
             .from('subscriptions')
@@ -57,9 +58,11 @@ export async function POST(request: NextRequest) {
     }
 
     case 'PAYMENT_STATUS_CHANGED': {
-      const { orderId, status: paymentStatus, failReason } = data
+      const orderId = typeof data.orderId === 'string' ? data.orderId : ''
+      const paymentStatus = String(data.status ?? '')
+      const failReason = typeof data.failReason === 'string' ? data.failReason : ''
       if (paymentStatus === 'ABORTED' || paymentStatus === 'EXPIRED') {
-        const parts = orderId?.split('_')
+        const parts = orderId.split('_')
         const userId = parts?.[2]
         if (userId) {
           await supabase

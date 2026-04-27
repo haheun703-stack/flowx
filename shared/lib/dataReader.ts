@@ -30,17 +30,6 @@ export function readJsonFile<T>(subpath: string): T {
   return JSON.parse(raw) as T
 }
 
-/** daily_snapshots/ 에서 최신 날짜 폴더의 특정 파일 읽기 */
-export function readLatestSnapshot<T>(fileName: string): T {
-  const snapshotsDir = getDataPath('daily_snapshots')
-  const dates = readdirSync(snapshotsDir)
-    .filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d))
-    .sort()
-  const latest = dates[dates.length - 1]
-  if (!latest) throw new Error('No daily snapshots found')
-  return readJsonFile<T>(path.join('daily_snapshots', latest, fileName))
-}
-
 /** supply_snapshots/ 에서 최신 스냅샷 파일 읽기 */
 export function readLatestSupplySnapshot<T>(): T {
   const dir = getDataPath('supply_snapshots')
@@ -50,15 +39,4 @@ export function readLatestSupplySnapshot<T>(): T {
   const latest = files[files.length - 1]
   if (!latest) throw new Error('No supply snapshots found')
   return readJsonFile<T>(path.join('supply_snapshots', latest))
-}
-
-/** china_money/history/ 에서 최신 날짜 파일 읽기 */
-export function readLatestChinaMoney<T>(): T {
-  const dir = getDataPath('china_money', 'history')
-  const files = readdirSync(dir)
-    .filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
-    .sort()
-  const latest = files[files.length - 1]
-  if (!latest) throw new Error('No china money data found')
-  return readJsonFile<T>(path.join('china_money', 'history', latest))
 }

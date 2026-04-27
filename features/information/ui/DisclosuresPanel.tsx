@@ -32,7 +32,7 @@ function HighlightRow({ item }: { item: DisclosureItem }) {
       {item.ai_summary && (
         <div className="text-xs text-[var(--text-dim)] mt-1 leading-relaxed">{item.ai_summary}</div>
       )}
-      {item.tags.length > 0 && (
+      {item.tags?.length > 0 && (
         <div className="flex gap-1 mt-1.5 flex-wrap">
           {item.tags.map(tag => (
             <span key={tag} className="text-[10px] text-[var(--purple)] border border-[var(--purple)]/20 px-1.5 py-0.5 rounded bg-purple-50">{tag}</span>

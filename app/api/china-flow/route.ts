@@ -43,6 +43,6 @@ export async function GET() {
     return NextResponse.json(mapped)
   } catch (e) {
     console.error('china-flow error:', e)
-    return NextResponse.json([])
+    return NextResponse.json([], { status: 500 })
   }
 }
