@@ -12,7 +12,16 @@ import BluechipInspectionTab from "@/features/quant/ui/BluechipInspectionTab"
 import SectorFireView from "@/features/quant/ui/SectorFireView"
 import TodayVsNxtPanel from "./TodayVsNxtPanel"
 
-/* ── H. 퀀트 3탭 패널 ── */
+/* ── 상단 탭 정의 ── */
+const TABS = [
+  { key: "dashboard", label: "시장판단 & 전략" },
+  { key: "trade", label: "매매포인트" },
+  { key: "supply", label: "수급추적" },
+] as const
+
+type TabKey = (typeof TABS)[number]["key"]
+
+/* ── 피보나치 3탭 (매매포인트 내부) ── */
 const QUANT_TABS = [
   { key: "smallcap", label: "전체 피보나치" },
   { key: "bluechip", label: "대형주 피보나치" },
@@ -63,34 +72,53 @@ function SectionDivider({ title }: { title: string }) {
 }
 
 export function SwingTabsView() {
+  const [tab, setTab] = useState<TabKey>("dashboard")
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
-      {/* A→B→C→D→E→F→K (SwingDashboardView 내부에서 렌더) */}
-      <SwingDashboardView />
+      {/* ── 상단 탭 네비게이션 (퀀트 SystemPage 동일 패턴) ── */}
+      <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 pb-2">
+        <nav className="tab-scroll flex gap-1.5 bg-[#F5F4F0] rounded-xl p-1.5 border border-[#E2E5EA] w-fit max-w-full">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`shrink-0 py-2 px-5 rounded-lg text-[14px] font-semibold transition-all duration-150 whitespace-nowrap ${
+                tab === t.key
+                  ? "bg-[#00FF88] text-[#1A1A2E] shadow-sm"
+                  : "text-[#9CA3AF] hover:text-[#1A1A2E] hover:bg-white"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
+      </div>
 
-      {/* G. 단타 TOP픽 + 성적표 */}
-      <SectionDivider title="단타 TOP픽 + 성적표" />
-      <DaytradingPicksPanel />
-      <DaytradingPerformancePanel />
+      {/* ── 탭 1: 시장판단 & 전략 ── */}
+      {tab === "dashboard" && <SwingDashboardView />}
 
-      {/* G-3. TODAY vs NXT 비교 */}
-      <TodayVsNxtPanel />
+      {/* ── 탭 2: 매매포인트 ── */}
+      {tab === "trade" && (
+        <>
+          <DaytradingPicksPanel />
+          <DaytradingPerformancePanel />
+          <TodayVsNxtPanel />
+          <SectionDivider title="피보나치 분석 + 섹터 로테이션" />
+          <QuantTabsPanel />
+        </>
+      )}
 
-      {/* H. 3탭 퀀트 패널 */}
-      <SectionDivider title="피보나치 분석 + 섹터 로테이션" />
-      <QuantTabsPanel />
-
-      {/* I. 수급 사이클 감지기 */}
-      <SectionDivider title="수급 사이클 감지기" />
-      <CycleScanView />
-
-      {/* J. 기관 선매집 탐지 */}
-      <SectionDivider title="기관 선매집 탐지" />
-      <StealthScannerView />
-
-      {/* 외국인·기관 수급 X-Ray (보조) */}
-      <SectionDivider title="외국인·기관 수급 X-Ray" />
-      <ForeignFlowPanel />
+      {/* ── 탭 3: 수급추적 ── */}
+      {tab === "supply" && (
+        <>
+          <CycleScanView />
+          <SectionDivider title="기관 선매집 탐지" />
+          <StealthScannerView />
+          <SectionDivider title="외국인·기관 수급 X-Ray" />
+          <ForeignFlowPanel />
+        </>
+      )}
     </div>
   )
 }
