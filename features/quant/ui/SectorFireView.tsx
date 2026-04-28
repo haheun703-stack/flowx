@@ -241,28 +241,28 @@ function SectorPicksCard({ fire, picks: cardPicks }: { fire: SectorFire; picks: 
       style={{ borderColor: cs.border, background: cs.bg }}
     >
       {/* 카드 헤더 */}
-      <div className="px-4 py-3 border-b" style={{ borderColor: `${cs.border}30` }}>
+      <div className="px-5 py-4 border-b" style={{ borderColor: `${cs.border}30` }}>
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[16px] font-bold text-[#1A1A2E]">{fire.sector}</span>
+          <span className="text-[18px] font-bold text-[#1A1A2E]">{fire.sector}</span>
           <span
-            className="text-[12px] font-bold px-2 py-0.5 rounded-md"
+            className="text-[14px] font-bold px-2.5 py-1 rounded-md"
             style={{ color: gc.color, background: gc.bg }}
           >
             FIRE {fire.fire_grade}등급 {Math.round(fire.fire_score)}점
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[12px] text-[#6B7280] mt-1">
+        <div className="flex items-center gap-4 text-[14px] text-[#6B7280] mt-1.5">
           <span>외인5d: <b style={{ color: flowClr(fire.fgn_5d) }}>{flowFmt(fire.fgn_5d)}억</b></span>
           <span>기관5d: <b style={{ color: flowClr(fire.inst_5d) }}>{flowFmt(fire.inst_5d)}억</b></span>
           <span>연기금: <b style={{ color: flowClr(fire.pension_5d) }}>{flowFmt(fire.pension_5d)}억</b></span>
         </div>
         {fire.etf_code && fire.etf_name && (
-          <div className="mt-1">
+          <div className="mt-1.5">
             <a
               href={`https://finance.naver.com/item/main.naver?code=${fire.etf_code}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[12px] text-[#2563EB] hover:underline"
+              className="text-[14px] text-[#2563EB] hover:underline"
             >
               ETF: {fire.etf_name} ({fire.etf_code})
             </a>
@@ -272,19 +272,19 @@ function SectorPicksCard({ fire, picks: cardPicks }: { fire: SectorFire; picks: 
 
       {/* 종목 테이블 */}
       <div className="overflow-x-auto">
-        <table className="w-full text-[12px]">
+        <table className="w-full text-[14px]">
           <thead>
             <tr className="bg-[#F5F4F0]/60">
-              <th className="text-left py-2 px-3 font-bold text-[#1A1A2E]">종목</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">종가</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">등락</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">점수</th>
-              <th className="text-center py-2 px-2 font-bold text-[#1A1A2E]">등급</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">MA20</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">RSI</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">외5d</th>
-              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">기5d</th>
-              <th className="text-left py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">근거</th>
+              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">종가</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">등락</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">점수</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">등급</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">MA20</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">RSI</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">외5d</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">기5d</th>
+              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">근거</th>
             </tr>
           </thead>
           <tbody>
@@ -292,33 +292,33 @@ function SectorPicksCard({ fire, picks: cardPicks }: { fire: SectorFire; picks: 
               const bg = BUY_GRADE_CONFIG[p.buy_grade]
               return (
                 <tr key={p.ticker} className="border-t border-[#e5e7ef]/40 hover:bg-white/60">
-                  <td className="py-2 px-3">
+                  <td className="py-2.5 px-3">
                     <span className="font-bold text-[#1A1A2E]">{p.name}</span>
-                    <span className="text-[10px] text-[#9ca3b8] ml-1">{p.ticker}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{p.ticker}</span>
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums text-[#1A1A2E]">{priceFmt(p.close)}</td>
-                  <td className="py-2 px-2 text-right tabular-nums font-bold" style={{ color: retClr(p.chg_1d) }}>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{priceFmt(p.close)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: retClr(p.chg_1d) }}>
                     {p.chg_1d >= 0 ? '+' : ''}{p.chg_1d.toFixed(1)}%
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums font-bold text-[#1A1A2E]">{Math.round(p.buy_score)}</td>
-                  <td className="py-2 px-2 text-center">
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold text-[#1A1A2E]">{Math.round(p.buy_score)}</td>
+                  <td className="py-2.5 px-3 text-center">
                     {bg && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white" style={{ background: bg.color }}>
+                      <span className="text-[12px] font-bold px-2 py-1 rounded text-white" style={{ background: bg.color }}>
                         {bg.label}
                       </span>
                     )}
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums text-[#6B7280] hidden md:table-cell">
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#6B7280] hidden md:table-cell">
                     {p.ma20_dev >= 0 ? '+' : ''}{p.ma20_dev.toFixed(1)}%
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums text-[#6B7280] hidden md:table-cell">{Math.round(p.rsi)}</td>
-                  <td className="py-2 px-2 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.fgn_5d) }}>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#6B7280] hidden md:table-cell">{Math.round(p.rsi)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.fgn_5d) }}>
                     {flowFmt(p.fgn_5d)}
                   </td>
-                  <td className="py-2 px-2 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.inst_5d) }}>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.inst_5d) }}>
                     {flowFmt(p.inst_5d)}
                   </td>
-                  <td className="py-2 px-2 text-left text-[#6B7280] truncate max-w-[120px] hidden md:table-cell" title={p.buy_reasons}>
+                  <td className="py-2.5 px-3 text-left text-[#6B7280] truncate max-w-[140px] hidden md:table-cell" title={p.buy_reasons}>
                     {p.buy_reasons?.split(',')[0] ?? ''}
                   </td>
                 </tr>
@@ -414,10 +414,10 @@ export default function SectorFireView() {
       {/* 헤더 */}
       <div>
         <div className="flex items-center gap-3">
-          <h2 className="text-[17px] font-bold text-[#1A1A2E]">SECTOR FIRE</h2>
-          {date && <span className="text-[12px] text-[#9ca3b8]">{date}</span>}
+          <h2 className="text-[19px] font-bold text-[#1A1A2E]">SECTOR FIRE</h2>
+          {date && <span className="text-[14px] text-[#9ca3b8]">{date}</span>}
         </div>
-        <p className="text-[12px] text-[#6B7280] mt-0.5">돈의 흐름으로 읽는 다음 발화 섹터</p>
+        <p className="text-[14px] text-[#6B7280] mt-0.5">돈의 흐름으로 읽는 다음 발화 섹터</p>
       </div>
 
       {/* 섹션 1: 섹터 카드 그리드 */}
@@ -436,13 +436,13 @@ export default function SectorFireView() {
       <div>
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <h3 className="text-[15px] font-bold text-[#1A1A2E]">발화 섹터 종목 — 매수 후보</h3>
-            <span className="text-[12px] text-[#9ca3b8]">{filteredPicks.length}종목</span>
+            <h3 className="text-[17px] font-bold text-[#1A1A2E]">발화 섹터 종목 — 매수 후보</h3>
+            <span className="text-[14px] text-[#9ca3b8]">{filteredPicks.length}종목</span>
           </div>
           {selectedSector && (
             <button
               onClick={() => setSelectedSector(null)}
-              className="text-[11px] px-2 py-1 rounded bg-[#f0f0f0] text-[#6B7280] hover:bg-[#e5e7ef]"
+              className="text-[13px] px-2.5 py-1 rounded bg-[#f0f0f0] text-[#6B7280] hover:bg-[#e5e7ef]"
             >
               전체 보기
             </button>
@@ -460,7 +460,7 @@ export default function SectorFireView() {
             <button
               key={f.key}
               onClick={() => setGradeFilter(f.key)}
-              className={`py-1.5 px-3 rounded-lg text-[12px] font-semibold transition-all ${
+              className={`py-1.5 px-3.5 rounded-lg text-[14px] font-semibold transition-all ${
                 gradeFilter === f.key
                   ? 'bg-[#00FF88] text-[#1A1A2E] shadow-sm'
                   : 'bg-[#F5F4F0] text-[#9CA3AF] hover:text-[#1A1A2E]'
