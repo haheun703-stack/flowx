@@ -135,32 +135,34 @@ function BestSectorCard({ group }: { group: SectorGroup }) {
           </thead>
           <tbody>
             {group.stocks.map((s) => {
-              const fr = freshRowStyle(s.ret5)
-              const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec >= 3 ? "#2563EB" : "#1A1A2E"
-              const fiBold = Math.abs(s.fi_today) > 100
+              const ret5 = s.ret5 ?? 0
+              const fr = freshRowStyle(ret5)
+              const pc = s.pension_consec ?? 0
+              const consecColor = pc >= 5 ? "#DC2626" : pc >= 3 ? "#2563EB" : "#1A1A2E"
+              const fiBold = Math.abs(s.fi_today ?? 0) > 100
 
               return (
                 <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
                   <td className="py-2.5 px-3">
-                    <span className="font-bold text-[#1A1A2E]">{s.name}</span>
-                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code}</span>
+                    <span className="font-bold text-[#1A1A2E]">{s.name ?? '—'}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code ?? ''}</span>
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close ?? 0)}</td>
                   <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: consecColor }}>
-                    {s.pension_consec}d
+                    {pc}d
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum) }}>
-                    {fmtAmt(s.pension_cum)}
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum ?? 0) }}>
+                    {fmtAmt(s.pension_cum ?? 0)}
                   </td>
                   <td className={`py-2.5 px-3 text-right tabular-nums hidden md:table-cell ${fiBold ? "font-bold text-[#1A1A2E]" : "text-[#1A1A2E]"}`}>
-                    {fmtAmt(s.fi_today)}
+                    {fmtAmt(s.fi_today ?? 0)}
                   </td>
                   <td className="py-2.5 px-3 text-center hidden md:table-cell">
-                    <JoinedBadge joined={s.fi_joined} />
+                    <JoinedBadge joined={s.fi_joined ?? ''} />
                   </td>
                   <td className="py-2.5 px-3 text-right tabular-nums font-bold">
-                    <span style={{ color: s.ret5 < 0 ? "#16a34a" : s.ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
-                      {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%
+                    <span style={{ color: ret5 < 0 ? "#16a34a" : ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
+                      {ret5 >= 0 ? "+" : ""}{ret5.toFixed(1)}%
                     </span>
                     {fr.star && <span className="ml-1 font-bold" style={{ color: fr.starColor }}>★</span>}
                   </td>
@@ -203,28 +205,30 @@ function StandbySectorCard({ group }: { group: SectorGroup }) {
           </thead>
           <tbody>
             {group.stocks.map((s) => {
-              const fr = freshRowStyle(s.ret5)
-              const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec >= 3 ? "#2563EB" : "#1A1A2E"
+              const ret5 = s.ret5 ?? 0
+              const fr = freshRowStyle(ret5)
+              const pc = s.pension_consec ?? 0
+              const consecColor = pc >= 5 ? "#DC2626" : pc >= 3 ? "#2563EB" : "#1A1A2E"
 
               return (
                 <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
                   <td className="py-2.5 px-3">
-                    <span className="font-bold text-[#1A1A2E]">{s.name}</span>
-                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code}</span>
+                    <span className="font-bold text-[#1A1A2E]">{s.name ?? '—'}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code ?? ''}</span>
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close ?? 0)}</td>
                   <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: consecColor }}>
-                    {s.pension_consec}d
+                    {pc}d
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum) }}>
-                    {fmtAmt(s.pension_cum)}
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum ?? 0) }}>
+                    {fmtAmt(s.pension_cum ?? 0)}
                   </td>
                   <td className="py-2.5 px-3 text-center hidden md:table-cell">
                     <JoinedBadge joined="" />
                   </td>
                   <td className="py-2.5 px-3 text-right tabular-nums font-bold">
-                    <span style={{ color: s.ret5 < 0 ? "#16a34a" : s.ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
-                      {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%
+                    <span style={{ color: ret5 < 0 ? "#16a34a" : ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
+                      {ret5 >= 0 ? "+" : ""}{ret5.toFixed(1)}%
                     </span>
                     {fr.star && <span className="ml-1 font-bold" style={{ color: fr.starColor }}>★</span>}
                   </td>

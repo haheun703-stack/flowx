@@ -243,12 +243,12 @@ function SectorPicksCard({ fire, picks: cardPicks }: { fire: SectorFire; picks: 
       {/* 카드 헤더 */}
       <div className="px-5 py-4 border-b" style={{ borderColor: `${cs.border}30` }}>
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[18px] font-bold text-[#1A1A2E]">{fire.sector}</span>
+          <span className="text-[18px] font-bold text-[#1A1A2E]">{fire.sector ?? '미분류'}</span>
           <span
             className="text-[14px] font-bold px-2.5 py-1 rounded-md"
             style={{ color: gc.color, background: gc.bg }}
           >
-            FIRE {fire.fire_grade}등급 {Math.round(fire.fire_score)}점
+            FIRE {fire.fire_grade ?? '?'}등급 {Math.round(fire.fire_score ?? 0)}점
           </span>
         </div>
         <div className="flex items-center gap-4 text-[14px] text-[#6B7280] mt-1.5">
@@ -478,13 +478,17 @@ export default function SectorFireView() {
               해당 조건의 종목이 없습니다
             </div>
           ) : (
-            sortedSectors.map(sectorName => (
-              <SectorPicksCard
-                key={sectorName}
-                fire={fireMap[sectorName]}
-                picks={grouped[sectorName]}
-              />
-            ))
+            sortedSectors.map(sectorName => {
+              const fire = fireMap[sectorName]
+              if (!fire) return null
+              return (
+                <SectorPicksCard
+                  key={sectorName}
+                  fire={fire}
+                  picks={grouped[sectorName]}
+                />
+              )
+            })
           )}
         </div>
       </div>
