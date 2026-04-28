@@ -46,6 +46,7 @@ const TABLE_CONFIG = [
   { table: 'intelligence_oneshot_stealth', bot: '단타봇', schedule: '16:45', dateCol: 'date', orderCol: 'date', staleDays: 3 },
   { table: 'intelligence_flow_intensity', bot: '단타봇', schedule: '16:35', dateCol: 'date', orderCol: 'date', staleDays: 0 },
   { table: 'intelligence_foreign_flow', bot: '단타봇', schedule: '16:45', dateCol: 'date', orderCol: 'date', staleDays: 0 },
+  { table: 'intelligence_pension_scan', bot: '단타봇', schedule: '16:40', dateCol: 'date', orderCol: 'date', staleDays: 0 },
   { table: 'intelligence_nxt_performance', bot: '단타봇', schedule: '16:45', dateCol: 'pick_date', orderCol: 'pick_date', staleDays: 3 },
   { table: 'scoreboard', bot: '단타봇', schedule: '16:10', dateCol: 'updated_at', orderCol: 'updated_at', staleDays: 0 },
 ] as const

@@ -6,12 +6,13 @@ import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerfo
 import SwingDashboardView from "./SwingDashboardView"
 import CycleScanView from "./CycleScanView"
 import StealthScannerView from "./StealthScannerView"
-
+import PensionScanPanel from "./PensionScanPanel"
 import TodayVsNxtPanel from "./TodayVsNxtPanel"
 
 /* ── 상단 탭 정의 ── */
 const TABS = [
   { key: "dashboard", label: "시장판단 & 전략" },
+  { key: "pension", label: "매집 합류 시그널" },
   { key: "trade", label: "매매포인트" },
   { key: "supply", label: "수급추적" },
 ] as const
@@ -60,7 +61,10 @@ export function SwingTabsView() {
       {/* ── 탭 1: 시장판단 & 전략 ── */}
       {tab === "dashboard" && <SwingDashboardView />}
 
-      {/* ── 탭 2: 매매포인트 ── */}
+      {/* ── 탭 2: 매집 합류 시그널 ── */}
+      {tab === "pension" && <PensionScanPanel />}
+
+      {/* ── 탭 3: 매매포인트 ── */}
       {tab === "trade" && (
         <>
           <DaytradingPicksPanel />
@@ -69,7 +73,7 @@ export function SwingTabsView() {
         </>
       )}
 
-      {/* ── 탭 3: 수급추적 ── */}
+      {/* ── 탭 4: 수급추적 ── */}
       {tab === "supply" && (
         <>
           <CycleScanView />
