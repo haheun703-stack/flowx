@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 /* ── Types ── */
 interface PensionStock {
@@ -28,14 +28,16 @@ interface PensionScanData {
   standby_stocks: PensionStock[]
 }
 
-type SubTab = "best" | "standby"
+type SubTab = "all" | "fresh" | "standby"
 
-/* ── Helpers ── */
-function fmtCap(cap: number): string {
-  if (cap >= 10000) return `${(cap / 10000).toFixed(1)}조`
-  return `${cap.toLocaleString()}억`
+interface SectorGroup {
+  sector: string
+  stocks: PensionStock[]
+  totalPension: number
+  totalFi: number
 }
 
+/* ── Helpers ── */
 function fmtAmt(v: number): string {
   const abs = Math.abs(v)
   const sign = v >= 0 ? "+" : "-"
@@ -44,94 +46,193 @@ function fmtAmt(v: number): string {
 }
 
 function fmtPrice(v: number): string {
-  return v.toLocaleString() + "원"
+  return v.toLocaleString()
 }
 
-/* ── Badge ── */
+function flowClr(v: number): string {
+  return v > 0 ? "#DC2626" : v < 0 ? "#2563EB" : "#6B7280"
+}
+
+/* ── 미발화 행 스타일 ── */
+function freshRowStyle(ret5: number): { bg: string; star: boolean; starColor: string } {
+  if (ret5 < 0) return { bg: "rgba(22,163,74,0.08)", star: true, starColor: "#16a34a" }
+  if (ret5 <= 3) return { bg: "rgba(22,163,74,0.05)", star: true, starColor: "#22c55e" }
+  if (ret5 < 5) return { bg: "transparent", star: true, starColor: "#86efac" }
+  return { bg: "transparent", star: false, starColor: "" }
+}
+
+/* ── 합류 뱃지 ── */
 function JoinedBadge({ joined }: { joined: string }) {
   if (joined === "TODAY") {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-[#FF4444] text-white">
-        오늘합류
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#FF4444] text-white">
+        오늘
       </span>
     )
   }
   if (joined === "YESTERDAY") {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-[#FF8C00] text-white">
-        어제합류
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#FF8C00] text-white">
+        어제
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-[#9CA3AF] text-white">
-      대기중
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#9CA3AF] text-white">
+      대기
     </span>
   )
 }
 
-/* ── Stock Card (핵심후보) ── */
-function BestCard({ s }: { s: PensionStock }) {
-  const ret5Color = s.ret5 < 0 ? "#16a34a" : s.ret5 <= 3 ? "#1A1A2E" : "#9CA3AF"
-  const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec === 3 ? "#2196F3" : "#1A1A2E"
-  const fiBold = Math.abs(s.fi_today) > 100
+/* ── 섹터별 그룹핑 ── */
+function groupBySector(stocks: PensionStock[]): SectorGroup[] {
+  const grouped: Record<string, PensionStock[]> = {}
+  for (const s of stocks) {
+    const sector = s.sector || "기타"
+    if (!grouped[sector]) grouped[sector] = []
+    grouped[sector].push(s)
+  }
+  return Object.entries(grouped)
+    .map(([sector, stocks]) => ({
+      sector,
+      stocks,
+      totalPension: stocks.reduce((sum, x) => sum + x.pension_cum, 0),
+      totalFi: stocks.reduce((sum, x) => sum + x.fi_today, 0),
+    }))
+    .sort((a, b) => b.totalPension - a.totalPension)
+}
 
+/* ── 섹터 카드 (핵심후보용) ── */
+function BestSectorCard({ group }: { group: SectorGroup }) {
   return (
-    <div className="bg-white border border-[#E2E5EA] rounded-xl p-4 hover:shadow-sm transition-shadow">
-      {/* Row 1: Badge + Name + Sector + Cap */}
-      <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <JoinedBadge joined={s.fi_joined} />
-        <span className="font-bold text-[15px] text-[#1A1A2E]">{s.name}</span>
-        <span className="text-[12px] text-[#9CA3AF]">{s.sector}</span>
-        <span className="text-[12px] text-[#6B7280]">시총 {fmtCap(s.cap)}</span>
-        <span className="ml-auto text-[13px] text-[#6B7280]">{fmtPrice(s.close)}</span>
+    <div className="rounded-xl border border-[#E2E5EA] overflow-hidden bg-white">
+      {/* 헤더 */}
+      <div className="px-5 py-4 border-b border-[#E2E5EA]/60 bg-[#FAFAFA]">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-[18px] font-bold text-[#1A1A2E]">{group.sector}</span>
+          <span className="text-[14px] text-[#6B7280]">
+            연기금: <b style={{ color: flowClr(group.totalPension) }}>{fmtAmt(group.totalPension)}</b>
+          </span>
+          <span className="text-[14px] text-[#6B7280]">
+            금투: <b style={{ color: flowClr(group.totalFi) }}>{fmtAmt(group.totalFi)}</b>
+          </span>
+        </div>
       </div>
-      {/* Row 2: 연기금 */}
-      <div className="text-[13px] mb-1">
-        <span style={{ color: consecColor }} className="font-semibold">
-          연기금 {s.pension_consec}일째
-        </span>
-        <span className="text-[#6B7280]"> · 누적 {fmtAmt(s.pension_cum)}</span>
-      </div>
-      {/* Row 3: 금투 + ret5 */}
-      <div className="text-[13px]">
-        <span className={fiBold ? "font-bold text-[#1A1A2E]" : "text-[#1A1A2E]"}>
-          금투 오늘 {fmtAmt(s.fi_today)}
-        </span>
-        <span className="text-[#6B7280]"> · </span>
-        <span style={{ color: ret5Color }} className="font-semibold">
-          5d {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%
-        </span>
-        {s.ret5 < 0 && (
-          <span className="ml-1 text-[11px] text-[#16a34a] font-bold">미발화</span>
-        )}
+
+      {/* 테이블 */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-[14px]">
+          <thead>
+            <tr className="bg-[#F5F4F0]/60">
+              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">종가</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">연기금</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">누적</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">금투오늘</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">합류</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">5d수익</th>
+            </tr>
+          </thead>
+          <tbody>
+            {group.stocks.map((s) => {
+              const fr = freshRowStyle(s.ret5)
+              const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec >= 3 ? "#2563EB" : "#1A1A2E"
+              const fiBold = Math.abs(s.fi_today) > 100
+
+              return (
+                <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
+                  <td className="py-2.5 px-3">
+                    <span className="font-bold text-[#1A1A2E]">{s.name}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code}</span>
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close)}</td>
+                  <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: consecColor }}>
+                    {s.pension_consec}d
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum) }}>
+                    {fmtAmt(s.pension_cum)}
+                  </td>
+                  <td className={`py-2.5 px-3 text-right tabular-nums hidden md:table-cell ${fiBold ? "font-bold text-[#1A1A2E]" : "text-[#1A1A2E]"}`}>
+                    {fmtAmt(s.fi_today)}
+                  </td>
+                  <td className="py-2.5 px-3 text-center hidden md:table-cell">
+                    <JoinedBadge joined={s.fi_joined} />
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold">
+                    <span style={{ color: s.ret5 < 0 ? "#16a34a" : s.ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
+                      {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%
+                    </span>
+                    {fr.star && <span className="ml-1 font-bold" style={{ color: fr.starColor }}>★</span>}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
 
-/* ── Stock Card (대기) ── */
-function StandbyCard({ s }: { s: PensionStock }) {
-  const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec === 3 ? "#2196F3" : "#1A1A2E"
-
+/* ── 섹터 카드 (대기용) ── */
+function StandbySectorCard({ group }: { group: SectorGroup }) {
   return (
-    <div className="bg-[#FAFAFA] border border-[#E2E5EA] rounded-xl p-4">
-      <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <JoinedBadge joined="STANDBY" />
-        <span className="font-bold text-[15px] text-[#1A1A2E]">{s.name}</span>
-        <span className="text-[12px] text-[#9CA3AF]">{s.sector}</span>
-        <span className="text-[12px] text-[#6B7280]">시총 {fmtCap(s.cap)}</span>
-        <span className="ml-auto text-[13px] text-[#6B7280]">{fmtPrice(s.close)}</span>
+    <div className="rounded-xl border border-[#E2E5EA] overflow-hidden bg-[#FAFAFA]">
+      {/* 헤더 */}
+      <div className="px-5 py-4 border-b border-[#E2E5EA]/60">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="text-[18px] font-bold text-[#1A1A2E]">{group.sector}</span>
+          <span className="text-[14px] text-[#6B7280]">
+            연기금: <b style={{ color: flowClr(group.totalPension) }}>{fmtAmt(group.totalPension)}</b>
+          </span>
+        </div>
       </div>
-      <div className="text-[13px] mb-1">
-        <span style={{ color: consecColor }} className="font-semibold">
-          연기금 {s.pension_consec}일째
-        </span>
-        <span className="text-[#6B7280]"> · 누적 {fmtAmt(s.pension_cum)}</span>
-        <span className="text-[#6B7280]"> · 5d {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%</span>
-      </div>
-      <div className="text-[12px] text-[#9CA3AF]">
-        금투 미합류 — 진입 시 알림 예정
+
+      {/* 테이블 */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-[14px]">
+          <thead>
+            <tr className="bg-[#F5F4F0]/60">
+              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">종가</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">연기금</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">누적</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">상태</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">5d수익</th>
+            </tr>
+          </thead>
+          <tbody>
+            {group.stocks.map((s) => {
+              const fr = freshRowStyle(s.ret5)
+              const consecColor = s.pension_consec >= 5 ? "#DC2626" : s.pension_consec >= 3 ? "#2563EB" : "#1A1A2E"
+
+              return (
+                <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
+                  <td className="py-2.5 px-3">
+                    <span className="font-bold text-[#1A1A2E]">{s.name}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code}</span>
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums text-[#1A1A2E]">{fmtPrice(s.close)}</td>
+                  <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: consecColor }}>
+                    {s.pension_consec}d
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum) }}>
+                    {fmtAmt(s.pension_cum)}
+                  </td>
+                  <td className="py-2.5 px-3 text-center hidden md:table-cell">
+                    <JoinedBadge joined="" />
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold">
+                    <span style={{ color: s.ret5 < 0 ? "#16a34a" : s.ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
+                      {s.ret5 >= 0 ? "+" : ""}{s.ret5.toFixed(1)}%
+                    </span>
+                    {fr.star && <span className="ml-1 font-bold" style={{ color: fr.starColor }}>★</span>}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
@@ -141,7 +242,7 @@ function StandbyCard({ s }: { s: PensionStock }) {
 export default function PensionScanPanel() {
   const [data, setData] = useState<PensionScanData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [subTab, setSubTab] = useState<SubTab>("best")
+  const [subTab, setSubTab] = useState<SubTab>("all")
 
   useEffect(() => {
     const ac = new AbortController()
@@ -163,6 +264,11 @@ export default function PensionScanPanel() {
     return () => ac.abort()
   }, [])
 
+  // 탭별 그룹핑
+  const bestGroups = useMemo(() => data ? groupBySector(data.best_stocks) : [], [data])
+  const freshGroups = useMemo(() => data ? groupBySector(data.best_fresh) : [], [data])
+  const standbyGroups = useMemo(() => data ? groupBySector(data.standby_stocks) : [], [data])
+
   if (loading) {
     return (
       <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-8">
@@ -181,75 +287,56 @@ export default function PensionScanPanel() {
     )
   }
 
-  const bestList = data.best_stocks
-  const standbyList = data.standby_stocks
+  const activeGroups = subTab === "all" ? bestGroups : subTab === "fresh" ? freshGroups : standbyGroups
+  const emptyMsg = subTab === "standby"
+    ? "연기금 연속매수 종목이 없습니다"
+    : "오늘은 연기금+금투 합류 종목이 없습니다"
 
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 py-6">
       {/* 헤더 */}
       <div className="mb-4">
-        <h2 className="text-[18px] md:text-[20px] font-bold text-[#1A1A2E]">
+        <h2 className="text-[19px] font-bold text-[#1A1A2E]">
           매집 합류 시그널
         </h2>
-        <p className="text-[13px] text-[#6B7280] mt-1">
+        <p className="text-[14px] text-[#6B7280] mt-1">
           연기금 3-5일 매수 → 금투 합류 시 D+5 +1.6% · {data.date} 기준
         </p>
       </div>
 
-      {/* 2-탭 */}
-      <nav className="flex gap-1.5 mb-4">
-        <button
-          onClick={() => setSubTab("best")}
-          className={`py-2 px-4 rounded-lg text-[13px] font-semibold transition-all ${
-            subTab === "best"
-              ? "bg-[#00FF88] text-[#1A1A2E] shadow-sm"
-              : "bg-[#F5F4F0] text-[#9CA3AF] hover:text-[#1A1A2E]"
-          }`}
-        >
-          핵심후보 ({data.best_count})
-        </button>
-        <button
-          onClick={() => setSubTab("standby")}
-          className={`py-2 px-4 rounded-lg text-[13px] font-semibold transition-all ${
-            subTab === "standby"
-              ? "bg-[#00FF88] text-[#1A1A2E] shadow-sm"
-              : "bg-[#F5F4F0] text-[#9CA3AF] hover:text-[#1A1A2E]"
-          }`}
-        >
-          대기 ({data.standby_count})
-        </button>
-        {data.best_fresh_count > 0 && subTab === "best" && (
-          <span className="ml-2 self-center text-[12px] text-[#16a34a] font-semibold">
-            미발화 {data.best_fresh_count}종목
-          </span>
-        )}
+      {/* 3-탭 */}
+      <nav className="flex gap-1.5 mb-4 flex-wrap">
+        {([
+          { key: "all" as SubTab, label: `전체 ${data.best_count}` },
+          { key: "fresh" as SubTab, label: `미발화 ${data.best_fresh_count}` },
+          { key: "standby" as SubTab, label: `대기 ${data.standby_count}` },
+        ]).map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setSubTab(t.key)}
+            className={`py-1.5 px-3.5 rounded-lg text-[14px] font-semibold transition-all ${
+              subTab === t.key
+                ? "bg-[#00FF88] text-[#1A1A2E] shadow-sm"
+                : "bg-[#F5F4F0] text-[#9CA3AF] hover:text-[#1A1A2E]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </nav>
 
-      {/* 핵심후보 탭 */}
-      {subTab === "best" && (
-        <div className="grid gap-3">
-          {bestList.length === 0 ? (
-            <div className="text-center py-8 text-[#9CA3AF]">
-              오늘은 연기금+금투 합류 종목이 없습니다
-            </div>
-          ) : (
-            bestList.map((s) => <BestCard key={s.code} s={s} />)
-          )}
-        </div>
-      )}
-
-      {/* 대기 탭 */}
-      {subTab === "standby" && (
-        <div className="grid gap-3">
-          {standbyList.length === 0 ? (
-            <div className="text-center py-8 text-[#9CA3AF]">
-              연기금 연속매수 종목이 없습니다
-            </div>
-          ) : (
-            standbyList.map((s) => <StandbyCard key={s.code} s={s} />)
-          )}
-        </div>
-      )}
+      {/* 섹터 카드 목록 */}
+      <div className="space-y-4">
+        {activeGroups.length === 0 ? (
+          <div className="text-center py-8 text-[#9CA3AF]">
+            {emptyMsg}
+          </div>
+        ) : subTab === "standby" ? (
+          activeGroups.map((g) => <StandbySectorCard key={g.sector} group={g} />)
+        ) : (
+          activeGroups.map((g) => <BestSectorCard key={g.sector} group={g} />)
+        )}
+      </div>
     </div>
   )
 }
