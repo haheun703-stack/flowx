@@ -220,6 +220,117 @@ function SectorCard({ s, isSelected, onClick }: { s: SectorFire; isSelected: boo
   )
 }
 
+/* ── FIRE 등급별 카드 테두리 ── */
+const FIRE_CARD_STYLE: Record<string, { border: string; bg: string }> = {
+  S: { border: '#FF4444', bg: 'rgba(255,68,68,0.05)' },
+  A: { border: '#FF6B35', bg: 'rgba(255,107,53,0.05)' },
+  B: { border: '#FFB347', bg: 'rgba(255,179,71,0.03)' },
+  C: { border: '#999999', bg: 'transparent' },
+}
+
+type GradeFilter = 'ALL' | 'STRONG' | 'BUY' | 'WATCH'
+
+/* ── 섹터 종목 카드 (그룹) ── */
+function SectorPicksCard({ fire, picks: cardPicks }: { fire: SectorFire; picks: SectorPick[] }) {
+  const gc = GRADE_CONFIG[fire.fire_grade] ?? GRADE_CONFIG.D
+  const cs = FIRE_CARD_STYLE[fire.fire_grade] ?? FIRE_CARD_STYLE.C
+
+  return (
+    <div
+      className="rounded-xl border-2 overflow-hidden"
+      style={{ borderColor: cs.border, background: cs.bg }}
+    >
+      {/* 카드 헤더 */}
+      <div className="px-4 py-3 border-b" style={{ borderColor: `${cs.border}30` }}>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[16px] font-bold text-[#1A1A2E]">{fire.sector}</span>
+          <span
+            className="text-[12px] font-bold px-2 py-0.5 rounded-md"
+            style={{ color: gc.color, background: gc.bg }}
+          >
+            FIRE {fire.fire_grade}등급 {Math.round(fire.fire_score)}점
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-[12px] text-[#6B7280] mt-1">
+          <span>외인5d: <b style={{ color: flowClr(fire.fgn_5d) }}>{flowFmt(fire.fgn_5d)}억</b></span>
+          <span>기관5d: <b style={{ color: flowClr(fire.inst_5d) }}>{flowFmt(fire.inst_5d)}억</b></span>
+          <span>연기금: <b style={{ color: flowClr(fire.pension_5d) }}>{flowFmt(fire.pension_5d)}억</b></span>
+        </div>
+        {fire.etf_code && fire.etf_name && (
+          <div className="mt-1">
+            <a
+              href={`https://finance.naver.com/item/main.naver?code=${fire.etf_code}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[12px] text-[#2563EB] hover:underline"
+            >
+              ETF: {fire.etf_name} ({fire.etf_code})
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* 종목 테이블 */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-[12px]">
+          <thead>
+            <tr className="bg-[#F5F4F0]/60">
+              <th className="text-left py-2 px-3 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">종가</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">등락</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E]">점수</th>
+              <th className="text-center py-2 px-2 font-bold text-[#1A1A2E]">등급</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">MA20</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">RSI</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">외5d</th>
+              <th className="text-right py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">기5d</th>
+              <th className="text-left py-2 px-2 font-bold text-[#1A1A2E] hidden md:table-cell">근거</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cardPicks.map(p => {
+              const bg = BUY_GRADE_CONFIG[p.buy_grade]
+              return (
+                <tr key={p.ticker} className="border-t border-[#e5e7ef]/40 hover:bg-white/60">
+                  <td className="py-2 px-3">
+                    <span className="font-bold text-[#1A1A2E]">{p.name}</span>
+                    <span className="text-[10px] text-[#9ca3b8] ml-1">{p.ticker}</span>
+                  </td>
+                  <td className="py-2 px-2 text-right tabular-nums text-[#1A1A2E]">{priceFmt(p.close)}</td>
+                  <td className="py-2 px-2 text-right tabular-nums font-bold" style={{ color: retClr(p.chg_1d) }}>
+                    {p.chg_1d >= 0 ? '+' : ''}{p.chg_1d.toFixed(1)}%
+                  </td>
+                  <td className="py-2 px-2 text-right tabular-nums font-bold text-[#1A1A2E]">{Math.round(p.buy_score)}</td>
+                  <td className="py-2 px-2 text-center">
+                    {bg && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white" style={{ background: bg.color }}>
+                        {bg.label}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2 px-2 text-right tabular-nums text-[#6B7280] hidden md:table-cell">
+                    {p.ma20_dev >= 0 ? '+' : ''}{p.ma20_dev.toFixed(1)}%
+                  </td>
+                  <td className="py-2 px-2 text-right tabular-nums text-[#6B7280] hidden md:table-cell">{Math.round(p.rsi)}</td>
+                  <td className="py-2 px-2 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.fgn_5d) }}>
+                    {flowFmt(p.fgn_5d)}
+                  </td>
+                  <td className="py-2 px-2 text-right tabular-nums font-bold hidden md:table-cell" style={{ color: flowClr(p.inst_5d) }}>
+                    {flowFmt(p.inst_5d)}
+                  </td>
+                  <td className="py-2 px-2 text-left text-[#6B7280] truncate max-w-[120px] hidden md:table-cell" title={p.buy_reasons}>
+                    {p.buy_reasons?.split(',')[0] ?? ''}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 /* ── 메인 뷰 ── */
 export default function SectorFireView() {
   const [sectors, setSectors] = useState<SectorFire[]>([])
@@ -227,7 +338,7 @@ export default function SectorFireView() {
   const [date, setDate] = useState('')
   const [loading, setLoading] = useState(true)
   const [selectedSector, setSelectedSector] = useState<string | null>(null)
-  const [expandedTicker, setExpandedTicker] = useState<string | null>(null)
+  const [gradeFilter, setGradeFilter] = useState<GradeFilter>('ALL')
 
   useEffect(() => {
     const ac = new AbortController()
@@ -245,13 +356,8 @@ export default function SectorFireView() {
     return () => ac.abort()
   }, [])
 
-  const filteredPicks = selectedSector
-    ? picks.filter(p => p.sector === selectedSector)
-    : picks
-
   const handleSectorClick = useCallback((sector: string) => {
     setSelectedSector(prev => prev === sector ? null : sector)
-    setExpandedTicker(null)
   }, [])
 
   if (loading) {
@@ -276,6 +382,33 @@ export default function SectorFireView() {
     )
   }
 
+  // 등급 필터 적용
+  const filteredPicks = gradeFilter === 'ALL'
+    ? picks
+    : picks.filter(p => p.buy_grade === gradeFilter)
+
+  // 섹터별 그룹핑
+  const grouped: Record<string, SectorPick[]> = {}
+  filteredPicks.forEach(p => {
+    if (!grouped[p.sector]) grouped[p.sector] = []
+    grouped[p.sector].push(p)
+  })
+
+  // fire map
+  const fireMap: Record<string, SectorFire> = {}
+  sectors.forEach(f => { fireMap[f.sector] = f })
+
+  // fire_score 내림차순, D등급 제외, 종목 0개 제외
+  const sortedSectors = Object.keys(grouped)
+    .filter(s => fireMap[s] && fireMap[s].fire_grade !== 'D')
+    .filter(s => !selectedSector || s === selectedSector)
+    .sort((a, b) => (fireMap[b]?.fire_score ?? 0) - (fireMap[a]?.fire_score ?? 0))
+
+  // 등급별 카운트
+  const strongCount = picks.filter(p => p.buy_grade === 'STRONG').length
+  const buyCount = picks.filter(p => p.buy_grade === 'BUY').length
+  const watchCount = picks.filter(p => p.buy_grade === 'WATCH').length
+
   return (
     <div className="space-y-6">
       {/* 헤더 */}
@@ -299,129 +432,60 @@ export default function SectorFireView() {
         ))}
       </div>
 
-      {/* 섹션 2: 종목 매수 후보 테이블 */}
-      <div className="rounded-xl border border-[#e5e7ef] bg-white shadow overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-[#e5e7ef]">
+      {/* 섹션 2: 섹터별 종목 카드 그룹 */}
+      <div>
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <h3 className="text-[15px] font-bold text-[#1A1A2E]">🔥 발화 섹터 종목 — 매수 후보</h3>
-            {selectedSector && (
-              <span className="text-[12px] font-bold px-2 py-0.5 rounded-md bg-[#FF6B35]/10 text-[#FF6B35]">
-                {selectedSector}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {selectedSector && (
-              <button
-                onClick={() => { setSelectedSector(null); setExpandedTicker(null) }}
-                className="text-[11px] px-2 py-1 rounded bg-[#f0f0f0] text-[#6B7280] hover:bg-[#e5e7ef]"
-              >
-                전체 보기
-              </button>
-            )}
+            <h3 className="text-[15px] font-bold text-[#1A1A2E]">발화 섹터 종목 — 매수 후보</h3>
             <span className="text-[12px] text-[#9ca3b8]">{filteredPicks.length}종목</span>
           </div>
+          {selectedSector && (
+            <button
+              onClick={() => setSelectedSector(null)}
+              className="text-[11px] px-2 py-1 rounded bg-[#f0f0f0] text-[#6B7280] hover:bg-[#e5e7ef]"
+            >
+              전체 보기
+            </button>
+          )}
         </div>
 
-        <div className="overflow-x-auto table-scroll">
-          <table className="w-full text-[12px] min-w-[800px]">
-            <thead>
-              <tr className="bg-[#F5F4F0] border-b border-[#e5e7ef]">
-                <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">섹터</th>
-                <th className="text-left py-2.5 px-2 font-bold text-[#1A1A2E]">종목</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">종가</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">등락</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">점수</th>
-                <th className="text-center py-2.5 px-2 font-bold text-[#1A1A2E]">등급</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">MA20</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">RSI</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">외5d</th>
-                <th className="text-right py-2.5 px-2 font-bold text-[#1A1A2E]">기5d</th>
-                <th className="text-left py-2.5 px-2 font-bold text-[#1A1A2E]">근거</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPicks.map(p => {
-                const bg = BUY_GRADE_CONFIG[p.buy_grade]
-                const isExpanded = expandedTicker === p.ticker
-                return (
-                  <tr key={p.ticker} className="group">
-                    <td colSpan={11} className="p-0">
-                      <div
-                        className="grid items-center border-b border-[#e5e7ef]/50 hover:bg-[#FFF7ED] cursor-pointer transition-colors"
-                        style={{ gridTemplateColumns: 'auto 1fr repeat(9, auto)', padding: '8px 0' }}
-                        onClick={() => setExpandedTicker(isExpanded ? null : p.ticker)}
-                      >
-                        <div className="text-left px-3 text-[#6B7280]">{p.sector}</div>
-                        <div className="text-left px-2">
-                          <span className="font-bold text-[#1A1A2E]">{p.name}</span>
-                          <span className="text-[10px] text-[#9ca3b8] ml-1">{p.ticker}</span>
-                        </div>
-                        <div className="text-right px-2 tabular-nums text-[#1A1A2E]">{priceFmt(p.close)}</div>
-                        <div className="text-right px-2 tabular-nums font-bold" style={{ color: retClr(p.chg_1d) }}>
-                          {p.chg_1d >= 0 ? '+' : ''}{p.chg_1d.toFixed(1)}%
-                        </div>
-                        <div className="text-right px-2 tabular-nums font-bold text-[#1A1A2E]">{Math.round(p.buy_score)}</div>
-                        <div className="text-center px-2">
-                          {bg && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ color: bg.color, background: `${bg.color}20` }}>
-                              {bg.label}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-right px-2 tabular-nums text-[#6B7280]">
-                          {p.ma20_dev >= 0 ? '+' : ''}{p.ma20_dev.toFixed(1)}%
-                        </div>
-                        <div className="text-right px-2 tabular-nums text-[#6B7280]">{Math.round(p.rsi)}</div>
-                        <div className="text-right px-2 tabular-nums font-bold" style={{ color: flowClr(p.fgn_5d) }}>
-                          {flowFmt(p.fgn_5d)}
-                        </div>
-                        <div className="text-right px-2 tabular-nums font-bold" style={{ color: flowClr(p.inst_5d) }}>
-                          {flowFmt(p.inst_5d)}
-                        </div>
-                        <div className="text-left px-2 text-[#6B7280] truncate max-w-[120px]">{p.buy_reasons}</div>
-                      </div>
-                      {/* 확장 상세 */}
-                      {isExpanded && (
-                        <div className="bg-[#FFF7ED] px-4 py-3 border-b border-[#e5e7ef] text-[11px] space-y-1">
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div>
-                              <span className="text-[#9ca3b8]">외인 반전</span>
-                              <div className="font-bold" style={{ color: flowClr(p.fgn_reversal) }}>{flowFmt(p.fgn_reversal)}억</div>
-                            </div>
-                            <div>
-                              <span className="text-[#9ca3b8]">기관 반전</span>
-                              <div className="font-bold" style={{ color: flowClr(p.inst_reversal) }}>{flowFmt(p.inst_reversal)}억</div>
-                            </div>
-                            <div>
-                              <span className="text-[#9ca3b8]">외인 연속매수</span>
-                              <div className="font-bold text-[#1A1A2E]">{p.fgn_streak}일</div>
-                            </div>
-                            <div>
-                              <span className="text-[#9ca3b8]">수급포착 유형</span>
-                              <div className="font-bold text-[#1A1A2E]">{p.surge_type ?? '미포착'}</div>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="text-[#9ca3b8]">연기금 5일</span>
-                            <span className="font-bold ml-1" style={{ color: flowClr(p.pension_5d) }}>{flowFmt(p.pension_5d)}억</span>
-                            <span className="text-[#9ca3b8] ml-3">거래량배수</span>
-                            <span className="font-bold text-[#1A1A2E] ml-1">{p.vol_ratio.toFixed(1)}x</span>
-                          </div>
-                          {p.buy_reasons && (
-                            <div>
-                              <span className="text-[#9ca3b8]">매수 근거: </span>
-                              <span className="text-[#1A1A2E]">{p.buy_reasons}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+        {/* 등급 필터 칩 */}
+        <div className="flex gap-1.5 mb-4 flex-wrap">
+          {([
+            { key: 'ALL' as GradeFilter, label: `전체 ${picks.length}` },
+            { key: 'STRONG' as GradeFilter, label: `강력 ${strongCount}` },
+            { key: 'BUY' as GradeFilter, label: `BUY ${buyCount}` },
+            { key: 'WATCH' as GradeFilter, label: `WATCH ${watchCount}` },
+          ]).map(f => (
+            <button
+              key={f.key}
+              onClick={() => setGradeFilter(f.key)}
+              className={`py-1.5 px-3 rounded-lg text-[12px] font-semibold transition-all ${
+                gradeFilter === f.key
+                  ? 'bg-[#00FF88] text-[#1A1A2E] shadow-sm'
+                  : 'bg-[#F5F4F0] text-[#9CA3AF] hover:text-[#1A1A2E]'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {/* 섹터 카드 목록 */}
+        <div className="space-y-4">
+          {sortedSectors.length === 0 ? (
+            <div className="text-center py-8 text-[#9CA3AF]">
+              해당 조건의 종목이 없습니다
+            </div>
+          ) : (
+            sortedSectors.map(sectorName => (
+              <SectorPicksCard
+                key={sectorName}
+                fire={fireMap[sectorName]}
+                picks={grouped[sectorName]}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
