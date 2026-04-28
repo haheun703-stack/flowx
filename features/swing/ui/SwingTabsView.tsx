@@ -6,7 +6,7 @@ import DaytradingPerformancePanel from "@/features/daytrading/ui/DaytradingPerfo
 import SwingDashboardView from "./SwingDashboardView"
 import CycleScanView from "./CycleScanView"
 import StealthScannerView from "./StealthScannerView"
-import ForeignFlowPanel from "./ForeignFlowPanel"
+
 import TodayVsNxtPanel from "./TodayVsNxtPanel"
 
 /* ── 상단 탭 정의 ── */
@@ -75,8 +75,6 @@ export function SwingTabsView() {
           <CycleScanView />
           <SectionDivider title="기관 선매집 탐지" />
           <StealthScannerView />
-          <SectionDivider title="외국인·기관 수급 X-Ray" />
-          <ForeignFlowPanel />
         </>
       )}
     </div>
