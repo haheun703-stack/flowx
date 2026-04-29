@@ -198,7 +198,7 @@ export function StockTreemap({
       name: 'root',
       children: trimmedSectors.map(sec => ({
         name: sec.name,
-        children: sec.stocks.map(s => ({
+        children: (sec.stocks ?? []).map(s => ({
           name: s.name,
           value: getSizeValue({ ...s, sector: sec.name } as LeafNode, sizeBy),
           _data: { ...s, sector: sec.name } as LeafNode,

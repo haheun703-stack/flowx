@@ -76,7 +76,7 @@ export function MorningNewsPanel() {
             </div>
 
             {/* 관련 뉴스 */}
-            {data.news_picks && data.news_picks.length > 0 && (
+            {Array.isArray(data.news_picks) && data.news_picks.length > 0 && (
               <div className="border-t border-[#F0EDE8] pt-2">
                 {data.news_picks.map((pick: { code: string; name: string; reason: string }) => (
                   <div key={pick.code} className="flex items-start gap-1.5 py-1 border-b border-[#F5F4F0] last:border-0">

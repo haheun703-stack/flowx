@@ -385,8 +385,9 @@ export default function SwingDashboardView() {
   }
 
   const hero = getVerdictHero(data.brain_verdict)
-  const hasCategory = data.picks?.some(p => p.category)
-  const krxPicks = hasCategory ? data.picks.filter(p => p.category !== 'NXT') : data.picks
+  const picks = Array.isArray(data.picks) ? data.picks : []
+  const hasCategory = picks.some(p => p.category)
+  const krxPicks = hasCategory ? picks.filter(p => p.category !== 'NXT') : picks
   return (
     <div className="max-w-[1400px] mx-auto px-3 md:px-6 pt-6 space-y-5">
 

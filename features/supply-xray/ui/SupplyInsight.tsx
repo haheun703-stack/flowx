@@ -51,7 +51,7 @@ export function SupplyInsight({ supplyData }: { supplyData: SupplyData[] }) {
       </div>
 
       {/* 채점 항목 */}
-      {result.items.length > 0 && (
+      {Array.isArray(result.items) && result.items.length > 0 && (
         <div className="space-y-1.5 mb-3">
           {result.items.map(item => (
             <div key={item.id} className="flex items-start justify-between gap-2 text-sm">
