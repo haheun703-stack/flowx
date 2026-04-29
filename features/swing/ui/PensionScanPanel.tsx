@@ -81,20 +81,20 @@ function freshRowStyle(ret5: number): { bg: string; star: boolean; starColor: st
 function JoinedBadge({ joined }: { joined: string }) {
   if (joined === "TODAY") {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#FF4444] text-white">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[13px] font-bold bg-[#FF4444] text-white">
         오늘
       </span>
     )
   }
   if (joined === "YESTERDAY") {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#FF8C00] text-white">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[13px] font-bold bg-[#FF8C00] text-white">
         어제
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-bold bg-[#9CA3AF] text-white">
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded text-[13px] font-bold bg-[#9CA3AF] text-white">
       대기
     </span>
   )
@@ -269,17 +269,17 @@ function TopRankingTable({ stocks }: { stocks: RankedStock[] }) {
         <span className="text-[14px] text-[#6B7280] ml-3">점수순 상위 {stocks.length}종목</span>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[14px]">
+        <table className="w-full text-[15px]">
           <thead>
             <tr className="bg-[#F5F4F0]/60">
-              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E] w-12">순위</th>
-              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">종목</th>
-              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">점수</th>
-              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">연기금</th>
-              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">누적</th>
-              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">금투오늘</th>
-              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">합류</th>
-              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">5d수익</th>
+              <th className="text-center py-3 px-4 font-bold text-[#1A1A2E] w-12">순위</th>
+              <th className="text-left py-3 px-4 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-3 px-4 font-bold text-[#1A1A2E]">점수</th>
+              <th className="text-center py-3 px-4 font-bold text-[#1A1A2E]">연기금</th>
+              <th className="text-right py-3 px-4 font-bold text-[#1A1A2E]">누적</th>
+              <th className="text-right py-3 px-4 font-bold text-[#1A1A2E] hidden md:table-cell">금투오늘</th>
+              <th className="text-center py-3 px-4 font-bold text-[#1A1A2E]">합류</th>
+              <th className="text-right py-3 px-4 font-bold text-[#1A1A2E]">5d수익</th>
             </tr>
           </thead>
           <tbody>
@@ -293,29 +293,29 @@ function TopRankingTable({ stocks }: { stocks: RankedStock[] }) {
 
               return (
                 <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
-                  <td className="py-2.5 px-3 text-center font-bold text-[#9CA3AF]">{idx + 1}</td>
-                  <td className="py-2.5 px-3">
+                  <td className="py-3 px-4 text-center font-bold text-[#9CA3AF]">{idx + 1}</td>
+                  <td className="py-3 px-4">
                     <span className="font-bold text-[#1A1A2E]">{s.name ?? '—'}</span>
-                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code ?? ''}</span>
+                    <span className="text-[13px] text-[#9ca3b8] ml-1.5">{s.code ?? ''}</span>
                   </td>
-                  <td className="py-2.5 px-3 text-right">
-                    <span className="inline-flex items-center justify-center min-w-[40px] px-2 py-0.5 rounded text-[12px] font-bold text-white" style={{ background: scoreBg }}>
+                  <td className="py-3 px-4 text-right">
+                    <span className="inline-flex items-center justify-center min-w-[44px] px-2.5 py-1 rounded text-[14px] font-bold text-white" style={{ background: scoreBg }}>
                       {score}
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: daysColor }}>
+                  <td className="py-3 px-4 text-center tabular-nums font-semibold" style={{ color: daysColor }}>
                     {days}d
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum ?? 0) }}>
+                  <td className="py-3 px-4 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum ?? 0) }}>
                     {fmtAmt(s.pension_cum ?? 0)}
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums hidden md:table-cell" style={{ color: flowClr(s.fi_today ?? 0) }}>
+                  <td className="py-3 px-4 text-right tabular-nums hidden md:table-cell" style={{ color: flowClr(s.fi_today ?? 0) }}>
                     {fmtAmt(s.fi_today ?? 0)}
                   </td>
-                  <td className="py-2.5 px-3 text-center">
+                  <td className="py-3 px-4 text-center">
                     <JoinedBadge joined={s.fi_joined ?? ''} />
                   </td>
-                  <td className="py-2.5 px-3 text-right tabular-nums font-bold">
+                  <td className="py-3 px-4 text-right tabular-nums font-bold">
                     <span style={{ color: ret5 < 0 ? "#16a34a" : ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
                       {ret5 >= 0 ? "+" : ""}{ret5.toFixed(1)}%
                     </span>
