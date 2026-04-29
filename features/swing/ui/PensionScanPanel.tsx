@@ -17,6 +17,21 @@ interface PensionStock {
   close: number
 }
 
+interface RankedStock {
+  code: string
+  name: string
+  sector: string
+  cap: number
+  pension_buy_days: number
+  pension_cum: number
+  fi_today: number
+  fi_3d: number
+  fi_joined: "TODAY" | "YESTERDAY" | string
+  ret5: number
+  close: number
+  pension_score: number
+}
+
 interface PensionScanData {
   date: string
   total_count: number
@@ -26,6 +41,7 @@ interface PensionScanData {
   best_stocks: PensionStock[]
   best_fresh: PensionStock[]
   standby_stocks: PensionStock[]
+  ranked_stocks: RankedStock[]
 }
 
 type SubTab = "all" | "fresh" | "standby"
@@ -242,6 +258,79 @@ function StandbySectorCard({ group }: { group: SectorGroup }) {
   )
 }
 
+/* ── TOP 랭킹 테이블 ── */
+function TopRankingTable({ stocks }: { stocks: RankedStock[] }) {
+  if (stocks.length === 0) return null
+
+  return (
+    <div className="rounded-xl border border-[#E2E5EA] overflow-hidden bg-white mb-5">
+      <div className="px-5 py-4 border-b border-[#E2E5EA]/60 bg-[#FAFAFA]">
+        <span className="text-[18px] font-bold text-[#1A1A2E]">TOP 랭킹</span>
+        <span className="text-[14px] text-[#6B7280] ml-3">점수순 상위 {stocks.length}종목</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[14px]">
+          <thead>
+            <tr className="bg-[#F5F4F0]/60">
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E] w-12">순위</th>
+              <th className="text-left py-2.5 px-3 font-bold text-[#1A1A2E]">종목</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">점수</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">연기금</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">누적</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E] hidden md:table-cell">금투오늘</th>
+              <th className="text-center py-2.5 px-3 font-bold text-[#1A1A2E]">합류</th>
+              <th className="text-right py-2.5 px-3 font-bold text-[#1A1A2E]">5d수익</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stocks.map((s, idx) => {
+              const ret5 = s.ret5 ?? 0
+              const fr = freshRowStyle(ret5)
+              const days = s.pension_buy_days ?? 0
+              const daysColor = days >= 10 ? "#DC2626" : days >= 7 ? "#2563EB" : "#1A1A2E"
+              const score = s.pension_score ?? 0
+              const scoreBg = score >= 300 ? "#DC2626" : score >= 200 ? "#F97316" : "#2563EB"
+
+              return (
+                <tr key={s.code} className="border-t border-[#e5e7ef]/40 hover:bg-white/60" style={{ background: fr.bg }}>
+                  <td className="py-2.5 px-3 text-center font-bold text-[#9CA3AF]">{idx + 1}</td>
+                  <td className="py-2.5 px-3">
+                    <span className="font-bold text-[#1A1A2E]">{s.name ?? '—'}</span>
+                    <span className="text-[12px] text-[#9ca3b8] ml-1.5">{s.code ?? ''}</span>
+                  </td>
+                  <td className="py-2.5 px-3 text-right">
+                    <span className="inline-flex items-center justify-center min-w-[40px] px-2 py-0.5 rounded text-[12px] font-bold text-white" style={{ background: scoreBg }}>
+                      {score}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3 text-center tabular-nums font-semibold" style={{ color: daysColor }}>
+                    {days}d
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold" style={{ color: flowClr(s.pension_cum ?? 0) }}>
+                    {fmtAmt(s.pension_cum ?? 0)}
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums hidden md:table-cell" style={{ color: flowClr(s.fi_today ?? 0) }}>
+                    {fmtAmt(s.fi_today ?? 0)}
+                  </td>
+                  <td className="py-2.5 px-3 text-center">
+                    <JoinedBadge joined={s.fi_joined ?? ''} />
+                  </td>
+                  <td className="py-2.5 px-3 text-right tabular-nums font-bold">
+                    <span style={{ color: ret5 < 0 ? "#16a34a" : ret5 <= 3 ? "#1A1A2E" : "#9CA3AF" }}>
+                      {ret5 >= 0 ? "+" : ""}{ret5.toFixed(1)}%
+                    </span>
+                    {fr.star && <span className="ml-1 font-bold" style={{ color: fr.starColor }}>★</span>}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 /* ── Main Panel ── */
 export default function PensionScanPanel() {
   const [data, setData] = useState<PensionScanData | null>(null)
@@ -260,6 +349,7 @@ export default function PensionScanPanel() {
             best_stocks: Array.isArray(d.best_stocks) ? d.best_stocks : [],
             best_fresh: Array.isArray(d.best_fresh) ? d.best_fresh : [],
             standby_stocks: Array.isArray(d.standby_stocks) ? d.standby_stocks : [],
+            ranked_stocks: Array.isArray(d.ranked_stocks) ? d.ranked_stocks : [],
           })
         }
       })
@@ -304,7 +394,7 @@ export default function PensionScanPanel() {
           매집 합류 시그널
         </h2>
         <p className="text-[14px] text-[#6B7280] mt-1">
-          연기금 3-5일 매수 → 금투 합류 시 D+5 +1.6% · {data.date} 기준
+          연기금 7일+ 매수 → 금투 합류 시 D+5 +1.6% · {data.date} 기준
         </p>
       </div>
 
@@ -328,6 +418,9 @@ export default function PensionScanPanel() {
           </button>
         ))}
       </nav>
+
+      {/* TOP 랭킹 */}
+      <TopRankingTable stocks={data.ranked_stocks} />
 
       {/* 섹터 카드 목록 */}
       <div className="space-y-4">
